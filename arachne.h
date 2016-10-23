@@ -1,76 +1,52 @@
 /*============================----beg-of-source---============================*/
 
-/*===[[ HEADER ]]=============================================================*
+/*===[[ HEADER ]]=============================================================*/
 
- *   focus         : (RB) robotics
+/*   focus         : (RB) robotics
  *   niche         : (hx) hexapods
  *   application   : arachne     (lydian weaver turned into the first spider)
- *   purpose       : wickedly useful hexapod stance and movement simulator
+ *   purpose       : wickedly useful hexapod spider visualization
  *
  *   base_system   : gnu/linux   (powerful, ubiquitous, technical, and hackable)
- *   lang_name     : gnu/ansi-c  (right, just, best, standard, and everlasting)
- *   dependencies  : opengl, yXINIT, yFONT
+ *   lang_name     : ansi-c      (wicked, limitless, universal, and everlasting)
+ *   dependencies  : yKINE, opengl, yXINIT, yFONT
  *   size goal     : moderate (less than 5,000 slocL)
  *
- *   author        : the_heatherlys
+ *   author        : heatherly
  *   created       : 2009-07 (about when we bought eva and igor)
  *   priorities    : direct, simple, brief, vigorous, and lucid (h.w. fowler)
  *   end goal      : loosely coupled, strict interface, maintainable, portable
  * 
  */
-/*===[[ SUMMARY ]]============================================================*
+/*===[[ SUMMARY ]]============================================================*/
 
- *   arachne will be a wickedly accurate hexapod simulator that will allow us to
- *   design stances, movements, and interactions of a CH3-R hexapod as well as
- *   generate scripts to test these theories in the physical world.
+/*   arachne will be a wickedly accurate and useful hexapod visualizer that
+ *   will allow me to test stances, movements, and interactions of a hexapod
+ *   before commiting to real-world tests.
  *
  */
-/*===[[ PURPOSE ]]============================================================*
+/*===[[ PURPOSE ]]============================================================*/
 
- *   arachne is a set of functions to provide highly reliable, accurate, and
- *   predictable kinematic calculations for use in the control of a lynxmotion
- *   CHR-3 robotic hexapod with 18 DOF.  because the true location and
- *   orientation of the hexapod is a combination of these 18 DOF, machine
- *   control is very complex and most people resort to sticking with tradition,
- *   excel models, and/or trial and error to develop gaits and motions.
+/*   arachne is a pure visualization and simulation tool for hexapod spider
+ *   robotics.  given the complexity of 18+ DOF spiders, a wide variety of
+ *   tools is required to make sure they perform correctly.
  *
- *   we must learn to master the kinematics involved from the ground up.  there
- *   are a great number of amazing experts out there pointing the way, but we
- *   can't fall into the trap of just becoming consumers and users of their
- *   great work -- build on their foundation and add your own creativity.
+ *   arachne will...
+ *   -- accept joint/servo movement instructions from stdin
+ *   -- use timing information in those instructions to understand sequencing
+ *   -- produce a visualization of the result of those instructions
+ *   -- allow the operator to alter and manipulate the visualization
+ *   -- allow the operator to move backwards and forwards through the sequence
  *
- *   the goal of arachne is to take a painful, tedious, onerous, haphazard, and
- *   error prone process and turn it a easy, flexible, predictable, rapid, and
- *   automated set of functions.
+ *   arachne will supplement kinematic debugging by...
+ *   -- displaying detailed feedback from opengl to confirm positions
+ *   -- optionally, produce an output file of detailed position information
  *
- *   arachne's core will focus on...
- *      - maintaining kinematic master data on body, legs, and other attachments
- *      - forward leg kinematics predicting x,y,z endpoint based on joint angles
- *      - inverse leg kinematics predicting joint angles based on x,y,z target
- *      - body movements to shift the relative leg positions
- *      - body orientation shifting almost all other calculations
- *      - adjustment relative to the ground to understand actual positioning
- *
- *   arachne will then build on top the ability to...
- *      - accept fixed positions and stances from input files
- *      - accept gait and movement designs from input files
- *      - accept scripts that combine stances and movements from input files
- *      - play and step through the scripts to test out the results visually
- *      - generate specific robot scripts to drive the hexapod
- *
- *   arachne will then provide the ability...
- *      - visualize a wireframe model of the hexapod in a simple 3d environment
- *      - assume designed stances with appropriate context and information
- *      - display internal kinetic states and positions on demand
- *
- *   arachne will also provide...
- *      - debugging capability to display key information on the process
- *      - string-formatted kinetic data in easily displayable, consumable format
- *      - deep unit testing interfaces to prove computational correctness
- *
- *   arachne will NOT provide...
- *      - ability to edit stances, gaits, movements, or scripts (that's vim)
- *      - ability to drive the hexapod directly (that's a specific application)
+ *   arachne will not provide...
+ *   -- means to alter servo or body positions
+ *   -- means to edit scripts, instructions, or sequences
+ *   -- means to connect or interact with the spiders or hexapods directly
+ *   -- any kinematics calculations, those are all within yKINE
  *
  *   as always, there are many, stable, accepted, existing programs and
  *   utilities built by better programmers that are likely superior in speed,
@@ -92,95 +68,6 @@
  *   simplicity is prerequisite for reliability - edsger dijkstra
  *
  */
-/*===[[ DECISION -- TO CODE, MODEL, OR MANUAL ]]==============================*
-
- *  PROBLEM (pr)
- *     in order to be able to do anything unique with jointed robots such as
- *     hexapods, robotic arms, or even stranger; we will have to develop our
- *     own capability for modeling and control.  if we only wanted to use
- *     existing gaits and positions for show, this is not a problem, but we
- *     view jointed robots as useful to our future, to we must press on.
- *
- *     unfortunately kinematics is quite a complex and detailed field of study
- *     that will require much time and effort to develop sufficient skill to
- *     drive the creation of our own hexapod movements, gaits, and other control
- *
- *     if the future is about delegation of known tasks to automation, both
- *     virtual and physical, then we have to be able to handle custom robotics.
- *     since the world can not be fully controlled and the applications of the
- *     automation with be variable, we have to be able to adapt.
- *
- *     so, we agree that we need to have direct control and knowledge in the
- *     long-term, the current decision is whether to dive in now or wait
- *
- *
- *  OBJECTIVES (o)
- *     - treat the application of our hexapods as vital to our future
- *     - make it do basic and simple things early so we build a foundation
- *     - learn the application of kinematics early in our studies
- *     - have a platform that can be expanded and grown
- *     - learn new and wicked ways to build programming capabilities
- *     - learn to computer-control robots remotely (not a phucking joystick)
- *     - push us hard to be better and more creative developers
- *
- *
- *  ALTERNATIVES and CONSEQUENCES (ac)
- *
- *     1) use the built-in hexapod capabilities...
- *        - focus on what is current, rather than possible
- *        - no work required as it's already done and working
- *        - can only stand, walk under direction, turn around, and sit
- *        - would be nothing more than a curiousity (at bloody best)
- *
- *     2) use the excel sheets that others have developed...
- *        - already built, but need to port to CH3-R hexapod
- *        - can even help develop new gaits
- *        - still only helps look better but not do anything useful
- *        - can not get beyond a cooler factor of curiousity
- *
- *     3) buy an upgraded hexapod with programmed brains...
- *        - already built and running like getting a new puppy
- *        - has the ability to react to movement in spider-like ways
- *        - doesn't do anything useful beyond very cool recognition
- *        - costs a ton of money and is not expandable (dead end)
- *
- *     4) build a programming simulator...
- *        - can do anything i can figure out or dream (mostly)
- *        - will allow me to develop features like hexapod drillpress
- *        - gonna take a ton of time (but i need to do it sooner or later)
- *        - must learn many new tools (but, will learn many new tools)
- *
- *     5) give up for now...
- *        - no additional effort
- *        - no additional cost
- *        - get back into basic learning
- *        - focus on other priorities
- *
- *
- *  JUDGEMENT
- *
- *     i have already benefited from working with the hexapod simulator by
- *     learning a good deal about opengl, xwindows, and simulation.  it could
- *     be argued that i would never learn these things without a great and
- *     grand project to push me, so excellent to date.
-*
-*     going forward, there is great promise to automating physical activities
-*     from making to survailance to assistance.  the sooner i start the
-*     further i will get.
-*
-*/
-/*===[[ TERMINOLOGY ]]========================================================*
-
- *  hexapod       : a six-legged robot
- *  core          : the very center point of the hexapod
- *  thorax        : the round center of the CHR-3 hexapod
- *  coxa          : the small fixed hips attached to body (later my articulate)
- *  femur         : the next joint that moves horizontally
- *  patella       : the next joint that moves vertically
- *  tibia         : the last joint that moves vertically
- *  tarsus        : currently non-existant and might become a foot, claw, ...
- *
- */
 /*============================================================================*/
 
 
@@ -192,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4a"
-#define VER_TXT   "start total rework by adding to github"
+#define VER_NUM   "0.4b"
+#define VER_TXT   "update the description and scope to reflect just visualization"
 
 
 
