@@ -170,6 +170,79 @@ draw_leg           (int a_num, tSEG a_curr[], char a_loc)
          glTranslatef(    0.0  ,   -18.0 ,     0.0  );
          yFONT_print (txf_bg,  5, YF_TOPLEF, msg);
       } glPopMatrix ();
+      /*---(coxa)------------------------*/
+      d = a_curr[COXA].d;
+      a_curr[COXA].h   = d * DEG2RAD;
+      glCallList(dl_coxa);
+      if (a_loc == 'y') draw_locate (&a_curr[COXA], &a_curr[THOR], &a_curr[CORE]);
+      /*---(femur)--------------------------*/
+      d = a_curr[FEMU].d;
+      a_curr[FEMU].h   = d * DEG2RAD;
+      glRotatef(d, 0.0f, 1.0f, 0.0f);
+      glCallList(dl_femur);
+      if (a_loc == 'y') draw_locate (&a_curr[FEMU], &a_curr[COXA], &a_curr[CORE]);
+      /*---(patella)------------------------*/
+      d = a_curr[PATE].d;
+      a_curr[PATE].v   = d * DEG2RAD;
+      glRotatef(d, 0.0f, 0.0f, 1.0f);
+      glCallList(dl_patella);
+      if (a_loc == 'y') draw_locate (&a_curr[PATE], &a_curr[FEMU], &a_curr[CORE]);
+      /*---(tibia)--------------------------*/
+      d = a_curr[TIBI].d;
+      a_curr[TIBI].v   = d * DEG2RAD;
+      glRotatef(d, 0.0f, 0.0f, 1.0f);
+      /*---(text)---------------------------*/
+      if (a_num == my_curr) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+      /*> glPushMatrix (); {                                                          <* 
+       *>    snprintf (msg, 10, "%d", a_num);                                         <* 
+       *>    glTranslatef(    0.0  ,    43.0 ,    10.0  );                            <* 
+       *>    yFONT_print (txf_bg, 18, YF_TOPLEF, msg);                                <* 
+       *>    glTranslatef(    0.0  ,     0.0 ,   -20.0  );                            <* 
+       *>    yFONT_print (txf_bg, 18, YF_TOPLEF, msg);                                <* 
+       *> } glPopMatrix ();                                                           <*/
+      glCallList(dl_tibia);
+      if (a_loc == 'y') draw_locate (&a_curr[TIBI], &a_curr[PATE], &a_curr[CORE]);
+      /*---(tarsus)-------------------------*/
+      if (a_loc == 'y') draw_locate (&a_curr[TARS], &a_curr[TIBI], &a_curr[CORE]);
+   } glPopMatrix ();
+   /*---(information box)----------------*/
+   /*> glPushMatrix (); {                                                             <* 
+    *>    snprintf (msg, 10, "%d", a_num);                                            <* 
+    *>    glTranslatef(    0.0  ,    43.0 ,    10.0  );                               <* 
+    *>    yFONT_print (txf_bg, 18, YF_TOPLEF, msg);                                   <* 
+    *>    glTranslatef(    0.0  ,     0.0 ,   -20.0  );                               <* 
+    *>    yFONT_print (txf_bg, 18, YF_TOPLEF, msg);                                   <* 
+    *> } glPopMatrix ();                                                              <*/
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
+char       /*----: draw the leg to opengl ------------------------------------*/
+draw_leg_ORIG      (int a_num, tSEG a_curr[], char a_loc)
+{
+   /*---(locals)-------------------------*/
+   float     d;
+   float     x,  y,  z;
+   float     px, py, pz;
+   char      msg [100];
+   /*---(begin)--------------------------*/
+   glPushMatrix (); {
+      /*---(core)------------------------*/
+      if (a_loc == 'y') draw_locate (&a_curr[CORE], NULL, &a_curr[CORE]);
+      /*---(thorax)----------------------*/
+      d = a_curr[THOR].d;
+      a_curr[THOR].h   = d * DEG2RAD;
+      glTranslatef(a_curr[THOR].l,  0.0,  0.0f);
+      if (a_loc == 'y') draw_locate (&a_curr[THOR], &a_curr[CORE], &a_curr[CORE]);
+      if (a_num == my_curr) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+      glPushMatrix (); {
+         snprintf (msg, 10, "#%d/%s", a_num, legs_name [a_num]);
+         glTranslatef(    0.0  ,   -15.0 ,     0.0  );
+         yFONT_print (txf_bg, 12, YF_TOPLEF, msg);
+         snprintf (msg, 25, "%s", legs_long[a_num]);
+         glTranslatef(    0.0  ,   -18.0 ,     0.0  );
+         yFONT_print (txf_bg,  5, YF_TOPLEF, msg);
+      } glPopMatrix ();
       if (flag_annotate == 'y') {
          glPushMatrix (); {
             snprintf (msg, 15, "%6.3fkg-m/%d", gait.torq [gait.pos][a_num][FEMU], gait.torqp [gait.pos][a_num][FEMU]);
@@ -256,8 +329,11 @@ draw_begin         (void)
    glAlphaFunc     (GL_GEQUAL, 0.0125);
    glEnable        (GL_BLEND);
    glBlendFunc     (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glDepthFunc     (GL_LEQUAL);
    /*---(anti-aliasing)------------------*/
    glHint          (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+   /*---(special polygon antialiasing)----------*/
+   glEnable        (GL_POLYGON_SMOOTH);
    glPolygonMode   (GL_FRONT_AND_BACK, GL_FILL);
    glHint          (GL_POLYGON_SMOOTH_HINT, GL_NICEST);
    /*---(simple defaulting)--------------*/
@@ -372,14 +448,14 @@ draw_main          (void)
    draw_spider ();
    /*---(create view ports)--------------*/
    glClear         (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   if      (flag_view == 1) view_hildebrand ();
-   else if (flag_view == 2) view_waves  ();
-   else if (flag_view == 3) view_torque ();
-   else if (flag_view == 4) view_step   ();
-   else                     view_gait   ();
-   view_top    ();
+   /*> if      (flag_view == 1) view_hildebrand ();                                   <* 
+    *> else if (flag_view == 2) view_waves  ();                                       <* 
+    *> else if (flag_view == 3) view_torque ();                                       <* 
+    *> else if (flag_view == 4) view_step   ();                                       <* 
+    *> else                     view_gait   ();                                       <*/
+   /*> view_top    ();                                                                <*/
    view_3d     ();
-   view_leg    ();
+   /*> view_leg    ();                                                                <*/
    /*> view_ik();                                                                     <*/
    /*---(send for processing)------------*/
    glXSwapBuffers(DISP, BASE);
@@ -526,20 +602,20 @@ draw_spider        (void)
    glNewList       (dl_spider, GL_COMPILE_AND_EXECUTE);
    /*---(begin)--------------------------*/
    glPushMatrix (); {
-      draw_masscenter ();
+      /*> draw_masscenter ();                                                         <*/
       glTranslatef    (center.bx,      0.0  , center.bz);
-      draw_arrow      ();
-      if (flag_annotate == 'y')  draw__center ();
+      /*> draw_arrow      ();                                                         <*/
+      /*> if (flag_annotate == 'y')  draw__center ();                                 <*/
       glCallList      (dl_body);
       for (i = 0; i < LEGS; ++i) {
          glPushMatrix (); {
             glColor3f(1.0f, 1.0f, 1.0f);
             glRotatef( gk[i][THOR].d, 0.0f, 1.0f, 0.0f);
             draw_leg   (i, gk[i], 'y');
-            if (flag_annotate == 'y')  draw__annotate (i);
+            /*> if (flag_annotate == 'y')  draw__annotate (i);                        <*/
          } glPopMatrix ();
       }
-      draw_contact    ();
+      /*> draw_contact    ();                                                         <*/
    } glPopMatrix ();
    glEndList();
    /*---(complete)-----------------------*/
@@ -596,19 +672,29 @@ void
 view_3d()
 {
    /*---(setup view)---------------------*/
-   glViewport      (0, 168, 700, 600);
+   /*> glViewport      (0, 168, 700, 600);                                            <*/
+   glViewport      (0,   0, 700, 600);
    glMatrixMode    (GL_PROJECTION);
    glLoadIdentity  ();
    gluPerspective  (45.0f, (GLfloat) 700 / (GLfloat) 600, 0.01f, 4000.0f);
    glMatrixMode    (GL_MODELVIEW);
    draw_reset      ();
+   glPushMatrix    (); {
+      glTranslatef (  -40.0f,  -32.0f, -100.0f);
+      yGOD_orient ();
+      glTranslatef (   80.0f,    0.0f,    0.0f);
+      yGOD_locate ();
+   } glPopMatrix   ();
    /*---(setup view)---------------------*/
    glPushMatrix    (); {
-      yGOD_orient_xzy (  40, -100,  -33);
-      yGOD_locate_xzy ( -40, -100,  -33);
+      /*> yGOD_orient_xzy (  40, -100,  -33);                                         <* 
+       *> yGOD_locate_xzy ( -40, -100,  -33);                                         <*/
+      /*> yGOD_orient ();                                                             <* 
+       *> yGOD_locate ();                                                             <*/
       view_progress   ();
       yGOD_view       ();
       glTranslatef    (    0.0  , -center.by,     0.0  );
+      /*> yGOD_locate ();                                                             <*/
       glCallList      (dl_ground);
       /*> glTranslatef    (center.bx,      0.0  , center.bz);                         <*/
       glTranslatef    (      0.0,  center.by,       0.0);

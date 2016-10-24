@@ -7,8 +7,10 @@
 char      win_title[100]    = "arachne_full";
 
 /*---(sizes)-----------------------------*/
-int       win_w  = 1024;                    /* window width                   */
-int       win_h  =  768;                    /* window height                  */
+/*> int       win_w  = 1024;                    /+ window width                   +/   <*/
+int       win_w  =  700;                    /* window width                   */
+/*> int       win_h  =  768;                    /+ window height                  +/   <*/
+int       win_h  =  600;                    /* window height                  */
 
 
 int

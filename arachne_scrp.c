@@ -377,13 +377,13 @@ scrp_init          (void)
    /*---(stance)-------------------------*/
    moving = 'y';
    /*> pose_spread    ();                                                             <*/
-   /*> pose_attention ();                                                             <*/
+   pose_attention ();
    /*> pose_high      ();                                                             <*/
    /*> pose_low       ();                                                             <*/
    /*---(run gait)-----------------------*/
    for (i = 0; i < MAX_POS; ++i) {
       /*> scrp_hulahoop (i);                                                          <*/
-      /*> scrp_wave     (i);                                                          <*/
+      scrp_wave     (i);
       /*> scrp_tripod   (i);                                                          <*/
       /*> kine_height (center.by - stat_settle ());                                   <*/
       /*> scrp_tripod   (i);                                                          <*/

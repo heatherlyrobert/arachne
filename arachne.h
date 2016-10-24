@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4b"
-#define VER_TXT   "update the description and scope to reflect just visualization"
+#define VER_NUM   "0.4c"
+#define VER_TXT   "updated yGOD library to show godball and godcross"
 
 
 
@@ -136,8 +136,8 @@ typedef   struct FILE   tFILE;
 
 
 
-#define   CONF_GAIT     "/home/monkey/arachne.hexapod_robotics/arachne_gait.conf"
-#define   CONF_SIZE     "/home/monkey/arachne.hexapod_robotics/arachne_size.conf"
+#define   CONF_GAIT     "/home/monkey/arachne.spider_visualization/arachne_gait.conf"
+#define   CONF_SIZE     "/home/monkey/arachne.spider_visualization/arachne_size.conf"
 
 
 extern    char      model_name [100];
