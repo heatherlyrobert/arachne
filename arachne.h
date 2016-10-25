@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4c"
-#define VER_TXT   "updated yGOD library to show godball and godcross"
+#define VER_NUM   "0.4d"
+#define VER_TXT   "updated rotation keys to match latest vi-keys"
 
 
 
@@ -116,6 +116,8 @@
 #include  <yVAR.h>                /* heatherly variable testing               */
 #include  <yGOD.h>                /* heatherly opengl godview                 */
 #include  <yFONT.h>               /* heatherly texture-mapped fonts           */
+#include  <ySTR.h>                /* heatherly string handling                */
+#include  <yLOG.h>                /* heatherly logging                        */
 
 
 

@@ -71,18 +71,18 @@ main (int argc, char *argv[])
                case '<': moving  = 'n'; --my_pos;          break;
                case ')': my_pos += 10; moving = 'n';       break;
                case '(': my_pos -= 10; moving = 'n';       break;
-               case 'a': if (flag_annotate == 'y') flag_annotate = 'n'; else flag_annotate = 'y'; break;
-               case 'w': ++flag_view; if (flag_view > 4) flag_view = 0; break;
+               /*> case 'a': if (flag_annotate == 'y') flag_annotate = 'n'; else flag_annotate = 'y'; break;   <*/
+               /*> case 'w': ++flag_view; if (flag_view > 4) flag_view = 0; break;    <*/
                case 'Q': exit(0);         break;
                case '\e': my_mode = 'p';  break;
-               /* crab  /horz  */ case 'h': case 'l': case 'H': case 'L': 
-               /* boom  /vert  */ case 'j': case 'k': case 'J': case 'K':
-               /* dolly /zoom  */ case 'i': case 'I': case 'o': case 'O':
-               /* x-axis/vant  */ case 'p': case 'P': case 'v': case 'V':
-               /* y-axis/orbit */ case 'y': case 'Y': case 'c': case 'C':
-               /* z-axis/spin  */ case 'r': case 'R': case 't': case 'T':
-               case '0': case '1': case '2': case '3':
-               case '4': case '5': case '6': case '7': case '8': case '9':
+               /* crab  /horz  */  case 'h': case 'l': case 'H': case 'L': 
+               /* boom  /vert  */  case 'j': case 'k': case 'J': case 'K':
+               /* dolly /zoom  */  case 'i': case 'I': case 'o': case 'O':
+               /* x-axis/pitch */  case 'p': case 'P': case 'a': case 'A':
+               /* y-axis/yaw   */  case 'y': case 'Y': case 't': case 'T':
+               /* z-axis/roll  */  case 'r': case 'R': case 'w': case 'W':
+               case '0': case '1': case '2': case '3': case '4': case '5':
+               case '6': case '7': case '8': case '9':
                   yGOD_key(the_key[0]);
                   break;
                case 'u': view_unit();      break;
