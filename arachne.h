@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4e"
-#define VER_TXT   "integrated in the latest yGOD ball and cross"
+#define VER_NUM   "0.4f"
+#define VER_TXT   "added script file open and close functions"
 
 
 
