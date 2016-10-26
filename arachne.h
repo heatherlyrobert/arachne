@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4d"
-#define VER_TXT   "updated rotation keys to match latest vi-keys"
+#define VER_NUM   "0.4e"
+#define VER_TXT   "integrated in the latest yGOD ball and cross"
 
 
 
@@ -128,6 +128,65 @@ typedef   unsigned int  uint;
 typedef   unsigned char uchar;
 
 typedef   struct FILE   tFILE;
+
+
+/*---(data structures)-----------------*/
+typedef     struct   cDEBUG       tDEBUG;
+
+
+
+/*===[[ DEBUGGING SETUP ]]====================================================*/
+/* this is my latest standard format, vars, and urgents                       */
+/* v3.0b : added signal handling                                (2014-feb-01) */
+struct cDEBUG
+{
+   /*---(handle)-------------------------*/
+   int         logger;                 /* log file so that we don't close it  */
+   /*---(overall)------------------------*/  /* abcdefghi_kl__opq_stu__x__    */
+   /* f = full urgents turns on all standard urgents                          */
+   /* k = kitchen sink and turns everything, i mean everything on             */
+   /* q = quiet turns all urgents off including the log itself                */
+   char        tops;                   /* t) broad structure and context      */
+   char        summ;                   /* s) statistics and analytical output */
+   /*---(startup/shutdown)---------------*/
+   char        args;                   /* a) command line args and urgents    */
+   char        conf;                   /* c) configuration handling           */
+   char        prog;                   /* p) program setup and teardown       */
+   /*---(file processing)----------------*/
+   char        inpt;                   /* i) text and data file input         */
+   char        outp;                   /* o) text and data file output        */
+   /*---(event handling)-----------------*/
+   char        loop;                   /* l) main program event loop          */
+   char        user;                   /* u) user input and handling          */
+   char        apis;                   /* i) interprocess communication       */
+   char        sign;                   /* x) os signal handling               */
+   char        scrp;                   /* b) scripts and batch operations     */
+   char        hist;                   /* h) history, undo, redo              */
+   /*---(program)------------------------*/
+   char        graf;                   /* g) grahpics, drawing, and display   */
+   char        data;                   /* d) complex data structure handling  */
+   char        envi;                   /* e) environment processing           */
+   /*---(specific)-----------------------*/
+   /*---(done)---------------------------*/
+};
+extern tDEBUG      debug;
+
+#define     DEBUG_TOPS          if (debug.tops      == 'y')
+#define     DEBUG_SUMM          if (debug.summ      == 'y')
+#define     DEBUG_ARGS          if (debug.args      == 'y')
+#define     DEBUG_CONF          if (debug.conf      == 'y')
+#define     DEBUG_PROG          if (debug.prog      == 'y')
+#define     DEBUG_INPT          if (debug.inpt      == 'y')
+#define     DEBUG_OUTP          if (debug.outp      == 'y')
+#define     DEBUG_LOOP          if (debug.loop      == 'y')
+#define     DEBUG_USER          if (debug.user      == 'y')
+#define     DEBUG_APIS          if (debug.apis      == 'y')
+#define     DEBUG_SIGN          if (debug.sign      == 'y')
+#define     DEBUG_SCRP          if (debug.scrp      == 'y')
+#define     DEBUG_HIST          if (debug.hist      == 'y')
+#define     DEBUG_GRAF          if (debug.graf      == 'y')
+#define     DEBUG_DATA          if (debug.data      == 'y')
+#define     DEBUG_ENVI          if (debug.envi      == 'y')
 
 
 
@@ -430,26 +489,9 @@ int        kinetics_body     (void);
 
 
 /*---(scripting)----------------------*/
-char      pose_spread        (void);
-char      pose_attention     (void);
-char      pose_high          (void);
-char      pose_low           (void);
-char      pose_crab          (void);
-
-char      scrp_init          (void);
-char      scrp_vertical      (int  a_pos);
-char      scrp_hulahoop      (int  a_pos);
-char      scrp_sideside      (int  a_pos);
-char      scrp_tripod        (int  a_pos);
-char      scrp_wave          (int  a_pos);
-char      scrp_quad          (int  a_pos);
-char      scrp_position      (int  a_pos);
 
 
-char      gait_clear         (void);
-char      gait_square        (void);
-char      gait_curved        (void);
-char      gait_read          (void);
+
 
 
 /*---(unit testing)---------------------------------------*/
