@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4g"
-#define VER_TXT   "added MOVE malloc routine to a new file arachne_move.c"
+#define VER_NUM   "0.4h"
+#define VER_TXT   "added MOVE create routine to assist script reading"
 
 
 
@@ -301,6 +301,7 @@ typedef     struct      cMOVE       tMOVE;
 #define     MAX_SERVO   32
 struct cSERVO {
    char        name        [20];
+   char        count;
    tMOVE      *head;
    tMOVE      *tail;
 };
@@ -313,8 +314,8 @@ extern      tSERVO      g_servos    [MAX_SERVO];
 #define     MOVE_SERVO  's'
 
 struct      cMOVE {
-   tSERVO     *parent;
    char        type;
+   tSERVO     *servo;
    float       sec_dur;
    float       deg_beg;
    float       deg_end;
