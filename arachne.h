@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4f"
-#define VER_TXT   "added script file open and close functions"
+#define VER_NUM   "0.4g"
+#define VER_TXT   "added MOVE malloc routine to a new file arachne_move.c"
 
 
 
@@ -293,6 +293,44 @@ extern float   segs_max  [MAX_SEGS];
 extern float   segs_min  [MAX_SEGS];
 
 
+
+typedef     struct      cSERVO      tSERVO;
+typedef     struct      cMOVE       tMOVE;
+
+
+#define     MAX_SERVO   32
+struct cSERVO {
+   char        name        [20];
+   tMOVE      *head;
+   tMOVE      *tail;
+};
+extern      tSERVO      g_servos    [MAX_SERVO];
+
+
+
+#define     MOVE_NULL   '-'
+#define     MOVE_PAUSE  'p'
+#define     MOVE_SERVO  's'
+
+struct      cMOVE {
+   tSERVO     *parent;
+   char        type;
+   float       sec_dur;
+   float       deg_beg;
+   float       deg_end;
+   float       sec_beg;
+   float       sec_end;
+   float       x_pos;
+   float       y_pos;
+   float       z_pos;
+   tMOVE      *m_prev;
+   tMOVE      *m_next;
+   tMOVE      *s_prev;
+   tMOVE      *s_next;
+};
+extern      tMOVE      *m_head;
+extern      tMOVE      *m_tail;
+extern      int         m_count;
 
 
 /*===[[ DISPLAY LISTS ]]==================================*/

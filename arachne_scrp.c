@@ -5,6 +5,28 @@
 
 tGAIT     gait;
 
+tSERVO     g_servos  [MAX_SERVO] = {
+   { "RR.femu"      , NULL, NULL },
+   { "RR.pate"      , NULL, NULL },
+   { "RR.tibi"      , NULL, NULL },
+   { "RM.femu"      , NULL, NULL },
+   { "RM.pate"      , NULL, NULL },
+   { "RM.tibi"      , NULL, NULL },
+   { "RF.femu"      , NULL, NULL },
+   { "RF.pate"      , NULL, NULL },
+   { "RF.tibi"      , NULL, NULL },
+   { "LF.femu"      , NULL, NULL },
+   { "LF.pate"      , NULL, NULL },
+   { "LF.tibi"      , NULL, NULL },
+   { "LM.femu"      , NULL, NULL },
+   { "LM.pate"      , NULL, NULL },
+   { "LM.tibi"      , NULL, NULL },
+   { "LR.femu"      , NULL, NULL },
+   { "LR.pate"      , NULL, NULL },
+   { "LR.tibi"      , NULL, NULL },
+};
+
+
 
 /*====================------------------------------------====================*/
 /*===----                         file access                          ----===*/
@@ -77,6 +99,32 @@ SCRP_close         (void)
    DEBUG_INPT  yLOG_exit    (__FUNCTION__);
    return 0;
 }
+
+
+
+/*====================------------------------------------====================*/
+/*===----                        record parsing                        ----===*/
+/*====================------------------------------------====================*/
+static void      o___PARSING_________________o (void) {;}
+
+#define     FIELD_SVO      1
+#define     FIELD_DEG      2
+#define     FIELD_SEC      3
+#define     FIELD_XPOS     4
+#define     FIELD_YPOS     5
+#define     FIELD_ZPOS     6
+
+
+
+
+
+
+
+
+/*====================------------------------------------====================*/
+/*===----                        script driver                         ----===*/
+/*====================------------------------------------====================*/
+static void      o___DRIVER__________________o (void) {;}
 
 char         /* file reading driver ----------------------[--------[--------]-*/
 SCRP_main          (char *a_name)

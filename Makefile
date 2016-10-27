@@ -28,9 +28,9 @@ LIBU    = ${LIBS}           -lyLOG            -lyUNIT           -lyVAR
 #===(file lists)============================================================================================================================================================================#
 #------   (0)-------------- (1)-------------- (2)-------------- (3)-------------- (4)-------------- (5)-------------- (6)-------------- (7)-------------- (8)-------------- (9)-------------- (A)-------------- (B)-------------- (C)-------------- (D)-------------- (5)--------------
 HEADS   = ${BASE}.h
-OBJS    = ${BASE}_main.os   ${BASE}_prog.os   ${BASE}_kine.os   ${BASE}_draw.os   ${BASE}_dlist.os  ${BASE}_scrp.os   ${BASE}_stat.os   ${BASE}_dyna.os   ${BASE}_test.os
-OBJD    = ${BASE}_main.o    ${BASE}_prog.o    ${BASE}_kine.o    ${BASE}_draw.o    ${BASE}_dlist.o   ${BASE}_scrp.o    ${BASE}_stat.o    ${BASE}_dyna.o    ${BASE}_test.o 
-OBJU    = ${BASE}_unit.o    ${BASE}_prog.o    ${BASE}_kine.o    ${BASE}_draw.o    ${BASE}_dlist.o   ${BASE}_scrp.o    ${BASE}_stat.o    ${BASE}_dyna.o    ${BASE}_test.o 
+OBJS    = ${BASE}_main.os   ${BASE}_prog.os   ${BASE}_kine.os   ${BASE}_draw.os   ${BASE}_dlist.os  ${BASE}_move.os  ${BASE}_scrp.os   ${BASE}_stat.os   ${BASE}_dyna.os   ${BASE}_test.os
+OBJD    = ${BASE}_main.o    ${BASE}_prog.o    ${BASE}_kine.o    ${BASE}_draw.o    ${BASE}_dlist.o   ${BASE}_move.o   ${BASE}_scrp.o    ${BASE}_stat.o    ${BASE}_dyna.o    ${BASE}_test.o 
+OBJU    = ${BASE}_unit.o    ${BASE}_prog.o    ${BASE}_kine.o    ${BASE}_draw.o    ${BASE}_dlist.o   ${BASE}_move.o   ${BASE}_scrp.o    ${BASE}_stat.o    ${BASE}_dyna.o    ${BASE}_test.o 
 
 #===(make variables)====================================================================================================================================================#
 COPY    = cp -f
@@ -82,6 +82,11 @@ ${BASE}_dlist.o    : ${HEADS}       ${BASE}_dlist.c
 	${COMP}    ${BASE}_dlist.c                          ${INC}
 	${STRIP}   ${BASE}_dlist.c     > ${BASE}_dlist.cs
 	${COMP}    ${BASE}_dlist.cs   -o ${BASE}_dlist.os   ${INC}
+
+${BASE}_move.o     : ${HEADS}       ${BASE}_move.c
+	${COMP}    ${BASE}_move.c                           ${INC}
+	${STRIP}   ${BASE}_move.c      > ${BASE}_move.cs
+	${COMP}    ${BASE}_move.cs    -o ${BASE}_move.os    ${INC}
 
 ${BASE}_scrp.o     : ${HEADS}       ${BASE}_scrp.c
 	${COMP}    ${BASE}_scrp.c                           ${INC}
