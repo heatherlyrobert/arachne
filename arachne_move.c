@@ -115,6 +115,13 @@ MOVE__free         (
    return  a_move;
 }
 
+
+
+/*====================------------------------------------====================*/
+/*===----                        move objects                          ----===*/
+/*====================------------------------------------====================*/
+static void      o___OBJECTS_________________o (void) {;}
+
 char         /*--> create a new move ---------------------[ ------ [ ------ ]-*/
 MOVE_create        (
       /*----------+-----------+-----------------------------------------------*/
@@ -169,7 +176,40 @@ MOVE_create        (
    DEBUG_DATA   yLOG_value   ("count"     , a_servo->count);
    /*---(complete)-----------------------*/
    DEBUG_DATA   yLOG_exit    (__FUNCTION__);
-   return x_move;
+   return 0;
+}
+
+char         /*--> add a location to a move object -------[ ------ [ ------ ]-*/
+MOVE_addloc        (
+      /*----------+-----------+-----------------------------------------------*/
+      tSERVO     *a_servo     ,   /* servo                                    */
+      float       a_xpos      ,   /* end location                             */
+      float       a_ypos      ,   /* end location                             */
+      float       a_zpos      )   /* end location                             */
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         = -10;           /* return code for errors         */
+   /*---(header)-------------------------*/
+   DEBUG_DATA   yLOG_enter   (__FUNCTION__);
+   DEBUG_DATA   yLOG_value   ("a_xpos"    , a_xpos);
+   DEBUG_DATA   yLOG_value   ("a_ypos"    , a_ypos);
+   DEBUG_DATA   yLOG_value   ("a_zpos"    , a_zpos);
+   /*---(defenses)-----------------------*/
+   DEBUG_DATA   yLOG_point   ("a_servo"   , a_servo);
+   --rce;  if (a_servo     == NULL) {
+      DEBUG_DATA   yLOG_note    ("can not add location to a null servo");
+      DEBUG_DATA   yLOG_exit    (__FUNCTION__);
+      return rce;
+   }
+   DEBUG_DATA   yLOG_info    ("name"      , a_servo->name);
+   /*---(assign basics)---------------*/
+   DEBUG_DATA   yLOG_note    ("assign location values");
+   a_servo->tail->x_pos    = a_xpos;
+   a_servo->tail->y_pos    = a_ypos;
+   a_servo->tail->z_pos    = a_zpos;
+   /*---(complete)-----------------------*/
+   DEBUG_DATA   yLOG_exit    (__FUNCTION__);
+   return 0;
 }
 
 
