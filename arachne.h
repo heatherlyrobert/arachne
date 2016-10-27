@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4i"
-#define VER_TXT   "added MOVE location routine to assist script reading"
+#define VER_NUM   "0.4j"
+#define VER_TXT   "added MOVE create logic to set deg/sec based on prev"
 
 
 

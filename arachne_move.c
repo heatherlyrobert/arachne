@@ -166,14 +166,26 @@ MOVE_create        (
       a_servo->head         = x_move;
       a_servo->tail         = x_move;
       a_servo->count        = 1;
+      DEBUG_DATA   yLOG_note    ("update sec/deg based on being first move");
+      x_move->sec_beg       = 0.0f;
+      x_move->sec_end       = a_sec;
+      x_move->deg_beg       = 0.0f;
    } else {
       DEBUG_DATA   yLOG_note    ("add to tail");
       x_move->s_prev        = a_servo->tail;
       a_servo->tail->s_next = x_move;
       a_servo->tail         = x_move;
       ++(a_servo->count);
+      DEBUG_DATA   yLOG_note    ("update sec/deg based on previous move");
+      x_move->sec_beg       = x_move->s_prev->sec_end;
+      x_move->sec_end       = x_move->sec_beg + a_sec;
+      x_move->deg_beg       = x_move->s_prev->deg_end;
    }
+   /*---(display stats)------------------*/
    DEBUG_DATA   yLOG_value   ("count"     , a_servo->count);
+   DEBUG_DATA   yLOG_value   ("sec_beg"   , x_move->sec_beg);
+   DEBUG_DATA   yLOG_value   ("sec_end"   , x_move->sec_end);
+   DEBUG_DATA   yLOG_value   ("deg_beg"   , x_move->deg_beg);
    /*---(complete)-----------------------*/
    DEBUG_DATA   yLOG_exit    (__FUNCTION__);
    return 0;
