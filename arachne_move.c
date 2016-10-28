@@ -145,7 +145,7 @@ MOVE_create        (
       DEBUG_DATA   yLOG_exit    (__FUNCTION__);
       return rce;
    }
-   DEBUG_DATA   yLOG_info    ("name"      , a_servo->name);
+   DEBUG_DATA   yLOG_info    ("name"      , a_servo->label);
    /*---(create a new requires)-------*/
    DEBUG_DATA   yLOG_note    ("add a new move object");
    x_move          = MOVE__new ();
@@ -213,7 +213,7 @@ MOVE_addloc        (
       DEBUG_DATA   yLOG_exit    (__FUNCTION__);
       return rce;
    }
-   DEBUG_DATA   yLOG_info    ("name"      , a_servo->name);
+   DEBUG_DATA   yLOG_info    ("name"      , a_servo->label);
    /*---(assign basics)---------------*/
    DEBUG_DATA   yLOG_note    ("assign location values");
    a_servo->tail->x_pos    = a_xpos;

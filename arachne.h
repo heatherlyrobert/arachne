@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4j"
-#define VER_TXT   "added MOVE create logic to set deg/sec based on prev"
+#define VER_NUM   "0.4k"
+#define VER_TXT   "added SCRP_main, SCRP_move, and SCRP_servo"
 
 
 
@@ -300,7 +300,7 @@ typedef     struct      cMOVE       tMOVE;
 
 #define     MAX_SERVO   32
 struct cSERVO {
-   char        name        [20];
+   char        label       [20];
    char        count;
    tMOVE      *head;
    tMOVE      *tail;
