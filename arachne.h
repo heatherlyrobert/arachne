@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4n"
-#define VER_TXT   "fixed to handle file name cli arg, or absent too"
+#define VER_NUM   "0.4o"
+#define VER_TXT   "main script reading routine working"
 
 
 

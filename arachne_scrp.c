@@ -274,8 +274,16 @@ SCRP_main          (void)
          continue;
       }
       strltrim  (p, ySTR_BOTH, LEN_RECD);
-      strncpy   (x_ver, p,  10);
-      DEBUG_INPT  yLOG_info    ("version"   , x_ver);
+      if (strlen (p) != 3) {
+         DEBUG_INPT  yLOG_note    ("invalid length version field (3)");
+         continue;
+      }
+      if (p[0] != '-' || p[2] != '-') {
+         DEBUG_INPT  yLOG_note    ("invalid format version field (-x-)");
+         continue;
+      }
+      x_ver = p[1];
+      DEBUG_INPT  yLOG_char    ("version"   , x_ver);
       /*---(handle types)----------------*/
       switch (x_type [0]) {
       case 's' : /* servo       */
