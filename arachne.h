@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4l"
-#define VER_TXT   "updated PROG functions to include logging now"
+#define VER_NUM   "0.4m"
+#define VER_TXT   "fixed window creation issue, variables as char not int ;))"
 
 
 

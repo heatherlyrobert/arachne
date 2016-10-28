@@ -262,14 +262,10 @@ PROG_begin         (void)
    DEBUG_PROG   yLOG_enter   (__FUNCTION__);
    /*> stat_init    (model_name);                                                     <*/
    /*> kine_init    ();                                                               <*/
-   DEBUG_ARGS  yLOG_note   ("open window");
    DEBUG_ARGS  yLOG_info   ("title"     , my.w_title);
    DEBUG_ARGS  yLOG_value  ("width"     , my.w_width);
    DEBUG_ARGS  yLOG_value  ("height"    , my.w_height);
-   /*> yXINIT_start (my.w_title, my.w_width, my.w_height, YX_FOCUSABLE, YX_FIXED, YX_SILENT);   <*/
-   /*> yXINIT_start ("arachne_full", my.w_width, 700, YX_FOCUSABLE, YX_FIXED, YX_SILENT);   <*/
-   yXINIT_start ("arachne_full", 600       , 700, YX_FOCUSABLE, YX_FIXED, YX_SILENT);
-   DEBUG_ARGS  yLOG_note   ("after window");
+   yXINIT_start (my.w_title, my.w_width, my.w_height, YX_FOCUSABLE, YX_FIXED, YX_SILENT);
    draw_begin   ();
    draw_setup   ();
    font_load    ();
