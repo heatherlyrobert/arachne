@@ -207,9 +207,9 @@ PROG_args          (int argc, char *argv[])
    int         x_total     = 0;
    int         x_args      = 0;
    /*---(begin)--------------------------*/
-   strlcpy (my.f_name  , FILE_BLANK , LEN_STR);
+   strlcpy (my.f_base  , FILE_BLANK , LEN_STR);
    strlcpy (my.f_suffix, FILE_SUFFIX, LEN_STR);
-   strlcpy (my.f_base  , ""         , LEN_STR);
+   strlcpy (my.f_name  , ""         , LEN_STR);
    /*---(process)------------------------*/
    for (i = 1; i < argc; ++i) {
       a = argv[i];
@@ -240,6 +240,10 @@ PROG_args          (int argc, char *argv[])
             umake_leg    = 'y';
          }
       }
+      else if (a[0] != '-'                     ) {
+         DEBUG_ARGS  yLOG_note   ("found a file name");
+         strncpy (my.f_base , a        , LEN_STR);
+      }
    }
    DEBUG_ARGS  yLOG_value  ("entries"   , x_total);
    DEBUG_ARGS  yLOG_value  ("arguments" , x_args);
@@ -250,6 +254,9 @@ PROG_args          (int argc, char *argv[])
    if (strcmp (my.f_base, FILE_BLANK) != 0) {
       sprintf (my.f_name  , "%s.%s", my.f_base, my.f_suffix);
    }
+   DEBUG_ARGS  yLOG_info   ("file base" , my.f_base);
+   DEBUG_ARGS  yLOG_info   ("file suf"  , my.f_suffix);
+   DEBUG_ARGS  yLOG_info   ("file name" , my.f_name);
    /*---(complete)-----------------------*/
    DEBUG_ARGS  yLOG_exit  (__FUNCTION__);
    return 0;
@@ -279,7 +286,6 @@ PROG_begin         (void)
    gait.dmax   = 100;
    draw_main      ();
    /*> stat_masscenter();                                                             <*/
-   /*> SCRP_main ("stdin");                                                           <*/
    DEBUG_PROG   yLOG_exit    (__FUNCTION__);
    return 0;
 }

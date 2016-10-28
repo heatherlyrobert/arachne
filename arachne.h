@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4m"
-#define VER_TXT   "fixed window creation issue, variables as char not int ;))"
+#define VER_NUM   "0.4n"
+#define VER_TXT   "fixed to handle file name cli arg, or absent too"
 
 
 

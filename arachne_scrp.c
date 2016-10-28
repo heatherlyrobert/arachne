@@ -38,29 +38,28 @@ static int      s_lines = 0;
 static char     s_recd  [LEN_RECD];
 
 char         /*--> open file for reading -----------------[ leaf   [ ------ ]-*/
-SCRP_open          (char *a_name)
+SCRP_open          (void)
 {
    /*---(locals)-----------+-----------+-*/
    char        rce         = -10;
    /*---(header)-------------------------*/
    DEBUG_INPT  yLOG_enter   (__FUNCTION__);
-   DEBUG_INPT  yLOG_point   ("filename"  , a_name);
+   DEBUG_INPT  yLOG_info    ("filename"  , my.f_name);
    /*---(defense)------------------------*/
-   --rce;  if (a_name == NULL) {
-      DEBUG_INPT  yLOG_note    ("file name can not be null");
+   --rce;  if (strcmp (my.f_name, "") == 0) {
+      DEBUG_INPT  yLOG_note    ("no file to open");
       DEBUG_INPT  yLOG_exit    (__FUNCTION__);
       return rce;
    }
-   DEBUG_INPT  yLOG_info    ("filename"  , a_name);
    /*---(open stdin)---------------------*/
-   if (strcmp ("stdin", a_name) == 0) {
+   if (strcmp ("stdin", my.f_name) == 0) {
       DEBUG_INPT  yLOG_note    ("data being provided on stdin");
       s_file = stdin;
    }
    /*---(open file)----------------------*/
    else {
       DEBUG_INPT  yLOG_note    ("data being provided in a file");
-      s_file = fopen (a_name, "r");
+      s_file = fopen (my.f_name, "r");
    }
    /*---(check success)------------------*/
    DEBUG_INPT  yLOG_point   ("s_file"    , s_file);
@@ -83,6 +82,13 @@ SCRP_close         (void)
    char        rc          = 0;
    /*---(header)-------------------------*/
    DEBUG_INPT  yLOG_enter   (__FUNCTION__);
+   /*---(stdin)--------------------------*/
+   if (strcmp (my.f_name, "") == 0) {
+      DEBUG_INPT  yLOG_note    ("stdin should not be closed");
+      DEBUG_INPT  yLOG_exit    (__FUNCTION__);
+      s_file == NULL;
+      return 0;
+   }
    /*---(close file)---------------------*/
    DEBUG_INPT  yLOG_point   ("s_file"    , s_file);
    rc = fclose  (s_file);
@@ -93,7 +99,8 @@ SCRP_close         (void)
       DEBUG_INPT  yLOG_exit    (__FUNCTION__);
       return rce;
    }
-   DEBUG_INPT  yLOG_note    ("file successfully opened");
+   DEBUG_INPT  yLOG_note    ("file successfully closed");
+   s_file == NULL;
    /*---(complete)-----------------*/
    DEBUG_INPT  yLOG_exit    (__FUNCTION__);
    return 0;
@@ -211,7 +218,7 @@ SCRP_move          (void)
 static void      o___DRIVER__________________o (void) {;}
 
 char         /* file reading driver ----------------------[--------[--------]-*/
-SCRP_main          (char *a_name)
+SCRP_main          (void)
 {
    /*---(locals)-----------+-----------+-*/
    char        rce         = -10;
@@ -222,7 +229,7 @@ SCRP_main          (char *a_name)
    /*---(header)-------------------------*/
    DEBUG_INPT  yLOG_enter   (__FUNCTION__);
    /*---(open file)----------------------*/
-   rc = SCRP_open   (a_name);
+   rc = SCRP_open   ();
    if (rc < 0) {
       DEBUG_INPT  yLOG_exit    (__FUNCTION__);
       return rc;
