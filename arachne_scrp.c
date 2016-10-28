@@ -33,7 +33,6 @@ tSERVO     g_servos  [MAX_SERVO] = {
 /*====================------------------------------------====================*/
 static void      o___ACCESS__________________o (void) {;}
 
-#define         LEN_RECD        2000
 static FILE    *s_file  = NULL;
 static int      s_lines = 0;
 static char     s_recd  [LEN_RECD];

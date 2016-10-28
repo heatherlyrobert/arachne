@@ -3,12 +3,12 @@
 
 #include "arachne.h"
 
-PRIV   int       dlist_ground       (void);
-PRIV   int       dlist_body         (void);
-PRIV   int       dlist_coxa         (void);
-PRIV   int       dlist_femur        (void);
-PRIV   int       dlist_patella      (void);
-PRIV   int       dlist_tibia        (void);
+static   int       dlist_ground       (void);
+static   int       dlist_body         (void);
+static   int       dlist_coxa         (void);
+static   int       dlist_femur        (void);
+static   int       dlist_patella      (void);
+static   int       dlist_tibia        (void);
 
 
 char       /* ---- : prepare display lists for use ---------------------------*/
@@ -36,7 +36,7 @@ dlist_end          (void)
 }
 
 
-PRIV int
+static int
 dlist_ground()
 {
    dl_ground = glGenLists(1);
@@ -106,7 +106,7 @@ dlist_ground()
 
 
 
-PRIV char  /* ---- : draw a standard link ------------------------------------*/
+static char  /* ---- : draw a standard link ------------------------------------*/
 dlist__link        (float  a_len)
 {
    /*---(locals)-------*-----------------*/
@@ -144,7 +144,7 @@ dlist__link        (float  a_len)
    return 0;
 }
 
-PRIV char  /* ---- : draw a standard joint -----------------------------------*/
+static char  /* ---- : draw a standard joint -----------------------------------*/
 dlist__joint       (float  a_min, float  a_max)
 {
    /*---(locals)-------*-----------------*/
@@ -197,7 +197,7 @@ dlist__joint       (float  a_min, float  a_max)
    return 0;
 }
 
-PRIV int   /* ---- : create a saved shape for the body -----------------------*/
+static int   /* ---- : create a saved shape for the body -----------------------*/
 dlist_body_ORIG    (void)
 {
    dl_body = glGenLists(1);
@@ -225,7 +225,7 @@ dlist_body_ORIG    (void)
    return 0;
 }
 
-PRIV int   /* ---- : create a saved shape for the coxa -----------------------*/
+static int   /* ---- : create a saved shape for the coxa -----------------------*/
 dlist_coxa_ORIG    (void)
 {
    /*---(setup)--------------------------*/
@@ -244,7 +244,7 @@ dlist_coxa_ORIG    (void)
 }
 
 
-PRIV int
+static int
 dlist_femur_ORIG   (void)
 {
    /*---(locals)-------*-----------------*/
@@ -264,7 +264,7 @@ dlist_femur_ORIG   (void)
 }
 
 
-PRIV int
+static int
 dlist_patella_ORIG ()
 {
    /*---(locals)-------*-----------------*/
@@ -284,7 +284,7 @@ dlist_patella_ORIG ()
 }
 
 
-PRIV int   /* ---- : create a saved shape for a tibia ------------------------*/
+static int   /* ---- : create a saved shape for a tibia ------------------------*/
 dlist_tibia_ORIG   (void)
 {
    /*---(locals)-------*-----------------*/
@@ -302,7 +302,7 @@ dlist_tibia_ORIG   (void)
    return 0;
 }
 
-PRIV int   /* ---- : create a saved shape for a tibia ------------------------*/
+static int   /* ---- : create a saved shape for a tibia ------------------------*/
 dlist_tibia        (void)
 {
    /*---(locals)-------*-----------------*/
@@ -385,7 +385,7 @@ dlist_tibia        (void)
    return 0;
 }
 
-PRIV int   /* ---- : create a saved shape for a tibia ------------------------*/
+static int   /* ---- : create a saved shape for a tibia ------------------------*/
 dlist_tibia_OLDER  (void)
 {
    /*---(locals)-------*-----------------*/
@@ -440,7 +440,7 @@ dlist_tibia_OLDER  (void)
    return 0;
 }
 
-PRIV int
+static int
 dlist_patella      ()
 {
    dl_patella = glGenLists(1);
@@ -504,7 +504,7 @@ dlist_patella      ()
    return 0;
 }
 
-PRIV int
+static int
 dlist_femur     ()
 {
    dl_femur = glGenLists(1);
@@ -568,7 +568,7 @@ dlist_femur     ()
    return 0;
 }
 
-PRIV int
+static int
 dlist_coxa      ()
 {
    dl_coxa = glGenLists(1);
@@ -625,7 +625,7 @@ dlist_coxa      ()
    return 0;
 }
 
-PRIV int   /* ---- : create a saved shape for the body -----------------------*/
+static int   /* ---- : create a saved shape for the body -----------------------*/
 dlist_body         (void)
 {
    /*---(begin)-----------------------------*/

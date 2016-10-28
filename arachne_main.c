@@ -8,9 +8,16 @@ main (int argc, char *argv[])
 {
    /*---(locals)--------------------------------*/
    int rc = 0;
-   /*---(run four stages)-----------------------*/
-   if (rc == 0)  rc = prog_args(argc, argv);
-   if (rc == 0)  rc = prog_begin();
+   /*---(initialize)---------------------*/
+   if (rc == 0)  rc = PROG_logger  (argc, argv);
+   if (rc == 0)  rc = PROG_init    ();
+   if (rc == 0)  rc = PROG_urgs    (argc, argv);
+   if (rc == 0)  rc = PROG_args    (argc, argv);
+   if (rc == 0)  rc = PROG_begin   ();
+   if (rc != 0)  {
+      PROG_end     ();
+      exit (-1);
+   }
    /*> if (is_test) printf("\nspider--------------------------------------------begin---\n\n");   <*/
    /*> strcpy(its_text, " ");                                                         <*/
    /*> counter = 0;                                                                   <*/
@@ -138,7 +145,7 @@ main (int argc, char *argv[])
       nanosleep(&timer, &remain);
    }
    /*> if (is_test) printf("   - done\n\n");                                          <*/
-   prog_end();
+   PROG_end();
    /*> if (is_test) printf("\npetal writing v03 ----------------------------------end---\n\n");   <*/
    return 0;
 }

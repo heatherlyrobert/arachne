@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4k"
-#define VER_TXT   "added SCRP_main, SCRP_move, and SCRP_servo"
+#define VER_NUM   "0.4l"
+#define VER_TXT   "updated PROG functions to include logging now"
 
 
 
@@ -121,17 +121,46 @@
 
 
 
-/*===[[ CUSTOM TYPES ]]===================================*/
-#define   PRIV   static
-typedef   unsigned long ulong;
-typedef   unsigned int  uint;
-typedef   unsigned char uchar;
 
-typedef   struct FILE   tFILE;
+/*===[[ RATIONAL LIMITS ]]====================================================*/
+/*   LEN_ is a length or size of something
+ *   MIN_ is a minimum count
+ *   DEF_ is a default count
+ *   MAX_ is a maximum count
+ *
+ */
+/*---(string length)------------------*/
+#define     LEN_RECD    2000
+#define     LEN_STR     200
+#define     LEN_NAME    20
+/*---(legs and servos)----------------*/
+#define     MAX_LEGS    8
+#define     MAX_SEGS    15
+#define     MAX_SERVO   32
+/*---(older stuff)--------------------*/
+#define     MAX_POS     5000
 
 
+
+/*===[[ TYPEDEFS ]]===========================================================*/
+/*---(basics)--------------------------*/
+typedef     unsigned    char        uchar;
+typedef     const       char        cchar;
+typedef     unsigned    short       ushort;
+typedef     const       int         cint;
+typedef     unsigned    long        ulong;
+typedef     unsigned    long long   ullong;
+/*---(library simplifications)---------*/
+typedef     struct      FILE        tFILE;
+typedef     struct      tm          tTIME;
 /*---(data structures)-----------------*/
-typedef     struct   cDEBUG       tDEBUG;
+typedef     struct      cDEBUG      tDEBUG;
+typedef     struct      cACCESSOR   tACCESSOR;
+typedef     struct      cMOVE       tMOVE;
+typedef     struct      cSERVO      tSERVO;
+/*---(older)---------------------------*/
+typedef     struct      cSEG        tSEG;
+typedef     struct      cGAIT       tGAIT;
 
 
 
@@ -188,6 +217,23 @@ extern tDEBUG      debug;
 #define     DEBUG_DATA          if (debug.data      == 'y')
 #define     DEBUG_ENVI          if (debug.envi      == 'y')
 
+struct cACCESSOR {
+   /*---(files)----------------*/
+   int         logger;         /* log file so that we don't close it          */
+   /*---(window)----------*/
+   char        w_title     [LEN_STR];       /* window title                   */
+   int         w_height;                    /* window heigth                  */
+   int         w_width;                     /* window width                   */
+   /*---(file hanndling)--*/
+   char        f_base      [LEN_STR];       /* specific file base name        */
+   char        f_suffix    [LEN_STR];       /* file suffix for spreadsheet    */
+   char        f_name      [LEN_STR];       /* full file name                 */
+   /*---(done)------------*/
+};
+extern      tACCESSOR my;
+
+
+
 
 
 /*===[[ DEBUGGING ]]======================================*/
@@ -196,6 +242,10 @@ extern tDEBUG      debug;
 #define   DEBUG_L   if (a_debug)
 
 
+#define     FILE_BLANK   "((none))"
+#define     FILE_SUFFIX  "arac"
+
+#define   FILE_GAIT     "/home/monkey/arachne.spider_visualization/arachne_gait.conf"
 
 #define   CONF_GAIT     "/home/monkey/arachne.spider_visualization/arachne_gait.conf"
 #define   CONF_SIZE     "/home/monkey/arachne.spider_visualization/arachne_size.conf"
@@ -219,10 +269,8 @@ extern    float     arg_y;
 
 
 /*===[[ CONSTANTS and ENUMS ]]============================*/
-#define   MAX_LEGS   8
 extern    int       LEGS;
 enum      leg_nums { L_RF=0  , L_RM=1  , L_RR=2  , L_LR=3  , L_LM=4  , L_LF=5   };
-#define   MAX_SEGS   15
 enum      seg_nums { CORE=0, THOR=1, COXA=2, FEMU=3, PATE=4, TIBI=5, TARS=6, FOOT=7, TOES=8, TARG=9, ORIG=10, VERT=11, CALC=12 };
 extern    const     double    DEG2RAD;
 extern    const     double    RAD2DEG;
@@ -244,7 +292,6 @@ struct cCENTER {
 } center;
 
 /*---(hexapod leg)-----------------------*/
-typedef struct cSEG  tSEG;
 struct cSEG {
    /*---(descriptions)-------------------*/
    char      n[12];               /* short name                               */
@@ -294,11 +341,8 @@ extern float   segs_min  [MAX_SEGS];
 
 
 
-typedef     struct      cSERVO      tSERVO;
-typedef     struct      cMOVE       tMOVE;
 
 
-#define     MAX_SERVO   32
 struct cSERVO {
    char        label       [20];
    char        count;
@@ -344,9 +388,7 @@ GLuint    dl_patella;
 GLuint    dl_tibia;
 
 
-#define   MAX_POS     5000
 
-typedef struct cGAIT tGAIT;
 struct cGAIT {
    /*---(status)-------------------------*/
    char      running;                     /* running or not                   */
@@ -434,11 +476,22 @@ extern    char        flag_view;
 
 /*===[[ PROTOTYPES ]]=========================================================*/
 /*---(arachne_main)----------------------*/
-int        main              (int argc, char *argv[]);
-char       prog_args         (int argc, char *argv[]);
-char       prog_begin        (void);
-char       prog_event        (void);
-char       prog_end          (void);
+int         main               (int argc, char *argv[]);
+
+/*---(arachne_prog)----------------------*/
+char        PROG_logger        (int argc, char *argv[]);
+char        PROG_init          (void);
+char        PROG_urgsmass      (char a_set, char a_extra);
+char        PROG_urgs          (int argc, char *argv[]);
+char        PROG_args          (int argc, char *argv[]);
+char        PROG_begin         (void);
+char        PROG_event         (void);
+char        PROG_end           (void);
+
+/*> char       *unit_accessor      (char *a_question, void *a_thing);                 <*/
+char        PROG_testing       (void);
+char        PROG_testloud      (void);
+
 
 /*---(arachne_dlist)---------------------*/
 char       dlist_begin       (void);
