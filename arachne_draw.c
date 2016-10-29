@@ -21,7 +21,11 @@ struct tSCALE {
    float       unit;
 } g_scale [MAX_SCALE] = {
    { "T-", "tera"          , "teraseconds"       ,  12 , 1000000000000.0            },
+   { "G3", "giga3"         , "100 gigaseconds"   ,  11 ,  100000000000.0            },
+   { "G2", "giga2"         , "10 gigaseconds"    ,  10 ,   10000000000.0            },
    { "G-", "giga"          , "gigaseconds"       ,   9 ,    1000000000.0            },
+   { "M3", "mega3"         , "100 megaseconds"   ,   6 ,     100000000.0            },
+   { "M2", "mega2"         , "10 megaseconds"    ,   6 ,      10000000.0            },
    { "M-", "mega"          , "megaseconds"       ,   6 ,       1000000.0            },
    { "K3", "kilo3"         , "100 kiloseconds"   ,   5 ,        100000.0            },
    { "K2", "kilo2"         , "10 kiloseconds"    ,   4 ,         10000.0            },
@@ -32,11 +36,16 @@ struct tSCALE {
    { "d-", "deci"          , "deciseconds"       ,  -1 ,             0.1            },
    { "c-", "centi"         , "centiseconds"      ,  -2 ,             0.01           },
    { "m-", "milli"         , "milliseconds"      ,  -3 ,             0.001          },
-   { "m2", "milli2"        , "10 milliseconds"   ,  -4 ,             0.001          },
-   { "m3", "milli3"        , "100 milliseconds"  ,  -5 ,             0.001          },
+   { "u3", "micro3"        , "100 microseconds"  ,  -4 ,             0.0001         },
+   { "u2", "micro2"        , "10 microseconds"   ,  -5 ,             0.00001        },
    { "u-", "micro"         , "microseconds"      ,  -6 ,             0.000001       },
+   { "n3", "nano3"         , "100 nanoseconds"   ,  -7 ,             0.0000001      },
+   { "n2", "nano2"         , "10 nanoseconds"    ,  -8 ,             0.00000001     },
    { "n-", "nano"          , "nanoseconds"       ,  -9 ,             0.000000001    },
+   { "p3", "pico2"         , "100 picoseconds"   , -10 ,             0.0000000001   },
+   { "p2", "pico3"         , "10 picoseconds"    , -11 ,             0.00000000001  },
    { "p-", "pico"          , "picoseconds"       , -12 ,             0.000000000001 },
+   { "??", "----"          , "end-of-scales"     ,   0 ,             0.0            },
 };
 
 /*===[[ TYPEDEFS ]]===========================================================*/
@@ -121,8 +130,6 @@ char
 SCALE_init         (void)
 {
    my.p_scale   =   -1;
-   strlcpy (my.p_label, "((unset))"   , LEN_LABEL);
-   my.p_power   =    0;
    my.p_inc     =    1;
    my.p_min     =    0;
    my.p_beg     =    0;
@@ -150,10 +157,35 @@ SCALE_find         (char *a_code)
       return rce;
    }
    my.p_scale = x_code;
-   strlcpy (my.p_label, g_scale [x_code].label, LEN_LABEL);
-   my.p_power = g_scale [x_code].power;
    my.p_inc   = g_scale [x_code].unit;
    return x_code;
+}
+
+char
+SCALE_smaller      (void)
+{
+   char        rce         = -10;
+   --rce; if (my.p_scale >= MAX_SCALE - 1) {
+      return rce;
+   }
+   --rce;  if (g_scale [my.p_scale + 1].code [0] == '?') {
+      return rce;
+   }
+   ++(my.p_scale);
+   my.p_inc   = g_scale [my.p_scale].unit;
+   return 0;
+}
+
+char
+SCALE_larger       (void)
+{
+   char        rce         = -10;
+   --rce; if (my.p_scale <= 0) {
+      return rce;
+   }
+   --(my.p_scale);
+   my.p_inc   = g_scale [my.p_scale].unit;
+   return 0;
 }
 
 
@@ -700,6 +732,13 @@ view_progress      (void)
          glVertex3f  (  28,  -35.0, -100.0);
       } glEnd   ();
       glLineWidth (15.00f);
+   } glPopMatrix();
+
+   glPushMatrix(); {
+      glColor4f    (1.0f, 0.5f, 0.0f, 1.0f);
+      glTranslatef ( -20.0f, -30.0,  -75.0);
+      snprintf     (x_msg, 100, "%s.%-6s.%s", g_scale [my.p_scale].code, g_scale [my.p_scale].label, g_scale [my.p_scale].desc);
+      yFONT_print  (txf_sm,   1, YF_BOTLEF, x_msg);
    } glPopMatrix();
 
    return 0;

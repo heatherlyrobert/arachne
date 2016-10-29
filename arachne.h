@@ -80,7 +80,7 @@
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
 #define VER_NUM   "0.4p"
-#define VER_TXT   "add functions and table to set scale for dimensions"
+#define VER_TXT   "add function and keys to change dimension scales"
 
 
 
@@ -231,8 +231,6 @@ struct cACCESSOR {
    char        f_name      [LEN_STR];       /* full file name                 */
    /*---(progress)--------*/
    char        p_scale;
-   char        p_label     [LEN_LABEL];
-   float       p_power;
    float       p_inc;
    float       p_min;
    float       p_beg;
@@ -506,6 +504,8 @@ char        PROG_testloud      (void);
 
 char        SCALE_init         (void);
 char        SCALE_find         (char *a_code);
+char        SCALE_smaller      (void);
+char        SCALE_larger       (void);
 
 
 

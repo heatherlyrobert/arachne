@@ -59,10 +59,12 @@ main (int argc, char *argv[])
             if (my_mode == 'o') {
                /*> printf("key = %3d\n", the_key[0]);                                 <*/
                switch (the_key[0]) {
+               case '+': SCALE_larger  ();                 break;
+               case '-': SCALE_smaller ();                 break;
                case ',': moving  = 'y';                    break;
                case '.': moving  = 'n';                    break;
-               case '-': my_inc -= 1.0;                    break;
-               case '+': my_inc += 1.0;                    break;
+               /*> case '-': my_inc -= 1.0;                    break;                 <*/
+               /*> case '+': my_inc += 1.0;                    break;                 <*/
                case '_': moving  = 'n'; my_pos = 0;        break;
                case '$': moving  = 'n'; my_pos = my_len;   break;
                case '>': moving  = 'n'; ++my_pos;          break;
