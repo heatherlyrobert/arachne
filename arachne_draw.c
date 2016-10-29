@@ -13,6 +13,32 @@ char   flag_view  = 0;
 
 void draw_spider();
 
+struct tSCALE {
+   char        code        [LEN_LABEL];
+   char        label       [LEN_LABEL];
+   char        desc        [LEN_STR  ];
+   char        power;
+   float       unit;
+} g_scale [MAX_SCALE] = {
+   { "T-", "tera"          , "teraseconds"       ,  12 , 1000000000000.0            },
+   { "G-", "giga"          , "gigaseconds"       ,   9 ,    1000000000.0            },
+   { "M-", "mega"          , "megaseconds"       ,   6 ,       1000000.0            },
+   { "K3", "kilo3"         , "100 kiloseconds"   ,   5 ,        100000.0            },
+   { "K2", "kilo2"         , "10 kiloseconds"    ,   4 ,         10000.0            },
+   { "K-", "kilo"          , "kiloseconds"       ,   3 ,          1000.0            },
+   { "H-", "hecto"         , "hectoseconds"      ,   2 ,           100.0            },
+   { "D-", "deca"          , "decaseconds"       ,   2 ,            10.0            },
+   { "--", "secs"          , "seconds"           ,   1 ,             1.0            },
+   { "d-", "deci"          , "deciseconds"       ,  -1 ,             0.1            },
+   { "c-", "centi"         , "centiseconds"      ,  -2 ,             0.01           },
+   { "m-", "milli"         , "milliseconds"      ,  -3 ,             0.001          },
+   { "m2", "milli2"        , "10 milliseconds"   ,  -4 ,             0.001          },
+   { "m3", "milli3"        , "100 milliseconds"  ,  -5 ,             0.001          },
+   { "u-", "micro"         , "microseconds"      ,  -6 ,             0.000001       },
+   { "n-", "nano"          , "nanoseconds"       ,  -9 ,             0.000000001    },
+   { "p-", "pico"          , "picoseconds"       , -12 ,             0.000000000001 },
+};
+
 /*===[[ TYPEDEFS ]]===========================================================*/
 
 
@@ -91,6 +117,44 @@ int       is_unittest  = 0;
 char       eva_feedback[200] = "";
 char      *eva_accessor     (char   *a_question);
 
+char
+SCALE_init         (void)
+{
+   my.p_scale   =   -1;
+   strlcpy (my.p_label, "((unset))"   , LEN_LABEL);
+   my.p_power   =    0;
+   my.p_inc     =    1;
+   my.p_min     =    0;
+   my.p_beg     =    0;
+   my.p_cur     =    0;
+   my.p_end     =    0;
+   my.p_max     =    0;
+   return 0;
+}
+
+char
+SCALE_find         (char *a_code)
+{
+   char        rce         = -10;
+   int         i           = 0;
+   char        x_code      = -1;
+   --rce;  if (strlen (a_code) != 2) {
+      return rce;
+   }
+   for (i = 0; i < MAX_SCALE; ++i) {
+      if (g_scale [i].code [0] != a_code [0])  continue;
+      if (g_scale [i].code [1] != a_code [1])  continue;
+      x_code = i;
+   }
+   --rce;  if (x_code < 0) {
+      return rce;
+   }
+   my.p_scale = x_code;
+   strlcpy (my.p_label, g_scale [x_code].label, LEN_LABEL);
+   my.p_power = g_scale [x_code].power;
+   my.p_inc   = g_scale [x_code].unit;
+   return x_code;
+}
 
 
 
@@ -551,6 +615,7 @@ draw__center       (void)
    /*---(locals)-------*-----------------*/
    char      msg [200] = "";
    /*---(prepare)------------------------*/
+   glLineWidth ( 0.50f);
    glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
    /*---(upper bar)----------------------*/
    glColor4f(1.00f, 0.00f, 0.00f, 0.10f);
@@ -625,13 +690,20 @@ draw_spider        (void)
 char
 view_progress      (void)
 {
-   char      msg [200];
-   glColor4f(1.0f, 0.5f, 0.0f, 1.0f);
-   glLineWidth(15.00f);
-   glBegin (GL_LINES);
-   glVertex3f( -28,  -40.0, -100.0);
-   glVertex3f(  28,  -40.0, -100.0);
-   glEnd   ();
+   char      x_msg [200];
+   /*---(show background bar)------------*/
+   glPushMatrix(); {
+      glColor4f   (1.0f, 0.5f, 0.0f, 1.0f);
+      glLineWidth (15.00f);
+      glBegin     (GL_LINES); {
+         glVertex3f  ( -28,  -35.0, -100.0);
+         glVertex3f  (  28,  -35.0, -100.0);
+      } glEnd   ();
+      glLineWidth (15.00f);
+   } glPopMatrix();
+
+   return 0;
+
    glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
    glBegin (GL_LINES);
    glVertex3f( (56.0 / MAX_POS) * gait.pos - 29,  -40.0, -100.0);
@@ -641,14 +713,14 @@ view_progress      (void)
    glColor4f(1.0f, 0.5f, 0.0f, 1.0f);
    glPushMatrix(); {
       glTranslatef( -28.0f, -39.0, -100.0);
-      snprintf (msg, 50, "%03d", 0);
-      yFONT_print (txf_sm,   2, YF_BOTLEF, msg);
+      snprintf (x_msg, 50, "%03d", 0);
+      yFONT_print (txf_sm,   2, YF_BOTLEF, x_msg);
    } glPopMatrix();
    glPushMatrix(); {
       glTranslatef ( -45.0f,  40.0 , -100.0);
       glRotatef    (  90.0 ,   0.0f,    0.0f,   1.0f);
-      snprintf (msg, 100, "%s, %s", model_desc, model_name);
-      yFONT_print  (txf_sm,   2, YF_BOTRIG, msg);
+      snprintf (x_msg, 100, "%s, %s", model_desc, model_name);
+      yFONT_print  (txf_sm,   2, YF_BOTRIG, x_msg);
    } glPopMatrix();
    /*> glPushMatrix(); {                                                              <* 
     *>    glTranslatef ( -53.0f,  38.5 , -100.0);                                     <* 
@@ -656,14 +728,14 @@ view_progress      (void)
     *> } glPopMatrix();                                                               <*/
    glPushMatrix(); {
       glTranslatef(  28.0f, -39.0, -100.0);
-      snprintf (msg, 50, "%03d", MAX_POS);
-      yFONT_print (txf_sm,   2, YF_BOTRIG, msg);
+      snprintf (x_msg, 50, "%03d", MAX_POS);
+      yFONT_print (txf_sm,   2, YF_BOTRIG, x_msg);
    } glPopMatrix();
    glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
    glPushMatrix(); {
       glTranslatef(   0.0f, -39.0, -100.0);
-      snprintf (msg, 50, "%03d", (int) my_pos);
-      yFONT_print (txf_sm,   2, YF_BOTCEN, msg);
+      snprintf (x_msg, 50, "%03d", (int) my_pos);
+      yFONT_print (txf_sm,   2, YF_BOTCEN, x_msg);
    } glPopMatrix();
    return 0;
 }
@@ -692,9 +764,11 @@ view_3d()
       /*> yGOD_orient ();                                                             <* 
        *> yGOD_locate ();                                                             <*/
       view_progress   ();
+      glLineWidth ( 0.50f);
       yGOD_view       ();
       glTranslatef    (    0.0  , -center.by,     0.0  );
       /*> yGOD_locate ();                                                             <*/
+      glLineWidth ( 0.50f);
       glCallList      (dl_ground);
       /*> glTranslatef    (center.bx,      0.0  , center.bz);                         <*/
       glTranslatef    (      0.0,  center.by,       0.0);

@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4o"
-#define VER_TXT   "main script reading routine working"
+#define VER_NUM   "0.4p"
+#define VER_TXT   "add functions and table to set scale for dimensions"
 
 
 
@@ -132,14 +132,15 @@
 /*---(string length)------------------*/
 #define     LEN_RECD    2000
 #define     LEN_STR     200
-#define     LEN_NAME    20
+#define     LEN_LABEL   20
+/*---(time)---------------------------*/
+#define     MAX_SCALE   50
 /*---(legs and servos)----------------*/
 #define     MAX_LEGS    8
 #define     MAX_SEGS    15
 #define     MAX_SERVO   32
 /*---(older stuff)--------------------*/
 #define     MAX_POS     5000
-
 
 
 /*===[[ TYPEDEFS ]]===========================================================*/
@@ -228,6 +229,16 @@ struct cACCESSOR {
    char        f_base      [LEN_STR];       /* specific file base name        */
    char        f_suffix    [LEN_STR];       /* file suffix for spreadsheet    */
    char        f_name      [LEN_STR];       /* full file name                 */
+   /*---(progress)--------*/
+   char        p_scale;
+   char        p_label     [LEN_LABEL];
+   float       p_power;
+   float       p_inc;
+   float       p_min;
+   float       p_beg;
+   float       p_cur;
+   float       p_end;
+   float       p_max;
    /*---(done)------------*/
 };
 extern      tACCESSOR my;
@@ -491,6 +502,14 @@ char        PROG_end           (void);
 /*> char       *unit_accessor      (char *a_question, void *a_thing);                 <*/
 char        PROG_testing       (void);
 char        PROG_testloud      (void);
+
+
+char        SCALE_init         (void);
+char        SCALE_find         (char *a_code);
+
+
+
+char        MOVE_create        (char a_type, tSERVO *a_servo, float a_deg, float a_sec);
 
 
 /*---(arachne_dlist)---------------------*/

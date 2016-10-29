@@ -136,8 +136,8 @@ MOVE_create        (
    /*---(header)-------------------------*/
    DEBUG_DATA   yLOG_enter   (__FUNCTION__);
    DEBUG_DATA   yLOG_char    ("a_type"    , a_type);
-   DEBUG_DATA   yLOG_value   ("a_deg"     , a_deg);
-   DEBUG_DATA   yLOG_value   ("a_sec"     , a_sec);
+   DEBUG_DATA   yLOG_double  ("a_deg"     , a_deg);
+   DEBUG_DATA   yLOG_double  ("a_sec"     , a_sec);
    /*---(defenses)-----------------------*/
    DEBUG_DATA   yLOG_point   ("a_servo"   , a_servo);
    --rce;  if (a_servo     == NULL) {
@@ -181,6 +181,7 @@ MOVE_create        (
       x_move->sec_end       = x_move->sec_beg + a_sec;
       x_move->deg_beg       = x_move->s_prev->deg_end;
    }
+   /*---(update globals)-----------------*/
    /*---(display stats)------------------*/
    DEBUG_DATA   yLOG_value   ("count"     , a_servo->count);
    DEBUG_DATA   yLOG_value   ("sec_beg"   , x_move->sec_beg);

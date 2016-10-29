@@ -190,12 +190,12 @@ SCRP_move          (void)
          break;
       case  FIELD_DEG  :  /*---(degrees)--*/
          x_degs = atof (p);
-         DEBUG_INPT  yLOG_value   ("degrees"   , x_degs);
+         DEBUG_INPT  yLOG_double  ("degrees"   , x_degs);
          break;
       case  FIELD_SEC  :  /*---(seconds)--*/
          x_secs = atof (p);
-         DEBUG_INPT  yLOG_value   ("seconds"   , x_secs);
-         MOVE_create (MOVE_SERVO, g_servos [x_servo], x_degs, x_secs);
+         DEBUG_INPT  yLOG_double  ("seconds"   , x_secs);
+         MOVE_create (MOVE_SERVO, g_servos + x_servo, x_degs, x_secs);
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -288,6 +288,9 @@ SCRP_main          (void)
       switch (x_type [0]) {
       case 's' : /* servo       */
          SCRP_move ();
+         break;
+      default  :
+         DEBUG_INPT  yLOG_note    ("verb not recognized and skipped");
          break;
       }
 

@@ -73,6 +73,10 @@ PROG_init          (void)
    strlcpy (my.w_title, "arachne_full", LEN_STR);
    my.w_width   =  700;
    my.w_height  =  600;
+   /*---(time)---------------------------*/
+   SCALE_init ();
+   SCALE_find ("--");
+   /*---(complete)-----------------------*/
    DEBUG_TOPS  yLOG_exit  (__FUNCTION__);
    return 0;
 }
@@ -267,8 +271,8 @@ char       /*----: drive program setup activities ----------------------------*/
 PROG_begin         (void)
 {
    DEBUG_PROG   yLOG_enter   (__FUNCTION__);
-   /*> stat_init    (model_name);                                                     <*/
-   /*> kine_init    ();                                                               <*/
+   stat_init    (model_name);
+   kine_init    ();
    DEBUG_ARGS  yLOG_info   ("title"     , my.w_title);
    DEBUG_ARGS  yLOG_value  ("width"     , my.w_width);
    DEBUG_ARGS  yLOG_value  ("height"    , my.w_height);
