@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4p"
-#define VER_TXT   "add function and keys to change dimension scales"
+#define VER_NUM   "0.4q"
+#define VER_TXT   "display fixed leg curves and axis to attempt design"
 
 
 

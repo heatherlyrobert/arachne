@@ -31,8 +31,8 @@ struct tSCALE {
    { "K2", "kilo2"         , "10 kiloseconds"    ,   4 ,         10000.0            },
    { "K-", "kilo"          , "kiloseconds"       ,   3 ,          1000.0            },
    { "H-", "hecto"         , "hectoseconds"      ,   2 ,           100.0            },
-   { "D-", "deca"          , "decaseconds"       ,   2 ,            10.0            },
-   { "--", "secs"          , "seconds"           ,   1 ,             1.0            },
+   { "D-", "deca"          , "decaseconds"       ,   1 ,            10.0            },
+   { "--", "secs"          , "seconds"           ,   0 ,             1.0            },
    { "d-", "deci"          , "deciseconds"       ,  -1 ,             0.1            },
    { "c-", "centi"         , "centiseconds"      ,  -2 ,             0.01           },
    { "m-", "milli"         , "milliseconds"      ,  -3 ,             0.001          },
@@ -722,23 +722,131 @@ draw_spider        (void)
 char
 view_progress      (void)
 {
-   char      x_msg [200];
-   /*---(show background bar)------------*/
+   int         i           = 0;
+   char        x_msg       [200];
+   /*---(show current position)----------*/
    glPushMatrix(); {
-      glColor4f   (1.0f, 0.5f, 0.0f, 1.0f);
-      glLineWidth (15.00f);
-      glBegin     (GL_LINES); {
-         glVertex3f  ( -28,  -35.0, -100.0);
-         glVertex3f  (  28,  -35.0, -100.0);
+      glLineWidth  ( 2.00f);
+      glColor4f    (0.2f, 0.2f, 0.2f, 1.0f);
+      glBegin      (GL_POLYGON); {
+         glVertex3f  (  -2,  -22.0, -110.0);
+         glVertex3f  (   2,  -22.0, -110.0);
+         glVertex3f  (   2,  -43.0, -110.0);
+         glVertex3f  (  -2,  -43.0, -110.0);
       } glEnd   ();
-      glLineWidth (15.00f);
    } glPopMatrix();
-
+   /*---(progress bar)-------------------*/
+   glPushMatrix(); {
+      glLineWidth  (30.00f);
+      for (i = 0; i < 10; ++i) {
+         if (i % 2 == 0)  glColor4f    (1.0f, 0.5f, 0.0f, 1.0f);
+         else             glColor4f    (0.5f, 0.2f, 0.0f, 1.0f);
+         glBegin         (GL_POLYGON); {
+            glVertex3f  ( -30 + (i + 0) * 6,  -24.3, -100.0);
+            glVertex3f  ( -30 + (i + 1) * 6,  -24.3, -100.0);
+            glVertex3f  ( -30 + (i + 1) * 6,  -25.7, -100.0);
+            glVertex3f  ( -30 + (i + 0) * 6,  -25.7, -100.0);
+         } glEnd   ();
+         /*> glBegin         (GL_POLYGON); {                                          <* 
+          *>    glVertex3f  ( -30 + (i + 0) * 6,  -29.8, -100.0);                     <* 
+          *>    glVertex3f  ( -30 + (i + 1) * 6,  -29.8, -100.0);                     <* 
+          *>    glVertex3f  ( -30 + (i + 1) * 6,  -30.2, -100.0);                     <* 
+          *>    glVertex3f  ( -30 + (i + 0) * 6,  -30.2, -100.0);                     <* 
+          *> } glEnd   ();                                                            <*/
+         glBegin         (GL_POLYGON); {
+            glVertex3f  ( -30 + (i + 0) * 6,  -34.3, -100.0);
+            glVertex3f  ( -30 + (i + 1) * 6,  -34.3, -100.0);
+            glVertex3f  ( -30 + (i + 1) * 6,  -35.7, -100.0);
+            glVertex3f  ( -30 + (i + 0) * 6,  -35.7, -100.0);
+         } glEnd   ();
+      }
+   } glPopMatrix();
+   /*---(progress bar labels)------------*/
+   glPushMatrix(); {
+      glTranslatef ( -30.0f, -28.0, -100.0);
+      glColor4f    (1.0f, 1.0f, 1.0f, 1.0f);
+      for (i = 0; i < 10; ++i) {
+         snprintf     (x_msg, 100, "%d", i);
+         yFONT_print  (txf_sm,   1, YF_MIDCEN, x_msg);
+         glTranslatef (   0.0f,  -4.0,    0.0);
+         yFONT_print  (txf_sm,   1, YF_MIDCEN, x_msg);
+         glTranslatef (   6.0f,   4.0,    0.0);
+      }
+   } glPopMatrix();
+   /*---(movement axis)------------------*/
    glPushMatrix(); {
       glColor4f    (1.0f, 0.5f, 0.0f, 1.0f);
-      glTranslatef ( -20.0f, -30.0,  -75.0);
+      glLineWidth  ( 3.00f);
+      for (i = -31; i <= 31; i += 62) {
+      glBegin      (GL_LINES); {
+         glVertex3f  (   i,  -20.0, -100.0);
+         glVertex3f  (   i,  -24.8, -100.0);
+         glVertex3f  (   i,  -25.2, -100.0);
+         glVertex3f  (   i,  -29.8, -100.0);
+         glVertex3f  (   i,  -30.2, -100.0);
+         glVertex3f  (   i,  -34.8, -100.0);
+         glVertex3f  (   i,  -35.2, -100.0);
+         glVertex3f  (   i,  -40.0, -100.0);
+      } glEnd   ();
+      }
+   } glPopMatrix();
+   /*---(movement axis labels)-----------*/
+   glPushMatrix(); {
+      glColor4f    (1.0f, 0.5f, 0.0f, 1.0f);
+      glTranslatef ( -30.0f, -20.0, -100.0);
+      yFONT_print  (txf_sm,   1, YF_MIDLEF, "+100");
+      glTranslatef (  60.0f,   0.0,    0.0);
+      yFONT_print  (txf_sm,   1, YF_MIDRIG, "+100");
+      glTranslatef ( -60.0f, -20.0,    0.0);
+      yFONT_print  (txf_sm,   1, YF_MIDLEF, "-100");
+      glTranslatef (  60.0f,   0.0,    0.0);
+      yFONT_print  (txf_sm,   1, YF_MIDRIG, "-100");
+   } glPopMatrix();
+   /*---(show scale notation)------------*/
+   glPushMatrix(); {
+      glColor4f    (1.0f, 0.5f, 0.0f, 1.0f);
+      glTranslatef ( -20.0f, -40.0, -100.0);
       snprintf     (x_msg, 100, "%s.%-6s.%s", g_scale [my.p_scale].code, g_scale [my.p_scale].label, g_scale [my.p_scale].desc);
-      yFONT_print  (txf_sm,   1, YF_BOTLEF, x_msg);
+      yFONT_print  (txf_sm,   1, YF_MIDLEF, x_msg);
+   } glPopMatrix();
+
+   /*---(show leg angle curves)----------*/
+   glPushMatrix(); {
+      glLineWidth  ( 2.00f);
+      glColor4f    (1.0f, 0.0f, 0.0f, 1.0f);
+      glBegin(GL_LINE_STRIP); {
+         glVertex3f  ( -30,  -24.0, -100.0);
+         glVertex3f  ( -10,  -20.0, -100.0);
+         glVertex3f  (  -5,  -20.0, -100.0);
+         glVertex3f  (  10,  -35.0, -100.0);
+         glVertex3f  (  25,  -40.0, -100.0);
+         glVertex3f  (  30,  -35.0, -100.0);
+      } glEnd   ();
+      glPointSize  ( 8.00f);
+      glBegin      (GL_POINTS); {
+         glVertex3f  ( -10,  -20.0, -100.0);
+         glVertex3f  (  -5,  -20.0, -100.0);
+         glVertex3f  (  10,  -35.0, -100.0);
+         glVertex3f  (  25,  -40.0, -100.0);
+      } glEnd   ();
+   } glPopMatrix();
+   /*---(show leg angle curves)----------*/
+   glPushMatrix(); {
+      glLineWidth  ( 2.00f);
+      glColor4f    (0.5f, 1.0f, 0.0f, 1.0f);
+      glBegin(GL_LINE_STRIP); {
+         glVertex3f  ( -30,  -30.0, -100.0);
+         glVertex3f  (  30,  -30.0, -100.0);
+      } glEnd   ();
+   } glPopMatrix();
+   /*---(show leg angle curves)----------*/
+   glPushMatrix(); {
+      glLineWidth  ( 2.00f);
+      glColor4f    (0.0f, 0.5f, 1.0f, 1.0f);
+      glBegin(GL_LINE_STRIP); {
+         glVertex3f  ( -30,  -25.0, -100.0);
+         glVertex3f  (  30,  -25.0, -100.0);
+      } glEnd   ();
    } glPopMatrix();
 
    return 0;
