@@ -18,7 +18,8 @@ main (int argc, char *argv[])
       PROG_end     ();
       exit (-1);
    }
-   SCRP_main ();
+   SCRP_main   ();
+   MOVE_curall (5.0);
    /*> if (is_test) printf("\nspider--------------------------------------------begin---\n\n");   <*/
    /*> strcpy(its_text, " ");                                                         <*/
    /*> counter = 0;                                                                   <*/

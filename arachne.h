@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4q"
-#define VER_TXT   "display fixed leg curves and axis to attempt design"
+#define VER_NUM   "0.4r"
+#define VER_TXT   "added move functions to convert time to servo degree"
 
 
 
@@ -353,10 +353,16 @@ extern float   segs_min  [MAX_SEGS];
 
 
 struct cSERVO {
+   /*---(overall)------------------------*/
    char        label       [20];
    char        count;
+   /*---(current)------------------------*/
+   tMOVE      *curr;
+   float       deg;
+   /*---(list)---------------------------*/
    tMOVE      *head;
    tMOVE      *tail;
+   /*---(done)---------------------------*/
 };
 extern      tSERVO      g_servos    [MAX_SERVO];
 
@@ -367,6 +373,7 @@ extern      tSERVO      g_servos    [MAX_SERVO];
 #define     MOVE_SERVO  's'
 
 struct      cMOVE {
+   int         seq;
    char        type;
    tSERVO     *servo;
    float       sec_dur;
@@ -510,6 +517,7 @@ char        SCALE_larger       (void);
 
 
 char        MOVE_create        (char a_type, tSERVO *a_servo, float a_deg, float a_sec);
+char        MOVE_curall        (float a_time);
 
 
 /*---(arachne_dlist)---------------------*/

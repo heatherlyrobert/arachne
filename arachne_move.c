@@ -43,6 +43,7 @@ MOVE__new          (void)
    DEBUG_DATA   yLOG_note    ("default overall values");
    x_new->servo   = NULL;
    x_new->type    = MOVE_NULL;
+   x_new->seq     = 0;
    /*---(position)-----------------------*/
    DEBUG_DATA   yLOG_note    ("default positions");
    x_new->deg_beg =  0.0f;
@@ -167,6 +168,7 @@ MOVE_create        (
       a_servo->tail         = x_move;
       a_servo->count        = 1;
       DEBUG_DATA   yLOG_note    ("update sec/deg based on being first move");
+      x_move->seq           = 1;
       x_move->sec_beg       = 0.0f;
       x_move->sec_end       = a_sec;
       x_move->deg_beg       = 0.0f;
@@ -177,6 +179,7 @@ MOVE_create        (
       a_servo->tail         = x_move;
       ++(a_servo->count);
       DEBUG_DATA   yLOG_note    ("update sec/deg based on previous move");
+      x_move->seq           = x_move->s_prev->seq + 1;
       x_move->sec_beg       = x_move->s_prev->sec_end;
       x_move->sec_end       = x_move->sec_beg + a_sec;
       x_move->deg_beg       = x_move->s_prev->deg_end;
@@ -184,6 +187,7 @@ MOVE_create        (
    /*---(update globals)-----------------*/
    /*---(display stats)------------------*/
    DEBUG_DATA   yLOG_value   ("count"     , a_servo->count);
+   DEBUG_DATA   yLOG_value   ("seq"       , x_move->seq);
    DEBUG_DATA   yLOG_value   ("sec_beg"   , x_move->sec_beg);
    DEBUG_DATA   yLOG_value   ("sec_end"   , x_move->sec_end);
    DEBUG_DATA   yLOG_value   ("deg_beg"   , x_move->deg_beg);
@@ -224,6 +228,130 @@ MOVE_addloc        (
    DEBUG_DATA   yLOG_exit    (__FUNCTION__);
    return 0;
 }
+
+
+
+/*====================------------------------------------====================*/
+/*===----                      script position                         ----===*/
+/*====================------------------------------------====================*/
+static void      o___POSITION________________o (void) {;}
+
+char         /*--> add a location to a move object -------[ ------ [ ------ ]-*/
+MOVE_curset        (int a_servo, float a_time)
+{
+   /*---(locals)-----------+-----------+-*/
+   tMOVE      *x_next      = NULL;
+   /*---(header)-------------------------*/
+   DEBUG_DATA   yLOG_senter  (__FUNCTION__);
+   /*---(defense)------------------------*/
+   x_next = g_servos [a_servo].head;
+   if (x_next == NULL) {
+      DEBUG_DATA   yLOG_snote   ("no moves for servo");
+      DEBUG_DATA   yLOG_sexit   (__FUNCTION__);
+      return -10;
+   }
+   /*---(walk thru moves)----------------*/
+   while (x_next != NULL) {
+      DEBUG_DATA   yLOG_sint    (x_next->seq);
+      if (x_next->sec_beg >  a_time) {
+         DEBUG_DATA   yLOG_snote   ("too far");
+         DEBUG_DATA   yLOG_sexit   (__FUNCTION__);
+         return -11;
+      }
+      if (x_next->sec_end <  a_time) {
+         x_next = x_next->s_next;
+         continue;
+      }
+      DEBUG_DATA   yLOG_snote   ("found it");
+      g_servos [a_servo].curr = x_next;
+      DEBUG_DATA   yLOG_sexit   (__FUNCTION__);
+      return 0;
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_DATA   yLOG_snote   ("failed");
+   DEBUG_DATA   yLOG_sexit   (__FUNCTION__);
+   return -12;
+}
+
+char         /*--> add a location to a move object -------[ ------ [ ------ ]-*/
+MOVE_curone        (int a_servo, float a_time)
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         = -10;           /* return code for errors         */
+   char        rc          =   0;           /* generic return code            */
+   tMOVE      *x_curr      = NULL;
+   float       x_beg       = 0.0;
+   float       x_end       = 0.0;
+   float       x_pct       = 0.0;
+   float       x_degs      = 0.0;
+   float       x_pos       = 0.0;
+   /*---(header)-------------------------*/
+   DEBUG_DATA   yLOG_enter   (__FUNCTION__);
+   DEBUG_DATA   yLOG_info    ("label"     , g_servos [a_servo].label);
+   /*---(check for correct current)------*/
+   if        (g_servos [a_servo].curr == NULL) {
+      DEBUG_DATA   yLOG_note    ("servo current is not set");
+      rc = MOVE_curset (a_servo, a_time);
+      DEBUG_DATA   yLOG_value   ("rc"        , rc);
+   }
+   /*---(check return code)--------------*/
+   if      (rc < 0) {
+      DEBUG_DATA   yLOG_exit    (__FUNCTION__);
+      return rc;
+   }
+   /*---(check for right times)----------*/
+   x_curr  = g_servos [a_servo].curr;
+   if        (a_time < x_curr->sec_beg) {
+      DEBUG_DATA   yLOG_note    ("time is before current move beg");
+      rc = MOVE_curset (a_servo, a_time);
+      DEBUG_DATA   yLOG_value   ("rc"        , rc);
+   } else if (a_time > x_curr->sec_end) {
+      DEBUG_DATA   yLOG_note    ("time is after current move end");
+      rc = MOVE_curset (a_servo, a_time);
+      DEBUG_DATA   yLOG_value   ("rc"        , rc);
+   }
+   /*---(check return code)--------------*/
+   if      (rc < 0) {
+      DEBUG_DATA   yLOG_exit    (__FUNCTION__);
+      return rc;
+   }
+   /*---(set exact time)-----------------*/
+   x_curr  = g_servos [a_servo].curr;
+   DEBUG_DATA   yLOG_double  ("sec_beg"   , x_curr->sec_beg);
+   DEBUG_DATA   yLOG_double  ("sec_end"   , x_curr->sec_end);
+   x_beg   = x_curr->sec_beg;
+   x_end   = x_curr->sec_end;
+   DEBUG_DATA   yLOG_double  ("deg_beg"   , x_curr->deg_beg);
+   DEBUG_DATA   yLOG_double  ("deg_end"   , x_curr->deg_end);
+   x_pct   = (a_time - x_beg) / (x_end - x_beg);
+   DEBUG_DATA   yLOG_double  ("x_pct"     , x_pct);
+   x_degs  = x_curr->deg_end - x_curr->deg_beg;
+   DEBUG_DATA   yLOG_double  ("x_degs"    , x_degs);
+   x_pos   = x_curr->deg_beg + (x_degs * x_pct);
+   DEBUG_DATA   yLOG_double  ("x_pos"     , x_pos);
+   g_servos [a_servo].deg = x_pos;
+   /*---(complete)-----------------------*/
+   DEBUG_DATA   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
+char         /*--> add a location to a move object -------[ ------ [ ------ ]-*/
+MOVE_curall        (float a_time)
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         = -10;           /* return code for errors         */
+   char        rc          =   0;
+   int         i           =   0;
+   /*---(header)-------------------------*/
+   DEBUG_DATA   yLOG_enter   (__FUNCTION__);
+   for (i = 0; i < MAX_SERVO; ++i) {
+      if (strcmp (g_servos [i].label, "end-of-list") == 0)  break;
+      rc = MOVE_curone  (i, a_time);
+   }
+   DEBUG_DATA   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
 
 
 

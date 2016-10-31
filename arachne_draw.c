@@ -822,7 +822,7 @@ view_progress      (void)
          glVertex3f  (  25,  -40.0, -100.0);
          glVertex3f  (  30,  -35.0, -100.0);
       } glEnd   ();
-      glPointSize  ( 8.00f);
+      glPointSize  ( 6.00f);
       glBegin      (GL_POINTS); {
          glVertex3f  ( -10,  -20.0, -100.0);
          glVertex3f  (  -5,  -20.0, -100.0);
