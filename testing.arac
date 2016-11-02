@@ -7,7 +7,7 @@ start         -a-  LF.femu          0.000       0.000 
 start         -a-  LF.pate         10.000       0.000 
 
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
-servo         -a-  LF.femu         10.000       2.000      10.000      10.000      10.000 
+servo         -a-  LF.femu        -10.000       2.000      10.000      10.000      10.000 
 servo         -a-  LF.femu         30.000       5.000      10.000      10.000      10.000 
 servo         -a-  LF.femu         15.000       3.000      10.000      10.000      10.000 
 servo         -a-  LF.femu         20.000       6.000      10.000      10.000      10.000 

@@ -77,7 +77,8 @@ PROG_init          (void)
    my.s_height  =  580;
    /*---(time)---------------------------*/
    SCALE_init ();
-   SCALE_find ("--");
+   /*> SCALE_find ("--");                                                             <*/
+   SCALE_find ("d-");
    /*---(complete)-----------------------*/
    DEBUG_TOPS  yLOG_exit  (__FUNCTION__);
    return 0;

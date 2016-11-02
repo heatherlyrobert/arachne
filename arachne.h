@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4u"
-#define VER_TXT   "reads scripted moves for a servo and displays on progress ticker"
+#define VER_NUM   "0.4v"
+#define VER_TXT   "progress ticker redraws and relabels as scale changes"
 
 
 
@@ -245,6 +245,8 @@ struct cACCESSOR {
    /*---(progress working)*/
    char        p_scale;                     /* scale of zoom                  */
    float       p_inc;                       /* increment for h,l              */
+   char        p_base;                      /* base unit for display          */
+   int         p_multi;                     /* label multiple                 */
    float       p_min;                       /* min progress bar position      */
    float       p_beg;                       /* beg of screen prog bar position*/
    float       p_cur;                       /* current progess bar position   */
