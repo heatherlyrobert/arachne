@@ -281,6 +281,8 @@ PROG_begin         (void)
    draw_setup   ();
    font_load    ();
    dlist_begin  ();
+   TICK_init    ();
+   TICK_draw    ();
    if (umake_init == 'y') {
       unit_init();
       exit(0);

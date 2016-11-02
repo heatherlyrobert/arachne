@@ -287,7 +287,7 @@ SCRP_main          (void)
       DEBUG_INPT  yLOG_char    ("version"   , x_ver);
       /*---(handle types)----------------*/
       switch (x_type [0]) {
-      case 's' : /* servo       */
+      case 's' : /* servo, start       */
          SCRP_move ();
          break;
       default  :

@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4r"
-#define VER_TXT   "added move functions to convert time to servo degree"
+#define VER_NUM   "0.4s"
+#define VER_TXT   "basic progress ticker texture drawing"
 
 
 
@@ -229,14 +229,24 @@ struct cACCESSOR {
    char        f_base      [LEN_STR];       /* specific file base name        */
    char        f_suffix    [LEN_STR];       /* file suffix for spreadsheet    */
    char        f_name      [LEN_STR];       /* full file name                 */
-   /*---(progress)--------*/
-   char        p_scale;
-   float       p_inc;
-   float       p_min;
-   float       p_beg;
-   float       p_cur;
-   float       p_end;
-   float       p_max;
+   /*---(progress sizes)--*/
+   int         p_texw;                      /* texture full width             */
+   int         p_texh;                      /* texture full height            */
+   int         p_top;                       /* topmost y of progress bar      */
+   int         p_bot;                       /* bottommost y of progress bar   */
+   float       p_avail;                     /* units available on screen      */
+   /*---(progress handles)*/
+   uint        p_tex;                       /* texture for image              */
+   uint        p_fbo;                       /* framebuffer                    */
+   uint        p_depth;                     /* depth buffer                   */
+   /*---(progress working)*/
+   char        p_scale;                     /* scale of zoom                  */
+   float       p_inc;                       /* increment for h,l              */
+   float       p_min;                       /* min progress bar position      */
+   float       p_beg;                       /* beg of screen prog bar position*/
+   float       p_cur;                       /* current progess bar position   */
+   float       p_end;                       /* end of screen prog bar position*/
+   float       p_max;                       /* max progress bar position      */
    /*---(done)------------*/
 };
 extern      tACCESSOR my;
@@ -530,6 +540,10 @@ void       glx_resize        (uint, uint);
 
 
 /*---(arachne_draw)----------------------*/
+
+char      TICK_init          (void);
+char      TICK_draw          (void);
+
 char      draw_begin         (void);      /* prepare drawing environment      */
 char      draw_reset         (void);      /* set starting point for drawing   */
 char      draw_end           (void);      /* teardown drawing environment     */

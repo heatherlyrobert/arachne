@@ -190,7 +190,114 @@ SCALE_larger       (void)
 
 
 
+/*====================------------------------------------====================*/
+/*===----                       progress ticker                        ----===*/
+/*====================------------------------------------====================*/
+static void      o___TICKER__________________o (void) {;}
 
+char         /*--> set values for progress ticker --------[ ------ [ ------ ]-*/
+TICK_init          (void)
+{
+   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
+   /*---(sizes)--------------------------*/
+   DEBUG_GRAF   yLOG_note    ("setting sizes (widths and heights)");
+   my.p_texw      = 6000;
+   my.p_texh      =  250;
+   my.p_top       =  150;   /* tibia can go to 130 */
+   my.p_bot       = -100;   /* femur can go to -85 */
+   my.p_avail     =   30;
+   /*---(handles)------------------------*/
+   DEBUG_GRAF   yLOG_note    ("initializing handles (tex, fbo, depth)");
+   my.p_tex       =    0;
+   my.p_fbo       =    0;
+   my.p_depth     =    0;
+   /*---(working)------------------------*/
+   DEBUG_GRAF   yLOG_note    ("initializing working variables");
+   my.p_scale     =    0;
+   my.p_inc       =    0;
+   my.p_min       =    0;
+   my.p_beg       =    0;
+   my.p_cur       =    0;
+   my.p_end       =    0;
+   my.p_max       =    0;
+   /*---(generate)-----------------------*/
+   DEBUG_GRAF   yLOG_note    ("request handles (tex, fbo, depth)");
+   glGenFramebuffersEXT         (1, &my.p_fbo);
+   glGenTextures                (1, &my.p_tex);
+   glGenRenderbuffersEXT        (1, &my.p_depth);
+   /*---(bind)---------------------------*/
+   DEBUG_GRAF   yLOG_note    ("bind texture");
+   glBindFramebufferEXT         (GL_FRAMEBUFFER_EXT,  my.p_fbo);
+   glBindTexture                (GL_TEXTURE_2D,       my.p_tex);
+   /*---(settings)-----------------------*/
+   DEBUG_GRAF   yLOG_note    ("apply key opengl settings");
+   glTexParameteri              (GL_TEXTURE_2D,  GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+   glTexParameteri              (GL_TEXTURE_2D,  GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   glTexParameteri              (GL_TEXTURE_2D,  GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+   glTexParameteri              (GL_TEXTURE_2D,  GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+   glTexEnvi                    (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+   glTexParameteri              (GL_TEXTURE_2D,  GL_GENERATE_MIPMAP, GL_TRUE);
+   /*---(copy)---------------------------*/
+   DEBUG_GRAF   yLOG_note    ("copy texture buffer");
+   glTexImage2D                 (GL_TEXTURE_2D, 0, GL_RGBA, my.p_texw, my.p_texh, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+   glFramebufferTexture2DEXT    (GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, my.p_tex, 0);
+   /*---(depth)--------------------------*/
+   DEBUG_GRAF   yLOG_note    ("depth buffer settings");
+   glBindRenderbufferEXT        (GL_RENDERBUFFER_EXT, my.p_depth);
+   glRenderbufferStorageEXT     (GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, my.p_texw, my.p_texh);
+   glFramebufferRenderbufferEXT (GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, my.p_depth);
+   /*---(unbind)-------------------------*/
+   DEBUG_GRAF   yLOG_note    ("unbind texture");
+   glBindFramebufferEXT         (GL_FRAMEBUFFER_EXT, 0);
+   /*---(complete)-----------------------*/
+   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
+char         /*--> draw texture for progress ticker ------[ ------ [ ------ ]-*/
+TICK_draw          (void)
+{
+   /*---(locals)-----------+-----------+-*/
+   int       i;                             /* loop iterator -- word          */
+   int       rc      = 0;                   /* simple return code             */
+   /*---(setup)--------------------------*/
+   glViewport            (0.0,  0.0, my.p_texw, my.p_texh);
+   glMatrixMode          (GL_PROJECTION);
+   glLoadIdentity        ();
+   glOrtho               (0.0,   my.p_texw, my.p_bot, my.p_top, -500.0,  500.0);
+   glMatrixMode          (GL_MODELVIEW);
+   glBindTexture         (GL_TEXTURE_2D, 0);
+   glBindFramebufferEXT  (GL_FRAMEBUFFER_EXT,  my.p_fbo);
+   /*---(draw)---------------------------*/
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   /*---(progress bar)-------------------*/
+   glPushMatrix(); {
+      glLineWidth  (30.00f);
+      for (i = 0; i < my.p_texw; i += 10) {
+         if (i % 20 == 0)  glColor4f    (1.0f, 0.5f, 0.0f, 1.0f);
+         else              glColor4f    (0.5f, 0.2f, 0.0f, 1.0f);
+         glBegin         (GL_POLYGON); {
+            glVertex3f  ( i     ,   51.0,    0.0);
+            glVertex3f  ( i + 10,   51.0,    0.0);
+            glVertex3f  ( i + 10,   49.0,    0.0);
+            glVertex3f  ( i     ,   49.0,    0.0);
+         } glEnd   ();
+         glBegin         (GL_POLYGON); {
+            glVertex3f  ( i     ,  -51.0,    0.0);
+            glVertex3f  ( i + 10,  -51.0,    0.0);
+            glVertex3f  ( i + 10,  -49.0,    0.0);
+            glVertex3f  ( i     ,  -49.0,    0.0);
+         } glEnd   ();
+      }
+   } glPopMatrix();
+   /*---(create mipmaps)-----------------*/
+   glBindFramebufferEXT  (GL_FRAMEBUFFER_EXT, 0);
+   glBindTexture         (GL_TEXTURE_2D, my.p_tex);
+   glGenerateMipmapEXT   (GL_TEXTURE_2D);
+   glBindTexture         (GL_TEXTURE_2D, 0);
+   /*---(complete)-----------------------*/
+   return 0;
+}
 
 
 
