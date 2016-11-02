@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4s"
-#define VER_TXT   "basic progress ticker texture drawing"
+#define VER_NUM   "0.4t"
+#define VER_TXT   "very nice progress ticker texture drawing"
 
 
 
@@ -229,7 +229,10 @@ struct cACCESSOR {
    char        f_base      [LEN_STR];       /* specific file base name        */
    char        f_suffix    [LEN_STR];       /* file suffix for spreadsheet    */
    char        f_name      [LEN_STR];       /* full file name                 */
-   /*---(progress sizes)--*/
+   /*---(spider pane)-----*/
+   int         s_height;
+   int         s_width;
+   /*---(progress pane)---*/
    int         p_texw;                      /* texture full width             */
    int         p_texh;                      /* texture full height            */
    int         p_top;                       /* topmost y of progress bar      */
@@ -528,6 +531,8 @@ char        SCALE_larger       (void);
 
 char        MOVE_create        (char a_type, tSERVO *a_servo, float a_deg, float a_sec);
 char        MOVE_curall        (float a_time);
+char        MOVE_first         (int a_servo, float *a_time, float *a_deg);
+char        MOVE_next          (float *a_time, float *a_deg);
 
 
 /*---(arachne_dlist)---------------------*/
@@ -543,6 +548,7 @@ void       glx_resize        (uint, uint);
 
 char      TICK_init          (void);
 char      TICK_draw          (void);
+char      TICK_show          (void);
 
 char      draw_begin         (void);      /* prepare drawing environment      */
 char      draw_reset         (void);      /* set starting point for drawing   */

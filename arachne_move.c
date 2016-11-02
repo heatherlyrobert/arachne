@@ -236,7 +236,7 @@ MOVE_addloc        (
 /*====================------------------------------------====================*/
 static void      o___POSITION________________o (void) {;}
 
-char         /*--> add a location to a move object -------[ ------ [ ------ ]-*/
+char         /*--> set the current move for a servo ------[ ------ [ ------ ]-*/
 MOVE_curset        (int a_servo, float a_time)
 {
    /*---(locals)-----------+-----------+-*/
@@ -273,7 +273,7 @@ MOVE_curset        (int a_servo, float a_time)
    return -12;
 }
 
-char         /*--> add a location to a move object -------[ ------ [ ------ ]-*/
+char         /*--> calc the current deg for a servo ------[ ------ [ ------ ]-*/
 MOVE_curone        (int a_servo, float a_time)
 {
    /*---(locals)-----------+-----------+-*/
@@ -315,7 +315,7 @@ MOVE_curone        (int a_servo, float a_time)
       DEBUG_DATA   yLOG_exit    (__FUNCTION__);
       return rc;
    }
-   /*---(set exact time)-----------------*/
+   /*---(calc position)------------------*/
    x_curr  = g_servos [a_servo].curr;
    DEBUG_DATA   yLOG_double  ("sec_beg"   , x_curr->sec_beg);
    DEBUG_DATA   yLOG_double  ("sec_end"   , x_curr->sec_end);
@@ -335,7 +335,7 @@ MOVE_curone        (int a_servo, float a_time)
    return 0;
 }
 
-char         /*--> add a location to a move object -------[ ------ [ ------ ]-*/
+char         /*--> calc current move/deg for all servos --[ ------ [ ------ ]-*/
 MOVE_curall        (float a_time)
 {
    /*---(locals)-----------+-----------+-*/
@@ -351,6 +351,73 @@ MOVE_curall        (float a_time)
    DEBUG_DATA   yLOG_exit    (__FUNCTION__);
    return 0;
 }
+
+static tMOVE   *s_curr = NULL;
+
+char         /*--> retrieve the first move ---------------[ ------ [ ------ ]-*/
+MOVE_first         (int a_servo, float *a_time, float *a_deg)
+{
+   /*---(locals)-----------+-----------+-*/
+   tMOVE      *x_next      = NULL;
+   /*---(header)-------------------------*/
+   DEBUG_DATA   yLOG_senter  (__FUNCTION__);
+   /*---(get current)--------------------*/
+   x_next = g_servos [a_servo].head;
+   if (x_next == NULL) {
+      s_curr  = NULL;
+      *a_time = 0.0;
+      *a_deg  = 0.0;
+      DEBUG_DATA   yLOG_snote   ("no moves for servo");
+      DEBUG_DATA   yLOG_sexit   (__FUNCTION__);
+      return -10;
+   }
+   /*---(return values)------------------*/
+   s_curr  = x_next;
+   *a_time = s_curr->sec_end;
+   *a_deg  = s_curr->deg_end;
+   DEBUG_DATA   yLOG_snote   ("failed");
+   /*---(complete)-----------------------*/
+   DEBUG_DATA   yLOG_sexit   (__FUNCTION__);
+   return 0;
+}
+
+char         /*--> retrieve the next move ----------------[ ------ [ ------ ]-*/
+MOVE_next          (float *a_time, float *a_deg)
+{
+   /*---(locals)-----------+-----------+-*/
+   tMOVE      *x_next      = NULL;
+   /*---(header)-------------------------*/
+   DEBUG_DATA   yLOG_senter  (__FUNCTION__);
+   /*---(get current)--------------------*/
+   x_next = s_curr;
+   if (x_next == NULL) {
+      s_curr  = NULL;
+      *a_time = 0.0;
+      *a_deg  = 0.0;
+      DEBUG_DATA   yLOG_snote   ("no current move for servo");
+      DEBUG_DATA   yLOG_sexit   (__FUNCTION__);
+      return -10;
+   }
+   /*---(get next)-----------------------*/
+   x_next = x_next->m_next;
+   if (x_next == NULL) {
+      s_curr  = NULL;
+      *a_time = 0.0;
+      *a_deg  = 0.0;
+      DEBUG_DATA   yLOG_snote   ("no next move for servo");
+      DEBUG_DATA   yLOG_sexit   (__FUNCTION__);
+      return -11;
+   }
+   /*---(return values)------------------*/
+   s_curr  = x_next;
+   *a_time = x_next->sec_end;
+   *a_deg  = x_next->deg_end;
+   /*---(complete)-----------------------*/
+   DEBUG_DATA   yLOG_snote   ("failed");
+   DEBUG_DATA   yLOG_sexit   (__FUNCTION__);
+   return 0;
+}
+
 
 
 

@@ -71,8 +71,10 @@ PROG_init          (void)
 {
    DEBUG_TOPS  yLOG_enter (__FUNCTION__);
    strlcpy (my.w_title, "arachne_full", LEN_STR);
-   my.w_width   =  700;
-   my.w_height  =  600;
+   my.w_width   =  800;
+   my.w_height  =  700;
+   my.s_width   = my.w_width;
+   my.s_height  =  580;
    /*---(time)---------------------------*/
    SCALE_init ();
    SCALE_find ("--");
@@ -281,8 +283,6 @@ PROG_begin         (void)
    draw_setup   ();
    font_load    ();
    dlist_begin  ();
-   TICK_init    ();
-   TICK_draw    ();
    if (umake_init == 'y') {
       unit_init();
       exit(0);
@@ -290,6 +290,8 @@ PROG_begin         (void)
    yGOD_start();
    /*> kinetics_scripter();                                                           <*/
    gait.dmax   = 100;
+   TICK_init    ();
+   TICK_draw    ();
    draw_main      ();
    /*> stat_masscenter();                                                             <*/
    DEBUG_PROG   yLOG_exit    (__FUNCTION__);
