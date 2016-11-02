@@ -290,9 +290,6 @@ PROG_begin         (void)
    yGOD_start();
    /*> kinetics_scripter();                                                           <*/
    gait.dmax   = 100;
-   TICK_init    ();
-   TICK_draw    ();
-   draw_main      ();
    /*> stat_masscenter();                                                             <*/
    DEBUG_PROG   yLOG_exit    (__FUNCTION__);
    return 0;

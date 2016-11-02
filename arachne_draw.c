@@ -263,6 +263,10 @@ TICK_draw          (void)
    int       rc      = 0;                   /* simple return code             */
    char      x_msg         [100];
    int       x_inc         = 10;
+   float     x_sec1        = 0;
+   float     x_deg1        = 0;
+   float     x_sec2        = 0;
+   float     x_deg2        = 0;
    /*---(setup)--------------------------*/
    glViewport            (0.0,  0.0, my.p_texw, my.p_texh);
    glMatrixMode          (GL_PROJECTION);
@@ -331,36 +335,53 @@ TICK_draw          (void)
       }
    } glPopMatrix();
    /*---(show leg angle curves)----------*/
+   glColor4f    (1.00f, 0.00f, 0.00f, 1.0f);
+   glLineWidth  ( 4.0f);
    glPushMatrix(); {
-      glLineWidth  ( 4.00f);
-      glColor4f    (1.0f, 0.0f, 0.0f, 1.0f);
-      glBegin(GL_LINE_STRIP); {
-         glVertex3f  (    0,   25.0,   50.0);
-         glVertex3f  (  200,    0.0,   50.0);
-         glVertex3f  (  350,  -20.0,   50.0);
-         glVertex3f  (  600,  -35.0,   50.0);
-         glVertex3f  (  950,  -10.0,   50.0);
-         glVertex3f  ( 1200,   25.0,   50.0);
-      } glEnd   ();
+      rc = MOVE_first (  9, &x_sec1, &x_deg1);
+      printf ("first   sec = %5.2f, deg = %5.2f\n", x_sec1, x_deg1);
+      while (rc >= 0) {
+         rc = MOVE_next  (&x_sec2, &x_deg2);
+         printf ("next    sec = %5.2f, deg = %5.2f\n", x_sec2, x_deg2);
+         if (rc <  0) break;
+         glBegin(GL_LINE_STRIP); {
+            glVertex3f  (  x_sec1 * x_inc, x_deg1,   50.0);
+            glVertex3f  (  x_sec2 * x_inc, x_deg2,   50.0);
+         } glEnd   ();
+         x_sec1 = x_sec2;
+         x_deg1 = x_deg2;
+      }
    } glPopMatrix();
+   /*> glPushMatrix(); {                                                              <* 
+    *>    glLineWidth  ( 4.00f);                                                      <* 
+    *>    glColor4f    (1.0f, 0.0f, 0.0f, 1.0f);                                      <* 
+    *>    glBegin(GL_LINE_STRIP); {                                                   <* 
+    *>       glVertex3f  (    0,   25.0,   50.0);                                     <* 
+    *>       glVertex3f  (  200,    0.0,   50.0);                                     <* 
+    *>       glVertex3f  (  350,  -20.0,   50.0);                                     <* 
+    *>       glVertex3f  (  600,  -35.0,   50.0);                                     <* 
+    *>       glVertex3f  (  950,  -10.0,   50.0);                                     <* 
+    *>       glVertex3f  ( 1200,   25.0,   50.0);                                     <* 
+    *>    } glEnd   ();                                                               <* 
+    *> } glPopMatrix();                                                               <*/
    /*---(show leg angle curves)----------*/
-   glPushMatrix(); {
-      glLineWidth  ( 4.00f);
-      glColor4f    (0.5f, 1.0f, 0.0f, 1.0f);
-      glBegin(GL_LINE_STRIP); {
-         glVertex3f  (    0,    0.0,   50.0);
-         glVertex3f  ( 1200,    0.0,   50.0);
-      } glEnd   ();
-   } glPopMatrix();
+   /*> glPushMatrix(); {                                                              <* 
+    *>    glLineWidth  ( 4.00f);                                                      <* 
+    *>    glColor4f    (0.5f, 1.0f, 0.0f, 1.0f);                                      <* 
+    *>    glBegin(GL_LINE_STRIP); {                                                   <* 
+    *>       glVertex3f  (    0,    0.0,   50.0);                                     <* 
+    *>       glVertex3f  ( 1200,    0.0,   50.0);                                     <* 
+    *>    } glEnd   ();                                                               <* 
+    *> } glPopMatrix();                                                               <*/
    /*---(show leg angle curves)----------*/
-   glPushMatrix(); {
-      glLineWidth  ( 4.00f);
-      glColor4f    (0.0f, 0.5f, 1.0f, 1.0f);
-      glBegin(GL_LINE_STRIP); {
-         glVertex3f  (    0,  -25.0,   50.0);
-         glVertex3f  ( 1200,  -25.0,   50.0);
-      } glEnd   ();
-   } glPopMatrix();
+   /*> glPushMatrix(); {                                                              <* 
+    *>    glLineWidth  ( 4.00f);                                                      <* 
+    *>    glColor4f    (0.0f, 0.5f, 1.0f, 1.0f);                                      <* 
+    *>    glBegin(GL_LINE_STRIP); {                                                   <* 
+    *>       glVertex3f  (    0,  -25.0,   50.0);                                     <* 
+    *>       glVertex3f  ( 1200,  -25.0,   50.0);                                     <* 
+    *>    } glEnd   ();                                                               <* 
+    *> } glPopMatrix();                                                               <*/
    /*---(create mipmaps)-----------------*/
    glBindFramebufferEXT  (GL_FRAMEBUFFER_EXT, 0);
    glBindTexture         (GL_TEXTURE_2D, my.p_tex);

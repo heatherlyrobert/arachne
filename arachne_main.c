@@ -19,7 +19,9 @@ main (int argc, char *argv[])
       exit (-1);
    }
    SCRP_main   ();
-   MOVE_curall (5.0);
+   TICK_init    ();
+   TICK_draw    ();
+   draw_main      ();
    /*> if (is_test) printf("\nspider--------------------------------------------begin---\n\n");   <*/
    /*> strcpy(its_text, " ");                                                         <*/
    /*> counter = 0;                                                                   <*/

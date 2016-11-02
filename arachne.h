@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4t"
-#define VER_TXT   "very nice progress ticker texture drawing"
+#define VER_NUM   "0.4u"
+#define VER_TXT   "reads scripted moves for a servo and displays on progress ticker"
 
 
 
@@ -531,8 +531,8 @@ char        SCALE_larger       (void);
 
 char        MOVE_create        (char a_type, tSERVO *a_servo, float a_deg, float a_sec);
 char        MOVE_curall        (float a_time);
-char        MOVE_first         (int a_servo, float *a_time, float *a_deg);
-char        MOVE_next          (float *a_time, float *a_deg);
+char        MOVE_first         (int a_servo, float *a_sec, float *a_deg);
+char        MOVE_next          (float *a_sec, float *a_deg);
 
 
 /*---(arachne_dlist)---------------------*/

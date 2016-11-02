@@ -355,7 +355,7 @@ MOVE_curall        (float a_time)
 static tMOVE   *s_curr = NULL;
 
 char         /*--> retrieve the first move ---------------[ ------ [ ------ ]-*/
-MOVE_first         (int a_servo, float *a_time, float *a_deg)
+MOVE_first         (int a_servo, float *a_sec, float *a_deg)
 {
    /*---(locals)-----------+-----------+-*/
    tMOVE      *x_next      = NULL;
@@ -365,7 +365,7 @@ MOVE_first         (int a_servo, float *a_time, float *a_deg)
    x_next = g_servos [a_servo].head;
    if (x_next == NULL) {
       s_curr  = NULL;
-      *a_time = 0.0;
+      *a_sec  = 0.0;
       *a_deg  = 0.0;
       DEBUG_DATA   yLOG_snote   ("no moves for servo");
       DEBUG_DATA   yLOG_sexit   (__FUNCTION__);
@@ -373,7 +373,7 @@ MOVE_first         (int a_servo, float *a_time, float *a_deg)
    }
    /*---(return values)------------------*/
    s_curr  = x_next;
-   *a_time = s_curr->sec_end;
+   *a_sec  = s_curr->sec_end;
    *a_deg  = s_curr->deg_end;
    DEBUG_DATA   yLOG_snote   ("failed");
    /*---(complete)-----------------------*/
@@ -382,7 +382,7 @@ MOVE_first         (int a_servo, float *a_time, float *a_deg)
 }
 
 char         /*--> retrieve the next move ----------------[ ------ [ ------ ]-*/
-MOVE_next          (float *a_time, float *a_deg)
+MOVE_next          (float *a_sec, float *a_deg)
 {
    /*---(locals)-----------+-----------+-*/
    tMOVE      *x_next      = NULL;
@@ -392,17 +392,17 @@ MOVE_next          (float *a_time, float *a_deg)
    x_next = s_curr;
    if (x_next == NULL) {
       s_curr  = NULL;
-      *a_time = 0.0;
+      *a_sec  = 0.0;
       *a_deg  = 0.0;
       DEBUG_DATA   yLOG_snote   ("no current move for servo");
       DEBUG_DATA   yLOG_sexit   (__FUNCTION__);
       return -10;
    }
    /*---(get next)-----------------------*/
-   x_next = x_next->m_next;
+   x_next = x_next->s_next;
    if (x_next == NULL) {
       s_curr  = NULL;
-      *a_time = 0.0;
+      *a_sec  = 0.0;
       *a_deg  = 0.0;
       DEBUG_DATA   yLOG_snote   ("no next move for servo");
       DEBUG_DATA   yLOG_sexit   (__FUNCTION__);
@@ -410,7 +410,7 @@ MOVE_next          (float *a_time, float *a_deg)
    }
    /*---(return values)------------------*/
    s_curr  = x_next;
-   *a_time = x_next->sec_end;
+   *a_sec  = x_next->sec_end;
    *a_deg  = x_next->deg_end;
    /*---(complete)-----------------------*/
    DEBUG_DATA   yLOG_snote   ("failed");
