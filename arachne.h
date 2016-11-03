@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4v"
-#define VER_TXT   "progress ticker redraws and relabels as scale changes"
+#define VER_NUM   "0.4w"
+#define VER_TXT   "progress ticker with better labels and scale shown"
 
 
 
@@ -246,7 +246,7 @@ struct cACCESSOR {
    char        p_scale;                     /* scale of zoom                  */
    float       p_inc;                       /* increment for h,l              */
    char        p_base;                      /* base unit for display          */
-   int         p_multi;                     /* label multiple                 */
+   float       p_multi;                     /* label multiple                 */
    float       p_min;                       /* min progress bar position      */
    float       p_beg;                       /* beg of screen prog bar position*/
    float       p_cur;                       /* current progess bar position   */

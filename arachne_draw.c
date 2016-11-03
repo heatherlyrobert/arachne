@@ -21,34 +21,34 @@ struct tSCALE {
    float       unit;
    char        base;
    float       conv;
-   int         multi;
+   float       multi;
 } g_scale [MAX_SCALE] = {
-   { "T-", "tera"          , "teraseconds"       ,  12 , 1000000000000.0            , 'T' , 1000000000000.0            ,   1 },
-   { "G3", "giga3"         , "100 gigaseconds"   ,  11 ,  100000000000.0            , 'G' ,    1000000000.0            , 100 },
-   { "G2", "giga2"         , "10 gigaseconds"    ,  10 ,   10000000000.0            , 'G' ,    1000000000.0            ,  10 },
-   { "G-", "giga"          , "gigaseconds"       ,   9 ,    1000000000.0            , 'G' ,    1000000000.0            ,   1 },
-   { "M3", "mega3"         , "100 megaseconds"   ,   6 ,     100000000.0            , 'M' ,       1000000.0            , 100 },
-   { "M2", "mega2"         , "10 megaseconds"    ,   6 ,      10000000.0            , 'M' ,       1000000.0            ,  10 },
-   { "M-", "mega"          , "megaseconds"       ,   6 ,       1000000.0            , 'M' ,       1000000.0            ,   1 },
-   { "K3", "kilo3"         , "100 kiloseconds"   ,   5 ,        100000.0            , 'K' ,          1000.0            , 100 },
-   { "K2", "kilo2"         , "10 kiloseconds"    ,   4 ,         10000.0            , 'K' ,          1000.0            ,  10 },
-   { "K-", "kilo"          , "kiloseconds"       ,   3 ,          1000.0            , 'K' ,          1000.0            ,   1 },
-   { "H-", "hecto"         , "hectoseconds"      ,   2 ,           100.0            , 'H' ,           100.0            ,   1 },
-   { "D-", "deca"          , "decaseconds"       ,   1 ,            10.0            , 'D' ,            10.0            ,   1 },
-   { "--", "secs"          , "seconds"           ,   0 ,             1.0            , ' ' ,             1.0            ,   1 },
-   { "d-", "deci"          , "deciseconds"       ,  -1 ,             0.1            , 'd' ,             0.1            ,   1 },
-   { "c-", "centi"         , "centiseconds"      ,  -2 ,             0.01           , 'c' ,             0.01           ,   1 },
-   { "m-", "milli"         , "milliseconds"      ,  -3 ,             0.001          , 'm' ,             0.001          ,   1 },
-   { "u3", "micro3"        , "100 microseconds"  ,  -4 ,             0.0001         , 'u' ,             0.000001       , 100 },
-   { "u2", "micro2"        , "10 microseconds"   ,  -5 ,             0.00001        , 'u' ,             0.000001       ,  10 },
-   { "u-", "micro"         , "microseconds"      ,  -6 ,             0.000001       , 'u' ,             0.000001       ,   1 },
-   { "n3", "nano3"         , "100 nanoseconds"   ,  -7 ,             0.0000001      , 'n' ,             0.000000001    , 100 },
-   { "n2", "nano2"         , "10 nanoseconds"    ,  -8 ,             0.00000001     , 'n' ,             0.000000001    ,  10 },
-   { "n-", "nano"          , "nanoseconds"       ,  -9 ,             0.000000001    , 'n' ,             0.000000001    ,   1 },
-   { "p3", "pico2"         , "100 picoseconds"   , -10 ,             0.0000000001   , 'p' ,             0.000000000001 , 100 },
-   { "p2", "pico3"         , "10 picoseconds"    , -11 ,             0.00000000001  , 'p' ,             0.000000000001 ,  10 },
-   { "p-", "pico"          , "picoseconds"       , -12 ,             0.000000000001 , 'p' ,             0.000000000001 ,   1 },
-   { "??", "----"          , "end-of-scales"     ,   0 ,             0.0            , '-' ,             0.0            ,   1 },
+   { "T-", "tera"          , "terasecond"        ,  12 , 1000000000000.0            , 'T' , 1000000000000.0            ,   1.0   },
+   { "G3", "giga3"         , "100 gigasecond"    ,  11 ,  100000000000.0            , 'T' ,    1000000000.0            ,   0.1   },
+   { "G2", "giga2"         , "10 gigasecond"     ,  10 ,   10000000000.0            , 'G' ,    1000000000.0            ,  10.0   },
+   { "G-", "giga"          , "gigasecond"        ,   9 ,    1000000000.0            , 'G' ,    1000000000.0            ,   1.0   },
+   { "M3", "mega3"         , "100 megasecond"    ,   6 ,     100000000.0            , 'G' ,       1000000.0            ,   0.1   },
+   { "M2", "mega2"         , "10 megasecond"     ,   6 ,      10000000.0            , 'M' ,       1000000.0            ,  10.0   },
+   { "M-", "mega"          , "megasecond"        ,   6 ,       1000000.0            , 'M' ,       1000000.0            ,   1.0   },
+   { "K3", "kilo3"         , "100 kilosecond"    ,   5 ,        100000.0            , 'M' ,          1000.0            ,   0.1   },
+   { "K2", "kilo2"         , "10 kilosecond"     ,   4 ,         10000.0            , 'K' ,          1000.0            ,  10.0   },
+   { "K-", "kilo"          , "kilosecond"        ,   3 ,          1000.0            , 'K' ,          1000.0            ,   1.0   },
+   { "H-", "hecto"         , "hectosecond"       ,   2 ,           100.0            , 'K' ,           100.0            ,   0.1   },
+   { "D-", "deca"          , "decasecond"        ,   1 ,            10.0            , 'H' ,            10.0            ,   0.1   },
+   { "--", "secs"          , "second"            ,   0 ,             1.0            , 'D' ,             1.0            ,   0.1   },
+   { "d-", "deci"          , "decisecond"        ,  -1 ,             0.1            , 's' ,             0.1            ,   0.1   },
+   { "c-", "centi"         , "centisecond"       ,  -2 ,             0.01           , 'd' ,             0.01           ,   0.1   },
+   { "m-", "milli"         , "millisecond"       ,  -3 ,             0.001          , 'c' ,             0.001          ,   0.1   },
+   { "u3", "micro3"        , "100 microsecond"   ,  -4 ,             0.0001         , 'm' ,             0.000001       ,   0.1   },
+   { "u2", "micro2"        , "10 microsecond"    ,  -5 ,             0.00001        , 'u' ,             0.000001       ,  10.0   },
+   { "u-", "micro"         , "microsecond"       ,  -6 ,             0.000001       , 'u' ,             0.000001       ,   1.0   },
+   { "n3", "nano3"         , "100 nanosecond"    ,  -7 ,             0.0000001      , 'u' ,             0.000000001    ,   0.1   },
+   { "n2", "nano2"         , "10 nanosecond"     ,  -8 ,             0.00000001     , 'n' ,             0.000000001    ,  10.0   },
+   { "n-", "nano"          , "nanosecond"        ,  -9 ,             0.000000001    , 'n' ,             0.000000001    ,   1.0   },
+   { "p3", "pico2"         , "100 picosecond"    , -10 ,             0.0000000001   , 'n' ,             0.000000000001 ,   0.1   },
+   { "p2", "pico3"         , "10 picosecond"     , -11 ,             0.00000000001  , 'p' ,             0.000000000001 ,  10.0   },
+   { "p-", "pico"          , "picosecond"        , -12 ,             0.000000000001 , 'p' ,             0.000000000001 ,   1.0   },
+   { "??", "----"          , "end-of-scales"     ,   0 ,             0.0            , '-' ,             0.0            ,   1.0   },
 };
 
 /*===[[ TYPEDEFS ]]===========================================================*/
@@ -295,9 +295,10 @@ TICK_draw          (void)
    glPushMatrix(); {
       for (i = 0; i < my.p_texw; i += x_inc) {
          /*---(time bars)----------------*/
-         if      (i % (x_inc * 10) == 0)  glColor4f   (0.20f, 0.10f, 0.00f, 1.0f);
-         else if (i % (x_inc * 2 ) == 0)  glColor4f   (0.15f, 0.07f, 0.00f, 1.0f);
-         else                             glColor4f   (0.10f, 0.05f, 0.00f, 1.0f);
+         if      (i % (x_inc * 100) == 0)  glColor4f   (0.40f, 0.20f, 0.00f, 1.0f);
+         else if (i % (x_inc * 10 ) == 0)  glColor4f   (0.20f, 0.10f, 0.00f, 1.0f);
+         else if (i % (x_inc * 2  ) == 0)  glColor4f   (0.15f, 0.07f, 0.00f, 1.0f);
+         else                              glColor4f   (0.10f, 0.05f, 0.00f, 1.0f);
          for (j = -100; j <= 100; j += 50) {
             glBegin         (GL_POLYGON); {
                glVertex3f  ( i        , j + 48,    0.0);
@@ -329,21 +330,21 @@ TICK_draw          (void)
             glVertex3f  ( i        , -8          ,    5.0);
          } glEnd   ();
          /*---(timelables)---------------*/
-         if      (i % (x_inc * 10) == 0) {
+         if (i % (x_inc * 10) == 0) {
+            snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_inc) * my.p_multi), my.p_base);
             glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
             glPushMatrix(); {
-               /*> snprintf     (x_msg, 50, "%d%c", i / my.p_multi, my.p_base);       <*/
-               snprintf     (x_msg, 50, "%d%c", (i / x_inc) * my.p_multi, my.p_base);
                glTranslatef ( i , my.p_bot + 25.0 ,    20.0  );
-               yFONT_print  (txf_bg,  16, YF_TOPLEF, x_msg);
+               yFONT_print  (txf_bg,  14, YF_TOPLEF, x_msg);
             } glPopMatrix();
          }
          /*---(title)--------------------*/
          if      (i % (x_inc * 100) == 0) {
+            snprintf     (x_msg, 100, "timeline in %s increments", g_scale [my.p_scale].desc);
             glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
             glPushMatrix(); {
-               glTranslatef ( i , my.p_top -  30.0 ,    20.0  );
-               yFONT_print  (txf_bg,  20, YF_BOTLEF, "script timeline");
+               glTranslatef ( i , my.p_top -  25.0 ,    20.0  );
+               yFONT_print  (txf_bg,  16, YF_BOTLEF, x_msg);
             } glPopMatrix();
          }
       }
