@@ -14,6 +14,7 @@ char   flag_view  = 0;
 void draw_spider();
 
 struct tSCALE {
+   char        type;
    char        code        [LEN_LABEL];
    char        label       [LEN_LABEL];
    char        desc        [LEN_STR  ];
@@ -23,32 +24,40 @@ struct tSCALE {
    float       conv;
    float       multi;
 } g_scale [MAX_SCALE] = {
-   { "T-", "tera"          , "terasecond"        ,  12 , 1000000000000.0            , 'T' , 1000000000000.0            ,   1.0   },
-   { "G3", "giga3"         , "100 gigasecond"    ,  11 ,  100000000000.0            , 'T' ,    1000000000.0            ,   0.1   },
-   { "G2", "giga2"         , "10 gigasecond"     ,  10 ,   10000000000.0            , 'G' ,    1000000000.0            ,  10.0   },
-   { "G-", "giga"          , "gigasecond"        ,   9 ,    1000000000.0            , 'G' ,    1000000000.0            ,   1.0   },
-   { "M3", "mega3"         , "100 megasecond"    ,   6 ,     100000000.0            , 'G' ,       1000000.0            ,   0.1   },
-   { "M2", "mega2"         , "10 megasecond"     ,   6 ,      10000000.0            , 'M' ,       1000000.0            ,  10.0   },
-   { "M-", "mega"          , "megasecond"        ,   6 ,       1000000.0            , 'M' ,       1000000.0            ,   1.0   },
-   { "K3", "kilo3"         , "100 kilosecond"    ,   5 ,        100000.0            , 'M' ,          1000.0            ,   0.1   },
-   { "K2", "kilo2"         , "10 kilosecond"     ,   4 ,         10000.0            , 'K' ,          1000.0            ,  10.0   },
-   { "K-", "kilo"          , "kilosecond"        ,   3 ,          1000.0            , 'K' ,          1000.0            ,   1.0   },
-   { "H-", "hecto"         , "hectosecond"       ,   2 ,           100.0            , 'K' ,           100.0            ,   0.1   },
-   { "D-", "deca"          , "decasecond"        ,   1 ,            10.0            , 'H' ,            10.0            ,   0.1   },
-   { "--", "secs"          , "second"            ,   0 ,             1.0            , 'D' ,             1.0            ,   0.1   },
-   { "d-", "deci"          , "decisecond"        ,  -1 ,             0.1            , 's' ,             0.1            ,   0.1   },
-   { "c-", "centi"         , "centisecond"       ,  -2 ,             0.01           , 'd' ,             0.01           ,   0.1   },
-   { "m-", "milli"         , "millisecond"       ,  -3 ,             0.001          , 'c' ,             0.001          ,   0.1   },
-   { "u3", "micro3"        , "100 microsecond"   ,  -4 ,             0.0001         , 'm' ,             0.000001       ,   0.1   },
-   { "u2", "micro2"        , "10 microsecond"    ,  -5 ,             0.00001        , 'u' ,             0.000001       ,  10.0   },
-   { "u-", "micro"         , "microsecond"       ,  -6 ,             0.000001       , 'u' ,             0.000001       ,   1.0   },
-   { "n3", "nano3"         , "100 nanosecond"    ,  -7 ,             0.0000001      , 'u' ,             0.000000001    ,   0.1   },
-   { "n2", "nano2"         , "10 nanosecond"     ,  -8 ,             0.00000001     , 'n' ,             0.000000001    ,  10.0   },
-   { "n-", "nano"          , "nanosecond"        ,  -9 ,             0.000000001    , 'n' ,             0.000000001    ,   1.0   },
-   { "p3", "pico2"         , "100 picosecond"    , -10 ,             0.0000000001   , 'n' ,             0.000000000001 ,   0.1   },
-   { "p2", "pico3"         , "10 picosecond"     , -11 ,             0.00000000001  , 'p' ,             0.000000000001 ,  10.0   },
-   { "p-", "pico"          , "picosecond"        , -12 ,             0.000000000001 , 'p' ,             0.000000000001 ,   1.0   },
-   { "??", "----"          , "end-of-scales"     ,   0 ,             0.0            , '-' ,             0.0            ,   1.0   },
+   { 'm' , "T-", "tera"          , "terasecond"        ,  12 , 1000000000000.0            , 'T' , 1000000000000.0            ,   1.0   },
+   { 'm' , "GH", "gigah"         , "100 gigasecond"    ,  11 ,  100000000000.0            , 'T' ,    1000000000.0            ,   0.1   },
+   { 'm' , "GD", "gigad"         , "10 gigasecond"     ,  10 ,   10000000000.0            , 'G' ,    1000000000.0            ,  10.0   },
+   { 'm' , "G-", "giga"          , "gigasecond"        ,   9 ,    1000000000.0            , 'G' ,    1000000000.0            ,   1.0   },
+   { 'm' , "MH", "megah"         , "100 megasecond"    ,   6 ,     100000000.0            , 'G' ,       1000000.0            ,   0.1   },
+   { 'm' , "MD", "megad"         , "10 megasecond"     ,   6 ,      10000000.0            , 'M' ,       1000000.0            ,  10.0   },
+   { 'm' , "M-", "mega"          , "megasecond"        ,   6 ,       1000000.0            , 'M' ,       1000000.0            ,   1.0   },
+   { 'm' , "KH", "kiloh"         , "100 kilosecond"    ,   5 ,        100000.0            , 'M' ,          1000.0            ,   0.1   },
+   { 'm' , "KD", "kilod"         , "10 kilosecond"     ,   4 ,         10000.0            , 'K' ,          1000.0            ,  10.0   },
+   { 'm' , "K-", "kilo"          , "kilosecond"        ,   3 ,          1000.0            , 'K' ,          1000.0            ,   1.0   },
+   { 'm' , "H-", "hecto"         , "hectosecond"       ,   2 ,           100.0            , 'K' ,           100.0            ,   0.1   },
+   { 'm' , "D-", "deca"          , "decasecond"        ,   1 ,            10.0            , 'H' ,            10.0            ,   0.1   },
+   { '-' , "-5", "secs5"         , "5 second"          ,   0 ,             5.0            , 'D' ,             5.0            ,   0.5   },
+   { '-' , "-2", "secs2"         , "2 second"          ,   0 ,             2.0            , 'D' ,             2.0            ,   0.2   },
+   { 'm' , "--", "secs"          , "second"            ,   0 ,             1.0            , 'D' ,             1.0            ,   0.1   },
+   { '-' , "d5", "deci5"         , "5 decisecond"      ,  -1 ,             0.5            , 's' ,             0.5            ,   0.5   },
+   { '-' , "d2", "deci2"         , "2 decisecond"      ,  -1 ,             0.2            , 's' ,             0.2            ,   0.5   },
+   { 'm' , "d-", "deci"          , "decisecond"        ,  -1 ,             0.1            , 's' ,             0.1            ,   0.1   },
+   { '-' , "c5", "centi5"        , "5 centisecond"     ,  -1 ,             0.05           , 'd' ,             0.050          ,   0.5   },
+   { '-' , "c2", "centi2"        , "2 centisecond"     ,  -1 ,             0.02           , 'd' ,             0.020          ,   0.2   },
+   { 'm' , "c-", "centi"         , "centisecond"       ,  -2 ,             0.01           , 'd' ,             0.010          ,   0.1   },
+   { '-' , "m5", "milli"         , "5 millisecond"     ,  -3 ,             0.005          , 'c' ,             0.005          ,   0.5   },
+   { '-' , "m2", "milli"         , "2 millisecond"     ,  -3 ,             0.002          , 'c' ,             0.002          ,   0.2   },
+   { 'm' , "m-", "milli"         , "millisecond"       ,  -3 ,             0.001          , 'c' ,             0.001          ,   0.1   },
+   { 'm' , "uH", "microh"        , "100 microsecond"   ,  -4 ,             0.0001         , 'm' ,             0.000001       ,   0.1   },
+   { 'm' , "uD", "microd"        , "10 microsecond"    ,  -5 ,             0.00001        , 'u' ,             0.000001       ,  10.0   },
+   { 'm' , "u-", "micro"         , "microsecond"       ,  -6 ,             0.000001       , 'u' ,             0.000001       ,   1.0   },
+   { 'm' , "nH", "nanoh"         , "100 nanosecond"    ,  -7 ,             0.0000001      , 'u' ,             0.000000001    ,   0.1   },
+   { 'm' , "nD", "nanod"         , "10 nanosecond"     ,  -8 ,             0.00000001     , 'n' ,             0.000000001    ,  10.0   },
+   { 'm' , "n-", "nano"          , "nanosecond"        ,  -9 ,             0.000000001    , 'n' ,             0.000000001    ,   1.0   },
+   { 'm' , "pH", "picoh"         , "100 picosecond"    , -10 ,             0.0000000001   , 'n' ,             0.000000000001 ,   0.1   },
+   { 'm' , "pD", "picod"         , "10 picosecond"     , -11 ,             0.00000000001  , 'p' ,             0.000000000001 ,  10.0   },
+   { 'm' , "p-", "pico"          , "picosecond"        , -12 ,             0.000000000001 , 'p' ,             0.000000000001 ,   1.0   },
+   { 'm' , "??", "----"          , "end-of-scales"     ,   0 ,             0.0            , '-' ,             0.0            ,   1.0   },
 };
 
 /*===[[ TYPEDEFS ]]===========================================================*/
@@ -216,8 +225,8 @@ TICK_init          (void)
    DEBUG_GRAF   yLOG_note    ("setting sizes (widths and heights)");
    my.p_texw      = 4000;   /* max allowed single dimension */
    my.p_texh      =  250;
-   my.p_top       =  150;   /* tibia can go to 130 */
-   my.p_bot       = -100;   /* femur can go to -85 */
+   my.p_top       =  125;   /* tibia can go to 130 */
+   my.p_bot       = -125;   /* femur can go to -85 */
    my.p_avail     =   30;
    /*---(handles)------------------------*/
    DEBUG_GRAF   yLOG_note    ("initializing handles (tex, fbo, depth)");
@@ -299,7 +308,7 @@ TICK_draw          (void)
          else if (i % (x_inc * 10 ) == 0)  glColor4f   (0.20f, 0.10f, 0.00f, 1.0f);
          else if (i % (x_inc * 2  ) == 0)  glColor4f   (0.15f, 0.07f, 0.00f, 1.0f);
          else                              glColor4f   (0.10f, 0.05f, 0.00f, 1.0f);
-         for (j = -100; j <= 100; j += 50) {
+         for (j = -100; j <  100; j += 50) {
             glBegin         (GL_POLYGON); {
                glVertex3f  ( i        , j + 48,    0.0);
                glVertex3f  ( i + x_inc, j + 48,    0.0);
@@ -340,7 +349,7 @@ TICK_draw          (void)
          }
          /*---(title)--------------------*/
          if      (i % (x_inc * 100) == 0) {
-            snprintf     (x_msg, 100, "timeline in %s increments", g_scale [my.p_scale].desc);
+            snprintf     (x_msg, 100, "timeline in %s (%s) resolution", g_scale [my.p_scale].desc, g_scale [my.p_scale].code);
             glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
             glPushMatrix(); {
                glTranslatef ( i , my.p_top -  25.0 ,    20.0  );
@@ -352,17 +361,59 @@ TICK_draw          (void)
    /*---(show leg angle curves)----------*/
    x_unit = x_inc / my.p_inc;
    glColor4f    (1.00f, 0.00f, 0.00f, 1.0f);
-   glLineWidth  ( 5.0f);
+   glLineWidth  (15.0f);
    glPushMatrix(); {
       rc = MOVE_first (  9, &x_sec1, &x_deg1);
-      printf ("first   sec = %5.2f, deg = %5.2f, x   = %9.2f\n", x_sec1, x_deg1, x_sec1 * x_unit);
+      /*> printf ("first   sec = %5.2f, deg = %5.2f, x   = %9.2f\n", x_sec1, x_deg1, x_sec1 * x_unit);   <*/
       while (rc >= 0) {
          rc = MOVE_next  (&x_sec2, &x_deg2);
-         printf ("next    sec = %5.2f, deg = %5.2f, x   = %9.2f\n", x_sec2, x_deg2, x_sec2 * x_unit);
+         /*> printf ("next    sec = %5.2f, deg = %5.2f, x   = %9.2f\n", x_sec2, x_deg2, x_sec2 * x_unit);   <*/
          if (rc <  0) break;
          glBegin(GL_LINE_STRIP); {
-            glVertex3f  (  x_sec1 * x_unit, x_deg1,   50.0);
-            glVertex3f  (  x_sec2 * x_unit, x_deg2,   50.0);
+            glVertex3f  (  x_sec1 * x_unit, x_deg1 + 5,   50.0);
+            glVertex3f  (  x_sec2 * x_unit, x_deg2 + 5,   50.0);
+         } glEnd   ();
+         glBegin(GL_LINE_STRIP); {
+            glVertex3f  (  x_sec1 * x_unit, x_deg1 - 5,   50.0);
+            glVertex3f  (  x_sec2 * x_unit, x_deg2 - 5,   50.0);
+         } glEnd   ();
+         x_sec1 = x_sec2;
+         x_deg1 = x_deg2;
+      }
+   } glPopMatrix();
+   glColor4f    (1.00f, 1.00f, 0.00f, 1.0f);
+   glLineWidth  ( 5.0f);
+   glPushMatrix(); {
+      rc = MOVE_first ( 10, &x_sec1, &x_deg1);
+      /*> printf ("first   sec = %5.2f, deg = %5.2f, x   = %9.2f\n", x_sec1, x_deg1, x_sec1 * x_unit);   <*/
+      while (rc >= 0) {
+         rc = MOVE_next  (&x_sec2, &x_deg2);
+         /*> printf ("next    sec = %5.2f, deg = %5.2f, x   = %9.2f\n", x_sec2, x_deg2, x_sec2 * x_unit);   <*/
+         if (rc <  0) break;
+         glBegin(GL_LINE_STRIP); {
+            glVertex3f  (  x_sec1 * x_unit, x_deg1 + 2,   55.0);
+            glVertex3f  (  x_sec2 * x_unit, x_deg2 + 2,   55.0);
+         } glEnd   ();
+         glBegin(GL_LINE_STRIP); {
+            glVertex3f  (  x_sec1 * x_unit, x_deg1 - 2,   55.0);
+            glVertex3f  (  x_sec2 * x_unit, x_deg2 - 2,   55.0);
+         } glEnd   ();
+         x_sec1 = x_sec2;
+         x_deg1 = x_deg2;
+      }
+   } glPopMatrix();
+   glColor4f    (0.00f, 0.50f, 1.00f, 1.0f);
+   glLineWidth  ( 5.0f);
+   glPushMatrix(); {
+      rc = MOVE_first ( 11, &x_sec1, &x_deg1);
+      /*> printf ("first   sec = %5.2f, deg = %5.2f, x   = %9.2f\n", x_sec1, x_deg1, x_sec1 * x_unit);   <*/
+      while (rc >= 0) {
+         rc = MOVE_next  (&x_sec2, &x_deg2);
+         /*> printf ("next    sec = %5.2f, deg = %5.2f, x   = %9.2f\n", x_sec2, x_deg2, x_sec2 * x_unit);   <*/
+         if (rc <  0) break;
+         glBegin(GL_LINE_STRIP); {
+            glVertex3f  (  x_sec1 * x_unit, x_deg1,   60.0);
+            glVertex3f  (  x_sec2 * x_unit, x_deg2,   60.0);
          } glEnd   ();
          x_sec1 = x_sec2;
          x_deg1 = x_deg2;

@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4w"
-#define VER_TXT   "progress ticker with better labels and scale shown"
+#define VER_NUM   "0.4x"
+#define VER_TXT   "progress ticker with new inbetween 2x and 5x scales"
 
 
 
