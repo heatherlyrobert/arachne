@@ -5,73 +5,80 @@
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)== 
 servo         -a-  LF.femu          0.000       0.000 
 servo         -a-  LF.pate          0.000       0.000 
-servo         -a-  LF.tibi          0.000       0.000 
+servo         -a-  LF.tibi         90.000       0.000 
 
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
-servo         -a-  LF.femu        -70.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.femu        -80.000       0.500       0.000       0.000       0.000 
 servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.tibi          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.tibi         90.000       0.500       0.000       0.000       0.000 
 
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
-servo         -a-  LF.femu         70.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.femu         80.000       0.500       0.000       0.000       0.000 
 servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.tibi          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.tibi         90.000       0.500       0.000       0.000       0.000 
 
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
 servo         -a-  LF.femu          0.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.pate        -45.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.tibi          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.pate         45.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.tibi         90.000       0.500       0.000       0.000       0.000 
 
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
 servo         -a-  LF.femu          0.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.pate         90.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.tibi          0.000       0.500       0.000       0.000       0.000 
-
-#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
-servo         -a-  LF.femu          0.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.tibi        -40.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.pate        -90.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.tibi         90.000       0.500       0.000       0.000       0.000 
 
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
 servo         -a-  LF.femu          0.000       0.500       0.000       0.000       0.000 
 servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.tibi         80.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.tibi        130.000       0.500       0.000       0.000       0.000 
 
 
 
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
 servo         -a-  LF.femu          0.000       0.500       0.000       0.000       0.000 
 servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.tibi        -40.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.tibi         10.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  LF.femu        -10.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.tibi         10.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  LF.femu         10.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.tibi         10.000       0.500       0.000       0.000       0.000 
+
+
 
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
 servo         -a-  LF.femu          0.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.pate         90.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.tibi          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.tibi        130.000       0.500       0.000       0.000       0.000 
 
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
 servo         -a-  LF.femu          0.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.pate        -45.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.tibi          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.pate        -90.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.tibi         90.000       0.500       0.000       0.000       0.000 
 
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
-servo         -a-  LF.femu         70.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.tibi          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.pate         45.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.tibi         90.000       0.500       0.000       0.000       0.000 
 
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
-servo         -a-  LF.femu        -70.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.femu         80.000       0.500       0.000       0.000       0.000 
 servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
-servo         -a-  LF.tibi          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  LF.femu        -80.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  LF.tibi         90.000       0.500       0.000       0.000       0.000 
 
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)== 
 servo         -a-  LF.femu          0.000       0.500 
 servo         -a-  LF.pate          0.000       0.500 
-servo         -a-  LF.tibi          0.000       0.500 
-
-#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)== 
-servo         -a-  LF.femu          0.000       0.500 
-servo         -a-  LF.pate          0.000       0.500 
-servo         -a-  LF.tibi          0.000       0.500 
+servo         -a-  LF.tibi         90.000       0.500 
 
 #end-of-file

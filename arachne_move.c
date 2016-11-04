@@ -330,6 +330,12 @@ MOVE_curone        (int a_servo, float a_time)
    x_pos   = x_curr->deg_beg + (x_degs * x_pct);
    DEBUG_DATA   yLOG_double  ("x_pos"     , x_pos);
    g_servos [a_servo].deg = x_pos;
+   /*---(adjust total length)------------*/
+   if (x_end > my.p_len) {
+      DEBUG_DATA   yLOG_note    ("end time greater than current length");
+      DEBUG_DATA   yLOG_double  ("my.p_len"  , my.p_len);
+      my.p_len = x_end;
+   }
    /*---(complete)-----------------------*/
    DEBUG_DATA   yLOG_exit    (__FUNCTION__);
    return 0;

@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4x"
-#define VER_TXT   "progress ticker with new inbetween 2x and 5x scales"
+#define VER_NUM   "0.4y"
+#define VER_TXT   "clean up progress bar drawing and add basic legend"
 
 
 
@@ -225,6 +225,7 @@ struct cACCESSOR {
    char        w_title     [LEN_STR];       /* window title                   */
    int         w_height;                    /* window heigth                  */
    int         w_width;                     /* window width                   */
+   char        w_buffer;                    /* current window buffer/area     */
    /*---(file hanndling)--*/
    char        f_base      [LEN_STR];       /* specific file base name        */
    char        f_suffix    [LEN_STR];       /* file suffix for spreadsheet    */
@@ -238,6 +239,7 @@ struct cACCESSOR {
    int         p_top;                       /* topmost y of progress bar      */
    int         p_bot;                       /* bottommost y of progress bar   */
    float       p_avail;                     /* units available on screen      */
+   float       p_len;                       /* length of script               */
    /*---(progress handles)*/
    uint        p_tex;                       /* texture for image              */
    uint        p_fbo;                       /* framebuffer                    */
@@ -255,6 +257,9 @@ struct cACCESSOR {
    /*---(done)------------*/
 };
 extern      tACCESSOR my;
+
+#define     WIN_MAIN    'a'
+#define     WIN_PROG    'p'
 
 
 
@@ -483,8 +488,8 @@ extern    float     my_calf;
 extern    int       my_curr;
 
 extern    float     my_len;
-extern    float     my_pos;
-extern    float     my_ppos;
+extern    double    my_pos;
+extern    double    my_ppos;
 extern    float     my_run;
 extern    char      my_mode;
 extern    float     my_inc;

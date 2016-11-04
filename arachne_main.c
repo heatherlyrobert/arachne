@@ -64,16 +64,14 @@ main (int argc, char *argv[])
                switch (the_key[0]) {
                case '+': SCALE_smaller ();   /* in  */     break;
                case '-': SCALE_larger  ();   /* out */     break;
+
                case ',': moving  = 'y';                    break;
                case '.': moving  = 'n';                    break;
-               /*> case '-': my_inc -= 1.0;                    break;                 <*/
-               /*> case '+': my_inc += 1.0;                    break;                 <*/
-               case '_': moving  = 'n'; my_pos = 0;        break;
-               case '$': moving  = 'n'; my_pos = my_len;   break;
-               case '>': moving  = 'n'; ++my_pos;          break;
-               case '<': moving  = 'n'; --my_pos;          break;
-               case ')': my_pos += 10; moving = 'n';       break;
-               case '(': my_pos -= 10; moving = 'n';       break;
+               case '>': moving  = 'n'; my_pos +=  my.p_inc;          break;
+               case '<': moving  = 'n'; my_pos -=  my.p_inc;          break;
+               case ')': moving  = 'n'; my_pos +=  my.p_inc * 5;      break;
+               case '(': moving  = 'n'; my_pos -=  my.p_inc * 5;      break;
+
                /*> case 'a': if (flag_annotate == 'y') flag_annotate = 'n'; else flag_annotate = 'y'; break;   <*/
                /*> case 'w': ++flag_view; if (flag_view > 4) flag_view = 0; break;    <*/
                case 'Q': exit(0);         break;
@@ -102,40 +100,36 @@ main (int argc, char *argv[])
                else if (my_vroll  <= -180.0) my_vroll  += 360.0;
                if      (my_vyaw   >   180.0) my_vyaw   -= 360.0;
                else if (my_vyaw   <= -180.0) my_vyaw   += 360.0;
-            } else if (my_mode == 'p') {
-               switch (the_key[0]) {
-               case 'o': my_mode = 'o';  break;
-               case '>': my_inc *= 2.0;  break;
-               case 'n': my_inc  = 1.0;  break;
-               case '<': my_inc /= 2.0;  break;
-               case '0': my_run  = 0  ; my_pos = 0;       break;
-               case '$': my_run  = 0  ; my_pos = my_len;  break;
-               case 'l': my_run  = 0  ; ++my_pos;         break;
-               case 'h': my_run  = 0  ; --my_pos;         break;
-               case 'Q': exit(0);        break;
-               }
+            /*> } else if (my_mode == 'p') {                                          <* 
+             *>    switch (the_key[0]) {                                              <* 
+             *>    case 'o': my_mode = 'o';  break;                                   <* 
+             *>    case '>': my_inc *= 2.0;  break;                                   <* 
+             *>    case 'n': my_inc  = 1.0;  break;                                   <* 
+             *>    case '<': my_inc /= 2.0;  break;                                   <* 
+             *>    case '0': my_run  = 0  ; my_pos = 0;       break;                  <* 
+             *>    case '$': my_run  = 0  ; my_pos = my_len;  break;                  <* 
+             *>    case 'l': my_run  = 0  ; ++my_pos;         break;                  <* 
+             *>    case 'h': my_run  = 0  ; --my_pos;         break;                  <* 
+             *>    case 'Q': exit(0);        break;                                   <* 
+             *>    }                                                                  <*/
             }
             is_moved = 'y';
             break;
          }
       }
       /*> printf ("my_pos = %6.1f, my_ppos = %6.1f\n", my_pos, my_ppos);              <*/
-      /*---(fix inc value)---------------*/
-      if (my_inc >  8.0) my_inc =  8.0;
-      if (my_inc < -8.0) my_inc = -8.0;
       /*---(check boundaries)------------*/
+      if (moving == 'y')  my_pos += my.p_inc / 10.0;
       if (my_pos <  0.0f)   {
          moving = 'n';
          my_pos = 0;
       }
-      if (my_pos >= my_len) {
+      if (my_pos >= 7.0) {
          moving = 'n';
-         my_pos = my_len - 1;
+         my_pos = 7.0;
       }
       gait.pos = my_pos;
       /*---(check boundaries)------------*/
-      if (moving == 'y')  my_pos += my_inc;
-      if (moving == 'y')  my_pos += 1;
       stat_masscenter();
       draw_main();
       if (umake_leg  == 'y')  unit_FK();
@@ -147,8 +141,9 @@ main (int argc, char *argv[])
       /*> timer.tv_nsec =  50000000;   /+---(0.05 sec)---+/                           <*/
       /*> timer.tv_nsec =  25000000;   /+---(0.025 sec)---+/                      <*/
       /*> timer.tv_nsec =      50000000 * my_inc;   /+---(0.005 sec)---+/             <*/
-      timer.tv_nsec =      50000000;            /*---(0.005 sec)---*/
-      nanosleep(&timer, &remain);
+      /*> timer.tv_nsec =      50000000;            /+---(0.005 sec)---+/             <*/
+      timer.tv_nsec =      20000000;            /*---(0.020 sec)---*/
+      nanosleep (&timer, &remain);
    }
    /*> if (is_test) printf("   - done\n\n");                                          <*/
    PROG_end();
