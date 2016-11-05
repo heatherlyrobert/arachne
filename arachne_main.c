@@ -68,88 +68,65 @@ main (int argc, char *argv[])
             the_bytes = XLookupString((XKeyEvent *) &EVNT, the_key, 5, NULL, NULL);
             if (the_bytes < 1) break;
             /*---(handle)----------------*/
+            cch         = the_key [0];
             x_savemode  = MODE_curr ();
-            /*> switch (x_savemode) {                                                 <* 
-             *> case MODE_GOD      : rc = MODE_god      (sch, cch); break;            <* 
-             *> case MODE_MAP      : rc = MODE_map      (sch, cch); break;            <* 
-             *> case MODE_VISUAL   : rc = VISU_mode     (sch, cch); break;            <* 
-             *> case MODE_SOURCE   : rc = MODE_source   (sch, cch); break;            <* 
-             *> case MODE_INPUT    : rc = MODE_input    (sch, cch); break;            <* 
-             *> case MODE_COMMAND  : rc = MODE_command  (' ', cch); break;            <* 
-             *> case SMOD_ERROR    : rc = SMOD_error    (sch, cch); break;            <* 
-             *> case SMOD_SELECT   : rc = SELC_mode     (sch, cch); break;            <* 
-             *> case SMOD_TEXTREG  : rc = TREG_mode     (sch, cch); break;            <* 
-             *> case SMOD_REPLACE  : rc = SMOD_replace  (sch, cch); break;            <* 
-             *> case SMOD_FORMAT   : rc = SMOD_format   (' ', cch); break;            <* 
-             *> case SMOD_BUFFER   : rc = SMOD_buffer   (' ', cch); break;            <* 
-             *> case SMOD_WANDER   : rc = SMOD_wander   (' ', cch); break;            <* 
-             *> case SMOD_REGISTER : rc = REG_mode      (sch, cch); break;            <* 
-             *> case SMOD_MARK     : rc = MARK_mode     (sch, cch); break;            <* 
-             *> case SMOD_MENUS    : rc = SMOD_menus    (sch, cch); break;            <* 
-             *> default            : rc = MODE_map      (sch, cch); break;            <* 
-             *> }                                                                     <*/
+            switch (x_savemode) {
+            case MODE_GOD      : rc = MODE_god      (sch, cch); break;
+            case MODE_PROGRESS : rc = MODE_god      (sch, cch); break;
+                                 /*> case MODE_MAP      : rc = MODE_map      (sch, cch); break;            <* 
+                                  *> case MODE_VISUAL   : rc = VISU_mode     (sch, cch); break;            <* 
+                                  *> case MODE_SOURCE   : rc = MODE_source   (sch, cch); break;            <* 
+                                  *> case MODE_INPUT    : rc = MODE_input    (sch, cch); break;            <* 
+                                  *> case MODE_COMMAND  : rc = MODE_command  (' ', cch); break;            <* 
+                                  *> case SMOD_ERROR    : rc = SMOD_error    (sch, cch); break;            <* 
+                                  *> case SMOD_SELECT   : rc = SELC_mode     (sch, cch); break;            <* 
+                                  *> case SMOD_TEXTREG  : rc = TREG_mode     (sch, cch); break;            <* 
+                                  *> case SMOD_REPLACE  : rc = SMOD_replace  (sch, cch); break;            <* 
+                                  *> case SMOD_FORMAT   : rc = SMOD_format   (' ', cch); break;            <* 
+                                  *> case SMOD_BUFFER   : rc = SMOD_buffer   (' ', cch); break;            <* 
+                                  *> case SMOD_WANDER   : rc = SMOD_wander   (' ', cch); break;            <* 
+                                  *> case SMOD_REGISTER : rc = REG_mode      (sch, cch); break;            <* 
+                                  *> case SMOD_MARK     : rc = MARK_mode     (sch, cch); break;            <* 
+                                  *> case SMOD_MENUS    : rc = SMOD_menus    (sch, cch); break;            <*/
+            default            : rc = MODE_god      (sch, cch); break;
+            }
             /*---(setup status line)-----*/
             if   (x_savemode != MODE_curr() || MODE_curr() == MODE_COMMAND) {
                MODE_message ();
             }
-
-
-            if (my_mode == 'o') {
-               /*> printf("key = %3d\n", the_key[0]);                                 <*/
-               switch (the_key[0]) {
-               case '+': SCALE_smaller ();   /* in  */     break;
-               case '-': SCALE_larger  ();   /* out */     break;
-
-               case ',': moving  = 'y';                    break;
-               case '.': moving  = 'n';                    break;
-               case '>': moving  = 'n'; my_pos +=  my.p_inc;          break;
-               case '<': moving  = 'n'; my_pos -=  my.p_inc;          break;
-               case ')': moving  = 'n'; my_pos +=  my.p_inc * 5;      break;
-               case '(': moving  = 'n'; my_pos -=  my.p_inc * 5;      break;
-
-                         /*> case 'a': if (flag_annotate == 'y') flag_annotate = 'n'; else flag_annotate = 'y'; break;   <*/
-                         /*> case 'w': ++flag_view; if (flag_view > 4) flag_view = 0; break;    <*/
-               case 'Q': exit(0);         break;
-               case '\e': my_mode = 'p';  break;
-               /* crab  /horz  */  case 'h': case 'l': case 'H': case 'L': 
-               /* boom  /vert  */  case 'j': case 'k': case 'J': case 'K':
-               /* dolly /zoom  */  case 'i': case 'I': case 'o': case 'O':
-               /* x-axis/pitch */  case 'p': case 'P': case 'a': case 'A':
-               /* y-axis/yaw   */  case 'y': case 'Y': case 't': case 'T':
-               /* z-axis/roll  */  case 'r': case 'R': case 'w': case 'W':
-               case '0': case '1': case '2': case '3': case '4': case '5':
-               case '6': case '7': case '8': case '9':
-                          yGOD_key(the_key[0]);
-                          break;
-               case 'u': view_unit();      break;
-               }
-               if      (my_pitch  >   180.0) my_pitch  -= 360.0;
-               else if (my_pitch  <= -180.0) my_pitch  += 360.0;
-               if      (my_roll   >   180.0) my_roll   -= 360.0;
-               else if (my_roll   <= -180.0) my_roll   += 360.0;
-               if      (my_yaw    >   180.0) my_yaw    -= 360.0;
-               else if (my_yaw    <= -180.0) my_yaw    += 360.0;
-               if      (my_vpitch >   180.0) my_vpitch -= 360.0;
-               else if (my_vpitch <= -180.0) my_vpitch += 360.0;
-               if      (my_vroll  >   180.0) my_vroll  -= 360.0;
-               else if (my_vroll  <= -180.0) my_vroll  += 360.0;
-               if      (my_vyaw   >   180.0) my_vyaw   -= 360.0;
-               else if (my_vyaw   <= -180.0) my_vyaw   += 360.0;
-               /*> } else if (my_mode == 'p') {                                          <* 
-                *>    switch (the_key[0]) {                                              <* 
-                *>    case 'o': my_mode = 'o';  break;                                   <* 
-                *>    case '>': my_inc *= 2.0;  break;                                   <* 
-                *>    case 'n': my_inc  = 1.0;  break;                                   <* 
-                *>    case '<': my_inc /= 2.0;  break;                                   <* 
-                *>    case '0': my_run  = 0  ; my_pos = 0;       break;                  <* 
-                *>    case '$': my_run  = 0  ; my_pos = my_len;  break;                  <* 
-                *>    case 'l': my_run  = 0  ; ++my_pos;         break;                  <* 
-                *>    case 'h': my_run  = 0  ; --my_pos;         break;                  <* 
-                *>    case 'Q': exit(0);        break;                                   <* 
-                *>    }                                                                  <*/
-         }
-         is_moved = 'y';
-         break;
+            /*---(progress)-------------*/
+            /*> if (my_mode == 'o') {                                                 <* 
+             *>    switch (the_key[0]) {                                              <* 
+             *>    case '+': SCALE_smaller ();   /+ in  +/     break;                 <* 
+             *>    case '-': SCALE_larger  ();   /+ out +/     break;                 <* 
+             *>    case ',': moving  = 'y';                    break;                 <* 
+             *>    case '.': moving  = 'n';                    break;                 <* 
+             *>    case '>': moving  = 'n'; my_pos +=  my.p_inc;          break;      <* 
+             *>    case '<': moving  = 'n'; my_pos -=  my.p_inc;          break;      <* 
+             *>    case ')': moving  = 'n'; my_pos +=  my.p_inc * 5;      break;      <* 
+             *>    case '(': moving  = 'n'; my_pos -=  my.p_inc * 5;      break;      <* 
+             *>    }                                                                  <* 
+             *> }                                                                     <*/
+            /*---(unknown)--------------*/
+            /*> case 'a': if (flag_annotate == 'y') flag_annotate = 'n'; else flag_annotate = 'y'; break;   <*/
+            /*> case 'w': ++flag_view; if (flag_view > 4) flag_view = 0; break;    <*/
+            /*> case 'u': view_unit();      break;                                    <*/
+            /*> if (my_mode == 'p') {                                                 <* 
+             *>    switch (the_key[0]) {                                              <* 
+             *>    case 'o': my_mode = 'o';  break;                                   <* 
+             *>    case '>': my_inc *= 2.0;  break;                                   <* 
+             *>    case 'n': my_inc  = 1.0;  break;                                   <* 
+             *>    case '<': my_inc /= 2.0;  break;                                   <* 
+             *>    case '0': my_run  = 0  ; my_pos = 0;       break;                  <* 
+             *>    case '$': my_run  = 0  ; my_pos = my_len;  break;                  <* 
+             *>    case 'l': my_run  = 0  ; ++my_pos;         break;                  <* 
+             *>    case 'h': my_run  = 0  ; --my_pos;         break;                  <* 
+             *>    case 'Q': exit(0);        break;                                   <* 
+             *>    }                                                                  <* 
+             *> }                                                                     <*/
+            if (the_key[0] == 'Q')  exit(0);
+            is_moved = 'y';
+            break;
          }
       }
       /*> printf ("my_pos = %6.1f, my_ppos = %6.1f\n", my_pos, my_ppos);              <*/

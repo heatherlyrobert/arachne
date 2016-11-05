@@ -99,7 +99,6 @@ float     my_len  = MAX_POS - 1;
 double    my_pos  = 0;
 double    my_ppos = 0;
 float     my_run  = 0;
-char      my_mode = 'o';
 float     my_inc  = 1;
 float     my_deg  = 0;
 

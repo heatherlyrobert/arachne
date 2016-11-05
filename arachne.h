@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5c"
-#define VER_TXT   "added joint angles to the spider view label under leg"
+#define VER_NUM   "0.5d"
+#define VER_TXT   "god-mode working with a MODE_god function now"
 
 
 
@@ -224,6 +224,7 @@ extern tDEBUG      debug;
 /*---(mode stack)------------------------*/
 /*---(major modes)-----------------------*/
 #define     MODE_GOD       'G'
+#define     MODE_PROGRESS  'P'
 #define     MODE_MAP       'M'
 #define     MODE_VISUAL    'V'
 #define     MODE_SOURCE    'S'
@@ -536,7 +537,6 @@ extern    float     my_len;
 extern    double    my_pos;
 extern    double    my_ppos;
 extern    float     my_run;
-extern    char      my_mode;
 extern    float     my_inc;
 extern    float     my_deg;
 
@@ -589,7 +589,7 @@ char        MOVE_first         (int a_servo, float *a_sec, float *a_deg);
 char        MOVE_next          (float *a_sec, float *a_deg);
 
 
-/*---(mode handling)--------*/
+/*---(mode stack)-----------*/
 char        MODE_init          (void);
 char        MODE_enter         (char  a_mode);
 char        MODE_return        (void);
@@ -598,6 +598,8 @@ char        MODE_prev          (void);
 char        MODE_not           (char  a_mode);
 char        MODE_list          (char *a_list);
 char        MODE_message       (void);
+/*---(mode keys)------------*/
+char        MODE_god           (char a_major, char a_minor);
 
 
 /*---(arachne_dlist)---------------------*/
