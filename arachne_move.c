@@ -184,13 +184,19 @@ MOVE_create        (
       x_move->sec_end       = x_move->sec_beg + a_sec;
       x_move->deg_beg       = x_move->s_prev->deg_end;
    }
-   /*---(update globals)-----------------*/
    /*---(display stats)------------------*/
    DEBUG_DATA   yLOG_value   ("count"     , a_servo->count);
    DEBUG_DATA   yLOG_value   ("seq"       , x_move->seq);
    DEBUG_DATA   yLOG_value   ("sec_beg"   , x_move->sec_beg);
    DEBUG_DATA   yLOG_value   ("sec_end"   , x_move->sec_end);
    DEBUG_DATA   yLOG_value   ("deg_beg"   , x_move->deg_beg);
+   /*---(update globals)-----------------*/
+   DEBUG_DATA   yLOG_double  ("my.p_len"  , my.p_len);
+   if (x_move->sec_end > my.p_len) {
+      my.p_len = x_move->sec_end;
+      DEBUG_DATA   yLOG_note    ("end time greater than current length");
+      DEBUG_DATA   yLOG_double  ("my.p_len"  , my.p_len);
+   }
    /*---(complete)-----------------------*/
    DEBUG_DATA   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -330,12 +336,6 @@ MOVE_curone        (int a_servo, float a_time)
    x_pos   = x_curr->deg_beg + (x_degs * x_pct);
    DEBUG_DATA   yLOG_double  ("x_pos"     , x_pos);
    g_servos [a_servo].deg = x_pos;
-   /*---(adjust total length)------------*/
-   if (x_end > my.p_len) {
-      DEBUG_DATA   yLOG_note    ("end time greater than current length");
-      DEBUG_DATA   yLOG_double  ("my.p_len"  , my.p_len);
-      my.p_len = x_end;
-   }
    /*---(complete)-----------------------*/
    DEBUG_DATA   yLOG_exit    (__FUNCTION__);
    return 0;

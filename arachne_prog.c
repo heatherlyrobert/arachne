@@ -75,6 +75,9 @@ PROG_init          (void)
    my.w_height  =  700;
    my.s_width   = my.w_width;
    my.s_height  =  580;
+   my.p_len     =  0.0;
+   my.p_wait    =   500000;
+   my.p_adv     = 0.01;                   /*---(0.01 sec)---*/
    /*---(time)---------------------------*/
    SCALE_init ();
    /*> SCALE_find ("--");                                                             <*/

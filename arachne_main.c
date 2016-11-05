@@ -19,9 +19,9 @@ main (int argc, char *argv[])
       exit (-1);
    }
    SCRP_main   ();
-   TICK_init    ();
-   TICK_draw    ();
-   draw_main      ();
+   draw_main   ();
+   TICK_init   ();
+   TICK_draw   ();
    /*> if (is_test) printf("\nspider--------------------------------------------begin---\n\n");   <*/
    /*> strcpy(its_text, " ");                                                         <*/
    /*> counter = 0;                                                                   <*/
@@ -119,14 +119,14 @@ main (int argc, char *argv[])
       }
       /*> printf ("my_pos = %6.1f, my_ppos = %6.1f\n", my_pos, my_ppos);              <*/
       /*---(check boundaries)------------*/
-      if (moving == 'y')  my_pos += my.p_inc / 10.0;
+      if (moving == 'y')  my_pos += my.p_adv;
       if (my_pos <  0.0f)   {
          moving = 'n';
-         my_pos = 0;
+         my_pos = 0.0;
       }
-      if (my_pos >= 7.0) {
+      if (my_pos >= my.p_len) {
          moving = 'n';
-         my_pos = 7.0;
+         my_pos = my.p_len;
       }
       gait.pos = my_pos;
       /*---(check boundaries)------------*/
@@ -142,7 +142,8 @@ main (int argc, char *argv[])
       /*> timer.tv_nsec =  25000000;   /+---(0.025 sec)---+/                      <*/
       /*> timer.tv_nsec =      50000000 * my_inc;   /+---(0.005 sec)---+/             <*/
       /*> timer.tv_nsec =      50000000;            /+---(0.005 sec)---+/             <*/
-      timer.tv_nsec =      20000000;            /*---(0.020 sec)---*/
+      /*> timer.tv_nsec =      10000000;            /+---(0.001 sec)---+/             <*/
+      timer.tv_nsec =  my.p_wait;
       nanosleep (&timer, &remain);
    }
    /*> if (is_test) printf("   - done\n\n");                                          <*/
@@ -150,6 +151,5 @@ main (int argc, char *argv[])
    /*> if (is_test) printf("\npetal writing v03 ----------------------------------end---\n\n");   <*/
    return 0;
 }
-
 
 /*============================----end-of-source---============================*/

@@ -242,6 +242,10 @@ TICK_init          (void)
    my.p_cur       =    0;
    my.p_end       =    0;
    my.p_max       =    0;
+   /*---(angles)-------------------------*/
+   my.s_femu      =  0.0;
+   my.s_pate      =  0.0;
+   my.s_tibi      =  0.0;
    /*---(generate)-----------------------*/
    DEBUG_GRAF   yLOG_note    ("request handles (tex, fbo, depth)");
    glGenFramebuffersEXT         (1, &my.p_fbo);
@@ -420,6 +424,20 @@ TICK_draw          (void)
          x_deg1 = x_deg2;
       }
    } glPopMatrix();
+   /*---(draw end)-----------------------*/
+   x_unit = x_inc / my.p_inc;
+   glColor4f    (1.00f, 0.00f, 1.00f, 1.0f);
+   glLineWidth  (10.0f);
+   glPushMatrix(); {
+      glBegin(GL_LINE_STRIP); {
+         glVertex3f  (  my.p_len * x_unit - 5, my.p_top - 25.0,   70.0);
+         glVertex3f  (  my.p_len * x_unit - 5, my.p_bot + 25.0,   70.0);
+      } glEnd   ();
+      glBegin(GL_LINE_STRIP); {
+         glVertex3f  (  my.p_len * x_unit + 5, my.p_top - 25.0,   70.0);
+         glVertex3f  (  my.p_len * x_unit + 5, my.p_bot + 25.0,   70.0);
+      } glEnd   ();
+   } glPopMatrix();
    /*---(create mipmaps)-----------------*/
    glBindFramebufferEXT  (GL_FRAMEBUFFER_EXT, 0);
    glBindTexture         (GL_TEXTURE_2D, my.p_tex);
@@ -437,9 +455,11 @@ TICK_show          (void)
    float       x_half      =   0.0;
    float       x_beg       =   0.0;
    float       x_end       =   0.0;
+   float       x_gap       =  75.0;
    float       x_right     =   0.0;
    int         x_inc       =    10;
    float       x_unit      =   0.0;
+   char        x_msg       [100];
    /*---(setup view)---------------------*/
    glViewport      (    0,    0,  800,  125);
    glMatrixMode    (GL_PROJECTION);
@@ -447,7 +467,7 @@ TICK_show          (void)
    glOrtho         ( 0.0f, my.w_width, my.p_bot, my.p_top,  -500.0,   500.0);
    glMatrixMode    (GL_MODELVIEW);
    /*---(calculate offset)---------------*/
-   x_right     = my.w_width -  50.0;
+   x_right     = my.w_width -  x_gap;
    x_cur       = my_pos * (x_inc / my.p_inc) / 2.0f;   /* texture displayed at 0.5x */
    x_half      = x_right;
    /*---(set beginning and end)----------*/
@@ -490,32 +510,36 @@ TICK_show          (void)
       /*---(background)---------------*/
       glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
       glBegin         (GL_POLYGON); {
-         glVertex3f  (x_right       , my.p_top    ,    0.0);
-         glVertex3f  (x_right + 50.0, my.p_top    ,    0.0);
-         glVertex3f  (x_right + 50.0, my.p_bot    ,    0.0);
-         glVertex3f  (x_right       , my.p_bot    ,    0.0);
+         glVertex3f  (x_right        , my.p_top    ,    0.0);
+         glVertex3f  (x_right + x_gap, my.p_top    ,    0.0);
+         glVertex3f  (x_right + x_gap, my.p_bot    ,    0.0);
+         glVertex3f  (x_right        , my.p_bot    ,    0.0);
       } glEnd   ();
       /*---(timelables)---------------*/
       glTranslatef (x_right +  5.0, my.p_top - 30.0, 10.00f    );
       glColor4f    (1.00f, 0.00f, 0.00f, 1.0f);
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, "femu");
+      yFONT_print  (txf_bg,  12, YF_TOPLEF, "femur");
       glTranslatef (0.00f         , -20            , 0.00f    );
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, "30.5");
+      snprintf     (x_msg, 100, "%7.2f", my.s_femu);
+      yFONT_print  (txf_bg,  12, YF_TOPLEF, x_msg);
       glTranslatef (0.00f         , -30            , 0.00f    );
       glColor4f    (1.00f, 1.00f, 0.00f, 1.0f);
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, "pate");
+      yFONT_print  (txf_bg,  12, YF_TOPLEF, "patella");
       glTranslatef (0.00f         , -20            , 0.00f    );
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, "30.5");
+      snprintf     (x_msg, 100, "%7.2f", my.s_pate);
+      yFONT_print  (txf_bg,  12, YF_TOPLEF, x_msg);
       glTranslatef (0.00f         , -30            , 0.00f    );
       glColor4f    (0.00f, 1.00f, 0.25f, 1.0f);
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, "tibi");
+      yFONT_print  (txf_bg,  12, YF_TOPLEF, "tibia");
       glTranslatef (0.00f         , -20            , 0.00f    );
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, "30.5");
+      snprintf     (x_msg, 100, "%7.2f", my.s_tibi);
+      yFONT_print  (txf_bg,  12, YF_TOPLEF, x_msg);
       glTranslatef (0.00f         , -30            , 0.00f    );
       glColor4f    (0.00f, 0.50f, 1.00f, 1.0f);
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, "curr");
+      yFONT_print  (txf_bg,  12, YF_TOPLEF, "seconds");
       glTranslatef (0.00f         , -20            , 0.00f    );
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, "7s");
+      snprintf     (x_msg, 100, "%7.3f", my_pos);
+      yFONT_print  (txf_bg,  12, YF_TOPLEF, x_msg);
    } glPopMatrix();
    /*---(complete)-----------------------*/
    return 0;
@@ -1082,9 +1106,9 @@ draw_spider        (void)
             x_femu =  0.0;
             x_pate =  0.0;
             x_tibi = 90.0;
-            if (g_servos [i    ].curr != NULL)  x_femu = g_servos [i    ].deg;
-            if (g_servos [i + 1].curr != NULL)  x_pate = g_servos [i + 1].deg;
-            if (g_servos [i + 2].curr != NULL)  x_tibi = g_servos [i + 2].deg;
+            if (g_servos [i    ].curr != NULL)  my.s_femu = x_femu = g_servos [i    ].deg;
+            if (g_servos [i + 1].curr != NULL)  my.s_pate = x_pate = g_servos [i + 1].deg;
+            if (g_servos [i + 2].curr != NULL)  my.s_tibi = x_tibi = g_servos [i + 2].deg;
             draw_leg_NEW   (i / 3, gk[i / 3][THOR].l, x_femu, x_pate, x_tibi);
             /*> if (flag_annotate == 'y')  draw__annotate (i);                        <*/
          } glPopMatrix ();

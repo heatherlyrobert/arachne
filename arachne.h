@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.4y"
-#define VER_TXT   "clean up progress bar drawing and add basic legend"
+#define VER_NUM   "0.5a"
+#define VER_TXT   "add live progress legend and pace script run to actual time"
 
 
 
@@ -233,6 +233,9 @@ struct cACCESSOR {
    /*---(spider pane)-----*/
    int         s_height;
    int         s_width;
+   float       s_femu;
+   float       s_pate;
+   float       s_tibi;
    /*---(progress pane)---*/
    int         p_texw;                      /* texture full width             */
    int         p_texh;                      /* texture full height            */
@@ -240,6 +243,8 @@ struct cACCESSOR {
    int         p_bot;                       /* bottommost y of progress bar   */
    float       p_avail;                     /* units available on screen      */
    float       p_len;                       /* length of script               */
+   double      p_wait;                      /* time to wait while moving      */
+   float       p_adv;                       /* x-advance while moving         */
    /*---(progress handles)*/
    uint        p_tex;                       /* texture for image              */
    uint        p_fbo;                       /* framebuffer                    */
