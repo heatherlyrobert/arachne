@@ -28,9 +28,9 @@ LIBU    = ${LIBS}           -lyLOG            -lyUNIT           -lyVAR
 #===(file lists)============================================================================================================================================================================#
 #------   (0)-------------- (1)-------------- (2)-------------- (3)-------------- (4)-------------- (5)-------------- (6)-------------- (7)-------------- (8)-------------- (9)-------------- (A)-------------- (B)-------------- (C)-------------- (D)-------------- (5)--------------
 HEADS   = ${BASE}.h
-OBJS    = ${BASE}_main.os   ${BASE}_prog.os   ${BASE}_kine.os   ${BASE}_draw.os   ${BASE}_dlist.os  ${BASE}_move.os  ${BASE}_scrp.os   ${BASE}_stat.os   ${BASE}_dyna.os   ${BASE}_test.os
-OBJD    = ${BASE}_main.o    ${BASE}_prog.o    ${BASE}_kine.o    ${BASE}_draw.o    ${BASE}_dlist.o   ${BASE}_move.o   ${BASE}_scrp.o    ${BASE}_stat.o    ${BASE}_dyna.o    ${BASE}_test.o 
-OBJU    = ${BASE}_unit.o    ${BASE}_prog.o    ${BASE}_kine.o    ${BASE}_draw.o    ${BASE}_dlist.o   ${BASE}_move.o   ${BASE}_scrp.o    ${BASE}_stat.o    ${BASE}_dyna.o    ${BASE}_test.o 
+OBJS    = ${BASE}_main.os   ${BASE}_prog.os   ${BASE}_keys.os   ${BASE}_kine.os   ${BASE}_draw.os   ${BASE}_dlist.os  ${BASE}_move.os  ${BASE}_scrp.os   ${BASE}_stat.os   ${BASE}_dyna.os   ${BASE}_test.os
+OBJD    = ${BASE}_main.o    ${BASE}_prog.o    ${BASE}_keys.o    ${BASE}_kine.o    ${BASE}_draw.o    ${BASE}_dlist.o   ${BASE}_move.o   ${BASE}_scrp.o    ${BASE}_stat.o    ${BASE}_dyna.o    ${BASE}_test.o 
+OBJU    = ${BASE}_unit.o    ${BASE}_prog.o    ${BASE}_keys.o    ${BASE}_kine.o    ${BASE}_draw.o    ${BASE}_dlist.o   ${BASE}_move.o   ${BASE}_scrp.o    ${BASE}_stat.o    ${BASE}_dyna.o    ${BASE}_test.o 
 
 #===(make variables)====================================================================================================================================================#
 COPY    = cp -f
@@ -67,6 +67,11 @@ ${BASE}_prog.o     : ${HEADS}       ${BASE}_prog.c
 	${COMP}    ${BASE}_prog.c                           ${INC}
 	${STRIP}   ${BASE}_prog.c      > ${BASE}_prog.cs
 	${COMP}    ${BASE}_prog.cs    -o ${BASE}_prog.os    ${INC}
+
+${BASE}_keys.o     : ${HEADS}       ${BASE}_keys.c
+	${COMP}    ${BASE}_keys.c                           ${INC}
+	${STRIP}   ${BASE}_keys.c      > ${BASE}_keys.cs
+	${COMP}    ${BASE}_keys.cs    -o ${BASE}_keys.os    ${INC}
 
 ${BASE}_kine.o     : ${HEADS}       ${BASE}_kine.c
 	${COMP}    ${BASE}_kine.c                           ${INC}

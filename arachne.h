@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5b"
-#define VER_TXT   "added command mode line at bottom and adjusted all others"
+#define VER_NUM   "0.5c"
+#define VER_TXT   "added joint angles to the spider view label under leg"
 
 
 
@@ -218,9 +218,43 @@ extern tDEBUG      debug;
 #define     DEBUG_DATA          if (debug.data      == 'y')
 #define     DEBUG_ENVI          if (debug.envi      == 'y')
 
+
+
+/*===[ MODES ]================================================================*/
+/*---(mode stack)------------------------*/
+/*---(major modes)-----------------------*/
+#define     MODE_GOD       'G'
+#define     MODE_MAP       'M'
+#define     MODE_VISUAL    'V'
+#define     MODE_SOURCE    'S'
+#define     MODE_INPUT     'I'
+#define     MODE_COMMAND   ':'
+#define     MODE_SEARCH    '/'
+/*---(sub-modes for source)--------------*/
+#define     SMOD_REPLACE   'r'    /* replacing characters in source mode      */
+#define     SMOD_SELECT    's'    /* visual selection of chars in source mode */
+#define     SMOD_TEXTREG   't'    /* text register actions                    */
+/*---(sub-modes for map)-----------------*/
+#define     SMOD_ERROR     'e'    /* error reporting and actions              */
+#define     SMOD_REGISTER  '"'    /* register actions                         */
+#define     SMOD_BUFFER    ','    /* selecting buffers                        */
+#define     SMOD_WANDER    '@'    /* formula creation by pointing             */
+#define     SMOD_FORMAT    '$'    /* content formatting                       */
+#define     SMOD_OBJECT    'o'    /* object formatting                        */
+#define     SMOD_MARK      '\''   /* location and object marking              */
+#define     SMOD_MENUS     '\\'   /* show menu system                         */
+
+#define     MENU_NONE      ' '
+#define     MENU_ROOT      '-'
+
+
+
 struct cACCESSOR {
    /*---(files)----------------*/
    int         logger;         /* log file so that we don't close it          */
+   /*---(mode)------------*/
+   char        scrn;                        /* screen display mode            */
+   char        message     [LEN_STR];       /* message line                   */
    /*---(window)----------*/
    char        w_title     [LEN_STR];       /* window title                   */
    int         w_height;                    /* window heigth                  */
@@ -262,8 +296,9 @@ struct cACCESSOR {
    float       p_end;                       /* end of screen prog bar position*/
    float       p_max;                       /* max progress bar position      */
    /*---(command line)----*/
-   int         c_height;
-   int         c_bottom;
+   int         c_bottom;                    /* bottom of command window       */
+   int         c_height;                    /* height of command window       */
+   char        c_command   [LEN_STR];       /* current text in command mode   */
    /*---(done)------------*/
 };
 extern      tACCESSOR my;
@@ -552,6 +587,17 @@ char        MOVE_create        (char a_type, tSERVO *a_servo, float a_deg, float
 char        MOVE_curall        (float a_time);
 char        MOVE_first         (int a_servo, float *a_sec, float *a_deg);
 char        MOVE_next          (float *a_sec, float *a_deg);
+
+
+/*---(mode handling)--------*/
+char        MODE_init          (void);
+char        MODE_enter         (char  a_mode);
+char        MODE_return        (void);
+char        MODE_curr          (void);
+char        MODE_prev          (void);
+char        MODE_not           (char  a_mode);
+char        MODE_list          (char *a_list);
+char        MODE_message       (void);
 
 
 /*---(arachne_dlist)---------------------*/

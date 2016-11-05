@@ -442,10 +442,10 @@ TICK_draw          (void)
    } glPopMatrix();
    /*---(time labels)--------------------*/
    glPushMatrix(); {
+      glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
       for (i = 0; i < my.p_texw; i += x_inc) {
          if (i % (x_inc * 10) == 0) {
             snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_inc) * my.p_multi), my.p_base);
-            glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
             glPushMatrix(); {
                glTranslatef ( i , my.p_bot + 25.0 ,    80.0  );
                yFONT_print  (txf_bg,  14, YF_TOPLEF, x_msg);
@@ -470,7 +470,7 @@ TICK_show          (void)
    float       x_half      =   0.0;
    float       x_beg       =   0.0;
    float       x_end       =   0.0;
-   float       x_gap       =  75.0;
+   float       x_gap       =   0.0;
    float       x_right     =   0.0;
    int         x_inc       =    10;
    float       x_unit      =   0.0;
@@ -520,42 +520,42 @@ TICK_show          (void)
          glVertex3f  (  my_pos * x_unit / 2.0, my.p_bot + 25.0,   70.0);
       } glEnd   ();
    } glPopMatrix();
-   /*---(draw legend)--------------------*/
-   glPushMatrix(); {
-      /*---(background)---------------*/
-      glColor4f    (0.25f, 0.25f, 0.25f, 1.0f);
-      glBegin         (GL_POLYGON); {
-         glVertex3f  (x_right        , my.p_top    ,    0.0);
-         glVertex3f  (x_right + x_gap, my.p_top    ,    0.0);
-         glVertex3f  (x_right + x_gap, my.p_bot    ,    0.0);
-         glVertex3f  (x_right        , my.p_bot    ,    0.0);
-      } glEnd   ();
-      /*---(timelables)---------------*/
-      glTranslatef (x_right +  5.0, my.p_top - 30.0, 10.00f    );
-      glColor4f    (1.00f, 0.00f, 0.00f, 1.0f);
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, "femur");
-      glTranslatef (0.00f         , -20            , 0.00f    );
-      snprintf     (x_msg, 100, "%7.2f", my.s_femu);
-      yFONT_print  (txf_vr,  12, YF_TOPLEF, x_msg);
-      glTranslatef (0.00f         , -30            , 0.00f    );
-      glColor4f    (1.00f, 1.00f, 0.00f, 1.0f);
-      yFONT_print  (txf_vr,  12, YF_TOPLEF, "patella");
-      glTranslatef (0.00f         , -20            , 0.00f    );
-      snprintf     (x_msg, 100, "%7.2f", my.s_pate);
-      yFONT_print  (txf_vr,  12, YF_TOPLEF, x_msg);
-      glTranslatef (0.00f         , -30            , 0.00f    );
-      glColor4f    (0.00f, 1.00f, 0.25f, 1.0f);
-      yFONT_print  (txf_vr,  12, YF_TOPLEF, "tibia");
-      glTranslatef (0.00f         , -20            , 0.00f    );
-      snprintf     (x_msg, 100, "%7.2f", my.s_tibi);
-      yFONT_print  (txf_vr,  12, YF_TOPLEF, x_msg);
-      glTranslatef (0.00f         , -30            , 0.00f    );
-      glColor4f    (0.00f, 0.50f, 1.00f, 1.0f);
-      yFONT_print  (txf_vr,  12, YF_TOPLEF, "seconds");
-      glTranslatef (0.00f         , -20            , 0.00f    );
-      snprintf     (x_msg, 100, "%7.3f", my_pos);
-      yFONT_print  (txf_vr,  12, YF_TOPLEF, x_msg);
-   } glPopMatrix();
+   /*> /+---(draw legend)--------------------+/                                       <* 
+    *> glPushMatrix(); {                                                              <* 
+    *>    /+---(background)---------------+/                                          <* 
+    *>    glColor4f    (0.25f, 0.25f, 0.25f, 1.0f);                                   <* 
+    *>    glBegin         (GL_POLYGON); {                                             <* 
+    *>       glVertex3f  (x_right        , my.p_top    ,    0.0);                     <* 
+    *>       glVertex3f  (x_right + x_gap, my.p_top    ,    0.0);                     <* 
+    *>       glVertex3f  (x_right + x_gap, my.p_bot    ,    0.0);                     <* 
+    *>       glVertex3f  (x_right        , my.p_bot    ,    0.0);                     <* 
+    *>    } glEnd   ();                                                               <* 
+    *>    /+---(timelables)---------------+/                                          <* 
+    *>    glTranslatef (x_right +  5.0, my.p_top - 30.0, 10.00f    );                 <* 
+    *>    glColor4f    (1.00f, 0.00f, 0.00f, 1.0f);                                   <* 
+    *>    yFONT_print  (txf_bg,  12, YF_TOPLEF, "femur");                             <* 
+    *>    glTranslatef (0.00f         , -20            , 0.00f    );                  <* 
+    *>    snprintf     (x_msg, 100, "%7.2f", my.s_femu);                              <* 
+    *>    yFONT_print  (txf_vr,  12, YF_TOPLEF, x_msg);                               <* 
+    *>    glTranslatef (0.00f         , -30            , 0.00f    );                  <* 
+    *>    glColor4f    (1.00f, 1.00f, 0.00f, 1.0f);                                   <* 
+    *>    yFONT_print  (txf_vr,  12, YF_TOPLEF, "patella");                           <* 
+    *>    glTranslatef (0.00f         , -20            , 0.00f    );                  <* 
+    *>    snprintf     (x_msg, 100, "%7.2f", my.s_pate);                              <* 
+    *>    yFONT_print  (txf_vr,  12, YF_TOPLEF, x_msg);                               <* 
+    *>    glTranslatef (0.00f         , -30            , 0.00f    );                  <* 
+    *>    glColor4f    (0.00f, 1.00f, 0.25f, 1.0f);                                   <* 
+    *>    yFONT_print  (txf_vr,  12, YF_TOPLEF, "tibia");                             <* 
+    *>    glTranslatef (0.00f         , -20            , 0.00f    );                  <* 
+    *>    snprintf     (x_msg, 100, "%7.2f", my.s_tibi);                              <* 
+    *>    yFONT_print  (txf_vr,  12, YF_TOPLEF, x_msg);                               <* 
+    *>    glTranslatef (0.00f         , -30            , 0.00f    );                  <* 
+    *>    glColor4f    (0.00f, 0.50f, 1.00f, 1.0f);                                   <* 
+    *>    yFONT_print  (txf_vr,  12, YF_TOPLEF, "seconds");                           <* 
+    *>    glTranslatef (0.00f         , -20            , 0.00f    );                  <* 
+    *>    snprintf     (x_msg, 100, "%7.3f", my_pos);                                 <* 
+    *>    yFONT_print  (txf_vr,  12, YF_TOPLEF, x_msg);                               <* 
+    *> } glPopMatrix();                                                               <*/
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -589,7 +589,7 @@ CMD_show           (void)
    glPushMatrix    (); {
       glTranslatef (    2.0f,    1.0f,    0.0f);
       glColor4f    (1.00f, 1.00f, 1.00f, 1.00f);
-      yFONT_print  (txf_bg,   7, YF_BOTLEF, "[G ] GOD : god-mode");
+      yFONT_print  (txf_bg,   7, YF_BOTLEF, my.message);
    } glPopMatrix   ();
    /*---(complete)-----------------------*/
    return;
@@ -650,19 +650,44 @@ draw_leg_NEW       (int a_num, float a_body, float a_femu, float a_pate, float a
    float     d;
    float     x,  y,  z;
    float     px, py, pz;
-   char      msg [100];
+   char      x_msg [100];
    /*---(begin)--------------------------*/
    glPushMatrix (); {
       /*---(thorax)----------------------*/
       glTranslatef (a_body,  0.0,  0.0f);
       if (a_num == my_curr) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
       glPushMatrix (); {
-         snprintf (msg, 10, "#%d/%s", a_num, legs_name [a_num]);
+         /*---(label)-------*/
+         snprintf (x_msg, 10, "#%d/%s", a_num, legs_name [a_num]);
          glTranslatef(    0.0  ,   -15.0 ,     0.0  );
-         yFONT_print (txf_bg, 12, YF_TOPLEF, msg);
-         snprintf (msg, 25, "%s", legs_long[a_num]);
+         yFONT_print (txf_bg, 12, YF_TOPLEF, x_msg);
+         /*---(desc)--------*/
+         snprintf (x_msg, 25, "%s", legs_long[a_num]);
          glTranslatef(    0.0  ,   -18.0 ,     0.0  );
-         yFONT_print (txf_bg,  5, YF_TOPLEF, msg);
+         yFONT_print (txf_bg,  5, YF_TOPLEF, x_msg);
+         /*---(prep)--------*/
+         glTranslatef(   20.0  ,     0.0 ,     0.0  );
+         /*---(coxa)--------*/
+         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
+         yFONT_print (txf_bg,  5, YF_TOPRIG, "coxa");
+         snprintf (x_msg, 25, ": %+.0f", a_body);
+         yFONT_print (txf_bg,  5, YF_TOPLEF, x_msg);
+         /*---(femu)--------*/
+         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
+         yFONT_print (txf_bg,  5, YF_TOPRIG, "femur");
+         snprintf (x_msg, 25, ": %+.0f", a_femu);
+         yFONT_print (txf_bg,  5, YF_TOPLEF, x_msg);
+         /*---(pate)--------*/
+         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
+         yFONT_print (txf_bg,  5, YF_TOPRIG, "patella");
+         snprintf (x_msg, 25, ": %+.0f", a_pate);
+         yFONT_print (txf_bg,  5, YF_TOPLEF, x_msg);
+         /*---(tibi)--------*/
+         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
+         yFONT_print (txf_bg,  5, YF_TOPRIG, "tibia");
+         snprintf (x_msg, 25, ": %+.0f", a_tibi);
+         yFONT_print (txf_bg,  5, YF_TOPLEF, x_msg);
+         /*---(done)--------*/
       } glPopMatrix ();
       /*---(coxa)------------------------*/
       glCallList (dl_coxa);

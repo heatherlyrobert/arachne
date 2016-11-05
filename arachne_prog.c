@@ -69,30 +69,39 @@ PROG_logger        (int a_argc, char *a_argv[])
 char       /*----: very first setup ------------------s-----------------------*/
 PROG_init          (void)
 {
-   DEBUG_TOPS  yLOG_enter (__FUNCTION__);
+   DEBUG_TOPS   yLOG_enter (__FUNCTION__);
    strlcpy (my.w_title, "arachne_full", LEN_STR);
    /*---(command line)-------------------*/
+   DEBUG_TOPS   yLOG_note  ("set command line characteristics");
    my.c_height  =   15;
    my.c_bottom  =    0;
    /*---(progress window)----------------*/
+   DEBUG_TOPS   yLOG_note  ("set progress ticker characteristics");
    my.p_height  =  125;
    my.p_bottom  =  my.c_bottom + my.c_height;
    /*---(spider window)------------------*/
+   DEBUG_TOPS   yLOG_note  ("set spider window characteristics");
    my.s_height  =  580;
    my.s_bottom  =  my.p_bottom + my.p_height;
    /*---(full window)--------------------*/
+   DEBUG_TOPS   yLOG_note  ("update overall window characteristics");
    my.w_width   =  800;
    my.w_height  =  my.s_bottom + my.s_height;
    /*---(other progress settings)--------*/
+   DEBUG_TOPS   yLOG_note  ("defaul progress ticker values");
    my.p_len     =  0.0;
    my.p_wait    = 500000;
    my.p_adv     = 0.01;                   /*---(0.01 sec)---*/
+   /*---(setup modes)--------------------*/
+   DEBUG_TOPS   yLOG_note  ("prepare modes");
+   MODE_init    ();
+   MODE_enter   (MODE_GOD);
    /*---(time)---------------------------*/
-   SCALE_init ();
-   /*> SCALE_find ("--");                                                             <*/
-   SCALE_find ("d-");
+   DEBUG_TOPS   yLOG_note  ("prepare scales");
+   SCALE_init   ();
+   SCALE_find   ("d-");
    /*---(complete)-----------------------*/
-   DEBUG_TOPS  yLOG_exit  (__FUNCTION__);
+   DEBUG_TOPS   yLOG_exit  (__FUNCTION__);
    return 0;
 }
 

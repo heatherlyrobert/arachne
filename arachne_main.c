@@ -6,8 +6,12 @@
 int
 main (int argc, char *argv[])
 {
-   /*---(locals)--------------------------------*/
-   int rc = 0;
+   /*---(locals)-----------+-----------+-*/
+   int         updates     = 0;
+   int         cch         = ' ';      /* current keystroke                   */
+   int         sch         = ' ';      /* saved keystroke                     */
+   char        rc          = 0;
+   char        x_savemode  = '-';
    /*---(initialize)---------------------*/
    if (rc == 0)  rc = PROG_logger  (argc, argv);
    if (rc == 0)  rc = PROG_init    ();
@@ -32,9 +36,12 @@ main (int argc, char *argv[])
    char  is_moved = 'n';
    /*> if (is_test) printf("handling the event loop...\n");                           <*/
    /*> printf("pre-while   : gk[0][CORE].cy = %8.1f, fk[0][CORE].cy = %8.1f\n", gk[0][CORE].cy, fk[0][CORE].cy);   <*/
+   MODE_message ();
    while (1) {
       while (XPending(DISP)) {
+         /*---(start processing event)---*/
          XNextEvent(DISP, &EVNT);
+         ++updates;
          switch(EVNT.type) {
          case Expose:
             /*> if (is_test_inp) printf("   - exposed  %d times\n", EVNT.xexpose.count);   <*/
@@ -56,9 +63,37 @@ main (int argc, char *argv[])
             is_moved = 'y';
             break;
          case KeyPress:
+            /*---(prepare)---------------*/
             key_event  = (XKeyEvent *) &EVNT;
             the_bytes = XLookupString((XKeyEvent *) &EVNT, the_key, 5, NULL, NULL);
             if (the_bytes < 1) break;
+            /*---(handle)----------------*/
+            x_savemode  = MODE_curr ();
+            /*> switch (x_savemode) {                                                 <* 
+             *> case MODE_GOD      : rc = MODE_god      (sch, cch); break;            <* 
+             *> case MODE_MAP      : rc = MODE_map      (sch, cch); break;            <* 
+             *> case MODE_VISUAL   : rc = VISU_mode     (sch, cch); break;            <* 
+             *> case MODE_SOURCE   : rc = MODE_source   (sch, cch); break;            <* 
+             *> case MODE_INPUT    : rc = MODE_input    (sch, cch); break;            <* 
+             *> case MODE_COMMAND  : rc = MODE_command  (' ', cch); break;            <* 
+             *> case SMOD_ERROR    : rc = SMOD_error    (sch, cch); break;            <* 
+             *> case SMOD_SELECT   : rc = SELC_mode     (sch, cch); break;            <* 
+             *> case SMOD_TEXTREG  : rc = TREG_mode     (sch, cch); break;            <* 
+             *> case SMOD_REPLACE  : rc = SMOD_replace  (sch, cch); break;            <* 
+             *> case SMOD_FORMAT   : rc = SMOD_format   (' ', cch); break;            <* 
+             *> case SMOD_BUFFER   : rc = SMOD_buffer   (' ', cch); break;            <* 
+             *> case SMOD_WANDER   : rc = SMOD_wander   (' ', cch); break;            <* 
+             *> case SMOD_REGISTER : rc = REG_mode      (sch, cch); break;            <* 
+             *> case SMOD_MARK     : rc = MARK_mode     (sch, cch); break;            <* 
+             *> case SMOD_MENUS    : rc = SMOD_menus    (sch, cch); break;            <* 
+             *> default            : rc = MODE_map      (sch, cch); break;            <* 
+             *> }                                                                     <*/
+            /*---(setup status line)-----*/
+            if   (x_savemode != MODE_curr() || MODE_curr() == MODE_COMMAND) {
+               MODE_message ();
+            }
+
+
             if (my_mode == 'o') {
                /*> printf("key = %3d\n", the_key[0]);                                 <*/
                switch (the_key[0]) {
@@ -72,8 +107,8 @@ main (int argc, char *argv[])
                case ')': moving  = 'n'; my_pos +=  my.p_inc * 5;      break;
                case '(': moving  = 'n'; my_pos -=  my.p_inc * 5;      break;
 
-               /*> case 'a': if (flag_annotate == 'y') flag_annotate = 'n'; else flag_annotate = 'y'; break;   <*/
-               /*> case 'w': ++flag_view; if (flag_view > 4) flag_view = 0; break;    <*/
+                         /*> case 'a': if (flag_annotate == 'y') flag_annotate = 'n'; else flag_annotate = 'y'; break;   <*/
+                         /*> case 'w': ++flag_view; if (flag_view > 4) flag_view = 0; break;    <*/
                case 'Q': exit(0);         break;
                case '\e': my_mode = 'p';  break;
                /* crab  /horz  */  case 'h': case 'l': case 'H': case 'L': 
@@ -84,8 +119,8 @@ main (int argc, char *argv[])
                /* z-axis/roll  */  case 'r': case 'R': case 'w': case 'W':
                case '0': case '1': case '2': case '3': case '4': case '5':
                case '6': case '7': case '8': case '9':
-                  yGOD_key(the_key[0]);
-                  break;
+                          yGOD_key(the_key[0]);
+                          break;
                case 'u': view_unit();      break;
                }
                if      (my_pitch  >   180.0) my_pitch  -= 360.0;
@@ -100,21 +135,21 @@ main (int argc, char *argv[])
                else if (my_vroll  <= -180.0) my_vroll  += 360.0;
                if      (my_vyaw   >   180.0) my_vyaw   -= 360.0;
                else if (my_vyaw   <= -180.0) my_vyaw   += 360.0;
-            /*> } else if (my_mode == 'p') {                                          <* 
-             *>    switch (the_key[0]) {                                              <* 
-             *>    case 'o': my_mode = 'o';  break;                                   <* 
-             *>    case '>': my_inc *= 2.0;  break;                                   <* 
-             *>    case 'n': my_inc  = 1.0;  break;                                   <* 
-             *>    case '<': my_inc /= 2.0;  break;                                   <* 
-             *>    case '0': my_run  = 0  ; my_pos = 0;       break;                  <* 
-             *>    case '$': my_run  = 0  ; my_pos = my_len;  break;                  <* 
-             *>    case 'l': my_run  = 0  ; ++my_pos;         break;                  <* 
-             *>    case 'h': my_run  = 0  ; --my_pos;         break;                  <* 
-             *>    case 'Q': exit(0);        break;                                   <* 
-             *>    }                                                                  <*/
-            }
-            is_moved = 'y';
-            break;
+               /*> } else if (my_mode == 'p') {                                          <* 
+                *>    switch (the_key[0]) {                                              <* 
+                *>    case 'o': my_mode = 'o';  break;                                   <* 
+                *>    case '>': my_inc *= 2.0;  break;                                   <* 
+                *>    case 'n': my_inc  = 1.0;  break;                                   <* 
+                *>    case '<': my_inc /= 2.0;  break;                                   <* 
+                *>    case '0': my_run  = 0  ; my_pos = 0;       break;                  <* 
+                *>    case '$': my_run  = 0  ; my_pos = my_len;  break;                  <* 
+                *>    case 'l': my_run  = 0  ; ++my_pos;         break;                  <* 
+                *>    case 'h': my_run  = 0  ; --my_pos;         break;                  <* 
+                *>    case 'Q': exit(0);        break;                                   <* 
+                *>    }                                                                  <*/
+         }
+         is_moved = 'y';
+         break;
          }
       }
       /*> printf ("my_pos = %6.1f, my_ppos = %6.1f\n", my_pos, my_ppos);              <*/
