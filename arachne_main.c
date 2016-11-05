@@ -8,8 +8,6 @@ main (int argc, char *argv[])
 {
    /*---(locals)-----------+-----------+-*/
    int         updates     = 0;
-   int         cch         = ' ';      /* current keystroke                   */
-   int         sch         = ' ';      /* saved keystroke                     */
    char        rc          = 0;
    char        x_savemode  = '-';
    /*---(initialize)---------------------*/
@@ -68,28 +66,32 @@ main (int argc, char *argv[])
             the_bytes = XLookupString((XKeyEvent *) &EVNT, the_key, 5, NULL, NULL);
             if (the_bytes < 1) break;
             /*---(handle)----------------*/
-            cch         = the_key [0];
+            my.cch      = the_key [0];
             x_savemode  = MODE_curr ();
             switch (x_savemode) {
-            case MODE_GOD      : rc = MODE_god      (sch, cch); break;
-            case MODE_PROGRESS : rc = MODE_god      (sch, cch); break;
-                                 /*> case MODE_MAP      : rc = MODE_map      (sch, cch); break;            <* 
-                                  *> case MODE_VISUAL   : rc = VISU_mode     (sch, cch); break;            <* 
-                                  *> case MODE_SOURCE   : rc = MODE_source   (sch, cch); break;            <* 
-                                  *> case MODE_INPUT    : rc = MODE_input    (sch, cch); break;            <* 
-                                  *> case MODE_COMMAND  : rc = MODE_command  (' ', cch); break;            <* 
-                                  *> case SMOD_ERROR    : rc = SMOD_error    (sch, cch); break;            <* 
-                                  *> case SMOD_SELECT   : rc = SELC_mode     (sch, cch); break;            <* 
-                                  *> case SMOD_TEXTREG  : rc = TREG_mode     (sch, cch); break;            <* 
-                                  *> case SMOD_REPLACE  : rc = SMOD_replace  (sch, cch); break;            <* 
-                                  *> case SMOD_FORMAT   : rc = SMOD_format   (' ', cch); break;            <* 
-                                  *> case SMOD_BUFFER   : rc = SMOD_buffer   (' ', cch); break;            <* 
-                                  *> case SMOD_WANDER   : rc = SMOD_wander   (' ', cch); break;            <* 
-                                  *> case SMOD_REGISTER : rc = REG_mode      (sch, cch); break;            <* 
-                                  *> case SMOD_MARK     : rc = MARK_mode     (sch, cch); break;            <* 
-                                  *> case SMOD_MENUS    : rc = SMOD_menus    (sch, cch); break;            <*/
-            default            : rc = MODE_god      (sch, cch); break;
+            case MODE_GOD      : rc = MODE_god      (my.sch, my.cch); break;
+            case MODE_PROGRESS : rc = MODE_progress (my.sch, my.cch); break;
+                                 /*> case MODE_MAP      : rc = MODE_map      (my.sch, my.cch); break;            <* 
+                                  *> case MODE_VISUAL   : rc = VISU_mode     (my.sch, my.cch); break;            <* 
+                                  *> case MODE_SOURCE   : rc = MODE_source   (my.sch, my.cch); break;            <* 
+                                  *> case MODE_INPUT    : rc = MODE_input    (my.sch, my.cch); break;            <* 
+                                  *> case MODE_COMMAND  : rc = MODE_command  (' ', my.cch); break;            <* 
+                                  *> case SMOD_ERROR    : rc = SMOD_error    (my.sch, my.cch); break;            <* 
+                                  *> case SMOD_SELECT   : rc = SELC_mode     (my.sch, my.cch); break;            <* 
+                                  *> case SMOD_TEXTREG  : rc = TREG_mode     (my.sch, my.cch); break;            <* 
+                                  *> case SMOD_REPLACE  : rc = SMOD_replace  (my.sch, my.cch); break;            <* 
+                                  *> case SMOD_FORMAT   : rc = SMOD_format   (' ', my.cch); break;            <* 
+                                  *> case SMOD_BUFFER   : rc = SMOD_buffer   (' ', my.cch); break;            <* 
+                                  *> case SMOD_WANDER   : rc = SMOD_wander   (' ', my.cch); break;            <* 
+                                  *> case SMOD_REGISTER : rc = REG_mode      (my.sch, my.cch); break;            <* 
+                                  *> case SMOD_MARK     : rc = MARK_mode     (my.sch, my.cch); break;            <* 
+                                  *> case SMOD_MENUS    : rc = SMOD_menus    (my.sch, my.cch); break;            <*/
+            default            : rc = MODE_god      (my.sch, my.cch); break;
             }
+            /*---(setup for next keystroke)----*/
+            if      (rc == 0)    my.sch = ' ';
+            else if (rc >  0)    my.sch = rc;
+            else               { my.sch = ' ';  my.sta_error = 'y'; }
             /*---(setup status line)-----*/
             if   (x_savemode != MODE_curr() || MODE_curr() == MODE_COMMAND) {
                MODE_message ();

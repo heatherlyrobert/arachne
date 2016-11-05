@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5d"
-#define VER_TXT   "god-mode working with a MODE_god function now"
+#define VER_NUM   "0.5e"
+#define VER_TXT   "basic progress-mode working with a MODE_progress function now"
 
 
 
@@ -256,6 +256,9 @@ struct cACCESSOR {
    /*---(mode)------------*/
    char        scrn;                        /* screen display mode            */
    char        message     [LEN_STR];       /* message line                   */
+   char        sta_error;
+   char        cch;
+   char        sch;
    /*---(window)----------*/
    char        w_title     [LEN_STR];       /* window title                   */
    int         w_height;                    /* window heigth                  */
@@ -600,6 +603,7 @@ char        MODE_list          (char *a_list);
 char        MODE_message       (void);
 /*---(mode keys)------------*/
 char        MODE_god           (char a_major, char a_minor);
+char        MODE_progress      (char a_major, char a_minor);
 
 
 /*---(arachne_dlist)---------------------*/
