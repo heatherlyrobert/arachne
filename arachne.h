@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5a"
-#define VER_TXT   "add live progress legend and pace script run to actual time"
+#define VER_NUM   "0.5b"
+#define VER_TXT   "added command mode line at bottom and adjusted all others"
 
 
 
@@ -232,11 +232,13 @@ struct cACCESSOR {
    char        f_name      [LEN_STR];       /* full file name                 */
    /*---(spider pane)-----*/
    int         s_height;
-   int         s_width;
+   int         s_bottom;
    float       s_femu;
    float       s_pate;
    float       s_tibi;
    /*---(progress pane)---*/
+   int         p_height;
+   int         p_bottom;
    int         p_texw;                      /* texture full width             */
    int         p_texh;                      /* texture full height            */
    int         p_top;                       /* topmost y of progress bar      */
@@ -259,6 +261,9 @@ struct cACCESSOR {
    float       p_cur;                       /* current progess bar position   */
    float       p_end;                       /* end of screen prog bar position*/
    float       p_max;                       /* max progress bar position      */
+   /*---(command line)----*/
+   int         c_height;
+   int         c_bottom;
    /*---(done)------------*/
 };
 extern      tACCESSOR my;
@@ -502,8 +507,10 @@ extern    float     my_deg;
 
 extern    char   face_bg [30];
 extern    char   face_sm [30];
+extern    char   face_vr [30];
 extern    int    txf_bg;
 extern    int    txf_sm;
+extern    int    txf_vr;
 
 
 extern    char        flag_annotate;
@@ -561,6 +568,7 @@ void       glx_resize        (uint, uint);
 char      TICK_init          (void);
 char      TICK_draw          (void);
 char      TICK_show          (void);
+char      CMD_show           (void);
 
 char      draw_begin         (void);      /* prepare drawing environment      */
 char      draw_reset         (void);      /* set starting point for drawing   */

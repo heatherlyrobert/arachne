@@ -6,8 +6,10 @@
 
 char   face_bg [30]  = "clarity";
 char   face_sm [30]  = "courier";
+char   face_vr [30]  = "verdana_sm";
 int    txf_bg;
 int    txf_sm;
+int    txf_vr;
 
 char   flag_view  = 0;
 
@@ -215,7 +217,7 @@ SCALE_larger       (void)
 /*====================------------------------------------====================*/
 /*===----                       progress ticker                        ----===*/
 /*====================------------------------------------====================*/
-static void      o___TICKER__________________o (void) {;}
+static void      o___PROGRESS________________o (void) {;}
 
 char         /*--> set values for progress ticker --------[ ------ [ ------ ]-*/
 TICK_init          (void)
@@ -344,14 +346,14 @@ TICK_draw          (void)
             glVertex3f  ( i        , -8          ,    5.0);
          } glEnd   ();
          /*---(timelables)---------------*/
-         if (i % (x_inc * 10) == 0) {
-            snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_inc) * my.p_multi), my.p_base);
-            glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-            glPushMatrix(); {
-               glTranslatef ( i , my.p_bot + 25.0 ,    20.0  );
-               yFONT_print  (txf_bg,  14, YF_TOPLEF, x_msg);
-            } glPopMatrix();
-         }
+         /*> if (i % (x_inc * 10) == 0) {                                                          <* 
+          *>    snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_inc) * my.p_multi), my.p_base);   <* 
+          *>    glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);                                          <* 
+          *>    glPushMatrix(); {                                                                  <* 
+          *>       glTranslatef ( i , my.p_bot + 25.0 ,    20.0  );                                <* 
+          *>       yFONT_print  (txf_bg,  14, YF_TOPLEF, x_msg);                                   <* 
+          *>    } glPopMatrix();                                                                   <* 
+          *> }                                                                                     <*/
          /*---(title)--------------------*/
          if      (i % (x_inc * 100) == 0) {
             snprintf     (x_msg, 100, "timeline in %s (%s) resolution", g_scale [my.p_scale].desc, g_scale [my.p_scale].code);
@@ -365,7 +367,7 @@ TICK_draw          (void)
    } glPopMatrix();
    /*---(show leg angle curves)----------*/
    x_unit = x_inc / my.p_inc;
-   glColor4f    (1.00f, 0.00f, 0.00f, 1.0f);
+   glColor4f    (0.50f, 0.00f, 0.00f, 1.0f);
    glLineWidth  (15.0f);
    glPushMatrix(); {
       rc = MOVE_first ( 15, &x_sec1, &x_deg1);
@@ -386,7 +388,7 @@ TICK_draw          (void)
          x_deg1 = x_deg2;
       }
    } glPopMatrix();
-   glColor4f    (1.00f, 1.00f, 0.00f, 1.0f);
+   glColor4f    (0.50f, 0.50f, 0.00f, 1.0f);
    glLineWidth  ( 5.0f);
    glPushMatrix(); {
       rc = MOVE_first ( 16, &x_sec1, &x_deg1);
@@ -407,7 +409,7 @@ TICK_draw          (void)
          x_deg1 = x_deg2;
       }
    } glPopMatrix();
-   glColor4f    (0.00f, 1.00f, 0.25f, 1.0f);
+   glColor4f    (0.00f, 0.50f, 0.00f, 1.0f);
    glLineWidth  ( 5.0f);
    glPushMatrix(); {
       rc = MOVE_first ( 17, &x_sec1, &x_deg1);
@@ -426,7 +428,7 @@ TICK_draw          (void)
    } glPopMatrix();
    /*---(draw end)-----------------------*/
    x_unit = x_inc / my.p_inc;
-   glColor4f    (1.00f, 0.00f, 1.00f, 1.0f);
+   glColor4f    (0.50f, 0.00f, 0.50f, 1.0f);
    glLineWidth  (10.0f);
    glPushMatrix(); {
       glBegin(GL_LINE_STRIP); {
@@ -437,6 +439,19 @@ TICK_draw          (void)
          glVertex3f  (  my.p_len * x_unit + 5, my.p_top - 25.0,   70.0);
          glVertex3f  (  my.p_len * x_unit + 5, my.p_bot + 25.0,   70.0);
       } glEnd   ();
+   } glPopMatrix();
+   /*---(time labels)--------------------*/
+   glPushMatrix(); {
+      for (i = 0; i < my.p_texw; i += x_inc) {
+         if (i % (x_inc * 10) == 0) {
+            snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_inc) * my.p_multi), my.p_base);
+            glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+            glPushMatrix(); {
+               glTranslatef ( i , my.p_bot + 25.0 ,    80.0  );
+               yFONT_print  (txf_bg,  14, YF_TOPLEF, x_msg);
+            } glPopMatrix();
+         }
+      }
    } glPopMatrix();
    /*---(create mipmaps)-----------------*/
    glBindFramebufferEXT  (GL_FRAMEBUFFER_EXT, 0);
@@ -461,7 +476,7 @@ TICK_show          (void)
    float       x_unit      =   0.0;
    char        x_msg       [100];
    /*---(setup view)---------------------*/
-   glViewport      (    0,    0,  800,  125);
+   glViewport      (    0, my.p_bottom, my.w_width, my.p_height);
    glMatrixMode    (GL_PROJECTION);
    glLoadIdentity  ();
    glOrtho         ( 0.0f, my.w_width, my.p_bot, my.p_top,  -500.0,   500.0);
@@ -508,7 +523,7 @@ TICK_show          (void)
    /*---(draw legend)--------------------*/
    glPushMatrix(); {
       /*---(background)---------------*/
-      glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
+      glColor4f    (0.25f, 0.25f, 0.25f, 1.0f);
       glBegin         (GL_POLYGON); {
          glVertex3f  (x_right        , my.p_top    ,    0.0);
          glVertex3f  (x_right + x_gap, my.p_top    ,    0.0);
@@ -521,28 +536,63 @@ TICK_show          (void)
       yFONT_print  (txf_bg,  12, YF_TOPLEF, "femur");
       glTranslatef (0.00f         , -20            , 0.00f    );
       snprintf     (x_msg, 100, "%7.2f", my.s_femu);
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, x_msg);
+      yFONT_print  (txf_vr,  12, YF_TOPLEF, x_msg);
       glTranslatef (0.00f         , -30            , 0.00f    );
       glColor4f    (1.00f, 1.00f, 0.00f, 1.0f);
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, "patella");
+      yFONT_print  (txf_vr,  12, YF_TOPLEF, "patella");
       glTranslatef (0.00f         , -20            , 0.00f    );
       snprintf     (x_msg, 100, "%7.2f", my.s_pate);
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, x_msg);
+      yFONT_print  (txf_vr,  12, YF_TOPLEF, x_msg);
       glTranslatef (0.00f         , -30            , 0.00f    );
       glColor4f    (0.00f, 1.00f, 0.25f, 1.0f);
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, "tibia");
+      yFONT_print  (txf_vr,  12, YF_TOPLEF, "tibia");
       glTranslatef (0.00f         , -20            , 0.00f    );
       snprintf     (x_msg, 100, "%7.2f", my.s_tibi);
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, x_msg);
+      yFONT_print  (txf_vr,  12, YF_TOPLEF, x_msg);
       glTranslatef (0.00f         , -30            , 0.00f    );
       glColor4f    (0.00f, 0.50f, 1.00f, 1.0f);
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, "seconds");
+      yFONT_print  (txf_vr,  12, YF_TOPLEF, "seconds");
       glTranslatef (0.00f         , -20            , 0.00f    );
       snprintf     (x_msg, 100, "%7.3f", my_pos);
-      yFONT_print  (txf_bg,  12, YF_TOPLEF, x_msg);
+      yFONT_print  (txf_vr,  12, YF_TOPLEF, x_msg);
    } glPopMatrix();
    /*---(complete)-----------------------*/
    return 0;
+}
+
+
+
+/*====================------------------------------------====================*/
+/*===----                       command line                           ----===*/
+/*====================------------------------------------====================*/
+static void      o___COMMAND_________________o (void) {;}
+
+char
+CMD_show           (void)
+{
+   /*---(setup view)---------------------*/
+   glViewport      (    0, my.c_bottom, my.w_width, my.c_height);
+   glMatrixMode    (GL_PROJECTION);
+   glLoadIdentity  ();
+   glOrtho         ( 0.0f, my.w_width, 0.0f, my.c_height,  -500.0,   500.0);
+   glMatrixMode    (GL_MODELVIEW);
+   glPushMatrix    (); {
+      glColor4f    (0.00f, 0.00f, 0.15f, 1.0f);
+      glBegin         (GL_POLYGON); {
+         glVertex3f  (0.0f      , my.c_height,  0.0f);
+         glVertex3f  (my.w_width, my.c_height,  0.0f);
+         glVertex3f  (my.w_width, 0.0f       ,  0.0f);
+         glVertex3f  (0.0f      , 0.0f       ,  0.0f);
+      } glEnd   ();
+   } glPopMatrix   ();
+   /*---(display)------------------------*/
+   glPushMatrix    (); {
+      glTranslatef (    2.0f,    1.0f,    0.0f);
+      glColor4f    (1.00f, 1.00f, 1.00f, 1.00f);
+      yFONT_print  (txf_bg,   7, YF_BOTLEF, "[G ] GOD : god-mode");
+   } glPopMatrix   ();
+   /*---(complete)-----------------------*/
+   return;
 }
 
 
@@ -942,6 +992,7 @@ draw_main          (void)
    /*> view_top    ();                                                                <*/
    view_3d     ();
    TICK_show   ();
+   CMD_show    ();
    /*> view_leg    ();                                                                <*/
    /*> view_ik();                                                                     <*/
    /*---(send for processing)------------*/
@@ -1292,7 +1343,7 @@ void
 view_3d()
 {
    /*---(setup view)---------------------*/
-   glViewport      (    0,   120,   800,   580);
+   glViewport      (    0, my.s_bottom, my.w_width, my.s_height);
    glMatrixMode    (GL_PROJECTION);
    glLoadIdentity  ();
    gluPerspective  (45.0f, (GLfloat) 800 / (GLfloat) 580, 0.01f, 4000.0f);

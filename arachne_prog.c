@@ -71,12 +71,21 @@ PROG_init          (void)
 {
    DEBUG_TOPS  yLOG_enter (__FUNCTION__);
    strlcpy (my.w_title, "arachne_full", LEN_STR);
-   my.w_width   =  800;
-   my.w_height  =  700;
-   my.s_width   = my.w_width;
+   /*---(command line)-------------------*/
+   my.c_height  =   15;
+   my.c_bottom  =    0;
+   /*---(progress window)----------------*/
+   my.p_height  =  125;
+   my.p_bottom  =  my.c_bottom + my.c_height;
+   /*---(spider window)------------------*/
    my.s_height  =  580;
+   my.s_bottom  =  my.p_bottom + my.p_height;
+   /*---(full window)--------------------*/
+   my.w_width   =  800;
+   my.w_height  =  my.s_bottom + my.s_height;
+   /*---(other progress settings)--------*/
    my.p_len     =  0.0;
-   my.p_wait    =   500000;
+   my.p_wait    = 500000;
    my.p_adv     = 0.01;                   /*---(0.01 sec)---*/
    /*---(time)---------------------------*/
    SCALE_init ();
@@ -337,6 +346,11 @@ font_load          (void)
       fprintf(stderr, "Problem loading %s\n", face_sm);
       exit(1);
    }
+   txf_sm  = yFONT_load(face_vr);
+   if (txf_vr <  0) {
+      fprintf(stderr, "Problem loading %s\n", face_vr);
+      exit(1);
+   }
    return 0;
 }
 
@@ -345,6 +359,7 @@ font_delete        (void)
 {
    yFONT_free(txf_bg);
    yFONT_free(txf_sm);
+   yFONT_free(txf_vr);
    return 0;
 }
 
