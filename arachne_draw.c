@@ -15,6 +15,43 @@ char   flag_view  = 0;
 
 void draw_spider();
 
+
+struct tSPEED {
+   char        code        [LEN_LABEL];
+   char        desc        [LEN_STR  ];
+   float       speed;   
+   float       adv_sec;
+   float       wait_ns;
+} g_speed [MAX_SPEED] = {
+   { "-50.0x"    , "blur"             ,    -50.00 ,    -1.2500 ,    2000000 },
+   { "-20.0x"    , "super fast"       ,    -20.00 ,    -0.5000 ,    2000000 },
+   { "-10.0x"    , "very fast"        ,    -10.00 ,    -0.2500 ,    2000000 },
+   { "-5.00x"    , "faster"           ,     -5.00 ,    -0.1250 ,    2000000 },
+   { "-2.00x"    , "double"           ,     -2.00 ,    -0.0500 ,    2000000 },
+   { "-1.00x"    , "normal"           ,     -1.00 ,    -0.0250 ,    2000000 },
+   { "-0.75x"    , "three-quarters"   ,     -0.75 ,    -0.0150 ,    4500000 },
+   { "-0.50x"    , "half"             ,     -0.50 ,    -0.0100 ,    5000000 },
+   { "-0.25x"    , "quarter"          ,     -0.25 ,    -0.0060 ,    5000000 },
+   { "-0.10x"    , "slow"             ,     -0.10 ,    -0.0025 ,    4500000 },
+   { "-0.05x"    , "super slow"       ,     -0.05 ,    -0.0010 ,    5000000 },
+   { "-0.02x"    , "ultra slow"       ,     -0.02 ,    -0.0005 ,    5000000 },
+   { "+0.00x"    , "stopped"          ,      0.00 ,     0.0000 ,   50000000 },
+   { "+0.02x"    , "ultra slow"       ,      0.02 ,     0.0005 ,    5000000 },
+   { "+0.05x"    , "super slow"       ,      0.05 ,     0.0010 ,    5000000 },
+   { "+0.10x"    , "slow"             ,      0.10 ,     0.0025 ,    4500000 },
+   { "+0.25x"    , "quarter"          ,      0.25 ,     0.0060 ,    5000000 },
+   { "+0.50x"    , "half"             ,      0.50 ,     0.0100 ,    5000000 },
+   { "+0.75x"    , "three-quarters"   ,      0.75 ,     0.0150 ,    4500000 },
+   { "+1.00x"    , "normal"           ,      1.00 ,     0.0250 ,    2000000 },
+   { "+2.00x"    , "double"           ,      2.00 ,     0.0500 ,    2000000 },
+   { "+5.00x"    , "faster"           ,      5.00 ,     0.1250 ,    2000000 },
+   { "+10.0x"    , "very fast"        ,     10.00 ,     0.2500 ,    2000000 },
+   { "+20.0x"    , "super fast"       ,     20.00 ,     0.5000 ,    2000000 },
+   { "+50.0x"    , "blur"             ,     50.00 ,     1.2500 ,    2000000 },
+   { "??????"    , "end-of-list"      ,      0.00 ,     0.0000 ,          0 },
+};
+
+
 struct tSCALE {
    char        type;
    char        code        [LEN_LABEL];
@@ -68,8 +105,6 @@ struct tSCALE {
 /*===[[ RUN TIME DEBUGGING ]]=================================================*/
 int       debug_xlib_con  = 1;
 int       debug_xlib_foc  = 1;
-
-char      moving   = 'n';
 
 char      flag_annotate  = 'n';
 
@@ -138,6 +173,128 @@ int       is_unittest  = 0;
 /*===[[ yUNIT ]]==============================================================*/
 char       eva_feedback[200] = "";
 char      *eva_accessor     (char   *a_question);
+
+
+
+/*====================------------------------------------====================*/
+/*===----                       progress speed                         ----===*/
+/*====================------------------------------------====================*/
+static void      o___SPEED___________________o (void) {;}
+
+char
+SPEED_init         (void)
+{
+   my.p_sindex  =    0;
+   my.p_speed   =  0.0;
+   my.p_moving  =  '-';
+   my.p_adv     = 0.01;                   /*---(0.01 sec)---*/
+   my.p_wait    =  100000000;
+   return 0;
+}
+
+char
+SPEED_find         (char *a_code)
+{
+   char        rce         = -10;
+   int         i           = 0;
+   char        x_index     = -1;
+   --rce;  if (strlen (a_code) != 6) {
+      return rce;
+   }
+   for (i = 0; i < MAX_SPEED; ++i) {
+      if (g_speed [i].code [0] != a_code [0])      continue;
+      if (g_speed [i].code [1] != a_code [1])      continue;
+      if (strcmp (g_speed [i].code, a_code) != 0)  continue;
+      x_index = i;
+   }
+   --rce;  if (x_index < 0) {
+      return rce;
+   }
+   my.p_sindex = x_index;
+   my.p_speed  = g_speed [my.p_sindex].speed;
+   my.p_adv    = g_speed [my.p_sindex].adv_sec;
+   my.p_wait   = g_speed [my.p_sindex].wait_ns;
+   return x_index;
+}
+
+char
+SPEED_faster       (void)
+{
+   char        rce         = -10;
+   --rce; if (my.p_sindex >= MAX_SPEED - 1) {
+      return rce;
+   }
+   --rce;  if (g_speed [my.p_sindex + 1].code [0] == '?') {
+      return rce;
+   }
+   ++(my.p_sindex);
+   my.p_speed  = g_speed [my.p_sindex].speed;
+   my.p_adv    = g_speed [my.p_sindex].adv_sec;
+   my.p_wait   = g_speed [my.p_sindex].wait_ns;
+   TICK_draw ();
+   return 0;
+}
+
+char
+SPEED_slower       (void)
+{
+   char        rce         = -10;
+   --rce; if (my.p_sindex <= 0) {
+      return rce;
+   }
+   --(my.p_sindex);
+   my.p_speed  = g_speed [my.p_sindex].speed;
+   my.p_adv    = g_speed [my.p_sindex].adv_sec;
+   my.p_wait   = g_speed [my.p_sindex].wait_ns;
+   TICK_draw ();
+   return 0;
+}
+
+char
+SPEED_play         (void)
+{
+   char        rce         = -10;
+   my.p_moving   = 'y';
+   --rce; if (my.p_sindex <= 0) {
+      return rce;
+   }
+   my.p_speed  = g_speed [my.p_sindex].speed;
+   my.p_adv    = g_speed [my.p_sindex].adv_sec;
+   my.p_wait   = g_speed [my.p_sindex].wait_ns;
+   TICK_draw ();
+   return 0;
+}
+
+char
+SPEED_stop         (void)
+{
+   char        rce         = -10;
+   int         i           = 0;
+   char       *x_code      = "+0.00x";
+   char        x_index     = -1;
+   my.p_moving   = '-';
+   for (i = 0; i < MAX_SPEED; ++i) {
+      if (g_speed [i].code [0] != x_code [0])      continue;
+      if (g_speed [i].code [1] != x_code [1])      continue;
+      if (strcmp (g_speed [i].code, x_code) != 0)  continue;
+      x_index = i;
+   }
+   --rce;  if (x_index < 0) {
+      return rce;
+   }
+   my.p_adv    = g_speed [x_index].adv_sec;
+   my.p_wait   = g_speed [x_index].wait_ns;
+   TICK_draw ();
+   return 0;
+}
+
+
+
+
+/*====================------------------------------------====================*/
+/*===----                       progress scale                         ----===*/
+/*====================------------------------------------====================*/
+static void      o___SCALE___________________o (void) {;}
 
 char
 SCALE_init         (void)
@@ -236,13 +393,13 @@ TICK_init          (void)
    my.p_depth     =    0;
    /*---(working)------------------------*/
    DEBUG_GRAF   yLOG_note    ("initializing working variables");
-   /*> my.p_scale     =    0;                                                         <* 
-    *> my.p_inc       =    1;                                                         <*/
    my.p_min       =    0;
    my.p_beg       =    0;
    my.p_cur       =    0;
    my.p_end       =    0;
    my.p_max       =    0;
+   /*---(debugging)----------------------*/
+   my.p_debug     =  '-';
    /*---(angles)-------------------------*/
    my.s_femu      =  0.0;
    my.s_pate      =  0.0;
@@ -361,6 +518,16 @@ TICK_draw          (void)
                glTranslatef ( i , my.p_top -  25.0 ,    20.0  );
                yFONT_print  (txf_bg,  16, YF_BOTLEF, x_msg);
             } glPopMatrix();
+            snprintf     (x_msg, 100, "play %s", g_speed [my.p_sindex].code);
+            glPushMatrix(); {
+               glTranslatef ( i - 200.0, my.p_top -  25.0 ,    20.0  );
+               yFONT_print  (txf_bg,  16, YF_BOTRIG, x_msg);
+            } glPopMatrix();
+            snprintf     (x_msg, 100, "%s", g_speed [my.p_sindex].desc);
+            glPushMatrix(); {
+               glTranslatef ( i - 190.0, my.p_top -  25.0 ,    20.0  );
+               yFONT_print  (txf_bg,  16, YF_BOTLEF, x_msg);
+            } glPopMatrix();
          }
       }
    } glPopMatrix();
@@ -465,14 +632,20 @@ char         /*--> show texture on screen ----------------[ ------ [ ------ ]-*/
 TICK_show          (void)
 {
    /*---(locals)-----------+-----------+-*/
+   float       x_pfull     =   0.0;         /* polygon length available       */
+   float       x_psec      =   0.0;         /* polygon length of a second     */
+   float       x_tfull     =   0.0;         /* texture length available       */
+   float       x_tsec      =   0.0;         /* texture length of a second     */
+   float       x_tnsec     =   0.0;         /* texture number of secs shown   */
+   float       x_pleft     =   0.0;         /* polygon left                   */
+   float       x_pright    =   0.0;         /* polygon right                  */
+   float       x_pcur      =   0.0;         /* polygon current location       */
+   float       x_ppct      =   0.0;         /* polygon current percentage     */
    float       x_cur       =   0.0;
    float       x_half      =   0.0;
    float       x_beg       =   0.0;
    float       x_end       =   0.0;
-   float       x_gap       =   0.0;
-   float       x_right     =   0.0;
    int         x_inc       =    10;
-   float       x_unit      =   0.0;
    char        x_msg       [100];
    /*---(setup view)---------------------*/
    glViewport      (    0, my.p_bottom, my.w_width, my.p_height);
@@ -480,12 +653,23 @@ TICK_show          (void)
    glLoadIdentity  ();
    glOrtho         ( 0.0f, my.w_width, my.p_bot, my.p_top,  -500.0,   500.0);
    glMatrixMode    (GL_MODELVIEW);
-   /*---(calculate offset)---------------*/
-   x_right     = my.w_width -  x_gap;
-   x_cur       = my_pos * (x_inc / my.p_inc) / 2.0f;   /* texture displayed at 0.5x */
-   x_half      = x_right;
+   /*---(calc basics)--------------------*/
+   x_pfull     = my.w_width;
+   x_tfull     = my.w_width * 2.0;
+   x_tsec      = x_inc / my.p_inc;
+   x_tnsec     = x_tfull / x_tsec;
+   x_psec      = x_tsec / 2.0;
+   /*---(calc polygon info)--------------*/
+   x_pleft     = 0.0;
+   x_pright    = x_pleft + my.w_width;
+   x_pcur      = (my_pos / 2.0) * x_tsec;
+   x_ppct      = x_pcur / my.w_width;
+
+   x_cur       = (my_pos * x_tsec) / 2.0f;   /* texture displayed at 0.5x */
+   x_half      = my.w_width;
    /*---(set beginning and end)----------*/
    x_beg       = x_cur - x_half;
+   /*> x_beg       = my.w_width;                                                      <*/
    if (x_beg < 0.0)  x_beg = 0.0;
    x_end       = x_beg + (x_half * 2.0f);
    /*---(scale number to texture)--------*/
@@ -496,29 +680,42 @@ TICK_show          (void)
    glBegin(GL_POLYGON); {
       /*---(top beg)--------*/
       glTexCoord2f (x_beg     , 1.00f    );
-      glVertex3f   (0.00f     , my.p_top ,     0.00f);
+      glVertex3f   (x_pleft   , my.p_top ,     0.00f);
       /*---(top end)--------*/
       glTexCoord2f (x_end     , 1.00f    );
-      glVertex3f   (x_right   , my.p_top ,     0.00f);
+      glVertex3f   (x_pright  , my.p_top ,     0.00f);
       /*---(bottom end)-----*/
       glTexCoord2f (x_end     , 0.00f    );
-      glVertex3f   (x_right   , my.p_bot ,     0.00f);
+      glVertex3f   (x_pright  , my.p_bot ,     0.00f);
       /*---(bottom beg)-----*/
       glTexCoord2f (x_beg     , 0.00f    );
-      glVertex3f   (0.00f     , my.p_bot ,     0.00f);
+      glVertex3f   (x_pleft   , my.p_bot ,     0.00f);
       /*---(done)-----------*/
    } glEnd();
    glBindTexture   (GL_TEXTURE_2D, 0);
    /*---(draw current)-------------------*/
-   x_unit = x_inc / my.p_inc;
    glColor4f    (0.00f, 0.00f, 1.00f, 1.0f);
    glLineWidth  (10.0f);
    glPushMatrix(); {
       glBegin(GL_LINE_STRIP); {
-         glVertex3f  (  my_pos * x_unit / 2.0, my.p_top - 25.0,   70.0);
-         glVertex3f  (  my_pos * x_unit / 2.0, my.p_bot + 25.0,   70.0);
+         glVertex3f  (x_cur, my.p_top - 25.0,   70.0);
+         glVertex3f  (x_cur, my.p_bot + 25.0,   70.0);
       } glEnd   ();
    } glPopMatrix();
+   /*---(show debug)---------------------*/
+   if (my.p_debug == 'y') {
+      printf ("TICK_show ()  debugging\n");
+      printf ("   x_pfull          = %10.3f\n", x_pfull);
+      printf ("   x_psec           = %10.3f\n", x_psec);
+      printf ("   x_tfull          = %10.3f\n", x_tfull);
+      printf ("   x_tsec           = %10.3f\n", x_tsec);
+      printf ("   x_tnsec          = %10.3f\n", x_tnsec);
+      printf ("   x_pleft          = %10.3f\n", x_pleft);
+      printf ("   x_pright         = %10.3f\n", x_pright);
+      printf ("   x_pcur           = %10.3f\n", x_pcur);
+      printf ("   x_ppct           = %10.3f\n", x_ppct);
+      my.p_debug = '-';
+   }
    /*---(complete)-----------------------*/
    return 0;
 }

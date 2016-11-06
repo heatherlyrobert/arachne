@@ -101,12 +101,12 @@ main (int argc, char *argv[])
              *>    switch (the_key[0]) {                                              <* 
              *>    case '+': SCALE_smaller ();   /+ in  +/     break;                 <* 
              *>    case '-': SCALE_larger  ();   /+ out +/     break;                 <* 
-             *>    case ',': moving  = 'y';                    break;                 <* 
-             *>    case '.': moving  = 'n';                    break;                 <* 
-             *>    case '>': moving  = 'n'; my_pos +=  my.p_inc;          break;      <* 
-             *>    case '<': moving  = 'n'; my_pos -=  my.p_inc;          break;      <* 
-             *>    case ')': moving  = 'n'; my_pos +=  my.p_inc * 5;      break;      <* 
-             *>    case '(': moving  = 'n'; my_pos -=  my.p_inc * 5;      break;      <* 
+             *>    case ',': my.p_moving  = 'y';                    break;                 <* 
+             *>    case '.': my.p_moving  = 'n';                    break;                 <* 
+             *>    case '>': my.p_moving  = 'n'; my_pos +=  my.p_inc;          break;      <* 
+             *>    case '<': my.p_moving  = 'n'; my_pos -=  my.p_inc;          break;      <* 
+             *>    case ')': my.p_moving  = 'n'; my_pos +=  my.p_inc * 5;      break;      <* 
+             *>    case '(': my.p_moving  = 'n'; my_pos -=  my.p_inc * 5;      break;      <* 
              *>    }                                                                  <* 
              *> }                                                                     <*/
             /*---(unknown)--------------*/
@@ -133,13 +133,13 @@ main (int argc, char *argv[])
       }
       /*> printf ("my_pos = %6.1f, my_ppos = %6.1f\n", my_pos, my_ppos);              <*/
       /*---(check boundaries)------------*/
-      if (moving == 'y')  my_pos += my.p_adv;
+      if (my.p_moving == 'y')  my_pos += my.p_adv;
       if (my_pos <  0.0f)   {
-         moving = 'n';
+         my.p_moving = 'n';
          my_pos = 0.0;
       }
       if (my_pos >= my.p_len) {
-         moving = 'n';
+         my.p_moving = 'n';
          my_pos = my.p_len;
       }
       gait.pos = my_pos;
@@ -154,9 +154,10 @@ main (int argc, char *argv[])
       /*> timer.tv_nsec = 100000000;   /+---(0.1 sec)---+/                            <*/
       /*> timer.tv_nsec =  50000000;   /+---(0.05 sec)---+/                           <*/
       /*> timer.tv_nsec =  25000000;   /+---(0.025 sec)---+/                      <*/
-      /*> timer.tv_nsec =      50000000 * my_inc;   /+---(0.005 sec)---+/             <*/
-      /*> timer.tv_nsec =      50000000;            /+---(0.005 sec)---+/             <*/
-      /*> timer.tv_nsec =      10000000;            /+---(0.001 sec)---+/             <*/
+      /*> timer.tv_nsec =  50000000 * my_inc;   /+---(0.005 sec)---+/             <*/
+      /*> timer.tv_nsec =  50000000;            /+---(0.005 sec)---+/             <*/
+      /*> timer.tv_nsec =  10000000;            /+---(0.001 sec)---+/             <*/
+          /*> my.p_wait    = 500000;                                                  <*/
       timer.tv_nsec =  my.p_wait;
       nanosleep (&timer, &remain);
    }

@@ -90,8 +90,6 @@ PROG_init          (void)
    /*---(other progress settings)--------*/
    DEBUG_TOPS   yLOG_note  ("defaul progress ticker values");
    my.p_len     =  0.0;
-   my.p_wait    = 500000;
-   my.p_adv     = 0.01;                   /*---(0.01 sec)---*/
    /*---(setup modes)--------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");
    MODE_init    ();
@@ -100,6 +98,10 @@ PROG_init          (void)
    DEBUG_TOPS   yLOG_note  ("prepare scales");
    SCALE_init   ();
    SCALE_find   ("d-");
+   /*---(speed)--------------------------*/
+   DEBUG_TOPS   yLOG_note  ("prepare speeds");
+   SPEED_init   ();
+   SPEED_find   ("+1.00x");
    /*---(complete)-----------------------*/
    DEBUG_TOPS   yLOG_exit  (__FUNCTION__);
    return 0;
@@ -245,7 +247,7 @@ PROG_args          (int argc, char *argv[])
       if (a[0] == '@')  continue;
       DEBUG_ARGS  yLOG_info    ("cli arg", a);
       ++x_args;
-      if      (strcmp(a, "--moving"     ) == 0)  moving       = 'y';
+      if      (strcmp(a, "--moving"     ) == 0)  my.p_moving  = 'y';
       else if (strcmp(a, "--sizing"     ) == 0)  debug_sizing = 'y';
       else if (strcmp(a, "--setup"      ) == 0)  umake_setup  = 'y';
       else if (strcmp(a, "--init"       ) == 0)  umake_init   = 'y';

@@ -171,7 +171,7 @@ MOVE_create        (
       x_move->seq           = 1;
       x_move->sec_beg       = 0.0f;
       x_move->sec_end       = a_sec;
-      x_move->deg_beg       = 0.0f;
+      x_move->deg_beg       = a_deg;
    } else {
       DEBUG_DATA   yLOG_note    ("add to tail");
       x_move->s_prev        = a_servo->tail;
@@ -330,6 +330,7 @@ MOVE_curone        (int a_servo, float a_time)
    DEBUG_DATA   yLOG_double  ("deg_beg"   , x_curr->deg_beg);
    DEBUG_DATA   yLOG_double  ("deg_end"   , x_curr->deg_end);
    x_pct   = (a_time - x_beg) / (x_end - x_beg);
+   if (x_end == 0.0)  x_pct = 0.0;
    DEBUG_DATA   yLOG_double  ("x_pct"     , x_pct);
    x_degs  = x_curr->deg_end - x_curr->deg_beg;
    DEBUG_DATA   yLOG_double  ("x_degs"    , x_degs);

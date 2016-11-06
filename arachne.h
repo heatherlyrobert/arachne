@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5e"
-#define VER_TXT   "basic progress-mode working with a MODE_progress function now"
+#define VER_NUM   "0.5f"
+#define VER_TXT   "added progress-mode speeds and keys to adjuct"
 
 
 
@@ -135,6 +135,7 @@
 #define     LEN_LABEL   20
 /*---(time)---------------------------*/
 #define     MAX_SCALE   50
+#define     MAX_SPEED   50
 /*---(legs and servos)----------------*/
 #define     MAX_LEGS    8
 #define     MAX_SEGS    15
@@ -283,12 +284,16 @@ struct cACCESSOR {
    int         p_bot;                       /* bottommost y of progress bar   */
    float       p_avail;                     /* units available on screen      */
    float       p_len;                       /* length of script               */
-   double      p_wait;                      /* time to wait while moving      */
-   float       p_adv;                       /* x-advance while moving         */
    /*---(progress handles)*/
    uint        p_tex;                       /* texture for image              */
    uint        p_fbo;                       /* framebuffer                    */
    uint        p_depth;                     /* depth buffer                   */
+   /*---(progress play)---*/
+   char        p_sindex;                    /* play speed index               */
+   char        p_moving;                    /* playing (y/n)                  */
+   float       p_speed;                     /* play speed                     */
+   float       p_wait;                      /* time to wait while moving      */
+   float       p_adv;                       /* x-advance while moving         */
    /*---(progress working)*/
    char        p_scale;                     /* scale of zoom                  */
    float       p_inc;                       /* increment for h,l              */
@@ -299,6 +304,7 @@ struct cACCESSOR {
    float       p_cur;                       /* current progess bar position   */
    float       p_end;                       /* end of screen prog bar position*/
    float       p_max;                       /* max progress bar position      */
+   char        p_debug; 
    /*---(command line)----*/
    int         c_bottom;                    /* bottom of command window       */
    int         c_height;                    /* height of command window       */
@@ -335,7 +341,6 @@ extern    char      model_desc [100];
 
 /*===[[ CLI ARGS ]]=======================================*/
 extern    char      debug_sizing;
-extern    char      moving;
 extern    char      umake_setup;
 extern    char      umake_init;
 extern    char      umake_leg;
@@ -578,6 +583,13 @@ char        PROG_end           (void);
 char        PROG_testing       (void);
 char        PROG_testloud      (void);
 
+
+char        SPEED_init         (void);
+char        SPEED_find         (char *a_code);
+char        SPEED_faster       (void);
+char        SPEED_slower       (void);
+char        SPEED_play         (void);
+char        SPEED_stop         (void);
 
 char        SCALE_init         (void);
 char        SCALE_find         (char *a_code);
