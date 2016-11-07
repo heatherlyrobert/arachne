@@ -96,11 +96,17 @@ MODE_progress      (char a_major, char a_minor)
       }
       /*---(play and stop)---------------*/
       switch (a_minor) {
-      case '>':  SPEED_faster ();                            break;
-      case '<':  SPEED_slower ();                            break;
+      case '>':
+         yVIKEYS_speed_more   ();
+         TICK_draw ();
+         break;
+      case '<': 
+         yVIKEYS_speed_less   ();
+         TICK_draw ();
+         break;
       case '.':
-         if (my.p_moving == 'y')  SPEED_stop   ();
-         else                     SPEED_play   ();
+         yVIKEYS_speed_play   ();  /* toggles */
+         TICK_draw ();
          break;
       }
       /*---(horizontal movement)---------*/

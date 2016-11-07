@@ -101,8 +101,10 @@ PROG_init          (void)
    SCALE_find   ("d-");
    /*---(speed)--------------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare speeds");
-   SPEED_init   ();
-   SPEED_find   ("+1.00x");
+   /*> SPEED_init   ();                                                               <*/
+   /*> SPEED_find   ("+1.00x");                                                       <*/
+   yVIKEYS_speed_set    ("+1.00x");
+   yVIKEYS_speed_stop   ();
    /*---(complete)-----------------------*/
    DEBUG_TOPS   yLOG_exit  (__FUNCTION__);
    return 0;
@@ -248,8 +250,8 @@ PROG_args          (int argc, char *argv[])
       if (a[0] == '@')  continue;
       DEBUG_ARGS  yLOG_info    ("cli arg", a);
       ++x_args;
-      if      (strcmp(a, "--moving"     ) == 0)  my.p_moving  = 'y';
-      else if (strcmp(a, "--sizing"     ) == 0)  debug_sizing = 'y';
+      if      (strcmp(a, "--sizing"     ) == 0)  debug_sizing = 'y';
+      /*> else if (strcmp(a, "--moving"     ) == 0)  my.p_moving  = 'y';              <*/
       else if (strcmp(a, "--setup"      ) == 0)  umake_setup  = 'y';
       else if (strcmp(a, "--init"       ) == 0)  umake_init   = 'y';
       else if (strcmp(a, "--model"      ) == 0) {

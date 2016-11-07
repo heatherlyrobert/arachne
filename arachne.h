@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5j"
-#define VER_TXT   "added yVIKEYS_ver to debugging"
+#define VER_NUM   "0.5k"
+#define VER_TXT   "moved all SPEED functions and data to yVIKEYS"
 
 
 
@@ -266,12 +266,6 @@ struct cACCESSOR {
    uint        p_tex;                       /* texture for image              */
    uint        p_fbo;                       /* framebuffer                    */
    uint        p_depth;                     /* depth buffer                   */
-   /*---(progress play)---*/
-   char        p_sindex;                    /* play speed index               */
-   char        p_moving;                    /* playing (y/n)                  */
-   float       p_speed;                     /* play speed                     */
-   float       p_wait;                      /* time to wait while moving      */
-   float       p_adv;                       /* x-advance while moving         */
    /*---(progress working)*/
    char        p_scale;                     /* scale of zoom                  */
    float       p_inc;                       /* increment for h,l              */
@@ -563,12 +557,6 @@ char        PROG_testing       (void);
 char        PROG_testloud      (void);
 
 
-char        SPEED_init         (void);
-char        SPEED_find         (char *a_code);
-char        SPEED_faster       (void);
-char        SPEED_slower       (void);
-char        SPEED_play         (void);
-char        SPEED_stop         (void);
 
 char        SCALE_init         (void);
 char        SCALE_find         (char *a_code);

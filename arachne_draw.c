@@ -16,42 +16,6 @@ char   flag_view  = 0;
 void draw_spider();
 
 
-struct tSPEED {
-   char        code        [LEN_LABEL];
-   char        desc        [LEN_STR  ];
-   float       speed;   
-   float       adv_sec;
-   float       wait_ns;
-} g_speed [MAX_SPEED] = {
-   { "-50.0x"    , "blur"             ,    -50.00 ,    -1.2500 ,    2000000 },
-   { "-20.0x"    , "super fast"       ,    -20.00 ,    -0.5000 ,    2000000 },
-   { "-10.0x"    , "very fast"        ,    -10.00 ,    -0.2500 ,    2000000 },
-   { "-5.00x"    , "faster"           ,     -5.00 ,    -0.1250 ,    2000000 },
-   { "-2.00x"    , "double"           ,     -2.00 ,    -0.0500 ,    2000000 },
-   { "-1.00x"    , "normal"           ,     -1.00 ,    -0.0250 ,    2000000 },
-   { "-0.75x"    , "three-quarters"   ,     -0.75 ,    -0.0150 ,    4500000 },
-   { "-0.50x"    , "half"             ,     -0.50 ,    -0.0100 ,    5000000 },
-   { "-0.25x"    , "quarter"          ,     -0.25 ,    -0.0060 ,    5000000 },
-   { "-0.10x"    , "slow"             ,     -0.10 ,    -0.0025 ,    4500000 },
-   { "-0.05x"    , "super slow"       ,     -0.05 ,    -0.0010 ,    5000000 },
-   { "-0.02x"    , "ultra slow"       ,     -0.02 ,    -0.0005 ,    5000000 },
-   { "+0.00x"    , "stopped"          ,      0.00 ,     0.0000 ,   10000000 },
-   { "+0.02x"    , "ultra slow"       ,      0.02 ,     0.0005 ,    5000000 },
-   { "+0.05x"    , "super slow"       ,      0.05 ,     0.0010 ,    5000000 },
-   { "+0.10x"    , "slow"             ,      0.10 ,     0.0025 ,    4500000 },
-   { "+0.25x"    , "quarter"          ,      0.25 ,     0.0060 ,    5000000 },
-   { "+0.50x"    , "half"             ,      0.50 ,     0.0100 ,    5000000 },
-   { "+0.75x"    , "three-quarters"   ,      0.75 ,     0.0150 ,    4500000 },
-   { "+1.00x"    , "normal"           ,      1.00 ,     0.0250 ,    2000000 },
-   { "+2.00x"    , "double"           ,      2.00 ,     0.0500 ,    2000000 },
-   { "+5.00x"    , "faster"           ,      5.00 ,     0.1250 ,    2000000 },
-   { "+10.0x"    , "very fast"        ,     10.00 ,     0.2500 ,    2000000 },
-   { "+20.0x"    , "super fast"       ,     20.00 ,     0.5000 ,    2000000 },
-   { "+50.0x"    , "blur"             ,     50.00 ,     1.2500 ,    2000000 },
-   { "??????"    , "end-of-list"      ,      0.00 ,     0.0000 ,          0 },
-};
-
-
 struct tSCALE {
    char        type;
    char        code        [LEN_LABEL];
@@ -173,121 +137,6 @@ int       is_unittest  = 0;
 /*===[[ yUNIT ]]==============================================================*/
 char       eva_feedback[200] = "";
 char      *eva_accessor     (char   *a_question);
-
-
-
-/*====================------------------------------------====================*/
-/*===----                       progress speed                         ----===*/
-/*====================------------------------------------====================*/
-static void      o___SPEED___________________o (void) {;}
-
-char
-SPEED_init         (void)
-{
-   my.p_sindex  =    0;
-   my.p_speed   =  0.0;
-   my.p_moving  =  '-';
-   my.p_adv     = 0.01;                   /*---(0.01 sec)---*/
-   my.p_wait    =  100000000;
-   return 0;
-}
-
-char
-SPEED_find         (char *a_code)
-{
-   char        rce         = -10;
-   int         i           = 0;
-   char        x_index     = -1;
-   --rce;  if (strlen (a_code) != 6) {
-      return rce;
-   }
-   for (i = 0; i < MAX_SPEED; ++i) {
-      if (g_speed [i].code [0] != a_code [0])      continue;
-      if (g_speed [i].code [1] != a_code [1])      continue;
-      if (strcmp (g_speed [i].code, a_code) != 0)  continue;
-      x_index = i;
-   }
-   --rce;  if (x_index < 0) {
-      return rce;
-   }
-   my.p_sindex = x_index;
-   my.p_speed  = g_speed [my.p_sindex].speed;
-   my.p_adv    = g_speed [my.p_sindex].adv_sec;
-   my.p_wait   = g_speed [my.p_sindex].wait_ns;
-   return x_index;
-}
-
-char
-SPEED_faster       (void)
-{
-   char        rce         = -10;
-   --rce; if (my.p_sindex >= MAX_SPEED - 1) {
-      return rce;
-   }
-   --rce;  if (g_speed [my.p_sindex + 1].code [0] == '?') {
-      return rce;
-   }
-   ++(my.p_sindex);
-   my.p_speed  = g_speed [my.p_sindex].speed;
-   my.p_adv    = g_speed [my.p_sindex].adv_sec;
-   my.p_wait   = g_speed [my.p_sindex].wait_ns;
-   TICK_draw ();
-   return 0;
-}
-
-char
-SPEED_slower       (void)
-{
-   char        rce         = -10;
-   --rce; if (my.p_sindex <= 0) {
-      return rce;
-   }
-   --(my.p_sindex);
-   my.p_speed  = g_speed [my.p_sindex].speed;
-   my.p_adv    = g_speed [my.p_sindex].adv_sec;
-   my.p_wait   = g_speed [my.p_sindex].wait_ns;
-   TICK_draw ();
-   return 0;
-}
-
-char
-SPEED_play         (void)
-{
-   char        rce         = -10;
-   my.p_moving   = 'y';
-   --rce; if (my.p_sindex <= 0) {
-      return rce;
-   }
-   my.p_speed  = g_speed [my.p_sindex].speed;
-   my.p_adv    = g_speed [my.p_sindex].adv_sec;
-   my.p_wait   = g_speed [my.p_sindex].wait_ns;
-   TICK_draw ();
-   return 0;
-}
-
-char
-SPEED_stop         (void)
-{
-   char        rce         = -10;
-   int         i           = 0;
-   char       *x_code      = "+0.00x";
-   char        x_index     = -1;
-   my.p_moving   = '-';
-   for (i = 0; i < MAX_SPEED; ++i) {
-      if (g_speed [i].code [0] != x_code [0])      continue;
-      if (g_speed [i].code [1] != x_code [1])      continue;
-      if (strcmp (g_speed [i].code, x_code) != 0)  continue;
-      x_index = i;
-   }
-   --rce;  if (x_index < 0) {
-      return rce;
-   }
-   my.p_adv    = g_speed [x_index].adv_sec;
-   my.p_wait   = g_speed [x_index].wait_ns;
-   TICK_draw ();
-   return 0;
-}
-
 
 
 
@@ -518,16 +367,21 @@ TICK_draw          (void)
                glTranslatef ( i , my.p_top -  25.0 ,    20.0  );
                yFONT_print  (txf_bg,  16, YF_BOTLEF, x_msg);
             } glPopMatrix();
-            snprintf     (x_msg, 100, "play %s", g_speed [my.p_sindex].code);
+            yVIKEYS_speed_desc (x_msg);
             glPushMatrix(); {
-               glTranslatef ( i - 200.0, my.p_top -  25.0 ,    20.0  );
-               yFONT_print  (txf_bg,  16, YF_BOTRIG, x_msg);
-            } glPopMatrix();
-            snprintf     (x_msg, 100, "%s", g_speed [my.p_sindex].desc);
-            glPushMatrix(); {
-               glTranslatef ( i - 190.0, my.p_top -  25.0 ,    20.0  );
+               glTranslatef ( i - 500.0, my.p_top -  25.0 ,    20.0  );
                yFONT_print  (txf_bg,  16, YF_BOTLEF, x_msg);
             } glPopMatrix();
+            /*> snprintf     (x_msg, 100, "play %s", g_speed [my.p_sindex].code);     <*/
+            /*> glPushMatrix(); {                                                     <* 
+             *>    glTranslatef ( i - 200.0, my.p_top -  25.0 ,    20.0  );           <* 
+             *>    yFONT_print  (txf_bg,  16, YF_BOTRIG, x_msg);                      <* 
+             *> } glPopMatrix();                                                      <*/
+            /*> snprintf     (x_msg, 100, "%s", g_speed [my.p_sindex].desc);          <*/
+            /*> glPushMatrix(); {                                                     <* 
+             *>    glTranslatef ( i - 190.0, my.p_top -  25.0 ,    20.0  );           <* 
+             *>    yFONT_print  (txf_bg,  16, YF_BOTLEF, x_msg);                      <* 
+             *> } glPopMatrix();                                                      <*/
          }
       }
    } glPopMatrix();

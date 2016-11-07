@@ -133,13 +133,14 @@ main (int argc, char *argv[])
       }
       /*> printf ("my_pos = %6.1f, my_ppos = %6.1f\n", my_pos, my_ppos);              <*/
       /*---(check boundaries)------------*/
-      if (my.p_moving == 'y')  my_pos += my.p_adv;
+      /*> if (my.p_moving == 'y')  my_pos += my.p_adv;                                <*/
+      yVIKEYS_speed_adv  (&my_pos);
       if (my_pos <  0.0f)   {
-         my.p_moving = 'n';
+         yVIKEYS_speed_stop ();
          my_pos = 0.0;
       }
       if (my_pos >= my.p_len) {
-         my.p_moving = 'n';
+         yVIKEYS_speed_stop ();
          my_pos = my.p_len;
       }
       gait.pos = my_pos;
@@ -150,7 +151,7 @@ main (int argc, char *argv[])
       is_moved = 'n';
       my_ppos = my_pos;
       /*---(wait)-----------------------------------------*/
-      timer.tv_sec  = 0;
+      /*> timer.tv_sec  = 0;                                                          <*/
       /*> timer.tv_nsec = 100000000;   /+---(0.1 sec)---+/                            <*/
       /*> timer.tv_nsec =  50000000;   /+---(0.05 sec)---+/                           <*/
       /*> timer.tv_nsec =  25000000;   /+---(0.025 sec)---+/                      <*/
@@ -158,8 +159,9 @@ main (int argc, char *argv[])
       /*> timer.tv_nsec =  50000000;            /+---(0.005 sec)---+/             <*/
       /*> timer.tv_nsec =  10000000;            /+---(0.001 sec)---+/             <*/
           /*> my.p_wait    = 500000;                                                  <*/
-      timer.tv_nsec =  my.p_wait;
-      nanosleep (&timer, &remain);
+      /*> timer.tv_nsec =  my.p_wait;                                                 <* 
+       *> nanosleep (&timer, &remain);                                                <*/
+      yVIKEYS_speed_wait ();
    }
    /*> if (is_test) printf("   - done\n\n");                                          <*/
    PROG_end();
