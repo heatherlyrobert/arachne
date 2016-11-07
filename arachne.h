@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5i"
-#define VER_TXT   "moved MODE functions entirely to yVIKEYS, successfully"
+#define VER_NUM   "0.5j"
+#define VER_TXT   "added yVIKEYS_ver to debugging"
 
 
 

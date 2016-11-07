@@ -57,11 +57,12 @@ PROG_logger        (int a_argc, char *a_argv[])
    /*---(log header)------------------*/
    DEBUG_TOPS   yLOG_info     ("purpose" , "wickedly useful spider robot visualization");
    DEBUG_TOPS   yLOG_info     ("namesake", "beautiful young female master weaver transformed into a spider");
-   DEBUG_TOPS   yLOG_info     ("arachne" , PROG_version   ());
-   DEBUG_TOPS   yLOG_info     ("yX11"    , yX11_version   ());
-   DEBUG_TOPS   yLOG_info     ("yFONT"   , yFONT_version  ());
-   DEBUG_TOPS   yLOG_info     ("ySTR"    , ySTR_version   ());
-   DEBUG_TOPS   yLOG_info     ("yLOG"    , yLOG_version   ());
+   DEBUG_TOPS   yLOG_info     ("arachne" , PROG_version    ());
+   DEBUG_TOPS   yLOG_info     ("yX11"    , yX11_version    ());
+   DEBUG_TOPS   yLOG_info     ("yFONT"   , yFONT_version   ());
+   DEBUG_TOPS   yLOG_info     ("yVIKEYS" , yVIKEYS_version ());
+   DEBUG_TOPS   yLOG_info     ("ySTR"    , ySTR_version    ());
+   DEBUG_TOPS   yLOG_info     ("yLOG"    , yLOG_version    ());
    /*---(complete)-----------------------*/
    return 0;
 }

@@ -34,7 +34,7 @@ main (int argc, char *argv[])
    char  is_moved = 'n';
    /*> if (is_test) printf("handling the event loop...\n");                           <*/
    /*> printf("pre-while   : gk[0][CORE].cy = %8.1f, fk[0][CORE].cy = %8.1f\n", gk[0][CORE].cy, fk[0][CORE].cy);   <*/
-   MODE_message (my.message);
+   MODE_message (my.message, "");
    while (1) {
       while (XPending(DISP)) {
          /*---(start processing event)---*/
@@ -94,8 +94,7 @@ main (int argc, char *argv[])
             else               { my.sch = ' ';  my.sta_error = 'y'; }
             /*---(setup status line)-----*/
             if   (x_savemode != MODE_curr() || MODE_curr() == MODE_COMMAND) {
-               /*> strlcpy (my.message, MODE_message (), LEN_STR);                    <*/
-               MODE_message (my.message);
+               MODE_message (my.message, "");
             }
             /*---(progress)-------------*/
             /*> if (my_mode == 'o') {                                                 <* 
