@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5f"
-#define VER_TXT   "added progress-mode speeds and keys to adjuct"
+#define VER_NUM   "0.5g"
+#define VER_TXT   "made switch between spider/progress all buffer commands"
 
 
 
