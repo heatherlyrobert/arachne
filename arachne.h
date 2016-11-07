@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5h"
-#define VER_TXT   "enabled read of stdin for scripts"
+#define VER_NUM   "0.5i"
+#define VER_TXT   "moved MODE functions entirely to yVIKEYS, successfully"
 
 
 
@@ -115,6 +115,7 @@
 #include  <yX11.h>                /* heatherly xlib/glx setup/teardown        */
 #include  <yVAR.h>                /* heatherly variable testing               */
 #include  <yGOD.h>                /* heatherly opengl godview                 */
+#include  <yVIKEYS.h>             /* heatherly vi_keys standard               */
 #include  <yFONT.h>               /* heatherly texture-mapped fonts           */
 #include  <ySTR.h>                /* heatherly string handling                */
 #include  <yLOG.h>                /* heatherly logging                        */
@@ -222,29 +223,6 @@ extern tDEBUG      debug;
 
 
 /*===[ MODES ]================================================================*/
-/*---(mode stack)------------------------*/
-/*---(major modes)-----------------------*/
-#define     MODE_GOD       'G'
-#define     MODE_PROGRESS  'P'
-#define     MODE_MAP       'M'
-#define     MODE_VISUAL    'V'
-#define     MODE_SOURCE    'S'
-#define     MODE_INPUT     'I'
-#define     MODE_COMMAND   ':'
-#define     MODE_SEARCH    '/'
-/*---(sub-modes for source)--------------*/
-#define     SMOD_REPLACE   'r'    /* replacing characters in source mode      */
-#define     SMOD_SELECT    's'    /* visual selection of chars in source mode */
-#define     SMOD_TEXTREG   't'    /* text register actions                    */
-/*---(sub-modes for map)-----------------*/
-#define     SMOD_ERROR     'e'    /* error reporting and actions              */
-#define     SMOD_REGISTER  '"'    /* register actions                         */
-#define     SMOD_BUFFER    ','    /* selecting buffers                        */
-#define     SMOD_WANDER    '@'    /* formula creation by pointing             */
-#define     SMOD_FORMAT    '$'    /* content formatting                       */
-#define     SMOD_OBJECT    'o'    /* object formatting                        */
-#define     SMOD_MARK      '\''   /* location and object marking              */
-#define     SMOD_MENUS     '\\'   /* show menu system                         */
 
 #define     MENU_NONE      ' '
 #define     MENU_ROOT      '-'
@@ -605,15 +583,6 @@ char        MOVE_first         (int a_servo, float *a_sec, float *a_deg);
 char        MOVE_next          (float *a_sec, float *a_deg);
 
 
-/*---(mode stack)-----------*/
-char        MODE_init          (void);
-char        MODE_enter         (char  a_mode);
-char        MODE_return        (void);
-char        MODE_curr          (void);
-char        MODE_prev          (void);
-char        MODE_not           (char  a_mode);
-char        MODE_list          (char *a_list);
-char        MODE_message       (void);
 /*---(mode keys)------------*/
 char        MODE_god           (char a_major, char a_minor);
 char        MODE_progress      (char a_major, char a_minor);
