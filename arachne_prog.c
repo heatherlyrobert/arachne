@@ -283,6 +283,8 @@ PROG_args          (int argc, char *argv[])
    /*---(update title)-------------------*/
    if (strcmp (my.f_base, FILE_BLANK) != 0) {
       sprintf (my.f_name  , "%s.%s", my.f_base, my.f_suffix);
+   } else {
+      sprintf (my.f_name  , "%s", FILE_STDIN);
    }
    DEBUG_ARGS  yLOG_info   ("file base" , my.f_base);
    DEBUG_ARGS  yLOG_info   ("file suf"  , my.f_suffix);

@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5g"
-#define VER_TXT   "made switch between spider/progress all buffer commands"
+#define VER_NUM   "0.5h"
+#define VER_TXT   "enabled read of stdin for scripts"
 
 
 
@@ -327,6 +327,7 @@ extern      tACCESSOR my;
 
 
 #define     FILE_BLANK   "((none))"
+#define     FILE_STDIN   "stdin"
 #define     FILE_SUFFIX  "arac"
 
 #define   FILE_GAIT     "/home/monkey/arachne.spider_visualization/arachne_gait.conf"
