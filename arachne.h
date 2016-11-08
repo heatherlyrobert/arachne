@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5m"
-#define VER_TXT   "changed yVIKEYS mode functions to new names"
+#define VER_NUM   "0.5n"
+#define VER_TXT   "moved progress move horz moves to yVIKEYS_keys_horz"
 
 
 

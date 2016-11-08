@@ -116,13 +116,8 @@ MODE_progress      (char a_major, char a_minor)
          break;
       }
       /*---(horizontal movement)---------*/
-      switch (a_minor) {
-      case '0': my_pos  =  0.0;               break;
-      case 'L': my_pos +=  my.p_inc * 5;      break;
-      case 'l': my_pos +=  my.p_inc;          break;
-      case 'h': my_pos -=  my.p_inc;          break;
-      case 'H': my_pos -=  my.p_inc * 5;      break;
-      case '$': my_pos  =  my.p_len;          break;
+      if (strchr ("0HhlL$", a_minor) != 0) {
+         yVIKEYS_keys_horz    (a_minor, &my_pos, my.p_inc, 0.0, my.p_len);
       }
       /*---(other)-----------------------*/
       switch (a_minor) {
