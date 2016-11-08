@@ -16,52 +16,6 @@ char   flag_view  = 0;
 void draw_spider();
 
 
-struct tSCALE {
-   char        type;
-   char        code        [LEN_LABEL];
-   char        label       [LEN_LABEL];
-   char        desc        [LEN_STR  ];
-   char        power;
-   float       unit;
-   char        base;
-   float       conv;
-   float       multi;
-} g_scale [MAX_SCALE] = {
-   { 'm' , "T-", "tera"          , "terasecond"        ,  12 , 1000000000000.0            , 'T' , 1000000000000.0            ,   1.0   },
-   { 'm' , "GH", "gigah"         , "100 gigasecond"    ,  11 ,  100000000000.0            , 'T' ,    1000000000.0            ,   0.1   },
-   { 'm' , "GD", "gigad"         , "10 gigasecond"     ,  10 ,   10000000000.0            , 'G' ,    1000000000.0            ,  10.0   },
-   { 'm' , "G-", "giga"          , "gigasecond"        ,   9 ,    1000000000.0            , 'G' ,    1000000000.0            ,   1.0   },
-   { 'm' , "MH", "megah"         , "100 megasecond"    ,   6 ,     100000000.0            , 'G' ,       1000000.0            ,   0.1   },
-   { 'm' , "MD", "megad"         , "10 megasecond"     ,   6 ,      10000000.0            , 'M' ,       1000000.0            ,  10.0   },
-   { 'm' , "M-", "mega"          , "megasecond"        ,   6 ,       1000000.0            , 'M' ,       1000000.0            ,   1.0   },
-   { 'm' , "KH", "kiloh"         , "100 kilosecond"    ,   5 ,        100000.0            , 'M' ,          1000.0            ,   0.1   },
-   { 'm' , "KD", "kilod"         , "10 kilosecond"     ,   4 ,         10000.0            , 'K' ,          1000.0            ,  10.0   },
-   { 'm' , "K-", "kilo"          , "kilosecond"        ,   3 ,          1000.0            , 'K' ,          1000.0            ,   1.0   },
-   { 'm' , "H-", "hecto"         , "hectosecond"       ,   2 ,           100.0            , 'K' ,           100.0            ,   0.1   },
-   { 'm' , "D-", "deca"          , "decasecond"        ,   1 ,            10.0            , 'H' ,            10.0            ,   0.1   },
-   { '-' , "-5", "secs5"         , "5 second"          ,   0 ,             5.0            , 'D' ,             5.0            ,   0.5   },
-   { '-' , "-2", "secs2"         , "2 second"          ,   0 ,             2.0            , 'D' ,             2.0            ,   0.2   },
-   { 'm' , "--", "secs"          , "second"            ,   0 ,             1.0            , 'D' ,             1.0            ,   0.1   },
-   { '-' , "d5", "deci5"         , "5 decisecond"      ,  -1 ,             0.5            , 's' ,             0.5            ,   0.5   },
-   { '-' , "d2", "deci2"         , "2 decisecond"      ,  -1 ,             0.2            , 's' ,             0.2            ,   0.2   },
-   { 'm' , "d-", "deci"          , "decisecond"        ,  -1 ,             0.1            , 's' ,             0.1            ,   0.1   },
-   { '-' , "c5", "centi5"        , "5 centisecond"     ,  -1 ,             0.05           , 'd' ,             0.050          ,   0.5   },
-   { '-' , "c2", "centi2"        , "2 centisecond"     ,  -1 ,             0.02           , 'd' ,             0.020          ,   0.2   },
-   { 'm' , "c-", "centi"         , "centisecond"       ,  -2 ,             0.01           , 'd' ,             0.010          ,   0.1   },
-   { '-' , "m5", "milli"         , "5 millisecond"     ,  -3 ,             0.005          , 'c' ,             0.005          ,   0.5   },
-   { '-' , "m2", "milli"         , "2 millisecond"     ,  -3 ,             0.002          , 'c' ,             0.002          ,   0.2   },
-   { 'm' , "m-", "milli"         , "millisecond"       ,  -3 ,             0.001          , 'c' ,             0.001          ,   0.1   },
-   { 'm' , "uH", "microh"        , "100 microsecond"   ,  -4 ,             0.0001         , 'm' ,             0.000001       ,   0.1   },
-   { 'm' , "uD", "microd"        , "10 microsecond"    ,  -5 ,             0.00001        , 'u' ,             0.000001       ,  10.0   },
-   { 'm' , "u-", "micro"         , "microsecond"       ,  -6 ,             0.000001       , 'u' ,             0.000001       ,   1.0   },
-   { 'm' , "nH", "nanoh"         , "100 nanosecond"    ,  -7 ,             0.0000001      , 'u' ,             0.000000001    ,   0.1   },
-   { 'm' , "nD", "nanod"         , "10 nanosecond"     ,  -8 ,             0.00000001     , 'n' ,             0.000000001    ,  10.0   },
-   { 'm' , "n-", "nano"          , "nanosecond"        ,  -9 ,             0.000000001    , 'n' ,             0.000000001    ,   1.0   },
-   { 'm' , "pH", "picoh"         , "100 picosecond"    , -10 ,             0.0000000001   , 'n' ,             0.000000000001 ,   0.1   },
-   { 'm' , "pD", "picod"         , "10 picosecond"     , -11 ,             0.00000000001  , 'p' ,             0.000000000001 ,  10.0   },
-   { 'm' , "p-", "pico"          , "picosecond"        , -12 ,             0.000000000001 , 'p' ,             0.000000000001 ,   1.0   },
-   { 'm' , "??", "----"          , "end-of-scales"     ,   0 ,             0.0            , '-' ,             0.0            ,   1.0   },
-};
 
 /*===[[ TYPEDEFS ]]===========================================================*/
 
@@ -141,85 +95,6 @@ char      *eva_accessor     (char   *a_question);
 
 
 /*====================------------------------------------====================*/
-/*===----                       progress scale                         ----===*/
-/*====================------------------------------------====================*/
-static void      o___SCALE___________________o (void) {;}
-
-char
-SCALE_init         (void)
-{
-   my.p_scale   =   -1;
-   my.p_inc     =    1;
-   my.p_base    =  ' ';
-   my.p_multi   =    1;
-   my.p_min     =    0;
-   my.p_beg     =    0;
-   my.p_cur     =    0;
-   my.p_end     =    0;
-   my.p_max     =    0;
-   return 0;
-}
-
-char
-SCALE_find         (char *a_code)
-{
-   char        rce         = -10;
-   int         i           = 0;
-   char        x_code      = -1;
-   --rce;  if (strlen (a_code) != 2) {
-      return rce;
-   }
-   for (i = 0; i < MAX_SCALE; ++i) {
-      if (g_scale [i].code [0] != a_code [0])  continue;
-      if (g_scale [i].code [1] != a_code [1])  continue;
-      x_code = i;
-   }
-   --rce;  if (x_code < 0) {
-      return rce;
-   }
-   my.p_scale = x_code;
-   my.p_inc   = g_scale [my.p_scale].unit;
-   my.p_base  = g_scale [my.p_scale].base;
-   my.p_multi = g_scale [my.p_scale].multi;
-   return x_code;
-}
-
-char
-SCALE_smaller      (void)
-{
-   char        rce         = -10;
-   --rce; if (my.p_scale >= MAX_SCALE - 1) {
-      return rce;
-   }
-   --rce;  if (g_scale [my.p_scale + 1].code [0] == '?') {
-      return rce;
-   }
-   ++(my.p_scale);
-   my.p_inc   = g_scale [my.p_scale].unit;
-   my.p_base  = g_scale [my.p_scale].base;
-   my.p_multi = g_scale [my.p_scale].multi;
-   TICK_draw ();
-   return 0;
-}
-
-char
-SCALE_larger       (void)
-{
-   char        rce         = -10;
-   --rce; if (my.p_scale <= 0) {
-      return rce;
-   }
-   --(my.p_scale);
-   my.p_inc   = g_scale [my.p_scale].unit;
-   my.p_base  = g_scale [my.p_scale].base;
-   my.p_multi = g_scale [my.p_scale].multi;
-   TICK_draw ();
-   return 0;
-}
-
-
-
-/*====================------------------------------------====================*/
 /*===----                       progress ticker                        ----===*/
 /*====================------------------------------------====================*/
 static void      o___PROGRESS________________o (void) {;}
@@ -242,11 +117,11 @@ TICK_init          (void)
    my.p_depth     =    0;
    /*---(working)------------------------*/
    DEBUG_GRAF   yLOG_note    ("initializing working variables");
-   my.p_min       =    0;
-   my.p_beg       =    0;
-   my.p_cur       =    0;
-   my.p_end       =    0;
-   my.p_max       =    0;
+   /*> my.p_min       =    0;                                                         <*/
+   /*> my.p_beg       =    0;                                                         <*/
+   /*> my.p_cur       =    0;                                                         <*/
+   /*> my.p_end       =    0;                                                         <*/
+   /*> my.p_max       =    0;                                                         <*/
    /*---(debugging)----------------------*/
    my.p_debug     =  '-';
    /*---(angles)-------------------------*/
@@ -328,7 +203,7 @@ TICK_draw          (void)
             } glEnd   ();
          }
          /*---(top and bottom limits)----*/
-         if (MODE_curr () == MODE_PROGRESS)  glColor4f    (0.25f, 0.00f, 0.00f, 1.0f);
+         if (yVIKEYS_mode_curr () == MODE_PROGRESS)  glColor4f    (0.25f, 0.00f, 0.00f, 1.0f);
          else                                glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
          glBegin         (GL_POLYGON); {
             glVertex3f  ( i        , my.p_top     ,    5.0);
@@ -361,7 +236,7 @@ TICK_draw          (void)
           *> }                                                                                     <*/
          /*---(title)--------------------*/
          if      (i % (x_inc * 100) == 0) {
-            snprintf     (x_msg, 100, "timeline in %s (%s) resolution", g_scale [my.p_scale].desc, g_scale [my.p_scale].code);
+            yVIKEYS_scale_desc (x_msg);
             glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
             glPushMatrix(); {
                glTranslatef ( i , my.p_top -  25.0 ,    20.0  );
@@ -461,6 +336,7 @@ TICK_draw          (void)
       } glEnd   ();
    } glPopMatrix();
    /*---(time labels)--------------------*/
+   yVIKEYS_scale_base (&my.p_multi, &my.p_base);
    glPushMatrix(); {
       glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
       for (i = 0; i < my.p_texw; i += x_inc) {
@@ -1294,12 +1170,12 @@ view_progress      (void)
       yFONT_print  (txf_sm,   1, YF_MIDRIG, "-100");
    } glPopMatrix();
    /*---(show scale notation)------------*/
-   glPushMatrix(); {
-      glColor4f    (1.0f, 0.5f, 0.0f, 1.0f);
-      glTranslatef ( -20.0f, -40.0, -100.0);
-      snprintf     (x_msg, 100, "%s.%-6s.%s", g_scale [my.p_scale].code, g_scale [my.p_scale].label, g_scale [my.p_scale].desc);
-      yFONT_print  (txf_sm,   1, YF_MIDLEF, x_msg);
-   } glPopMatrix();
+   /*> glPushMatrix(); {                                                                                                               <* 
+    *>    glColor4f    (1.0f, 0.5f, 0.0f, 1.0f);                                                                                       <* 
+    *>    glTranslatef ( -20.0f, -40.0, -100.0);                                                                                       <* 
+    *>    snprintf     (x_msg, 100, "%s.%-6s.%s", g_scale [my.p_scale].code, g_scale [my.p_scale].label, g_scale [my.p_scale].desc);   <* 
+    *>    yFONT_print  (txf_sm,   1, YF_MIDLEF, x_msg);                                                                                <* 
+    *> } glPopMatrix();                                                                                                                <*/
 
    /*---(show leg angle curves)----------*/
    glPushMatrix(); {

@@ -93,12 +93,11 @@ PROG_init          (void)
    my.p_len     =  0.0;
    /*---(setup modes)--------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");
-   MODE_init    ();
-   MODE_enter   (MODE_GOD);
+   yVIKEYS_mode_init    ();
+   yVIKEYS_mode_enter   (MODE_GOD);
    /*---(time)---------------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare scales");
-   SCALE_init   ();
-   SCALE_find   ("d-");
+   yVIKEYS_scale_set    ("d-", &my.p_inc);
    /*---(speed)--------------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare speeds");
    yVIKEYS_speed_set    ("+1.00x", &my.p_waitns);

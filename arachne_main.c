@@ -34,7 +34,7 @@ main (int argc, char *argv[])
    char  is_moved = 'n';
    /*> if (is_test) printf("handling the event loop...\n");                           <*/
    /*> printf("pre-while   : gk[0][CORE].cy = %8.1f, fk[0][CORE].cy = %8.1f\n", gk[0][CORE].cy, fk[0][CORE].cy);   <*/
-   MODE_message (my.message, "");
+   yVIKEYS_mode_mesg (my.message, "");
    while (1) {
       while (XPending(DISP)) {
          /*---(start processing event)---*/
@@ -67,7 +67,7 @@ main (int argc, char *argv[])
             if (the_bytes < 1) break;
             /*---(handle)----------------*/
             my.cch      = the_key [0];
-            x_savemode  = MODE_curr ();
+            x_savemode  = yVIKEYS_mode_curr ();
             switch (x_savemode) {
             case MODE_GOD      : rc = MODE_god      (my.sch, my.cch); break;
             case MODE_PROGRESS : rc = MODE_progress (my.sch, my.cch); break;
@@ -93,8 +93,8 @@ main (int argc, char *argv[])
             else if (rc >  0)    my.sch = rc;
             else               { my.sch = ' ';  my.sta_error = 'y'; }
             /*---(setup status line)-----*/
-            if   (x_savemode != MODE_curr() || MODE_curr() == MODE_COMMAND) {
-               MODE_message (my.message, "");
+            if   (x_savemode != yVIKEYS_mode_curr() || yVIKEYS_mode_curr() == MODE_COMMAND) {
+               yVIKEYS_mode_mesg (my.message, "");
             }
             /*---(progress)-------------*/
             /*> if (my_mode == 'o') {                                                 <* 

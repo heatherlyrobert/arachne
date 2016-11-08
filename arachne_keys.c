@@ -21,8 +21,8 @@ MODE_god           (char a_major, char a_minor)
    DEBUG_USER   yLOG_char    ("a_major"   , a_major);
    DEBUG_USER   yLOG_char    ("a_minor"   , a_minor);
    /*---(defenses)-----------------------*/
-   DEBUG_USER   yLOG_char    ("mode"      , MODE_curr ());
-   --rce;  if (MODE_not (MODE_GOD     )) {
+   DEBUG_USER   yLOG_char    ("mode"      , yVIKEYS_mode_curr ());
+   --rce;  if (yVIKEYS_mode_not (MODE_GOD     )) {
       DEBUG_USER   yLOG_note    ("not the correct mode");
       DEBUG_USER   yLOG_exit    (__FUNCTION__);
       return rce;
@@ -51,7 +51,7 @@ MODE_god           (char a_major, char a_minor)
    if (a_major == ',') {
       switch (a_minor) {
       case 'p':
-         MODE_enter  (MODE_PROGRESS);
+         yVIKEYS_mode_enter  (MODE_PROGRESS);
          TICK_draw ();
          break;
       }
@@ -73,8 +73,8 @@ MODE_progress      (char a_major, char a_minor)
    DEBUG_USER   yLOG_char    ("a_major"   , a_major);
    DEBUG_USER   yLOG_char    ("a_minor"   , a_minor);
    /*---(defenses)-----------------------*/
-   DEBUG_USER   yLOG_char    ("mode"      , MODE_curr ());
-   --rce;  if (MODE_not (MODE_PROGRESS)) {
+   DEBUG_USER   yLOG_char    ("mode"      , yVIKEYS_mode_curr ());
+   --rce;  if (yVIKEYS_mode_not (MODE_PROGRESS)) {
       DEBUG_USER   yLOG_note    ("not the correct mode");
       DEBUG_USER   yLOG_exit    (__FUNCTION__);
       return rce;
@@ -91,8 +91,14 @@ MODE_progress      (char a_major, char a_minor)
       }
       /*---(zoom and retreat)------------*/
       switch (a_minor) {
-      case '+': SCALE_smaller ();   /* in  */                break;
-      case '-': SCALE_larger  ();   /* out */                break;
+      case '+':
+         yVIKEYS_scale_less    (&my.p_inc);
+         TICK_draw ();
+         break;
+      case '-':
+         yVIKEYS_scale_more    (&my.p_inc);
+         TICK_draw ();
+         break;
       }
       /*---(play and stop)---------------*/
       switch (a_minor) {
@@ -151,7 +157,7 @@ MODE_progress      (char a_major, char a_minor)
    if (a_major == ',') {
       switch (a_minor) {
       case 'a':
-         MODE_return ();
+         yVIKEYS_mode_exit  ();
          TICK_draw ();
          break;
       }

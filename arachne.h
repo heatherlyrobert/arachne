@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5l"
-#define VER_TXT   "moved all wait function back from yVIKEYS"
+#define VER_NUM   "0.5m"
+#define VER_TXT   "changed yVIKEYS mode functions to new names"
 
 
 
@@ -269,15 +269,9 @@ struct cACCESSOR {
    uint        p_fbo;                       /* framebuffer                    */
    uint        p_depth;                     /* depth buffer                   */
    /*---(progress working)*/
-   char        p_scale;                     /* scale of zoom                  */
    float       p_inc;                       /* increment for h,l              */
-   char        p_base;                      /* base unit for display          */
    float       p_multi;                     /* label multiple                 */
-   float       p_min;                       /* min progress bar position      */
-   float       p_beg;                       /* beg of screen prog bar position*/
-   float       p_cur;                       /* current progess bar position   */
-   float       p_end;                       /* end of screen prog bar position*/
-   float       p_max;                       /* max progress bar position      */
+   char        p_base;                      /* base unit for display          */
    char        p_debug; 
    /*---(command line)----*/
    int         c_bottom;                    /* bottom of command window       */
@@ -558,12 +552,6 @@ char        PROG_end           (void);
 char        PROG_testing       (void);
 char        PROG_testloud      (void);
 
-
-
-char        SCALE_init         (void);
-char        SCALE_find         (char *a_code);
-char        SCALE_smaller      (void);
-char        SCALE_larger       (void);
 
 
 
