@@ -27,7 +27,7 @@ main (int argc, char *argv[])
    /*> if (is_test) printf("\nspider--------------------------------------------begin---\n\n");   <*/
    /*> strcpy(its_text, " ");                                                         <*/
    /*> counter = 0;                                                                   <*/
-   struct timespec timer, remain;
+   struct timespec timer;
    XKeyEvent *key_event;
    char  the_key[5];
    int   the_bytes;
@@ -136,11 +136,11 @@ main (int argc, char *argv[])
       /*> if (my.p_moving == 'y')  my_pos += my.p_adv;                                <*/
       yVIKEYS_speed_adv  (&my_pos);
       if (my_pos <  0.0f)   {
-         yVIKEYS_speed_stop ();
+         yVIKEYS_speed_stop (&my.p_waitns);
          my_pos = 0.0;
       }
       if (my_pos >= my.p_len) {
-         yVIKEYS_speed_stop ();
+         yVIKEYS_speed_stop (&my.p_waitns);
          my_pos = my.p_len;
       }
       gait.pos = my_pos;
@@ -151,17 +151,9 @@ main (int argc, char *argv[])
       is_moved = 'n';
       my_ppos = my_pos;
       /*---(wait)-----------------------------------------*/
-      /*> timer.tv_sec  = 0;                                                          <*/
-      /*> timer.tv_nsec = 100000000;   /+---(0.1 sec)---+/                            <*/
-      /*> timer.tv_nsec =  50000000;   /+---(0.05 sec)---+/                           <*/
-      /*> timer.tv_nsec =  25000000;   /+---(0.025 sec)---+/                      <*/
-      /*> timer.tv_nsec =  50000000 * my_inc;   /+---(0.005 sec)---+/             <*/
-      /*> timer.tv_nsec =  50000000;            /+---(0.005 sec)---+/             <*/
-      /*> timer.tv_nsec =  10000000;            /+---(0.001 sec)---+/             <*/
-          /*> my.p_wait    = 500000;                                                  <*/
-      /*> timer.tv_nsec =  my.p_wait;                                                 <* 
-       *> nanosleep (&timer, &remain);                                                <*/
-      yVIKEYS_speed_wait ();
+      timer.tv_sec  = 0;
+      timer.tv_nsec =  my.p_waitns;
+      nanosleep (&timer, NULL);
    }
    /*> if (is_test) printf("   - done\n\n");                                          <*/
    PROG_end();

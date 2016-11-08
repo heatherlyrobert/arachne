@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5k"
-#define VER_TXT   "moved all SPEED functions and data to yVIKEYS"
+#define VER_NUM   "0.5l"
+#define VER_TXT   "moved all wait function back from yVIKEYS"
 
 
 
@@ -253,6 +253,8 @@ struct cACCESSOR {
    float       s_femu;
    float       s_pate;
    float       s_tibi;
+   /*---(progress move)---*/
+   double      p_waitns;
    /*---(progress pane)---*/
    int         p_height;
    int         p_bottom;

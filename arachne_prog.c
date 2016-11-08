@@ -101,10 +101,8 @@ PROG_init          (void)
    SCALE_find   ("d-");
    /*---(speed)--------------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare speeds");
-   /*> SPEED_init   ();                                                               <*/
-   /*> SPEED_find   ("+1.00x");                                                       <*/
-   yVIKEYS_speed_set    ("+1.00x");
-   yVIKEYS_speed_stop   ();
+   yVIKEYS_speed_set    ("+1.00x", &my.p_waitns);
+   yVIKEYS_speed_stop   (&my.p_waitns);
    /*---(complete)-----------------------*/
    DEBUG_TOPS   yLOG_exit  (__FUNCTION__);
    return 0;

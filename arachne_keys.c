@@ -97,15 +97,15 @@ MODE_progress      (char a_major, char a_minor)
       /*---(play and stop)---------------*/
       switch (a_minor) {
       case '>':
-         yVIKEYS_speed_more   ();
+         yVIKEYS_speed_more   (&my.p_waitns);
          TICK_draw ();
          break;
       case '<': 
-         yVIKEYS_speed_less   ();
+         yVIKEYS_speed_less   (&my.p_waitns);
          TICK_draw ();
          break;
       case '.':
-         yVIKEYS_speed_play   ();  /* toggles */
+         yVIKEYS_speed_play   (&my.p_waitns);  /* toggles */
          TICK_draw ();
          break;
       }
