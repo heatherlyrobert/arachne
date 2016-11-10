@@ -74,8 +74,8 @@ PROG_init          (void)
    /*---(window configuration)-----------*/
    strlcpy (my.w_title, "arachne_full", LEN_STR);
    /*---(screen configuration)-----------*/
-   /*> my.scrn      = SCRN_NORM;                                                      <*/
-   my.scrn      = SCRN_PROG;
+   my.scrn      = SCRN_NORM;
+   /*> my.scrn      = SCRN_PROG;                                                      <*/
    /*---(command line)-------------------*/
    DEBUG_TOPS   yLOG_note  ("set command line characteristics");
    my.c_height  =   15;

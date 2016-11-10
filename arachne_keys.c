@@ -67,7 +67,6 @@ MODE_progress      (char a_major, char a_minor)
    /*---(locals)-----------+-----------+-*/
    char        rce         = -10;
    char        rc          = 0;
-   char        x_minors    [LEN_STR]  = "ypdx";
    /*---(header)-------------------------*/
    DEBUG_USER   yLOG_enter   (__FUNCTION__);
    DEBUG_USER   yLOG_char    ("a_major"   , a_major);
@@ -89,6 +88,17 @@ MODE_progress      (char a_major, char a_minor)
          return a_minor;
          break;
       }
+      /*---(choosing leg)----------------*/
+      switch (a_minor) {
+      case '_': my.p_leg  = 0;    break;
+      case 'J': my.p_leg -= 5;    break;
+      case 'j': my.p_leg -= 1;    break;
+      case 'k': my.p_leg += 1;    break;
+      case 'K': my.p_leg += 5;    break;
+      case 'G': my.p_leg  = 5;    break;
+      }
+      if (my.p_leg < 0)  my.p_leg = 0;
+      if (my.p_leg > 5)  my.p_leg = 5;
       /*---(zoom and retreat)------------*/
       switch (a_minor) {
       case '+':

@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5m"
-#define VER_TXT   "have basic full progress six-leg view in place"
+#define VER_NUM   "0.5n"
+#define VER_TXT   "normal mode allows progress bar to show different legs now"
 
 
 

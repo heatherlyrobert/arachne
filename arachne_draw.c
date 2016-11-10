@@ -342,6 +342,19 @@ TICK_servos        (int a_leg)
          x_deg1 = x_deg2;
       }
    } glPopMatrix();
+   /*---(draw end)-----------------------*/
+   glColor4f    (0.50f, 0.00f, 0.50f, 1.0f);
+   glLineWidth  (10.0f);
+   glPushMatrix(); {
+      glBegin(GL_LINE_STRIP); {
+         glVertex3f  (  my.p_len * x_unit - 5, x_base + my.p_top - 25.0,   70.0);
+         glVertex3f  (  my.p_len * x_unit - 5, x_base + my.p_bot + 25.0,   70.0);
+      } glEnd   ();
+      glBegin(GL_LINE_STRIP); {
+         glVertex3f  (  my.p_len * x_unit + 5, x_base + my.p_top - 25.0,   70.0);
+         glVertex3f  (  my.p_len * x_unit + 5, x_base + my.p_bot + 25.0,   70.0);
+      } glEnd   ();
+   } glPopMatrix();
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -676,8 +689,8 @@ TICK_show          (void)
    glOrtho         ( 0.0f, my.w_width, my.p_bot, my.p_top,  -500.0,   500.0);
    glMatrixMode    (GL_MODELVIEW);
    /*---(pick right line)----------------*/
-   x_bot       = 0  * (1.0 / 6.0);
-   x_top       = 1  * (1.0 / 6.0);
+   x_bot       = (my.p_leg + 0)  * (1.0 / 6.0);
+   x_top       = (my.p_leg + 1)  * (1.0 / 6.0);
    /*---(calc basics)--------------------*/
    x_pfull     = my.w_width;
    x_tfull     = my.w_width * 2.0;
@@ -703,16 +716,16 @@ TICK_show          (void)
    glBindTexture   (GL_TEXTURE_2D, my.p_tex);
    glBegin(GL_POLYGON); {
       /*---(top beg)--------*/
-      glTexCoord2f (x_beg     , 1.00f    );
+      glTexCoord2f (x_beg     , x_top    );
       glVertex3f   (x_pleft   , my.p_top ,     0.00f);
       /*---(top end)--------*/
-      glTexCoord2f (x_end     , 1.00f    );
+      glTexCoord2f (x_end     , x_top    );
       glVertex3f   (x_pright  , my.p_top ,     0.00f);
       /*---(bottom end)-----*/
-      glTexCoord2f (x_end     , 0.00f    );
+      glTexCoord2f (x_end     , x_bot    );
       glVertex3f   (x_pright  , my.p_bot ,     0.00f);
       /*---(bottom beg)-----*/
-      glTexCoord2f (x_beg     , 0.00f    );
+      glTexCoord2f (x_beg     , x_bot    );
       glVertex3f   (x_pleft   , my.p_bot ,     0.00f);
       /*---(done)-----------*/
    } glEnd();
@@ -839,7 +852,7 @@ draw_leg_NEW       (int a_num, float a_body, float a_femu, float a_pate, float a
    glPushMatrix (); {
       /*---(thorax)----------------------*/
       glTranslatef (a_body,  0.0,  0.0f);
-      if (a_num == my_curr) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+      if (a_num == my.p_leg) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
       glPushMatrix (); {
          /*---(label)-------*/
          snprintf (x_msg, 10, "#%d/%s", a_num, legs_name [a_num]);
