@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5n"
-#define VER_TXT   "moved progress move horz moves to yVIKEYS_keys_horz"
+#define VER_NUM   "0.5m"
+#define VER_TXT   "have basic full progress six-leg view in place"
 
 
 
@@ -224,8 +224,10 @@ extern tDEBUG      debug;
 
 /*===[ MODES ]================================================================*/
 
-#define     MENU_NONE      ' '
-#define     MENU_ROOT      '-'
+/*---(screen configurations)-------------*/
+#define     SCRN_NORM      'n'    /* 3d, single progress, command line        */
+#define     SCRN_PROG      'p'    /* all six progress lines                   */
+
 
 
 
@@ -258,6 +260,7 @@ struct cACCESSOR {
    /*---(progress pane)---*/
    int         p_height;
    int         p_bottom;
+   int         p_leg;                       /* leg currently viewed           */
    int         p_texw;                      /* texture full width             */
    int         p_texh;                      /* texture full height            */
    int         p_top;                       /* topmost y of progress bar      */

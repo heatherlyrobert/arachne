@@ -32,8 +32,7 @@ servo         -a-  LF.femu          0.000       0.500       0.000       0.
 servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
 servo         -a-  LF.tibi        130.000       0.500       0.000       0.000       0.000 
 
-
-
+#=====================
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
 servo         -a-  LF.femu          0.000       0.500       0.000       0.000       0.000 
 servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
@@ -49,8 +48,7 @@ servo         -a-  LF.femu         10.000       0.500       0.000       0.
 servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
 servo         -a-  LF.tibi         10.000       0.500       0.000       0.000       0.000 
 
-
-
+#=====================
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
 servo         -a-  LF.femu          0.000       0.500       0.000       0.000       0.000 
 servo         -a-  LF.pate          0.000       0.500       0.000       0.000       0.000 
@@ -175,6 +173,217 @@ servo         -a-  LF.tibi         90.000       0.500       0.000       0.
 servo         -a-  LF.femu          0.000       0.500 
 servo         -a-  LF.pate          0.000       0.500 
 servo         -a-  LF.tibi         90.000       0.500 
+
+
+
+
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)== 
+servo         -a-  LM.femu          0.000       0.000 
+servo         -a-  LM.pate          0.000       0.000 
+servo         -a-  LM.tibi         90.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  LM.femu          0.000       2.000       0.000       0.000       0.000 
+servo         -a-  LM.pate          0.000       2.000       0.000       0.000       0.000 
+servo         -a-  LM.tibi        130.000       2.000       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  LM.femu          0.000       2.000       0.000       0.000       0.000 
+servo         -a-  LM.pate        -90.000       2.000       0.000       0.000       0.000 
+servo         -a-  LM.tibi         90.000       2.000       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  LM.femu          0.000       2.000       0.000       0.000       0.000 
+servo         -a-  LM.pate         45.000       2.000       0.000       0.000       0.000 
+servo         -a-  LM.tibi         90.000       2.000       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  LM.femu         80.000       2.000       0.000       0.000       0.000 
+servo         -a-  LM.pate          0.000       2.000       0.000       0.000       0.000 
+servo         -a-  LM.tibi         90.000       2.000       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  LM.femu        -80.000       2.000       0.000       0.000       0.000 
+servo         -a-  LM.pate          0.000       2.000       0.000       0.000       0.000 
+servo         -a-  LM.tibi         90.000       2.000       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)== 
+servo         -a-  LM.femu          0.000       2.000 
+servo         -a-  LM.pate          0.000       2.000 
+servo         -a-  LM.tibi         90.000       2.000 
+
+
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)== 
+servo         -a-  LR.femu          0.000       0.000 
+servo         -a-  LR.pate          0.000       0.000 
+servo         -a-  LR.tibi         90.000       0.000 
+
+
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)== 
+servo         -a-  LR.femu          0.000      14.000 
+servo         -a-  LR.pate          0.000      14.000 
+servo         -a-  LR.tibi         90.000      14.000 
+
+
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)== 
+servo         -a-  RF.femu          0.000       0.000 
+servo         -a-  RF.pate          0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.000 
+#=====================
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi        130.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate        -90.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate         45.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu         80.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu        -80.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)== 
+servo         -a-  RF.femu          0.000       0.500 
+servo         -a-  RF.pate          0.000       0.500 
+servo         -a-  RF.tibi         90.000       0.500 
+#=====================
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi        130.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate        -90.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate         45.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu         80.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu        -80.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)== 
+servo         -a-  RF.femu          0.000       0.500 
+servo         -a-  RF.pate          0.000       0.500 
+servo         -a-  RF.tibi         90.000       0.500 
+#=====================
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi        130.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate        -90.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate         45.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu         80.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu        -80.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)== 
+servo         -a-  RF.femu          0.000       0.500 
+servo         -a-  RF.pate          0.000       0.500 
+servo         -a-  RF.tibi         90.000       0.500 
+#=====================
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi        130.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate        -90.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate         45.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu         80.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu        -80.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)== 
+servo         -a-  RF.femu          0.000       0.500 
+servo         -a-  RF.pate          0.000       0.500 
+servo         -a-  RF.tibi         90.000       0.500 
+#=====================
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi        130.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate        -90.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate         45.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu         80.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)==  ==(xpos)==  ==(ypos)==  ==(zpos)== 
+servo         -a-  RF.femu        -80.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.pate          0.000       0.500       0.000       0.000       0.000 
+servo         -a-  RF.tibi         90.000       0.500       0.000       0.000       0.000 
+
+#==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)== 
+servo         -a-  RF.femu          0.000       0.500 
+servo         -a-  RF.pate          0.000       0.500 
+servo         -a-  RF.tibi         90.000       0.500 
+
 
 
 
