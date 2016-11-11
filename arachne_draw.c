@@ -49,7 +49,6 @@ float     my_calf = -20.0;
 int       my_curr = 5;
 
 float     my_len  = MAX_POS - 1;
-double    my_pos  = 0;
 double    my_ppos = 0;
 float     my_run  = 0;
 float     my_inc  = 1;
@@ -99,6 +98,10 @@ char      *eva_accessor     (char   *a_question);
 /*====================------------------------------------====================*/
 static void      o___PROGRESS________________o (void) {;}
 
+/*---(single leg vars)----------------*/
+float       s_textop       =   0.0;    /* single leg top percent in texture   */
+float       s_texbot       =   0.0;    /* single leg bot percent in texture   */
+
 char         /*--> set values for progress ticker --------[ ------ [ ------ ]-*/
 TICK_init          (void)
 {
@@ -110,6 +113,7 @@ TICK_init          (void)
    my.p_top       =  150;   /* tibia can go to 130 */
    my.p_bot       = -100;   /* femur can go to -85 */
    my.p_avail     =   30;
+   my.p_curpos    =  'c';   /* put current bar in middle if possible          */
    /*---(handles)------------------------*/
    DEBUG_GRAF   yLOG_note    ("initializing handles (tex, fbo, depth)");
    my.p_tex       =    0;
@@ -204,7 +208,7 @@ TICK_back          (void)
    float     x_beg         =  0.0;
    float     x_end         = my.p_texw;
    float     x_bar         =  0.0;
-   float     x_pos         =  0.0;
+   float     x_ypos        =  0.0;
    char      x_msg         [100];
    /*---(prepare)------------------------*/
    x_yinc = x_top / 6.0;
@@ -235,20 +239,23 @@ TICK_back          (void)
       }
    }
    /*---(top and bottom limits)----------*/
-   if (yVIKEYS_mode_curr () == MODE_PROGRESS)  glColor4f    (0.25f, 0.00f, 0.00f, 1.0f);
-   else                                        glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
-   for (i = x_yinc; i <= x_top; i += x_yinc) {
+   for (i = 0; i <= 5; ++i) {
+      x_ypos = (i + 1) * x_yinc;
+      if (yVIKEYS_mode_curr () == MODE_PROGRESS && i == my.p_leg)
+         glColor4f    (0.25f, 0.00f, 0.00f, 1.0f);
+      else
+         glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
       glBegin         (GL_POLYGON); {
-         glVertex3f  (x_beg, i             ,   10.0);
-         glVertex3f  (x_end, i             ,   10.0);
-         glVertex3f  (x_end, i - 25        ,   10.0);
-         glVertex3f  (x_beg, i - 25        ,   10.0);
+         glVertex3f  (x_beg, x_ypos             ,   10.0);
+         glVertex3f  (x_end, x_ypos             ,   10.0);
+         glVertex3f  (x_end, x_ypos - 25        ,   10.0);
+         glVertex3f  (x_beg, x_ypos - 25        ,   10.0);
       } glEnd   ();
       glBegin         (GL_POLYGON); {
-         glVertex3f  (x_beg, i - x_bar     ,    5.0);
-         glVertex3f  (x_end, i - x_bar     ,    5.0);
-         glVertex3f  (x_end, i - x_bar + 25,    5.0);
-         glVertex3f  (x_beg, i - x_bar + 25,    5.0);
+         glVertex3f  (x_beg, x_ypos - x_bar     ,    5.0);
+         glVertex3f  (x_end, x_ypos - x_bar     ,    5.0);
+         glVertex3f  (x_end, x_ypos - x_bar + 25,    5.0);
+         glVertex3f  (x_beg, x_ypos - x_bar + 25,    5.0);
       } glEnd   ();
    }
    /*---(complete)-----------------------*/
@@ -269,10 +276,6 @@ TICK_servos        (int a_leg)
    float     x_pos         =  0.0;
    char      x_msg         [100];
    float     x_base        = 0.0;
-
-
-
-
    int       i;                             /* loop iterator                  */
    int       j;                             /* loop iterator                  */
    int       rc      = 0;                   /* simple return code             */
@@ -433,196 +436,15 @@ TICK_draw          (void)
 {
    /*---(locals)-----------+-----------+-*/
    int       i;                             /* loop iterator                  */
-   int       j;                             /* loop iterator                  */
-   int       rc      = 0;                   /* simple return code             */
-   char      x_msg         [100];
-   int       x_inc         = 10;
-   float     x_unit        = 0;
-   float     x_sec1        = 0;
-   float     x_deg1        = 0;
-   float     x_sec2        = 0;
-   float     x_deg2        = 0;
-   float     x_top         = 0.0;
-   float     x_bot         = 0.0;
    /*---(new)----------------------------*/
    TICK_start   ();
    TICK_back    ();
    for (i = 0; i <= 5; ++i) TICK_servos  (i);
    TICK_labels  ();
    TICK_end     ();
-   /*---(progress bar)-------------------*/
-   /*> glPushMatrix(); {                                                                                     <* 
-    *>    for (i = 0; i < my.p_texw; i += x_inc) {                                                           <* 
-    *>       /+---(time bars)----------------+/                                                              <* 
-    *>       if      (i % (x_inc * 100) == 0)  glColor4f   (0.40f, 0.20f, 0.00f, 1.0f);                      <* 
-    *>       else if (i % (x_inc * 10 ) == 0)  glColor4f   (0.20f, 0.10f, 0.00f, 1.0f);                      <* 
-    *>       else if (i % (x_inc * 2  ) == 0)  glColor4f   (0.15f, 0.07f, 0.00f, 1.0f);                      <* 
-    *>       else                              glColor4f   (0.10f, 0.05f, 0.00f, 1.0f);                      <* 
-    *>       for (j = -100; j <= 100; j += 50) {                                                             <* 
-    *>          glBegin         (GL_POLYGON); {                                                              <* 
-    *>             glVertex3f  ( i        , j + 48,    0.0);                                                 <* 
-    *>             glVertex3f  ( i + x_inc, j + 48,    0.0);                                                 <* 
-    *>             glVertex3f  ( i + x_inc, j +  2,    0.0);                                                 <* 
-    *>             glVertex3f  ( i        , j +  2,    0.0);                                                 <* 
-    *>          } glEnd   ();                                                                                <* 
-    *>       }                                                                                               <* 
-    *>       /+---(top and bottom limits)----+/                                                              <* 
-    *>       if (yVIKEYS_mode_curr () == MODE_PROGRESS)  glColor4f    (0.25f, 0.00f, 0.00f, 1.0f);           <* 
-    *>       else                                glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);                   <* 
-    *>       glBegin         (GL_POLYGON); {                                                                 <* 
-    *>          glVertex3f  ( i        , my.p_top     ,    5.0);                                             <* 
-    *>          glVertex3f  ( i + x_inc, my.p_top     ,    5.0);                                             <* 
-    *>          glVertex3f  ( i + x_inc, my.p_top - 25,    5.0);                                             <* 
-    *>          glVertex3f  ( i        , my.p_top - 25,    5.0);                                             <* 
-    *>       } glEnd   ();                                                                                   <* 
-    *>       glBegin         (GL_POLYGON); {                                                                 <* 
-    *>          glVertex3f  ( i        , my.p_bot     ,    5.0);                                             <* 
-    *>          glVertex3f  ( i + x_inc, my.p_bot     ,    5.0);                                             <* 
-    *>          glVertex3f  ( i + x_inc, my.p_bot + 25,    5.0);                                             <* 
-    *>          glVertex3f  ( i        , my.p_bot + 25,    5.0);                                             <* 
-    *>       } glEnd   ();                                                                                   <* 
-    *>       /+---(vertical baseline)--------+/                                                              <* 
-    *>       glColor4f    (0.10f, 0.10f, 0.10f, 1.0f);                                                       <* 
-    *>       glBegin         (GL_POLYGON); {                                                                 <* 
-    *>          glVertex3f  ( i        ,  8          ,    5.0);                                              <* 
-    *>          glVertex3f  ( i + x_inc,  8          ,    5.0);                                              <* 
-    *>          glVertex3f  ( i + x_inc, -8          ,    5.0);                                              <* 
-    *>          glVertex3f  ( i        , -8          ,    5.0);                                              <* 
-    *>       } glEnd   ();                                                                                   <* 
-    *>       /+---(timelables)---------------+/                                                              <* 
-    *>       /+> if (i % (x_inc * 10) == 0) {                                                          <*    <* 
-    *>        *>    snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_inc) * my.p_multi), my.p_base);   <*    <* 
-    *>        *>    glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);                                          <*    <* 
-    *>        *>    glPushMatrix(); {                                                                  <*    <* 
-    *>        *>       glTranslatef ( i , my.p_bot + 25.0 ,    20.0  );                                <*    <* 
-    *>        *>       yFONT_print  (txf_bg,  14, YF_TOPLEF, x_msg);                                   <*    <* 
-    *>        *>    } glPopMatrix();                                                                   <*    <* 
-    *>        *> }                                                                                     <+/   <* 
-    *>       /+---(title)--------------------+/                                                              <* 
-    *>       if      (i % (x_inc * 100) == 0) {                                                              <* 
-    *>          glColor4f    (0.50f, 0.50f, 0.00f, 1.0f);                                                    <* 
-    *>          glPushMatrix(); {                                                                            <* 
-    *>             glTranslatef ( i + 25.0 , my.p_top -  65.0 ,    20.0  );                                  <* 
-    *>             yFONT_print  (txf_bg,  50, YF_MIDLEF, "#5/RF");                                           <* 
-    *>          } glPopMatrix();                                                                             <* 
-    *>          yVIKEYS_scale_desc (x_msg);                                                                  <* 
-    *>          glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);                                                    <* 
-    *>          glPushMatrix(); {                                                                            <* 
-    *>             glTranslatef ( i , my.p_top -  25.0 ,    20.0  );                                         <* 
-    *>             yFONT_print  (txf_bg,  16, YF_BOTLEF, x_msg);                                             <* 
-    *>          } glPopMatrix();                                                                             <* 
-    *>          yVIKEYS_speed_desc (x_msg);                                                                  <* 
-    *>          glPushMatrix(); {                                                                            <* 
-    *>             glTranslatef ( i - 500.0, my.p_top -  25.0 ,    20.0  );                                  <* 
-    *>             yFONT_print  (txf_bg,  16, YF_BOTLEF, x_msg);                                             <* 
-    *>          } glPopMatrix();                                                                             <* 
-    *>          /+> snprintf     (x_msg, 100, "play %s", g_speed [my.p_sindex].code);     <+/                <* 
-    *>          /+> glPushMatrix(); {                                                     <*                 <* 
-    *>           *>    glTranslatef ( i - 200.0, my.p_top -  25.0 ,    20.0  );           <*                 <* 
-    *>           *>    yFONT_print  (txf_bg,  16, YF_BOTRIG, x_msg);                      <*                 <* 
-    *>           *> } glPopMatrix();                                                      <+/                <* 
-    *>          /+> snprintf     (x_msg, 100, "%s", g_speed [my.p_sindex].desc);          <+/                <* 
-    *>          /+> glPushMatrix(); {                                                     <*                 <* 
-    *>           *>    glTranslatef ( i - 190.0, my.p_top -  25.0 ,    20.0  );           <*                 <* 
-    *>           *>    yFONT_print  (txf_bg,  16, YF_BOTLEF, x_msg);                      <*                 <* 
-    *>           *> } glPopMatrix();                                                      <+/                <* 
-    *>       }                                                                                               <* 
-    *>    }                                                                                                  <* 
-    *> } glPopMatrix();                                                                                      <*/
-   /*---(show leg angle curves)----------*/
-   /*> x_unit = x_inc / my.p_inc;                                                                                     <* 
-    *> glColor4f    (0.50f, 0.00f, 0.00f, 1.0f);                                                                      <* 
-    *> glLineWidth  (15.0f);                                                                                          <* 
-    *> glPushMatrix(); {                                                                                              <* 
-    *>    rc = MOVE_first ( 15, &x_sec1, &x_deg1);                                                                    <* 
-    *>    /+> printf ("first   sec = %5.2f, deg = %5.2f, x   = %9.2f\n", x_sec1, x_deg1, x_sec1 * x_unit);   <+/      <* 
-    *>    while (rc >= 0) {                                                                                           <* 
-    *>       rc = MOVE_next  (&x_sec2, &x_deg2);                                                                      <* 
-    *>       /+> printf ("next    sec = %5.2f, deg = %5.2f, x   = %9.2f\n", x_sec2, x_deg2, x_sec2 * x_unit);   <+/   <* 
-    *>       if (rc <  0) break;                                                                                      <* 
-    *>       glBegin(GL_LINE_STRIP); {                                                                                <* 
-    *>          glVertex3f  (  x_sec1 * x_unit, x_deg1 + 5,   50.0);                                                  <* 
-    *>          glVertex3f  (  x_sec2 * x_unit, x_deg2 + 5,   50.0);                                                  <* 
-    *>       } glEnd   ();                                                                                            <* 
-    *>       glBegin(GL_LINE_STRIP); {                                                                                <* 
-    *>          glVertex3f  (  x_sec1 * x_unit, x_deg1 - 5,   50.0);                                                  <* 
-    *>          glVertex3f  (  x_sec2 * x_unit, x_deg2 - 5,   50.0);                                                  <* 
-    *>       } glEnd   ();                                                                                            <* 
-    *>       x_sec1 = x_sec2;                                                                                         <* 
-    *>       x_deg1 = x_deg2;                                                                                         <* 
-    *>    }                                                                                                           <* 
-    *> } glPopMatrix();                                                                                               <*/
-   /*> glColor4f    (0.25f, 0.25f, 0.00f, 1.0f);                                                                      <* 
-    *> glLineWidth  ( 5.0f);                                                                                          <* 
-    *> glPushMatrix(); {                                                                                              <* 
-    *>    rc = MOVE_first ( 16, &x_sec1, &x_deg1);                                                                    <* 
-    *>    /+> printf ("first   sec = %5.2f, deg = %5.2f, x   = %9.2f\n", x_sec1, x_deg1, x_sec1 * x_unit);   <+/      <* 
-    *>    while (rc >= 0) {                                                                                           <* 
-    *>       rc = MOVE_next  (&x_sec2, &x_deg2);                                                                      <* 
-    *>       /+> printf ("next    sec = %5.2f, deg = %5.2f, x   = %9.2f\n", x_sec2, x_deg2, x_sec2 * x_unit);   <+/   <* 
-    *>       if (rc <  0) break;                                                                                      <* 
-    *>       glBegin(GL_LINE_STRIP); {                                                                                <* 
-    *>          glVertex3f  (  x_sec1 * x_unit, x_deg1 + 2,   55.0);                                                  <* 
-    *>          glVertex3f  (  x_sec2 * x_unit, x_deg2 + 2,   55.0);                                                  <* 
-    *>       } glEnd   ();                                                                                            <* 
-    *>       glBegin(GL_LINE_STRIP); {                                                                                <* 
-    *>          glVertex3f  (  x_sec1 * x_unit, x_deg1 - 2,   55.0);                                                  <* 
-    *>          glVertex3f  (  x_sec2 * x_unit, x_deg2 - 2,   55.0);                                                  <* 
-    *>       } glEnd   ();                                                                                            <* 
-    *>       x_sec1 = x_sec2;                                                                                         <* 
-    *>       x_deg1 = x_deg2;                                                                                         <* 
-    *>    }                                                                                                           <* 
-    *> } glPopMatrix();                                                                                               <*/
-   /*> glColor4f    (0.00f, 0.25f, 0.00f, 1.0f);                                                                      <* 
-    *> glLineWidth  ( 5.0f);                                                                                          <* 
-    *> glPushMatrix(); {                                                                                              <* 
-    *>    rc = MOVE_first ( 17, &x_sec1, &x_deg1);                                                                    <* 
-    *>    /+> printf ("first   sec = %5.2f, deg = %5.2f, x   = %9.2f\n", x_sec1, x_deg1, x_sec1 * x_unit);   <+/      <* 
-    *>    while (rc >= 0) {                                                                                           <* 
-    *>       rc = MOVE_next  (&x_sec2, &x_deg2);                                                                      <* 
-    *>       /+> printf ("next    sec = %5.2f, deg = %5.2f, x   = %9.2f\n", x_sec2, x_deg2, x_sec2 * x_unit);   <+/   <* 
-    *>       if (rc <  0) break;                                                                                      <* 
-    *>       glBegin(GL_LINE_STRIP); {                                                                                <* 
-    *>          glVertex3f  (  x_sec1 * x_unit, x_deg1,   60.0);                                                      <* 
-    *>          glVertex3f  (  x_sec2 * x_unit, x_deg2,   60.0);                                                      <* 
-    *>       } glEnd   ();                                                                                            <* 
-    *>       x_sec1 = x_sec2;                                                                                         <* 
-    *>       x_deg1 = x_deg2;                                                                                         <* 
-    *>    }                                                                                                           <* 
-    *> } glPopMatrix();                                                                                               <*/
-   /*---(draw end)-----------------------*/
-   /*> x_unit = x_inc / my.p_inc;                                                     <* 
-    *> glColor4f    (0.50f, 0.00f, 0.50f, 1.0f);                                      <* 
-    *> glLineWidth  (10.0f);                                                          <* 
-    *> glPushMatrix(); {                                                              <* 
-    *>    glBegin(GL_LINE_STRIP); {                                                   <* 
-    *>       glVertex3f  (  my.p_len * x_unit - 5, my.p_top - 25.0,   70.0);          <* 
-    *>       glVertex3f  (  my.p_len * x_unit - 5, my.p_bot + 25.0,   70.0);          <* 
-    *>    } glEnd   ();                                                               <* 
-    *>    glBegin(GL_LINE_STRIP); {                                                   <* 
-    *>       glVertex3f  (  my.p_len * x_unit + 5, my.p_top - 25.0,   70.0);          <* 
-    *>       glVertex3f  (  my.p_len * x_unit + 5, my.p_bot + 25.0,   70.0);          <* 
-    *>    } glEnd   ();                                                               <* 
-    *> } glPopMatrix();                                                               <*/
-   /*---(time labels)--------------------*/
-   /*> yVIKEYS_scale_base (&my.p_multi, &my.p_base);                                               <* 
-    *> glPushMatrix(); {                                                                           <* 
-    *>    glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);                                                <* 
-    *>    for (i = 0; i < my.p_texw; i += x_inc) {                                                 <* 
-    *>       if (i % (x_inc * 10) == 0) {                                                          <* 
-    *>          snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_inc) * my.p_multi), my.p_base);   <* 
-    *>          glPushMatrix(); {                                                                  <* 
-    *>             glTranslatef ( i , my.p_bot + 25.0 ,    80.0  );                                <* 
-    *>             yFONT_print  (txf_bg,  14, YF_TOPLEF, x_msg);                                   <* 
-    *>          } glPopMatrix();                                                                   <* 
-    *>       }                                                                                     <* 
-    *>    }                                                                                        <* 
-    *> } glPopMatrix();                                                                            <*/
-   /*---(create mipmaps)-----------------*/
-   /*> glBindFramebufferEXT  (GL_FRAMEBUFFER_EXT, 0);                                 <* 
-    *> glBindTexture         (GL_TEXTURE_2D, my.p_tex);                               <* 
-    *> glGenerateMipmapEXT   (GL_TEXTURE_2D);                                         <* 
-    *> glBindTexture         (GL_TEXTURE_2D, 0);                                      <*/
+   /*---(set single leg vars)------------*/
+   s_texbot    = (my.p_leg + 0)  * (1.0 / 6.0);
+   s_textop    = (my.p_leg + 1)  * (1.0 / 6.0);
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -633,6 +455,7 @@ TICK_full          (void)
    /*---(locals)-----------+-----------+-*/
    float       x_beg       =   0.0;
    float       x_end       =   0.4;
+   float       x_cur       =   0.0;
    /*---(setup view)---------------------*/
    glViewport      (    0, 0.0        , my.w_width, my.w_height);
    glMatrixMode    (GL_PROJECTION);
@@ -657,79 +480,6 @@ TICK_full          (void)
       /*---(done)-----------*/
    } glEnd();
    glBindTexture   (GL_TEXTURE_2D, 0);
-   /*---(complete)-----------------------*/
-   return 0;
-}
-
-char         /*--> show texture on screen ----------------[ ------ [ ------ ]-*/
-TICK_show          (void)
-{
-   /*---(locals)-----------+-----------+-*/
-   float       x_pfull     =   0.0;         /* polygon length available       */
-   float       x_psec      =   0.0;         /* polygon length of a second     */
-   float       x_tfull     =   0.0;         /* texture length available       */
-   float       x_tsec      =   0.0;         /* texture length of a second     */
-   float       x_tnsec     =   0.0;         /* texture number of secs shown   */
-   float       x_pleft     =   0.0;         /* polygon left                   */
-   float       x_pright    =   0.0;         /* polygon right                  */
-   float       x_pcur      =   0.0;         /* polygon current location       */
-   float       x_ppct      =   0.0;         /* polygon current percentage     */
-   float       x_cur       =   0.0;
-   float       x_half      =   0.0;
-   float       x_beg       =   0.0;
-   float       x_end       =   0.0;
-   int         x_inc       =    10;
-   char        x_msg       [100];
-   float       x_top       =   0.0;
-   float       x_bot       =   0.0;
-   /*---(setup view)---------------------*/
-   glViewport      (    0, my.p_bottom, my.w_width, my.p_height);
-   glMatrixMode    (GL_PROJECTION);
-   glLoadIdentity  ();
-   glOrtho         ( 0.0f, my.w_width, my.p_bot, my.p_top,  -500.0,   500.0);
-   glMatrixMode    (GL_MODELVIEW);
-   /*---(pick right line)----------------*/
-   x_bot       = (my.p_leg + 0)  * (1.0 / 6.0);
-   x_top       = (my.p_leg + 1)  * (1.0 / 6.0);
-   /*---(calc basics)--------------------*/
-   x_pfull     = my.w_width;
-   x_tfull     = my.w_width * 2.0;
-   x_tsec      = x_inc / my.p_inc;
-   x_tnsec     = x_tfull / x_tsec;
-   x_psec      = x_tsec / 2.0;
-   /*---(calc polygon info)--------------*/
-   x_pleft     = 0.0;
-   x_pright    = x_pleft + my.w_width;
-   x_pcur      = (my_pos / 2.0) * x_tsec;
-   x_ppct      = x_pcur / my.w_width;
-   x_cur       = (my_pos * x_tsec) / 2.0f;   /* texture displayed at 0.5x */
-   x_half      = my.w_width;
-   /*---(set beginning and end)----------*/
-   x_beg       = x_cur - x_half;
-   /*> x_beg       = my.w_width;                                                      <*/
-   if (x_beg < 0.0)  x_beg = 0.0;
-   x_end       = x_beg + (x_half * 2.0f);
-   /*---(scale number to texture)--------*/
-   x_beg      /= my.p_texw;
-   x_end      /= my.p_texw;
-   /*---(draw texture)-------------------*/
-   glBindTexture   (GL_TEXTURE_2D, my.p_tex);
-   glBegin(GL_POLYGON); {
-      /*---(top beg)--------*/
-      glTexCoord2f (x_beg     , x_top    );
-      glVertex3f   (x_pleft   , my.p_top ,     0.00f);
-      /*---(top end)--------*/
-      glTexCoord2f (x_end     , x_top    );
-      glVertex3f   (x_pright  , my.p_top ,     0.00f);
-      /*---(bottom end)-----*/
-      glTexCoord2f (x_end     , x_bot    );
-      glVertex3f   (x_pright  , my.p_bot ,     0.00f);
-      /*---(bottom beg)-----*/
-      glTexCoord2f (x_beg     , x_bot    );
-      glVertex3f   (x_pleft   , my.p_bot ,     0.00f);
-      /*---(done)-----------*/
-   } glEnd();
-   glBindTexture   (GL_TEXTURE_2D, 0);
    /*---(draw current)-------------------*/
    glColor4f    (0.00f, 0.00f, 1.00f, 1.0f);
    glLineWidth  (10.0f);
@@ -739,18 +489,135 @@ TICK_show          (void)
          glVertex3f  (x_cur, my.p_bot + 25.0,   70.0);
       } glEnd   ();
    } glPopMatrix();
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
+char         /*--> show texture on screen ----------------[ ------ [ ------ ]-*/
+TICK_show          (void)
+{
+   /*---(locals)-----------+-----------+-*/
+   float       x_xfull     =   0.0;         /* texture length available       */
+   float       x_xwidth    =   0.0;         /* texture width percent avail    */
+   float       x_xcenter   =   0.0;         /* texture width avail center     */
+   float       x_tsec      =   0.0;         /* texture length of a second     */
+   float       x_tnsec     =   0.0;         /* texture number of secs shown   */
+   float       x_tsecp     =   0.0;         /* width pct of a texture sec     */
+   float       x_plenp     =   0.0;         /* total length in texture pct    */
+   float       x_curp      =   0.0;         /* cur pos in texture pct         */
+   float       x_pcur      =   0.0;         /* polygon current location       */
+   float       x_ppct      =   0.0;         /* polygon current percentage     */
+   float       x_cur       =   0.0;
+   float       x_half      =   0.0;
+   float       x_beg       =   0.0;
+   float       x_end       =   0.0;
+   int         x_inc       =    10;
+   char        x_msg       [100];
+   /*---(setup view)---------------------*/
+   glViewport      (    0, my.p_bottom, my.w_width, my.p_height);
+   glMatrixMode    (GL_PROJECTION);
+   glLoadIdentity  ();
+   glOrtho         ( 0.0f, my.w_width, 0.0 , my.p_height,  -500.0,   500.0);
+   glMatrixMode    (GL_MODELVIEW);
+   /*---(calc basics)--------------------*/
+   x_xfull     = my.w_width * 2.0;
+   x_xwidth    = x_xfull / my.p_texw;
+   x_xcenter   = x_xwidth / 2.0;
+   /*---(seconds)------------------------*/
+   x_tsec      = x_inc / my.p_inc;
+   x_tnsec     = x_xfull / x_tsec;
+   x_tsecp     = x_xwidth / x_tnsec;
+   x_plenp     = (my.p_len * x_tsec) / my.p_texw;
+   x_curp      = (my.p_cursec * x_tsec) / my.p_texw;
+   /*---(position texture)---------------*/
+   if (x_plenp <= x_xwidth) {
+      x_beg = 0.0f;
+      x_end = x_xwidth;
+   } else {
+      switch (my.p_curpos) {
+      case 's' :
+         x_beg = x_curp;
+         x_end = x_beg  + x_xwidth;
+         break;
+      case 'h' :
+         x_beg = x_curp - (x_xcenter / 2.0);
+         x_end = x_beg  + x_xwidth;
+         break;
+      case 'c' :
+         x_beg = x_curp - (x_xcenter / 1.0);
+         x_end = x_beg  + x_xwidth;
+         break;
+      case 'l' :
+         x_end = x_curp + (x_xcenter / 2.0);
+         x_beg = x_end  - x_xwidth;
+         break;
+      case 'e' :
+         x_end = x_curp;
+         x_beg = x_end  - x_xwidth;
+         break;
+      }
+      if (x_beg < 0.0) {
+         x_beg = 0.0f;
+         x_end = x_xwidth;
+      } else if (x_end > x_plenp) {
+         x_end = x_plenp;
+         x_beg = x_end - x_xwidth;
+      }
+   }
+   x_cur       = ((x_curp - x_beg) / x_xwidth) * my.w_width;
+   /*---(draw texture)-------------------*/
+   glBindTexture   (GL_TEXTURE_2D, my.p_tex);
+   glBegin(GL_POLYGON); {
+      /*---(top beg)--------*/
+      glTexCoord2f (x_beg     , s_textop );
+      glVertex3f   (0.0       , my.p_height ,     0.00f);
+      /*---(top end)--------*/
+      glTexCoord2f (x_end     , s_textop );
+      glVertex3f   (my.w_width, my.p_height ,     0.00f);
+      /*---(bottom end)-----*/
+      glTexCoord2f (x_end     , s_texbot );
+      glVertex3f   (my.w_width, 0.0      ,     0.00f);
+      /*---(bottom beg)-----*/
+      glTexCoord2f (x_beg     , s_texbot );
+      glVertex3f   (0.0       , 0.0      ,     0.00f);
+      /*---(done)-----------*/
+   } glEnd();
+   glBindTexture   (GL_TEXTURE_2D, 0);
+   /*---(draw current)-------------------*/
+   glColor4f    (0.00f, 0.00f, 1.00f, 1.0f);
+   glLineWidth  (10.0f);
+   glPushMatrix(); {
+      glBegin(GL_LINE_STRIP); {
+         glVertex3f  (x_cur, my.p_height - 12.5,   70.0);
+         glVertex3f  (x_cur, 12.5              ,   70.0);
+      } glEnd   ();
+   } glPopMatrix();
    /*---(show debug)---------------------*/
    if (my.p_debug == 'y') {
       printf ("TICK_show ()  debugging\n");
-      printf ("   x_pfull          = %10.3f\n", x_pfull);
-      printf ("   x_psec           = %10.3f\n", x_psec);
-      printf ("   x_tfull          = %10.3f\n", x_tfull);
+      printf ("\n");
+      printf ("   my.p_texh        = %6d\n"   , my.p_texh);
+      printf ("   my.p_height      = %6d\n"   , my.p_height);
+      printf ("   max legs         = %6d\n"   , 6);
+      printf ("   height per leg   = %10.3f\n", my.p_texh / 6.0);
+      printf ("   my.p_leg         = %6d\n"   , my.p_leg);
+      printf ("   s_textop         = %10.3f\n", s_textop);
+      printf ("   s_texbot         = %10.3f\n", s_texbot);
+      printf ("\n");
+      printf ("   my.w_width       = %6d\n"   , my.w_width);
+      printf ("   my.p_texw        = %6d\n"   , my.p_texw);
+      printf ("   x_xfull          = %10.3f\n", x_xfull);
+      printf ("   x_xwidth         = %10.3f\n", x_xwidth);
+      printf ("   x_xcenter        = %10.3f\n", x_xcenter);
+      printf ("\n");
       printf ("   x_tsec           = %10.3f\n", x_tsec);
       printf ("   x_tnsec          = %10.3f\n", x_tnsec);
-      printf ("   x_pleft          = %10.3f\n", x_pleft);
-      printf ("   x_pright         = %10.3f\n", x_pright);
+      printf ("   x_tsecp          = %10.3f\n", x_tsecp);
+      printf ("   x_plenp          = %10.3f\n", x_plenp);
+      printf ("\n");
       printf ("   x_pcur           = %10.3f\n", x_pcur);
       printf ("   x_ppct           = %10.3f\n", x_ppct);
+      printf ("\n");
       my.p_debug = '-';
    }
    /*---(complete)-----------------------*/
@@ -1377,7 +1244,7 @@ draw_spider        (void)
       /*> draw_arrow      ();                                                         <*/
       /*> if (flag_annotate == 'y')  draw__center ();                                 <*/
       glCallList      (dl_body);
-      MOVE_curall ( my_pos);
+      MOVE_curall ( my.p_cursec);
       for (i = 0; i < 18; i += 3) {
          glPushMatrix (); {
             glColor3f(1.0f, 1.0f, 1.0f);
@@ -1561,7 +1428,7 @@ view_progress      (void)
    glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
    glPushMatrix(); {
       glTranslatef(   0.0f, -39.0, -100.0);
-      snprintf (x_msg, 50, "%03d", (int) my_pos);
+      snprintf (x_msg, 50, "%03d", (int) my.p_cursec);
       yFONT_print (txf_sm,   2, YF_BOTCEN, x_msg);
    } glPopMatrix();
    return 0;
@@ -3370,14 +3237,14 @@ draw_contact       (void)
    glPolygonMode   (GL_FRONT_AND_BACK, GL_FILL);
    glBegin         (GL_POLYGON);
    for (i = 0; i < LEGS; ++i) {
-      if (gait.tleg[(int) my_pos][i] != 1) continue;
+      if (gait.tleg[(int) my.p_cursec][i] != 1) continue;
       glVertex3f      ( gk [i][TIBI].cx - center.bx, -center.by , gk [i][TIBI].cz - center.bz);
    }
    glEnd           ();
    /*---(touches)------------------------*/
    glLineWidth ( 5.0);
    for (i = 0; i < LEGS; ++i) {
-      switch (gait.tleg[(int) my_pos][i]) {
+      switch (gait.tleg[(int) my.p_cursec][i]) {
       case  0  : 
          glColor4f       (0.2f, 0.2f, 0.2f, 1.0f);
          break;
@@ -3388,7 +3255,7 @@ draw_contact       (void)
          glColor4f       (1.0f, 0.0f, 0.5f, 1.0f);
          break;
       }
-      if (gait.tleg[(int) my_pos][i] != 0) {
+      if (gait.tleg[(int) my.p_cursec][i] != 0) {
          glBegin   (GL_LINE_STRIP);
          for (deg = 0; deg < 365; deg +=  5) {
             rad = deg * DEG2RAD;

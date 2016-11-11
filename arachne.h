@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5n"
-#define VER_TXT   "normal mode allows progress bar to show different legs now"
+#define VER_NUM   "0.5p"
+#define VER_TXT   "made the current progress marker and window to scroll"
 
 
 
@@ -260,6 +260,8 @@ struct cACCESSOR {
    /*---(progress pane)---*/
    int         p_height;
    int         p_bottom;
+   char        p_curpos;                    /* position of current bar (shcle)*/
+   double      p_cursec;                    /* current timeline seconds       */
    int         p_leg;                       /* leg currently viewed           */
    int         p_texw;                      /* texture full width             */
    int         p_texh;                      /* texture full height            */
@@ -514,7 +516,6 @@ extern    float     my_calf;
 extern    int       my_curr;
 
 extern    float     my_len;
-extern    double    my_pos;
 extern    double    my_ppos;
 extern    float     my_run;
 extern    float     my_inc;

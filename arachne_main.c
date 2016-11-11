@@ -103,10 +103,10 @@ main (int argc, char *argv[])
              *>    case '-': SCALE_larger  ();   /+ out +/     break;                 <* 
              *>    case ',': my.p_moving  = 'y';                    break;                 <* 
              *>    case '.': my.p_moving  = 'n';                    break;                 <* 
-             *>    case '>': my.p_moving  = 'n'; my_pos +=  my.p_inc;          break;      <* 
-             *>    case '<': my.p_moving  = 'n'; my_pos -=  my.p_inc;          break;      <* 
-             *>    case ')': my.p_moving  = 'n'; my_pos +=  my.p_inc * 5;      break;      <* 
-             *>    case '(': my.p_moving  = 'n'; my_pos -=  my.p_inc * 5;      break;      <* 
+             *>    case '>': my.p_moving  = 'n'; my.p_cursec +=  my.p_inc;          break;      <* 
+             *>    case '<': my.p_moving  = 'n'; my.p_cursec -=  my.p_inc;          break;      <* 
+             *>    case ')': my.p_moving  = 'n'; my.p_cursec +=  my.p_inc * 5;      break;      <* 
+             *>    case '(': my.p_moving  = 'n'; my.p_cursec -=  my.p_inc * 5;      break;      <* 
              *>    }                                                                  <* 
              *> }                                                                     <*/
             /*---(unknown)--------------*/
@@ -119,10 +119,10 @@ main (int argc, char *argv[])
              *>    case '>': my_inc *= 2.0;  break;                                   <* 
              *>    case 'n': my_inc  = 1.0;  break;                                   <* 
              *>    case '<': my_inc /= 2.0;  break;                                   <* 
-             *>    case '0': my_run  = 0  ; my_pos = 0;       break;                  <* 
-             *>    case '$': my_run  = 0  ; my_pos = my_len;  break;                  <* 
-             *>    case 'l': my_run  = 0  ; ++my_pos;         break;                  <* 
-             *>    case 'h': my_run  = 0  ; --my_pos;         break;                  <* 
+             *>    case '0': my_run  = 0  ; my.p_cursec = 0;       break;                  <* 
+             *>    case '$': my_run  = 0  ; my.p_cursec = my_len;  break;                  <* 
+             *>    case 'l': my_run  = 0  ; ++my.p_cursec;         break;                  <* 
+             *>    case 'h': my_run  = 0  ; --my.p_cursec;         break;                  <* 
              *>    case 'Q': exit(0);        break;                                   <* 
              *>    }                                                                  <* 
              *> }                                                                     <*/
@@ -131,25 +131,25 @@ main (int argc, char *argv[])
             break;
          }
       }
-      /*> printf ("my_pos = %6.1f, my_ppos = %6.1f\n", my_pos, my_ppos);              <*/
+      /*> printf ("my.p_cursec = %6.1f, my_ppos = %6.1f\n", my.p_cursec, my_ppos);              <*/
       /*---(check boundaries)------------*/
-      /*> if (my.p_moving == 'y')  my_pos += my.p_adv;                                <*/
-      yVIKEYS_speed_adv  (&my_pos);
-      if (my_pos <  0.0f)   {
+      /*> if (my.p_moving == 'y')  my.p_cursec += my.p_adv;                                <*/
+      yVIKEYS_speed_adv  (&my.p_cursec);
+      if (my.p_cursec <  0.0f)   {
          yVIKEYS_speed_stop (&my.p_waitns);
-         my_pos = 0.0;
+         my.p_cursec = 0.0;
       }
-      if (my_pos >= my.p_len) {
+      if (my.p_cursec >= my.p_len) {
          yVIKEYS_speed_stop (&my.p_waitns);
-         my_pos = my.p_len;
+         my.p_cursec = my.p_len;
       }
-      gait.pos = my_pos;
+      gait.pos = my.p_cursec;
       /*---(check boundaries)------------*/
       stat_masscenter();
       draw_main();
       if (umake_leg  == 'y')  unit_FK();
       is_moved = 'n';
-      my_ppos = my_pos;
+      my_ppos = my.p_cursec;
       /*---(wait)-----------------------------------------*/
       timer.tv_sec  = 0;
       timer.tv_nsec =  my.p_waitns;
