@@ -113,6 +113,13 @@ static float       s_texend    =   0.0;
 static float       s_curp      =   0.0;         /* cur pos in texture pct         */
 static float       s_cur       =   0.0;
 
+static float       s_texbeg1   =   0.0;
+static float       s_texend1   =   0.0;
+static float       s_texpct1   =   0.0;
+static float       s_texbeg2   =   0.0;
+static float       s_texend2   =   0.0;
+static float       s_texpct2   =   0.0;
+
 char         /*--> set values for progress ticker --------[ ------ [ ------ ]-*/
 TICK_init          (void)
 {
@@ -348,7 +355,12 @@ TICK_servos        (int a_leg)
          y_pos1   = x_base + x_deg1;
          y_pos2   = x_base + x_deg2;
          /*---(draw)--------*/
-         TICK_line (x_pos1, y_pos1, x_pos2, y_pos2, 5, 30.0);
+         if      (x_pos2 <= my.p_texw)  TICK_line (x_pos1            , y_pos1, x_pos2, y_pos2, 5, 30.0);
+         else if (x_pos1 >= my.p_texw)  TICK_line (x_pos1 - my.p_texw, y_pos1 + 1500.0, x_pos2 - my.p_texw, y_pos2 + 1500.0, 5, 30.0);
+         else {
+            TICK_line (x_pos1, y_pos1, x_pos2, y_pos2, 5, 30.0);
+            TICK_line (x_pos1 - my.p_texw, y_pos1 + 1500.0, x_pos2 - my.p_texw, y_pos2 + 1500.0, 5, 30.0);
+         }
          /*---(save)--------*/
          x_sec1 = x_sec2;
          x_deg1 = x_deg2;
@@ -521,7 +533,7 @@ TICK_draw          (void)
    s_tnsec     = s_texavail / s_tsec;
    s_tsecp     = s_texpct / s_tnsec;
    s_plenp     = (my.p_len * s_tsec) / my.p_texw;
-   /*> if (s_plenp > 1.0)  s_plenp = 1.0;                                             <*/
+   if (s_plenp > 2.0)  s_plenp = 2.0;
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -531,6 +543,7 @@ TICK_current       (void)
 {
    /*---(current pos)--------------------*/
    s_curp      = (my.p_cursec * s_tsec) / my.p_texw;
+   if (s_curp  > 2.0)  s_curp  = 2.0;
    /*---(script fits screen)-------------*/
    if (s_plenp <= s_texpct) {
       s_texbeg = 0.0f;
@@ -568,7 +581,29 @@ TICK_current       (void)
          s_texbeg  = s_texend - s_texpct;
       }
    }
-   /*---(dual areas of text)-------------*/
+   /*---(prepare for multitex)-----------*/
+   s_texbeg1 = s_texend1 = s_texbeg2 = s_texend2 = 0.0;
+   /*---(all first tex area)-------------*/
+   if        (s_texend <= 1.0) {
+      s_texbeg1  = s_texbeg;
+      s_texend1  = s_texend;
+      s_texpct1  = 1.0;
+   }
+   /*---(all second tex area)------------*/
+   else if (s_texbeg >= 1.0) {
+      s_texbeg2  = s_texbeg - 1.0;
+      s_texend2  = s_texend - 1.0;
+      s_texpct2  = 1.0;
+   }
+   /*---(mixed text area)----------------*/
+   else {
+      s_texbeg1  = s_texbeg;
+      s_texend1  = 1.0;
+      s_texpct1  = (s_texend1 - s_texbeg1) / s_texpct;
+      s_texbeg2  = 0.0;
+      s_texend2  = s_texend - 1.0;
+      s_texpct2  = (s_texend2 - s_texbeg2) / s_texpct;
+   }
    /*---(current pos)--------------------*/
    s_cur       = ((s_curp - s_texbeg) / s_texpct) * my.w_width;
    /*---(complete)-----------------------*/
@@ -636,19 +671,35 @@ TICK_show          (void)
    TICK_current    ();
    /*---(draw texture)-------------------*/
    glBindTexture   (GL_TEXTURE_2D, my.p_tex);
+   /*---(first part)---------------------*/
    glBegin(GL_POLYGON); {
       /*---(top beg)--------*/
-      glTexCoord2f (s_texbeg     , s_textop );
+      glTexCoord2f (s_texbeg1    , s_textop );
       glVertex3f   (0.0       , my.p_height ,     0.00f);
       /*---(top end)--------*/
-      glTexCoord2f (s_texend     , s_textop );
-      glVertex3f   (my.w_width, my.p_height ,     0.00f);
+      glTexCoord2f (s_texend1    , s_textop );
+      glVertex3f   (my.w_width * s_texpct1, my.p_height ,     0.00f);
       /*---(bottom end)-----*/
-      glTexCoord2f (s_texend     , s_texbot );
-      glVertex3f   (my.w_width, 0.0      ,     0.00f);
+      glTexCoord2f (s_texend1    , s_texbot );
+      glVertex3f   (my.w_width * s_texpct1, 0.0      ,     0.00f);
       /*---(bottom beg)-----*/
-      glTexCoord2f (s_texbeg     , s_texbot );
+      glTexCoord2f (s_texbeg1    , s_texbot );
       glVertex3f   (0.0       , 0.0      ,     0.00f);
+      /*---(done)-----------*/
+   } glEnd();
+   glBegin(GL_POLYGON); {
+      /*---(top beg)--------*/
+      glTexCoord2f (s_texbeg2              , s_textop + 0.5 );
+      glVertex3f   (my.w_width * s_texpct1, my.p_height ,     0.00f);
+      /*---(top end)--------*/
+      glTexCoord2f (s_texend2              , s_textop + 0.5 );
+      glVertex3f   (my.w_width             , my.p_height ,     0.00f);
+      /*---(bottom end)-----*/
+      glTexCoord2f (s_texend2              , s_texbot + 0.5 );
+      glVertex3f   (my.w_width             , 0.0      ,     0.00f);
+      /*---(bottom beg)-----*/
+      glTexCoord2f (s_texbeg2              , s_texbot + 0.5 );
+      glVertex3f   (my.w_width * s_texpct1, 0.0      ,     0.00f);
       /*---(done)-----------*/
    } glEnd();
    glBindTexture   (GL_TEXTURE_2D, 0);
@@ -685,6 +736,12 @@ TICK_show          (void)
       printf ("   s_plenp          = %10.3f\n", s_plenp);
       printf ("\n");
       printf ("   s_maxlabel       = %10.3f\n", (my.p_texw / 10.0) * my.p_multi);
+      printf ("   s_texbeg1        = %10.3f\n", s_texbeg1);
+      printf ("   s_texend1        = %10.3f\n", s_texend1);
+      printf ("   s_texpct1        = %10.3f\n", s_texpct1);
+      printf ("   s_texbeg2        = %10.3f\n", s_texbeg2);
+      printf ("   s_texend2        = %10.3f\n", s_texend2);
+      printf ("   s_texpct2        = %10.3f\n", s_texpct2);
       my.p_debug = '-';
    }
    /*---(complete)-----------------------*/
