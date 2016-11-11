@@ -481,24 +481,24 @@ TICK_current       (void)
    } else {
       switch (my.p_curpos) {
       case 's' :
-         s_texbeg = s_curp;
+         s_texbeg = s_curp - (s_texpct * 0.05);
          s_texend = s_texbeg  + s_texpct;
          break;
       case 'h' :
-         s_texbeg = s_curp - (s_texctr / 2.0);
+         s_texbeg = s_curp - (s_texpct * 0.28);
          s_texend = s_texbeg  + s_texpct;
          break;
       case 'c' :
-         s_texbeg = s_curp - (s_texctr / 1.0);
+         s_texbeg = s_curp - (s_texpct * 0.50);
          s_texend = s_texbeg  + s_texpct;
          break;
       case 'l' :
-         s_texend = s_curp + (s_texctr / 2.0);
-         s_texbeg = s_texend  - s_texpct;
+         s_texbeg = s_curp - (s_texpct * 0.72);
+         s_texend = s_texbeg  + s_texpct;
          break;
       case 'e' :
-         s_texend = s_curp;
-         s_texbeg = s_texend  - s_texpct;
+         s_texbeg = s_curp - (s_texpct * 0.95);
+         s_texend = s_texbeg  + s_texpct;
          break;
       }
       if (s_texbeg < 0.0) {

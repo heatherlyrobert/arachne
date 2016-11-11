@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5q"
-#define VER_TXT   "add scrolling and progress bar to full progress view"
+#define VER_NUM   "0.5r"
+#define VER_TXT   "add alignment keys for progress scrolling mode"
 
 
 

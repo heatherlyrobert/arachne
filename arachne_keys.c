@@ -88,6 +88,10 @@ MODE_progress      (char a_major, char a_minor)
          DEBUG_USER   yLOG_exit    (__FUNCTION__);
          return a_minor;
          break;
+      case '^':
+         DEBUG_USER   yLOG_exit    (__FUNCTION__);
+         return a_minor;
+         break;
       }
       /*---(choosing leg)----------------*/
       x_leg = my.p_leg;
@@ -161,6 +165,16 @@ MODE_progress      (char a_major, char a_minor)
           *> /+---(scale number to texture)--------+/                                                 <* 
           *> x_beg      /= my.p_texw;                                                                 <* 
           *> x_end      /= my.p_texw;                                                                 <*/
+      }
+   }
+   /*---(alignment)----------------------*/
+   if (a_major == '^') {
+      switch (a_minor) {
+      case 's': my.p_curpos = 's'; break;
+      case 'h': my.p_curpos = 'h'; break;
+      case 'c': my.p_curpos = 'c'; break;
+      case 'l': my.p_curpos = 'l'; break;
+      case 'e': my.p_curpos = 'e'; break;
       }
    }
    /*---(buffer/area)--------------------*/
