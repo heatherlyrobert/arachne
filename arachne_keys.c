@@ -104,8 +104,8 @@ MODE_progress      (char a_major, char a_minor)
       case 'G': my.p_leg  = 0;    break;
       }
       if (x_leg != my.p_leg) {
-         if (my.p_leg < 0)  my.p_leg = 0;
-         if (my.p_leg > 5)  my.p_leg = 5;
+         if (my.p_leg <  0)  my.p_leg = 0;
+         if (my.p_leg > 11)  my.p_leg = 11;
          TICK_draw ();
       }
       /*---(zoom and retreat)------------*/

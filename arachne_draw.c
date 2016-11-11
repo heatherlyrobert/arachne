@@ -432,9 +432,11 @@ TICK_labels        (void)
    float     x_pos         =  0.0;
    char      x_msg         [100];
    char      x_part        [100];
+   int       x_maxlabel    =  0.0;
    /*---(prepare)------------------------*/
-   x_yinc = x_top / 12.0;
-   x_bar  = my.p_top - my.p_bot;
+   x_yinc      = x_top / 12.0;
+   x_bar       = my.p_top - my.p_bot;
+   x_maxlabel  = (my.p_texw / 10.0) * my.p_multi;
    /*---(leg labels)---------------------*/
    for (i = x_beg; i < x_end; i += x_xinc * 100) {
       for (j = 0; j < 12; ++j) {
@@ -479,10 +481,12 @@ TICK_labels        (void)
       glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
       for (i = 0; i < my.p_texw; i += x_xinc) {
          if (i % (x_xinc * 10) == 0) {
-            snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_xinc) * my.p_multi), my.p_base);
-            for (j = x_yinc; j <= x_top; j += x_yinc) {
+            for (j = 0; j < 12; ++j) {
+               if (j < 6)  snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_xinc) * my.p_multi)             , my.p_base);
+               else        snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_xinc) * my.p_multi) + x_maxlabel, my.p_base);
+               x_pos = (j + 1) * x_yinc;
                glPushMatrix(); {
-                  glTranslatef ( i , j - x_bar + 25.0 ,    60.0  );
+                  glTranslatef ( i , x_pos - x_bar + 25.0 ,    60.0  );
                   yFONT_print  (txf_bg,  14, YF_TOPLEF, x_msg);
                } glPopMatrix();
             }
@@ -680,6 +684,7 @@ TICK_show          (void)
       printf ("   s_tsecp          = %10.3f\n", s_tsecp);
       printf ("   s_plenp          = %10.3f\n", s_plenp);
       printf ("\n");
+      printf ("   s_maxlabel       = %10.3f\n", (my.p_texw / 10.0) * my.p_multi);
       my.p_debug = '-';
    }
    /*---(complete)-----------------------*/

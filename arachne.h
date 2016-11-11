@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5t"
-#define VER_TXT   "move to double size progress and servo drawing function"
+#define VER_NUM   "0.5u"
+#define VER_TXT   "time labels are correct on second texture area"
 
 
 
