@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5p"
-#define VER_TXT   "made the current progress marker and window to scroll"
+#define VER_NUM   "0.5q"
+#define VER_TXT   "add scrolling and progress bar to full progress view"
 
 
 
