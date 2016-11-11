@@ -263,12 +263,25 @@ TICK_back          (void)
          glVertex3f  (x_beg, x_ypos - 25        ,   10.0);
       } glEnd   ();
       glBegin         (GL_POLYGON); {
-         glVertex3f  (x_beg, x_ypos - x_bar     ,    5.0);
-         glVertex3f  (x_end, x_ypos - x_bar     ,    5.0);
-         glVertex3f  (x_end, x_ypos - x_bar + 25,    5.0);
-         glVertex3f  (x_beg, x_ypos - x_bar + 25,    5.0);
+         glVertex3f  (x_beg, x_ypos - x_bar     ,   10.0);
+         glVertex3f  (x_end, x_ypos - x_bar     ,   10.0);
+         glVertex3f  (x_end, x_ypos - x_bar + 25,   10.0);
+         glVertex3f  (x_beg, x_ypos - x_bar + 25,   10.0);
       } glEnd   ();
    }
+   /*---(end limits)---------------------*/
+   glColor4f    (0.25f, 0.00f, 0.00f, 1.0f);
+   glLineWidth  (10.0f);
+   glPushMatrix(); {
+      glBegin(GL_LINE_STRIP); {
+         glVertex3f  ( 5.0f      , x_top,   15.0);
+         glVertex3f  ( 5.0f      , x_bot,   15.0);
+      } glEnd   ();
+      glBegin(GL_LINE_STRIP); {
+         glVertex3f  (x_end - 5.0, x_top,   15.0);
+         glVertex3f  (x_end - 5.0, x_bot,   15.0);
+      } glEnd   ();
+   } glPopMatrix();
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -466,19 +479,23 @@ TICK_draw          (void)
    s_tnsec     = s_texavail / s_tsec;
    s_tsecp     = s_texpct / s_tnsec;
    s_plenp     = (my.p_len * s_tsec) / my.p_texw;
+   if (s_plenp > 1.0)  s_plenp = 1.0;
    /*---(complete)-----------------------*/
    return 0;
 }
 
-char         /*--> show texture on screen ----------------[ ------ [ ------ ]-*/
+char         /*--> calculate texture positioning ---------[ ------ [ ------ ]-*/
 TICK_current       (void)
 {
+   /*---(current pos)--------------------*/
    s_curp      = (my.p_cursec * s_tsec) / my.p_texw;
-   /*---(position texture)---------------*/
+   /*---(script fits screen)-------------*/
    if (s_plenp <= s_texpct) {
       s_texbeg = 0.0f;
       s_texend = s_texpct;
-   } else {
+   }
+   /*---(script is bigger than screen)---*/
+   else {
       switch (my.p_curpos) {
       case 's' :
          s_texbeg = s_curp - (s_texpct * 0.05);
@@ -509,7 +526,9 @@ TICK_current       (void)
          s_texbeg = s_texend - s_texpct;
       }
    }
+   /*---(current pos)--------------------*/
    s_cur       = ((s_curp - s_texbeg) / s_texpct) * my.w_width;
+   /*---(complete)-----------------------*/
    return 0;
 }
 

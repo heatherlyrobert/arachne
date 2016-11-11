@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5r"
-#define VER_TXT   "add alignment keys for progress scrolling mode"
+#define VER_NUM   "0.5s"
+#define VER_TXT   "stop scrolling at the end of the texture"
 
 
 
