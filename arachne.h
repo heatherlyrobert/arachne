@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5s"
-#define VER_TXT   "stop scrolling at the end of the texture"
+#define VER_NUM   "0.5t"
+#define VER_TXT   "move to double size progress and servo drawing function"
 
 
 
@@ -267,7 +267,6 @@ struct cACCESSOR {
    int         p_texh;                      /* texture full height            */
    int         p_top;                       /* topmost y of progress bar      */
    int         p_bot;                       /* bottommost y of progress bar   */
-   float       p_avail;                     /* units available on screen      */
    float       p_len;                       /* length of script               */
    /*---(progress handles)*/
    uint        p_tex;                       /* texture for image              */

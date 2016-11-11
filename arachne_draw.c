@@ -120,10 +120,9 @@ TICK_init          (void)
    /*---(sizes)--------------------------*/
    DEBUG_GRAF   yLOG_note    ("setting sizes (widths and heights)");
    my.p_texw      = 4000;   /* max allowed single dimension */
-   my.p_texh      = 1500;   /* originally 250 for one row */
+   my.p_texh      = 3000;   /* originally 250 for one row */
    my.p_top       =  150;   /* tibia can go to 130 */
    my.p_bot       = -100;   /* femur can go to -85 */
-   my.p_avail     =   30;
    my.p_curpos    =  'c';   /* put current bar in middle if possible          */
    /*---(handles)------------------------*/
    DEBUG_GRAF   yLOG_note    ("initializing handles (tex, fbo, depth)");
@@ -222,7 +221,7 @@ TICK_back          (void)
    float     x_ypos        =  0.0;
    char      x_msg         [100];
    /*---(prepare)------------------------*/
-   x_yinc = x_top / 6.0;
+   x_yinc = x_top / 12.0;
    x_bar  = my.p_top - my.p_bot;
    /*---(vertical bars)------------------*/
    for (i = x_beg; i < x_end; i += x_xinc) {
@@ -250,7 +249,7 @@ TICK_back          (void)
       }
    }
    /*---(top and bottom limits)----------*/
-   for (i = 0; i <= 5; ++i) {
+   for (i = 0; i < 12; ++i) {
       x_ypos = (i + 1) * x_yinc;
       if (yVIKEYS_mode_curr () == MODE_PROGRESS && i == my.p_leg)
          glColor4f    (0.25f, 0.00f, 0.00f, 1.0f);
@@ -286,6 +285,23 @@ TICK_back          (void)
    return 0;
 }
 
+char
+TICK_line          (float a_x1, float a_y1, float a_x2, float a_y2, float a_inc, float a_z)
+{
+   /*---(top line)-----------------------*/
+   glBegin(GL_LINE_STRIP); {
+      glVertex3f  (a_x1, a_y1 + a_inc, a_z);
+      glVertex3f  (a_x2, a_y2 + a_inc, a_z);
+   } glEnd   ();
+   /*---(bottom line)--------------------*/
+   glBegin(GL_LINE_STRIP); {
+      glVertex3f  (a_x1, a_y1 - a_inc, a_z);
+      glVertex3f  (a_x2, a_y2 - a_inc, a_z);
+   } glEnd   ();
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
 char         /*--> draw texture labels -------------------[ ------ [ ------ ]-*/
 TICK_servos        (int a_leg)
 {
@@ -308,8 +324,12 @@ TICK_servos        (int a_leg)
    float     x_deg1        = 0;
    float     x_sec2        = 0;
    float     x_deg2        = 0;
+   float     x_pos1        = 0.0;
+   float     x_pos2        = 0.0;
+   float     y_pos1        = 0.0;
+   float     y_pos2        = 0.0;
    /*---(prepare)------------------------*/
-   x_yinc = x_top / 6.0;
+   x_yinc = x_top / 12.0;
    x_base = (x_yinc * a_leg) - my.p_bot;
    x_bar  = my.p_top - my.p_bot;
    x_unit = x_xinc / my.p_inc;
@@ -319,18 +339,20 @@ TICK_servos        (int a_leg)
    glPushMatrix(); {
       rc = MOVE_first (a_leg * 3, &x_sec1, &x_deg1);
       while (rc >= 0) {
+         /*---(read next)---*/
          rc = MOVE_next  (&x_sec2, &x_deg2);
          if (rc <  0) break;
-         glBegin(GL_LINE_STRIP); {
-            glVertex3f  (x_sec1 * x_unit, x_base + x_deg1 + 5,   30.0);
-            glVertex3f  (x_sec2 * x_unit, x_base + x_deg2 + 5,   30.0);
-         } glEnd   ();
-         glBegin(GL_LINE_STRIP); {
-            glVertex3f  (x_sec1 * x_unit, x_base + x_deg1 - 5,   30.0);
-            glVertex3f  (x_sec2 * x_unit, x_base + x_deg2 - 5,   30.0);
-         } glEnd   ();
+         /*---(fix points)--*/
+         x_pos1   = x_sec1 * x_unit;
+         x_pos2   = x_sec2 * x_unit;
+         y_pos1   = x_base + x_deg1;
+         y_pos2   = x_base + x_deg2;
+         /*---(draw)--------*/
+         TICK_line (x_pos1, y_pos1, x_pos2, y_pos2, 5, 30.0);
+         /*---(save)--------*/
          x_sec1 = x_sec2;
          x_deg1 = x_deg2;
+         /*---(done)--------*/
       }
    } glPopMatrix();
    /*---(patella)------------------------*/
@@ -339,18 +361,20 @@ TICK_servos        (int a_leg)
    glPushMatrix(); {
       rc = MOVE_first ((a_leg * 3) + 1, &x_sec1, &x_deg1);
       while (rc >= 0) {
+         /*---(read next)---*/
          rc = MOVE_next  (&x_sec2, &x_deg2);
          if (rc <  0) break;
-         glBegin(GL_LINE_STRIP); {
-            glVertex3f  (  x_sec1 * x_unit, x_base + x_deg1 + 2,   33.0);
-            glVertex3f  (  x_sec2 * x_unit, x_base + x_deg2 + 2,   33.0);
-         } glEnd   ();
-         glBegin(GL_LINE_STRIP); {
-            glVertex3f  (  x_sec1 * x_unit, x_base + x_deg1 - 2,   33.0);
-            glVertex3f  (  x_sec2 * x_unit, x_base + x_deg2 - 2,   33.0);
-         } glEnd   ();
+         /*---(fix points)--*/
+         x_pos1   = x_sec1 * x_unit;
+         x_pos2   = x_sec2 * x_unit;
+         y_pos1   = x_base + x_deg1;
+         y_pos2   = x_base + x_deg2;
+         /*---(draw)--------*/
+         TICK_line (x_pos1, y_pos1, x_pos2, y_pos2, 2, 33.0);
+         /*---(save)--------*/
          x_sec1 = x_sec2;
          x_deg1 = x_deg2;
+         /*---(done)--------*/
       }
    } glPopMatrix();
    /*---(tibia)--------------------------*/
@@ -359,14 +383,20 @@ TICK_servos        (int a_leg)
    glPushMatrix(); {
       rc = MOVE_first ((a_leg * 3) + 2, &x_sec1, &x_deg1);
       while (rc >= 0) {
+         /*---(read next)---*/
          rc = MOVE_next  (&x_sec2, &x_deg2);
          if (rc <  0) break;
-         glBegin(GL_LINE_STRIP); {
-            glVertex3f  (  x_sec1 * x_unit, x_base + x_deg1,   36.0);
-            glVertex3f  (  x_sec2 * x_unit, x_base + x_deg2,   36.0);
-         } glEnd   ();
+         /*---(fix points)--*/
+         x_pos1   = x_sec1 * x_unit;
+         x_pos2   = x_sec2 * x_unit;
+         y_pos1   = x_base + x_deg1;
+         y_pos2   = x_base + x_deg2;
+         /*---(draw)--------*/
+         TICK_line (x_pos1, y_pos1, x_pos2, y_pos2, 0, 36.0);
+         /*---(save)--------*/
          x_sec1 = x_sec2;
          x_deg1 = x_deg2;
+         /*---(done)--------*/
       }
    } glPopMatrix();
    /*---(draw end)-----------------------*/
@@ -401,25 +431,33 @@ TICK_labels        (void)
    float     x_bar         =  0.0;
    float     x_pos         =  0.0;
    char      x_msg         [100];
+   char      x_part        [100];
    /*---(prepare)------------------------*/
-   x_yinc = x_top / 6.0;
+   x_yinc = x_top / 12.0;
    x_bar  = my.p_top - my.p_bot;
    /*---(leg labels)---------------------*/
    for (i = x_beg; i < x_end; i += x_xinc * 100) {
-      for (j = 0; j <= 5; ++j) {
+      for (j = 0; j < 12; ++j) {
          x_pos = (j + 1) * x_yinc;
-         glColor4f    (0.50f, 0.50f, 0.00f, 1.0f);
          switch (j) {
-         case 0 : strcpy (x_msg, "0/LF");  break;
-         case 1 : strcpy (x_msg, "1/LM");  break;
-         case 2 : strcpy (x_msg, "2/LR");  break;
-         case 3 : strcpy (x_msg, "3/RR");  break;
-         case 4 : strcpy (x_msg, "4/RM");  break;
-         case 5 : strcpy (x_msg, "5/RF");  break;
+         case  0 : case  6 : strcpy (x_msg, "0/LF");  break;
+         case  1 : case  7 : strcpy (x_msg, "1/LM");  break;
+         case  2 : case  8 : strcpy (x_msg, "2/LR");  break;
+         case  3 : case  9 : strcpy (x_msg, "3/RR");  break;
+         case  4 : case 10 : strcpy (x_msg, "4/RM");  break;
+         case  5 : case 11 : strcpy (x_msg, "5/RF");  break;
          }
+         glColor4f    (0.50f, 0.50f, 0.00f, 1.0f);
          glPushMatrix(); {
             glTranslatef ( i + 30.0 , x_pos    -  125.0    ,    60.0  );
             glRotatef  ( 90.0  , 0.0f, 0.0f, 1.0f);
+            yFONT_print  (txf_bg,  40, YF_MIDCEN, x_msg);
+         } glPopMatrix();
+         if (j < 6)  strlcpy (x_msg, "a", LEN_STR);
+         else        strlcpy (x_msg, "b", LEN_STR);
+         glColor4f    (0.25f, 0.25f, 0.25f, 1.0f);
+         glPushMatrix(); {
+            glTranslatef ( i +  80.0 , x_pos    -   40.0    ,    60.0  );
             yFONT_print  (txf_bg,  40, YF_MIDCEN, x_msg);
          } glPopMatrix();
          yVIKEYS_scale_desc (x_msg);
@@ -468,8 +506,8 @@ TICK_draw          (void)
    TICK_labels  ();
    TICK_end     ();
    /*---(set single leg vars)------------*/
-   s_texbot    = (my.p_leg + 0)  * (1.0 / 6.0);
-   s_textop    = (my.p_leg + 1)  * (1.0 / 6.0);
+   s_texbot    = (my.p_leg + 0)  * (1.0 / 12.0);
+   s_textop    = (my.p_leg + 1)  * (1.0 / 12.0);
    /*---(calc basics)--------------------*/
    s_texavail  = my.w_width * 2.0;
    s_texpct    = s_texavail / my.p_texw;
@@ -479,7 +517,7 @@ TICK_draw          (void)
    s_tnsec     = s_texavail / s_tsec;
    s_tsecp     = s_texpct / s_tnsec;
    s_plenp     = (my.p_len * s_tsec) / my.p_texw;
-   if (s_plenp > 1.0)  s_plenp = 1.0;
+   /*> if (s_plenp > 1.0)  s_plenp = 1.0;                                             <*/
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -498,34 +536,35 @@ TICK_current       (void)
    else {
       switch (my.p_curpos) {
       case 's' :
-         s_texbeg = s_curp - (s_texpct * 0.05);
-         s_texend = s_texbeg  + s_texpct;
+         s_texbeg  = s_curp - (s_texpct * 0.05);
+         s_texend  = s_texbeg  + s_texpct;
          break;
       case 'h' :
-         s_texbeg = s_curp - (s_texpct * 0.28);
-         s_texend = s_texbeg  + s_texpct;
+         s_texbeg  = s_curp - (s_texpct * 0.28);
+         s_texend  = s_texbeg  + s_texpct;
          break;
       case 'c' :
-         s_texbeg = s_curp - (s_texpct * 0.50);
-         s_texend = s_texbeg  + s_texpct;
+         s_texbeg  = s_curp - (s_texpct * 0.50);
+         s_texend  = s_texbeg  + s_texpct;
          break;
       case 'l' :
-         s_texbeg = s_curp - (s_texpct * 0.72);
-         s_texend = s_texbeg  + s_texpct;
+         s_texbeg  = s_curp - (s_texpct * 0.72);
+         s_texend  = s_texbeg  + s_texpct;
          break;
       case 'e' :
-         s_texbeg = s_curp - (s_texpct * 0.95);
-         s_texend = s_texbeg  + s_texpct;
+         s_texbeg  = s_curp - (s_texpct * 0.95);
+         s_texend  = s_texbeg  + s_texpct;
          break;
       }
       if (s_texbeg < 0.0) {
-         s_texbeg = 0.0f;
-         s_texend = s_texpct;
+         s_texbeg  = 0.0f;
+         s_texend  = s_texpct;
       } else if (s_texend > s_plenp) {
-         s_texend = s_plenp;
-         s_texbeg = s_texend - s_texpct;
+         s_texend  = s_plenp;
+         s_texbeg  = s_texend - s_texpct;
       }
    }
+   /*---(dual areas of text)-------------*/
    /*---(current pos)--------------------*/
    s_cur       = ((s_curp - s_texbeg) / s_texpct) * my.w_width;
    /*---(complete)-----------------------*/
@@ -550,10 +589,10 @@ TICK_full          (void)
    glBindTexture   (GL_TEXTURE_2D, my.p_tex);
    glBegin(GL_POLYGON); {
       /*---(top beg)--------*/
-      glTexCoord2f (s_texbeg  , 1.00f    );
+      glTexCoord2f (s_texbeg  , 0.50f    );
       glVertex3f   (0.0       , my.w_height ,     0.00f);
       /*---(top end)--------*/
-      glTexCoord2f (s_texend  , 1.00f    );
+      glTexCoord2f (s_texend  , 0.50f    );
       glVertex3f   (my.w_width, my.w_height ,     0.00f);
       /*---(bottom end)-----*/
       glTexCoord2f (s_texend  , 0.00f    );
