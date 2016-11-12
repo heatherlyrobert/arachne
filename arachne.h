@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5y"
-#define VER_TXT   "progress scrolls and recreates to extend to 26 sections"
+#define VER_NUM   "0.5z"
+#define VER_TXT   "added a couple new alignment operators"
 
 
 

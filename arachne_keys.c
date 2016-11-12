@@ -170,11 +170,13 @@ MODE_progress      (char a_major, char a_minor)
    /*---(alignment)----------------------*/
    if (a_major == '^') {
       switch (a_minor) {
+      case '0': my.p_curpos = '0'; break;
       case 's': my.p_curpos = 's'; break;
       case 'h': my.p_curpos = 'h'; break;
       case 'c': my.p_curpos = 'c'; break;
       case 'l': my.p_curpos = 'l'; break;
       case 'e': my.p_curpos = 'e'; break;
+      case '$': my.p_curpos = '$'; break;
       }
    }
    /*---(buffer/area)--------------------*/

@@ -588,6 +588,10 @@ TICK_current       (void)
    /*---(script is bigger than screen)---*/
    else {
       switch (my.p_curpos) {
+      case '0' :
+         s_texbeg  = s_curp - (s_texpct * 0.00);
+         s_texend  = s_texbeg  + s_texpct;
+         break;
       case 's' :
          s_texbeg  = s_curp - (s_texpct * 0.05);
          s_texend  = s_texbeg  + s_texpct;
@@ -606,6 +610,10 @@ TICK_current       (void)
          break;
       case 'e' :
          s_texbeg  = s_curp - (s_texpct * 0.95);
+         s_texend  = s_texbeg  + s_texpct;
+         break;
+      case '$' :
+         s_texbeg  = s_curp - (s_texpct * 1.00);
          s_texend  = s_texbeg  + s_texpct;
          break;
       }
