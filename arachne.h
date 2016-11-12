@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5v"
-#define VER_TXT   "dual texture strips in progress is mostly working"
+#define VER_NUM   "0.5w"
+#define VER_TXT   "make time labels drive from a section variable"
 
 
 

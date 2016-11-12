@@ -21,9 +21,9 @@ main (int argc, char *argv[])
       exit (-1);
    }
    SCRP_main   ();
-   draw_main   ();
    TICK_init   ();
    TICK_draw   ();
+   draw_main   ();
    /*> if (is_test) printf("\nspider--------------------------------------------begin---\n\n");   <*/
    /*> strcpy(its_text, " ");                                                         <*/
    /*> counter = 0;                                                                   <*/

@@ -113,6 +113,9 @@ static float       s_texend    =   0.0;
 static float       s_curp      =   0.0;         /* cur pos in texture pct         */
 static float       s_cur       =   0.0;
 
+static int         s_section   =     0;         /* section of script          */
+static char        s_sec1text  [5];             /* section of script          */
+static char        s_sec2text  [5];             /* section of script          */
 static float       s_texbeg1   =   0.0;
 static float       s_texend1   =   0.0;
 static float       s_texpct1   =   0.0;
@@ -444,11 +447,19 @@ TICK_labels        (void)
    float     x_pos         =  0.0;
    char      x_msg         [100];
    char      x_part        [100];
-   int       x_maxlabel    =  0.0;
+   int       x_labelper    =    0;
+   int       x_secbeg1     =    0;
+   int       x_secbeg2     =    0;
+   char      x_label1      [5];
+   char      x_label2      [5];
    /*---(prepare)------------------------*/
    x_yinc      = x_top / 12.0;
    x_bar       = my.p_top - my.p_bot;
-   x_maxlabel  = (my.p_texw / 10.0) * my.p_multi;
+   x_labelper  = (my.p_texw / 10.0) * my.p_multi;
+   x_secbeg1   = x_labelper * s_section;
+   x_secbeg2   = x_secbeg1 + x_labelper;
+   sprintf (x_label1, "%c", s_section + 'a');
+   sprintf (x_label2, "%c", s_section + 'b');
    /*---(leg labels)---------------------*/
    for (i = x_beg; i < x_end; i += x_xinc * 100) {
       for (j = 0; j < 12; ++j) {
@@ -467,8 +478,8 @@ TICK_labels        (void)
             glRotatef  ( 90.0  , 0.0f, 0.0f, 1.0f);
             yFONT_print  (txf_bg,  40, YF_MIDCEN, x_msg);
          } glPopMatrix();
-         if (j < 6)  strlcpy (x_msg, "a", LEN_STR);
-         else        strlcpy (x_msg, "b", LEN_STR);
+         if (j < 6)  strlcpy (x_msg, x_label1, LEN_STR);
+         else        strlcpy (x_msg, x_label2, LEN_STR);
          glColor4f    (0.25f, 0.25f, 0.25f, 1.0f);
          glPushMatrix(); {
             glTranslatef ( i +  80.0 , x_pos    -   40.0    ,    60.0  );
@@ -494,8 +505,8 @@ TICK_labels        (void)
       for (i = 0; i < my.p_texw; i += x_xinc) {
          if (i % (x_xinc * 10) == 0) {
             for (j = 0; j < 12; ++j) {
-               if (j < 6)  snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_xinc) * my.p_multi)             , my.p_base);
-               else        snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_xinc) * my.p_multi) + x_maxlabel, my.p_base);
+               if (j < 6)  snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_xinc) * my.p_multi) + x_secbeg1, my.p_base);
+               else        snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_xinc) * my.p_multi) + x_secbeg2, my.p_base);
                x_pos = (j + 1) * x_yinc;
                glPushMatrix(); {
                   glTranslatef ( i , x_pos - x_bar + 25.0 ,    60.0  );
