@@ -113,7 +113,7 @@ static float       s_texend    =   0.0;
 static float       s_curp      =   0.0;         /* cur pos in texture pct         */
 static float       s_cur       =   0.0;
 
-static int         s_section   =     0;         /* section of script          */
+static int         s_section   =     1;         /* section of script          */
 static char        s_sec1text  [5];             /* section of script          */
 static char        s_sec2text  [5];             /* section of script          */
 static float       s_texbeg1   =   0.0;
@@ -296,18 +296,64 @@ TICK_back          (void)
 }
 
 char
-TICK_line          (float a_x1, float a_y1, float a_x2, float a_y2, float a_inc, float a_z)
+TICK_line          (float a_x1, float a_y1, float a_x2, float a_y2, float a_xinc, float a_yinc, float a_z)
 {
    /*---(top line)-----------------------*/
    glBegin(GL_LINE_STRIP); {
-      glVertex3f  (a_x1, a_y1 + a_inc, a_z);
-      glVertex3f  (a_x2, a_y2 + a_inc, a_z);
+      glVertex3f  (a_x1 - a_xinc, a_y1 + a_yinc, a_z);
+      glVertex3f  (a_x2 - a_xinc, a_y2 + a_yinc, a_z);
    } glEnd   ();
    /*---(bottom line)--------------------*/
    glBegin(GL_LINE_STRIP); {
-      glVertex3f  (a_x1, a_y1 - a_inc, a_z);
-      glVertex3f  (a_x2, a_y2 - a_inc, a_z);
+      glVertex3f  (a_x1 + a_xinc, a_y1 - a_yinc, a_z);
+      glVertex3f  (a_x2 + a_xinc, a_y2 - a_yinc, a_z);
    } glEnd   ();
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
+char
+TICK_servoline     (char a_type, float a_base, float a_sec1, float a_sec2, float a_deg1, float a_deg2, float a_unit)
+{
+   /*---(locals)-----------+-----------+-*/
+   float     x_start       = 0.0;
+   float     x_cutmid      = 0.0;
+   float     x_cutend      = 0.0;
+   float     x_pos1        = 0.0;
+   float     x_pos2        = 0.0;
+   float     y_pos1        = 0.0;
+   float     y_pos2        = 0.0;
+   float     y_inc         = 0.0;
+   float     x_inc         = 0.0;
+   float     z_pos         = 0.0;
+   /*---(prepare cutoffs)----------------*/
+   x_start   = (s_section + 0) * my.p_texw;
+   x_cutmid  = my.p_texw;
+   x_cutend  = my.p_texw * 2;
+   /*---(prepare points)-----------------*/
+   x_pos1   = (a_sec1 * a_unit) - x_start;
+   x_pos2   = (a_sec2 * a_unit) - x_start;
+   y_pos1   = a_base + a_deg1;
+   y_pos2   = a_base + a_deg2;
+   /*---(prepare adjustments)------------*/
+   switch (a_type) {
+   case 'f' : y_inc = 5; z_pos = 30.0;  break;   /* femur         */
+   case 'p' : y_inc = 2; z_pos = 33.0;  break;   /* patella       */
+   case 't' : y_inc = 1; z_pos = 36.0;  break;   /* tibia         */
+   case 'e' : x_inc = 5; z_pos = 39.0;  break;   /* end point     */
+   case 'c' : x_inc = 0; z_pos = 39.0;  break;   /* current       */
+   }
+   /*---(draw)--------*/
+   if      (x_pos2 <  0.0     )  ;  /* line to early */
+   else if (x_pos1 >  x_cutend)  ;  /* line to late  */
+   else if (x_pos2 <= x_cutmid)
+      TICK_line (x_pos1           , y_pos1         , x_pos2           , y_pos2         , x_inc, y_inc, z_pos);
+   else if (x_pos1 >= x_cutmid)
+      TICK_line (x_pos1 - x_cutmid, y_pos1 + 1500.0, x_pos2 - x_cutmid, y_pos2 + 1500.0, x_inc, y_inc, z_pos);
+   else {
+      TICK_line (x_pos1           , y_pos1         , x_pos2           , y_pos2         , x_inc, y_inc, z_pos);
+      TICK_line (x_pos1 - x_cutmid, y_pos1 + 1500.0, x_pos2 - x_cutmid, y_pos2 + 1500.0, x_inc, y_inc, z_pos);
+   }
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -334,15 +380,11 @@ TICK_servos        (int a_leg)
    float     x_deg1        = 0;
    float     x_sec2        = 0;
    float     x_deg2        = 0;
-   float     x_pos1        = 0.0;
-   float     x_pos2        = 0.0;
-   float     y_pos1        = 0.0;
-   float     y_pos2        = 0.0;
    /*---(prepare)------------------------*/
-   x_yinc = x_top / 12.0;
-   x_base = (x_yinc * a_leg) - my.p_bot;
-   x_bar  = my.p_top - my.p_bot;
-   x_unit = x_xinc / my.p_inc;
+   x_yinc    = x_top / 12.0;
+   x_base    = (x_yinc * a_leg) - my.p_bot;
+   x_bar     = my.p_top - my.p_bot;
+   x_unit    = x_xinc / my.p_inc;
    /*---(femur)--------------------------*/
    glColor4f    (0.50f, 0.00f, 0.00f, 1.0f);
    glLineWidth  (15.0f);
@@ -353,17 +395,7 @@ TICK_servos        (int a_leg)
          rc = MOVE_next  (&x_sec2, &x_deg2);
          if (rc <  0) break;
          /*---(fix points)--*/
-         x_pos1   = x_sec1 * x_unit;
-         x_pos2   = x_sec2 * x_unit;
-         y_pos1   = x_base + x_deg1;
-         y_pos2   = x_base + x_deg2;
-         /*---(draw)--------*/
-         if      (x_pos2 <= my.p_texw)  TICK_line (x_pos1            , y_pos1, x_pos2, y_pos2, 5, 30.0);
-         else if (x_pos1 >= my.p_texw)  TICK_line (x_pos1 - my.p_texw, y_pos1 + 1500.0, x_pos2 - my.p_texw, y_pos2 + 1500.0, 5, 30.0);
-         else {
-            TICK_line (x_pos1, y_pos1, x_pos2, y_pos2, 5, 30.0);
-            TICK_line (x_pos1 - my.p_texw, y_pos1 + 1500.0, x_pos2 - my.p_texw, y_pos2 + 1500.0, 5, 30.0);
-         }
+         TICK_servoline     ('f', x_base, x_sec1, x_sec2, x_deg1, x_deg2, x_unit);
          /*---(save)--------*/
          x_sec1 = x_sec2;
          x_deg1 = x_deg2;
@@ -380,12 +412,7 @@ TICK_servos        (int a_leg)
          rc = MOVE_next  (&x_sec2, &x_deg2);
          if (rc <  0) break;
          /*---(fix points)--*/
-         x_pos1   = x_sec1 * x_unit;
-         x_pos2   = x_sec2 * x_unit;
-         y_pos1   = x_base + x_deg1;
-         y_pos2   = x_base + x_deg2;
-         /*---(draw)--------*/
-         TICK_line (x_pos1, y_pos1, x_pos2, y_pos2, 2, 33.0);
+         TICK_servoline     ('p', x_base, x_sec1, x_sec2, x_deg1, x_deg2, x_unit);
          /*---(save)--------*/
          x_sec1 = x_sec2;
          x_deg1 = x_deg2;
@@ -402,12 +429,7 @@ TICK_servos        (int a_leg)
          rc = MOVE_next  (&x_sec2, &x_deg2);
          if (rc <  0) break;
          /*---(fix points)--*/
-         x_pos1   = x_sec1 * x_unit;
-         x_pos2   = x_sec2 * x_unit;
-         y_pos1   = x_base + x_deg1;
-         y_pos2   = x_base + x_deg2;
-         /*---(draw)--------*/
-         TICK_line (x_pos1, y_pos1, x_pos2, y_pos2, 0, 36.0);
+         TICK_servoline     ('p', x_base, x_sec1, x_sec2, x_deg1, x_deg2, x_unit);
          /*---(save)--------*/
          x_sec1 = x_sec2;
          x_deg1 = x_deg2;
@@ -418,14 +440,7 @@ TICK_servos        (int a_leg)
    glColor4f    (0.50f, 0.00f, 0.50f, 1.0f);
    glLineWidth  (10.0f);
    glPushMatrix(); {
-      glBegin(GL_LINE_STRIP); {
-         glVertex3f  (  my.p_len * x_unit - 5, x_base + my.p_top - 25.0,   70.0);
-         glVertex3f  (  my.p_len * x_unit - 5, x_base + my.p_bot + 25.0,   70.0);
-      } glEnd   ();
-      glBegin(GL_LINE_STRIP); {
-         glVertex3f  (  my.p_len * x_unit + 5, x_base + my.p_top - 25.0,   70.0);
-         glVertex3f  (  my.p_len * x_unit + 5, x_base + my.p_bot + 25.0,   70.0);
-      } glEnd   ();
+      TICK_servoline     ('e', x_base, my.p_len, my.p_len, my.p_top - 25.0, my.p_bot + 25.0, x_unit);
    } glPopMatrix();
    /*---(complete)-----------------------*/
    return 0;
@@ -526,12 +541,6 @@ TICK_draw          (void)
    /*---(locals)-----------+-----------+-*/
    int       i;                             /* loop iterator                  */
    int         x_inc       =    10;
-   /*---(new)----------------------------*/
-   TICK_start   ();
-   TICK_back    ();
-   for (i = 0; i <= 5; ++i) TICK_servos  (i);
-   TICK_labels  ();
-   TICK_end     ();
    /*---(set single leg vars)------------*/
    s_texbot    = (my.p_leg + 0)  * (1.0 / 12.0);
    s_textop    = (my.p_leg + 1)  * (1.0 / 12.0);
@@ -545,6 +554,12 @@ TICK_draw          (void)
    s_tsecp     = s_texpct / s_tnsec;
    s_plenp     = (my.p_len * s_tsec) / my.p_texw;
    if (s_plenp > 2.0)  s_plenp = 2.0;
+   /*---(new)----------------------------*/
+   TICK_start   ();
+   TICK_back    ();
+   for (i = 0; i <= 5; ++i) TICK_servos  (i);
+   TICK_labels  ();
+   TICK_end     ();
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -593,7 +608,7 @@ TICK_current       (void)
       }
    }
    /*---(prepare for multitex)-----------*/
-   s_texbeg1 = s_texend1 = s_texbeg2 = s_texend2 = 0.0;
+   s_texbeg1 = s_texend1 = s_texpct1 = s_texbeg2 = s_texend2 = s_texpct2 = 0.0;
    /*---(all first tex area)-------------*/
    if        (s_texend <= 1.0) {
       s_texbeg1  = s_texbeg;
@@ -614,9 +629,82 @@ TICK_current       (void)
       s_texbeg2  = 0.0;
       s_texend2  = s_texend - 1.0;
       s_texpct2  = (s_texend2 - s_texbeg2) / s_texpct;
+      /*---(rounding issues)-------------*/
+      if (s_texpct1 <= 0.01) {
+         s_texbeg1  = 0.0;
+         s_texend1  = 0.0;
+         s_texpct1  = 0.0;
+         s_texbeg2  = s_texbeg - 1.0;
+         s_texend2  = s_texend - 1.0;
+         s_texpct2  = 1.0;
+      }
+      /*---(rounding issues)-------------*/
+      if (s_texpct2 <= 0.01) {
+         s_texbeg1  = s_texbeg;
+         s_texend1  = s_texend;
+         s_texpct1  = 1.0;
+         s_texbeg2  = 0.0;
+         s_texend2  = 0.0;
+         s_texpct2  = 0.0;
+      }
    }
    /*---(current pos)--------------------*/
    s_cur       = ((s_curp - s_texbeg) / s_texpct) * my.w_width;
+   /*---(complete)-----------------------*/
+   return 0;
+}
+char         /*--> show texture on screen ----------------[ ------ [ ------ ]-*/
+TICK_showtext      (float a_height, float a_top, float a_bot)
+{
+   /*---(firgure current)----------------*/
+   TICK_current    ();
+   /*---(draw texture)-------------------*/
+   glBindTexture   (GL_TEXTURE_2D, my.p_tex);
+   /*---(first part)---------------------*/
+   if (s_texpct1 >= 0.01) {
+      glBegin(GL_POLYGON); {
+         /*---(top beg)--------*/
+         glTexCoord2f (s_texbeg1             , a_top );
+         glVertex3f   (0.0                   , a_height ,     0.00f);
+         /*---(top end)--------*/
+         glTexCoord2f (s_texend1             , a_top );
+         glVertex3f   (my.w_width * s_texpct1, a_height ,     0.00f);
+         /*---(bottom end)-----*/
+         glTexCoord2f (s_texend1             , a_bot );
+         glVertex3f   (my.w_width * s_texpct1, 0.0      ,     0.00f);
+         /*---(bottom beg)-----*/
+         glTexCoord2f (s_texbeg1             , a_bot );
+         glVertex3f   (0.0                   , 0.0      ,     0.00f);
+         /*---(done)-----------*/
+      } glEnd();
+   }
+   if (s_texpct2 >= 0.01) {
+      glBegin(GL_POLYGON); {
+         /*---(top beg)--------*/
+         glTexCoord2f (s_texbeg2             , a_top + 0.5 );
+         glVertex3f   (my.w_width * s_texpct1, a_height ,     0.00f);
+         /*---(top end)--------*/
+         glTexCoord2f (s_texend2             , a_top + 0.5 );
+         glVertex3f   (my.w_width            , a_height ,     0.00f);
+         /*---(bottom end)-----*/
+         glTexCoord2f (s_texend2             , a_bot + 0.5 );
+         glVertex3f   (my.w_width            , 0.0      ,     0.00f);
+         /*---(bottom beg)-----*/
+         glTexCoord2f (s_texbeg2             , a_bot + 0.5 );
+         glVertex3f   (my.w_width * s_texpct1, 0.0      ,     0.00f);
+         /*---(done)-----------*/
+      } glEnd();
+   }
+   glBindTexture   (GL_TEXTURE_2D, 0);
+   /*---(draw current)-------------------*/
+   glColor4f    (0.00f, 0.00f, 1.00f, 1.0f);
+   glLineWidth  (10.0f);
+   glPushMatrix(); {
+      glBegin(GL_LINE_STRIP); {
+         glVertex3f  (s_cur, a_height - 12.5,   70.0);
+         glVertex3f  (s_cur, 12.5           ,   70.0);
+      } glEnd   ();
+   } glPopMatrix();
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -624,9 +712,6 @@ TICK_current       (void)
 char         /*--> show texture on screen ----------------[ ------ [ ------ ]-*/
 TICK_full          (void)
 {
-   /*---(locals)-----------+-----------+-*/
-   float       x_beg       =   0.0;
-   float       x_end       =   0.4;
    /*---(setup view)---------------------*/
    glViewport      (    0, 0.0        , my.w_width, my.w_height);
    glMatrixMode    (GL_PROJECTION);
@@ -634,34 +719,7 @@ TICK_full          (void)
    glOrtho         ( 0.0f, my.w_width, 0.0     , my.w_height,  -500.0,   500.0);
    glMatrixMode    (GL_MODELVIEW);
    /*---(firgure current)----------------*/
-   TICK_current    ();
-   /*---(draw texture)-------------------*/
-   glBindTexture   (GL_TEXTURE_2D, my.p_tex);
-   glBegin(GL_POLYGON); {
-      /*---(top beg)--------*/
-      glTexCoord2f (s_texbeg  , 0.50f    );
-      glVertex3f   (0.0       , my.w_height ,     0.00f);
-      /*---(top end)--------*/
-      glTexCoord2f (s_texend  , 0.50f    );
-      glVertex3f   (my.w_width, my.w_height ,     0.00f);
-      /*---(bottom end)-----*/
-      glTexCoord2f (s_texend  , 0.00f    );
-      glVertex3f   (my.w_width, 0.0      ,     0.00f);
-      /*---(bottom beg)-----*/
-      glTexCoord2f (s_texbeg  , 0.00f    );
-      glVertex3f   (0.0       , 0.0      ,     0.00f);
-      /*---(done)-----------*/
-   } glEnd();
-   glBindTexture   (GL_TEXTURE_2D, 0);
-   /*---(draw current)-------------------*/
-   glColor4f    (0.00f, 0.00f, 1.00f, 1.0f);
-   glLineWidth  (10.0f);
-   glPushMatrix(); {
-      glBegin(GL_LINE_STRIP); {
-         glVertex3f  (s_cur, my.w_height,   70.0);
-         glVertex3f  (s_cur, 0.0        ,   70.0);
-      } glEnd   ();
-   } glPopMatrix();
+   TICK_showtext   (my.w_height,  0.5,  0.0);
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -669,9 +727,6 @@ TICK_full          (void)
 char         /*--> show texture on screen ----------------[ ------ [ ------ ]-*/
 TICK_show          (void)
 {
-   /*---(locals)-----------+-----------+-*/
-   float       x_beg       =   0.0;
-   float       x_end       =   0.0;
    /*---(setup view)---------------------*/
    glViewport      (    0, my.p_bottom, my.w_width, my.p_height);
    glMatrixMode    (GL_PROJECTION);
@@ -679,50 +734,7 @@ TICK_show          (void)
    glOrtho         ( 0.0f, my.w_width, 0.0 , my.p_height,  -500.0,   500.0);
    glMatrixMode    (GL_MODELVIEW);
    /*---(firgure current)----------------*/
-   TICK_current    ();
-   /*---(draw texture)-------------------*/
-   glBindTexture   (GL_TEXTURE_2D, my.p_tex);
-   /*---(first part)---------------------*/
-   glBegin(GL_POLYGON); {
-      /*---(top beg)--------*/
-      glTexCoord2f (s_texbeg1    , s_textop );
-      glVertex3f   (0.0       , my.p_height ,     0.00f);
-      /*---(top end)--------*/
-      glTexCoord2f (s_texend1    , s_textop );
-      glVertex3f   (my.w_width * s_texpct1, my.p_height ,     0.00f);
-      /*---(bottom end)-----*/
-      glTexCoord2f (s_texend1    , s_texbot );
-      glVertex3f   (my.w_width * s_texpct1, 0.0      ,     0.00f);
-      /*---(bottom beg)-----*/
-      glTexCoord2f (s_texbeg1    , s_texbot );
-      glVertex3f   (0.0       , 0.0      ,     0.00f);
-      /*---(done)-----------*/
-   } glEnd();
-   glBegin(GL_POLYGON); {
-      /*---(top beg)--------*/
-      glTexCoord2f (s_texbeg2              , s_textop + 0.5 );
-      glVertex3f   (my.w_width * s_texpct1, my.p_height ,     0.00f);
-      /*---(top end)--------*/
-      glTexCoord2f (s_texend2              , s_textop + 0.5 );
-      glVertex3f   (my.w_width             , my.p_height ,     0.00f);
-      /*---(bottom end)-----*/
-      glTexCoord2f (s_texend2              , s_texbot + 0.5 );
-      glVertex3f   (my.w_width             , 0.0      ,     0.00f);
-      /*---(bottom beg)-----*/
-      glTexCoord2f (s_texbeg2              , s_texbot + 0.5 );
-      glVertex3f   (my.w_width * s_texpct1, 0.0      ,     0.00f);
-      /*---(done)-----------*/
-   } glEnd();
-   glBindTexture   (GL_TEXTURE_2D, 0);
-   /*---(draw current)-------------------*/
-   glColor4f    (0.00f, 0.00f, 1.00f, 1.0f);
-   glLineWidth  (10.0f);
-   glPushMatrix(); {
-      glBegin(GL_LINE_STRIP); {
-         glVertex3f  (s_cur, my.p_height - 12.5,   70.0);
-         glVertex3f  (s_cur, 12.5              ,   70.0);
-      } glEnd   ();
-   } glPopMatrix();
+   TICK_showtext   (my.p_height,  s_textop,  s_texbot);
    /*---(show debug)---------------------*/
    if (my.p_debug == 'y') {
       printf ("TICK_show ()  debugging\n");
