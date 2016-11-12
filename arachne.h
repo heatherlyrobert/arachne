@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5x"
-#define VER_TXT   "dual area texture display working wonderfully"
+#define VER_NUM   "0.5y"
+#define VER_TXT   "progress scrolls and recreates to extend to 26 sections"
 
 
 
@@ -267,14 +267,14 @@ struct cACCESSOR {
    int         p_texh;                      /* texture full height            */
    int         p_top;                       /* topmost y of progress bar      */
    int         p_bot;                       /* bottommost y of progress bar   */
-   float       p_len;                       /* length of script               */
+   double      p_len;                       /* length of script               */
    /*---(progress handles)*/
    uint        p_tex;                       /* texture for image              */
    uint        p_fbo;                       /* framebuffer                    */
    uint        p_depth;                     /* depth buffer                   */
    /*---(progress working)*/
-   float       p_inc;                       /* increment for h,l              */
-   float       p_multi;                     /* label multiple                 */
+   double      p_inc;                       /* increment for h,l              */
+   double      p_multi;                     /* label multiple                 */
    char        p_base;                      /* base unit for display          */
    char        p_debug; 
    /*---(command line)----*/

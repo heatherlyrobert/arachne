@@ -113,7 +113,11 @@ static float       s_texend    =   0.0;
 static float       s_curp      =   0.0;         /* cur pos in texture pct         */
 static float       s_cur       =   0.0;
 
-static int         s_section   =     1;         /* section of script          */
+static float       s_start     =   0.0;
+static float       s_cutmid    =   0.0;
+static float       s_cutend    =   0.0;
+
+static int         s_section   =     0;         /* section of script          */
 static char        s_sec1text  [5];             /* section of script          */
 static char        s_sec2text  [5];             /* section of script          */
 static float       s_texbeg1   =   0.0;
@@ -261,7 +265,7 @@ TICK_back          (void)
    /*---(top and bottom limits)----------*/
    for (i = 0; i < 12; ++i) {
       x_ypos = (i + 1) * x_yinc;
-      if (yVIKEYS_mode_curr () == MODE_PROGRESS && i == my.p_leg)
+      if (yVIKEYS_mode_curr () == MODE_PROGRESS && (i == my.p_leg || i == my.p_leg + 6))
          glColor4f    (0.25f, 0.00f, 0.00f, 1.0f);
       else
          glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
@@ -316,9 +320,6 @@ char
 TICK_servoline     (char a_type, float a_base, float a_sec1, float a_sec2, float a_deg1, float a_deg2, float a_unit)
 {
    /*---(locals)-----------+-----------+-*/
-   float     x_start       = 0.0;
-   float     x_cutmid      = 0.0;
-   float     x_cutend      = 0.0;
    float     x_pos1        = 0.0;
    float     x_pos2        = 0.0;
    float     y_pos1        = 0.0;
@@ -326,13 +327,9 @@ TICK_servoline     (char a_type, float a_base, float a_sec1, float a_sec2, float
    float     y_inc         = 0.0;
    float     x_inc         = 0.0;
    float     z_pos         = 0.0;
-   /*---(prepare cutoffs)----------------*/
-   x_start   = (s_section + 0) * my.p_texw;
-   x_cutmid  = my.p_texw;
-   x_cutend  = my.p_texw * 2;
    /*---(prepare points)-----------------*/
-   x_pos1   = (a_sec1 * a_unit) - x_start;
-   x_pos2   = (a_sec2 * a_unit) - x_start;
+   x_pos1   = (a_sec1 * a_unit) - s_start;
+   x_pos2   = (a_sec2 * a_unit) - s_start;
    y_pos1   = a_base + a_deg1;
    y_pos2   = a_base + a_deg2;
    /*---(prepare adjustments)------------*/
@@ -345,14 +342,14 @@ TICK_servoline     (char a_type, float a_base, float a_sec1, float a_sec2, float
    }
    /*---(draw)--------*/
    if      (x_pos2 <  0.0     )  ;  /* line to early */
-   else if (x_pos1 >  x_cutend)  ;  /* line to late  */
-   else if (x_pos2 <= x_cutmid)
+   else if (x_pos1 >  s_cutend)  ;  /* line to late  */
+   else if (x_pos2 <= s_cutmid)
       TICK_line (x_pos1           , y_pos1         , x_pos2           , y_pos2         , x_inc, y_inc, z_pos);
-   else if (x_pos1 >= x_cutmid)
-      TICK_line (x_pos1 - x_cutmid, y_pos1 + 1500.0, x_pos2 - x_cutmid, y_pos2 + 1500.0, x_inc, y_inc, z_pos);
+   else if (x_pos1 >= s_cutmid)
+      TICK_line (x_pos1 - s_cutmid, y_pos1 + 1500.0, x_pos2 - s_cutmid, y_pos2 + 1500.0, x_inc, y_inc, z_pos);
    else {
       TICK_line (x_pos1           , y_pos1         , x_pos2           , y_pos2         , x_inc, y_inc, z_pos);
-      TICK_line (x_pos1 - x_cutmid, y_pos1 + 1500.0, x_pos2 - x_cutmid, y_pos2 + 1500.0, x_inc, y_inc, z_pos);
+      TICK_line (x_pos1 - s_cutmid, y_pos1 + 1500.0, x_pos2 - s_cutmid, y_pos2 + 1500.0, x_inc, y_inc, z_pos);
    }
    /*---(complete)-----------------------*/
    return 0;
@@ -539,8 +536,8 @@ char         /*--> draw texture for progress ticker ------[ ------ [ ------ ]-*/
 TICK_draw          (void)
 {
    /*---(locals)-----------+-----------+-*/
-   int       i;                             /* loop iterator                  */
-   int         x_inc       =    10;
+   int         i;                             /* loop iterator                  */
+   float       x_inc       =    10.0;
    /*---(set single leg vars)------------*/
    s_texbot    = (my.p_leg + 0)  * (1.0 / 12.0);
    s_textop    = (my.p_leg + 1)  * (1.0 / 12.0);
@@ -548,12 +545,16 @@ TICK_draw          (void)
    s_texavail  = my.w_width * 2.0;
    s_texpct    = s_texavail / my.p_texw;
    s_texctr    = s_texpct / 2.0;
+   s_start     = (s_section + 0) * my.p_texw;
+   s_cutmid    = my.p_texw;
+   s_cutend    = my.p_texw * 2;
    /*---(seconds)------------------------*/
    s_tsec      = x_inc / my.p_inc;
    s_tnsec     = s_texavail / s_tsec;
    s_tsecp     = s_texpct / s_tnsec;
-   s_plenp     = (my.p_len * s_tsec) / my.p_texw;
+   s_plenp     = ((my.p_len * s_tsec) - s_start) / my.p_texw;
    if (s_plenp > 2.0)  s_plenp = 2.0;
+   if (s_plenp < 0.0)  s_plenp = 0.0;
    /*---(new)----------------------------*/
    TICK_start   ();
    TICK_back    ();
@@ -568,8 +569,17 @@ char         /*--> calculate texture positioning ---------[ ------ [ ------ ]-*/
 TICK_current       (void)
 {
    /*---(current pos)--------------------*/
-   s_curp      = (my.p_cursec * s_tsec) / my.p_texw;
-   if (s_curp  > 2.0)  s_curp  = 2.0;
+   s_curp      = ((my.p_cursec * s_tsec) - s_start) / my.p_texw;
+   while (s_curp  > 1.60) {
+      ++s_section;
+      TICK_draw ();
+      s_curp      = ((my.p_cursec * s_tsec) - s_start) / my.p_texw;
+   }
+   while (s_curp  < 0.40) {
+      --s_section;
+      TICK_draw ();
+      s_curp      = ((my.p_cursec * s_tsec) - s_start) / my.p_texw;
+   }
    /*---(script fits screen)-------------*/
    if (s_plenp <= s_texpct) {
       s_texbeg = 0.0f;
@@ -654,7 +664,7 @@ TICK_current       (void)
    return 0;
 }
 char         /*--> show texture on screen ----------------[ ------ [ ------ ]-*/
-TICK_showtext      (float a_height, float a_top, float a_bot)
+TICK_showtex       (float a_height, float a_top, float a_bot)
 {
    /*---(firgure current)----------------*/
    TICK_current    ();
@@ -719,7 +729,7 @@ TICK_full          (void)
    glOrtho         ( 0.0f, my.w_width, 0.0     , my.w_height,  -500.0,   500.0);
    glMatrixMode    (GL_MODELVIEW);
    /*---(firgure current)----------------*/
-   TICK_showtext   (my.w_height,  0.5,  0.0);
+   TICK_showtex    (my.w_height,  0.5,  0.0);
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -734,11 +744,19 @@ TICK_show          (void)
    glOrtho         ( 0.0f, my.w_width, 0.0 , my.p_height,  -500.0,   500.0);
    glMatrixMode    (GL_MODELVIEW);
    /*---(firgure current)----------------*/
-   TICK_showtext   (my.p_height,  s_textop,  s_texbot);
+   TICK_showtex    (my.p_height,  s_textop,  s_texbot);
    /*---(show debug)---------------------*/
    if (my.p_debug == 'y') {
       printf ("TICK_show ()  debugging\n");
       printf ("\n");
+      printf ("   ___script_____________________\n");
+      printf ("   my.p_len         = %10.3f\n", my.p_len);
+      printf ("   my.p_inc         = %10.3f\n", my.p_inc);
+      printf ("   my.p_cursec      = %10.3f\n", my.p_cursec);
+      printf ("   s_curp           = %10.3f\n", s_curp);
+      printf ("   s_cur            = %10.3f\n", s_cur);
+      printf ("\n");
+      printf ("   ___vertical___________________\n");
       printf ("   my.p_texh        = %6d\n"   , my.p_texh);
       printf ("   my.p_height      = %6d\n"   , my.p_height);
       printf ("   max legs         = %6d\n"   , 6);
@@ -747,8 +765,10 @@ TICK_show          (void)
       printf ("   s_textop         = %10.3f\n", s_textop);
       printf ("   s_texbot         = %10.3f\n", s_texbot);
       printf ("\n");
+      printf ("   ___horizontal_________________\n");
       printf ("   my.w_width       = %6d\n"   , my.w_width);
       printf ("   my.p_texw        = %6d\n"   , my.p_texw);
+      printf ("   my.p_inc         = %10.3f\n", my.p_inc);
       printf ("   s_texavail       = %10.3f\n", s_texavail);
       printf ("   s_texpct         = %10.3f\n", s_texpct);
       printf ("   s_texctr         = %10.3f\n", s_texctr);
