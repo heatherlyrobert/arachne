@@ -453,31 +453,31 @@ TICK_sectext       (int a_section)
    int         d           = 0;
    int         x_rem       = 0;
    /*---(parse)--------------------------*/
-   printf ("\n");
-   printf ("TICK_sectext\n");
-   printf ("s =      ,      ,      , %5d\n", a_section);
+   /*> printf ("\n");                                                                 <* 
+    *> printf ("TICK_sectext\n");                                                     <* 
+    *> printf ("s =      ,      ,      , %5d\n", a_section);                          <*/
    if (a_section < 0) {
       sprintf (s_sectext, "%c%c", '-', '-');
    } else {
       x_rem  = a_section;
       a      = trunc (x_rem / (26 * 26 * 26));
       x_rem -= a * 26 * 26 * 26;
-      printf ("a = %5d, %5d, %5d, %5d, %5d\n"    , a, a * 26, a * 26 * 26, a * 26 * 26 * 26, x_rem);
+      /*> printf ("a = %5d, %5d, %5d, %5d, %5d\n"    , a, a * 26, a * 26 * 26, a * 26 * 26 * 26, x_rem);   <*/
       b      = trunc (x_rem / (26 * 26));
       x_rem -= b * 26 * 26;
-      printf ("b = %5d, %5d,      , %5d, %5d\n"  , b, b * 26, b * 26 * 26, x_rem);
+      /*> printf ("b = %5d, %5d,      , %5d, %5d\n"  , b, b * 26, b * 26 * 26, x_rem);   <*/
       c      = trunc (x_rem / (26     ));
       x_rem -= c * 26;
-      printf ("c = %5d,      ,      , %5d, %5d\n", c, c * 26, x_rem);
+      /*> printf ("c = %5d,      ,      , %5d, %5d\n", c, c * 26, x_rem);             <*/
       d      = x_rem % 26;
       x_rem -= d;
-      printf ("d = %5d,      ,      , %5d, %5d\n", d, d, x_rem);
+      /*> printf ("d = %5d,      ,      , %5d, %5d\n", d, d, x_rem);                  <*/
       if      (a >  0)  sprintf (s_sectext, "%c%c%c%c", a + 'a', b + 'a', c + 'a', d + 'a');
       else if (b >  0)  sprintf (s_sectext, "%c%c%c"  , b + 'a', c + 'a', d + 'a');
       else if (c >  0)  sprintf (s_sectext, "%c%c"    , c + 'a', d + 'a');
       else              sprintf (s_sectext, "%c"      , d + 'a');
    }
-   printf (">   %s\n", s_sectext);
+   /*> printf (">   %s\n", s_sectext);                                                <*/
    /*---(complete)-----------------------*/
    return s_sectext;
 }
@@ -529,8 +529,8 @@ TICK_labels        (void)
             glRotatef  ( 90.0  , 0.0f, 0.0f, 1.0f);
             yFONT_print  (txf_bg,  40, YF_MIDCEN, x_msg);
          } glPopMatrix();
-         if (j < 6)  strlcpy (x_msg, x_label1, LEN_STR);
-         else        strlcpy (x_msg, x_label2, LEN_STR);
+         if (j >= 6)  strlcpy (x_msg, x_label1, LEN_STR);
+         else         strlcpy (x_msg, x_label2, LEN_STR);
          glColor4f    (0.25f, 0.25f, 0.25f, 1.0f);
          glPushMatrix(); {
             glTranslatef ( i +  80.0 , x_pos    -   40.0    ,    60.0  );
