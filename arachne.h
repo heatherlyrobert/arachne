@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.6b"
-#define VER_TXT   "get leg ordering and naming correct in progress view"
+#define VER_NUM   "0.6c"
+#define VER_TXT   "fix leg highlighting to be current p_leg"
 
 
 

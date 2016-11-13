@@ -264,7 +264,7 @@ TICK_back          (void)
    /*---(top and bottom limits)----------*/
    for (i = 0; i < 12; ++i) {
       x_ypos = (i + 1) * x_yinc;
-      if (yVIKEYS_mode_curr () == MODE_PROGRESS && (i == my.p_leg || i == my.p_leg + 6))
+      if (yVIKEYS_mode_curr () == MODE_PROGRESS && (5 - i == my.p_leg || 11 - i == my.p_leg))
          glColor4f    (0.25f, 0.00f, 0.00f, 1.0f);
       else
          glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
