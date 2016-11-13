@@ -93,21 +93,20 @@ MODE_progress      (char a_major, char a_minor)
          return a_minor;
          break;
       }
-      /*---(choosing leg)----------------*/
+      /*---(vertical movement)-----------*/
       x_leg = my.p_leg;
-      switch (a_minor) {
-      case '_': my.p_leg  = 5;    break;
-      case 'K': my.p_leg += 5;    break;
-      case 'k': my.p_leg += 1;    break;
-      case 'j': my.p_leg -= 1;    break;
-      case 'J': my.p_leg -= 5;    break;
-      case 'G': my.p_leg  = 0;    break;
+      if (strchr ("_KkjJG", a_minor) != 0) {
+         yVIKEYS_keys_vert    (a_minor, &my.p_leg, 1.0, 0.0, 5.0);
       }
-      if (x_leg != my.p_leg) {
-         if (my.p_leg < 0)  my.p_leg = 0;
-         if (my.p_leg > 5)  my.p_leg = 5;
-         TICK_draw ();
-      }
+      /*> switch (a_minor) {                                                          <* 
+       *> case '_': my.p_leg  = 5;    break;                                          <* 
+       *> case 'K': my.p_leg += 5;    break;                                          <* 
+       *> case 'k': my.p_leg += 1;    break;                                          <* 
+       *> case 'j': my.p_leg -= 1;    break;                                          <* 
+       *> case 'J': my.p_leg -= 5;    break;                                          <* 
+       *> case 'G': my.p_leg  = 0;    break;                                          <* 
+       *> }                                                                           <*/
+      if (x_leg != my.p_leg) TICK_draw ();
       /*---(zoom and retreat)------------*/
       switch (a_minor) {
       case '+':

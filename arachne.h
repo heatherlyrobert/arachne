@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.6a"
-#define VER_TXT   "expanded timeline to handle over 3000 blocks ;))"
+#define VER_NUM   "0.6b"
+#define VER_TXT   "get leg ordering and naming correct in progress view"
 
 
 
@@ -262,7 +262,7 @@ struct cACCESSOR {
    int         p_bottom;
    char        p_curpos;                    /* position of current bar (shcle)*/
    double      p_cursec;                    /* current timeline seconds       */
-   int         p_leg;                       /* leg currently viewed           */
+   double      p_leg;                       /* leg currently viewed           */
    int         p_texw;                      /* texture full width             */
    int         p_texh;                      /* texture full height            */
    int         p_top;                       /* topmost y of progress bar      */

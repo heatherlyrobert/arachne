@@ -378,7 +378,7 @@ TICK_servos        (int a_leg)
    float     x_deg2        = 0;
    /*---(prepare)------------------------*/
    x_yinc    = x_top / 12.0;
-   x_base    = (x_yinc * a_leg) - my.p_bot;
+   x_base    = (1500 - (x_yinc * a_leg)) - my.p_top;
    x_bar     = my.p_top - my.p_bot;
    x_unit    = x_xinc / my.p_inc;
    /*---(femur)--------------------------*/
@@ -514,14 +514,14 @@ TICK_labels        (void)
    /*---(leg labels)---------------------*/
    for (i = x_beg; i < x_end; i += x_xinc * 100) {
       for (j = 0; j < 12; ++j) {
-         x_pos = (j + 1) * x_yinc;
+         x_pos = my.p_texh - (j * x_yinc);
          switch (j) {
-         case  0 : case  6 : strcpy (x_msg, "0/LF");  break;
-         case  1 : case  7 : strcpy (x_msg, "1/LM");  break;
-         case  2 : case  8 : strcpy (x_msg, "2/LR");  break;
-         case  3 : case  9 : strcpy (x_msg, "3/RR");  break;
-         case  4 : case 10 : strcpy (x_msg, "4/RM");  break;
-         case  5 : case 11 : strcpy (x_msg, "5/RF");  break;
+         case  0 : case  6 : strcpy (x_msg, "0/RR");  break;
+         case  1 : case  7 : strcpy (x_msg, "1/RM");  break;
+         case  2 : case  8 : strcpy (x_msg, "2/RF");  break;
+         case  3 : case  9 : strcpy (x_msg, "3/LF");  break;
+         case  4 : case 10 : strcpy (x_msg, "4/LM");  break;
+         case  5 : case 11 : strcpy (x_msg, "5/LR");  break;
          }
          glColor4f    (0.50f, 0.50f, 0.00f, 1.0f);
          glPushMatrix(); {
@@ -576,9 +576,11 @@ TICK_globals       (void)
 {
    /*---(locals)-----------+-----------+-*/
    float       x_inc       =    10.0;
+   float       y_inc       =     0.0;
    /*---(set single leg vars)------------*/
-   s_texbot    = (my.p_leg + 0)  * (1.0 / 12.0);
-   s_textop    = (my.p_leg + 1)  * (1.0 / 12.0);
+   y_inc       = 1.0 / 12.0;
+   s_textop    = 0.5 - ((my.p_leg + 0) * y_inc);
+   s_texbot    = 0.5 - ((my.p_leg + 1) * y_inc);
    /*---(calc basics)--------------------*/
    s_texavail  = my.w_width * 2.0;
    s_texpct    = s_texavail / my.p_texw;
@@ -830,7 +832,7 @@ TICK_show          (void)
       printf ("   my.p_height      = %6d\n"   , my.p_height);
       printf ("   max legs         = %6d\n"   , 6);
       printf ("   height per leg   = %10.3f\n", my.p_texh / 6.0);
-      printf ("   my.p_leg         = %6d\n"   , my.p_leg);
+      printf ("   my.p_leg         = %10.3f\n", my.p_leg);
       printf ("   s_textop         = %10.3f\n", s_textop);
       printf ("   s_texbot         = %10.3f\n", s_texbot);
       printf ("\n");
