@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.5z"
-#define VER_TXT   "added a couple new alignment operators"
+#define VER_NUM   "0.6a"
+#define VER_TXT   "expanded timeline to handle over 3000 blocks ;))"
 
 
 
@@ -592,7 +592,7 @@ char      draw_end           (void);      /* teardown drawing environment     */
 
 char      draw_setup         (void);
 char      draw_prep          (void);
-void      draw_main          (void);
+char      draw_main          (void);
 
 char      draw_leg           (int  a_num, tSEG  a_curr[], char a_loc);
 char      draw_body          (tSEG *a_curr);

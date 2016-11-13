@@ -118,8 +118,7 @@ static float       s_cutmid    =   0.0;
 static float       s_cutend    =   0.0;
 
 static int         s_section   =     0;         /* section of script          */
-static char        s_sec1text  [5];             /* section of script          */
-static char        s_sec2text  [5];             /* section of script          */
+static char        s_sectext   [5];             /* section of script          */
 static float       s_texbeg1   =   0.0;
 static float       s_texend1   =   0.0;
 static float       s_texpct1   =   0.0;
@@ -443,6 +442,46 @@ TICK_servos        (int a_leg)
    return 0;
 }
 
+
+char*
+TICK_sectext       (int a_section)
+{
+   /*---(locals)-----------+-----------+-*/
+   int         a           = 0;
+   int         b           = 0;
+   int         c           = 0;
+   int         d           = 0;
+   int         x_rem       = 0;
+   /*---(parse)--------------------------*/
+   printf ("\n");
+   printf ("TICK_sectext\n");
+   printf ("s =      ,      ,      , %5d\n", a_section);
+   if (a_section < 0) {
+      sprintf (s_sectext, "%c%c", '-', '-');
+   } else {
+      x_rem  = a_section;
+      a      = trunc (x_rem / (26 * 26 * 26));
+      x_rem -= a * 26 * 26 * 26;
+      printf ("a = %5d, %5d, %5d, %5d, %5d\n"    , a, a * 26, a * 26 * 26, a * 26 * 26 * 26, x_rem);
+      b      = trunc (x_rem / (26 * 26));
+      x_rem -= b * 26 * 26;
+      printf ("b = %5d, %5d,      , %5d, %5d\n"  , b, b * 26, b * 26 * 26, x_rem);
+      c      = trunc (x_rem / (26     ));
+      x_rem -= c * 26;
+      printf ("c = %5d,      ,      , %5d, %5d\n", c, c * 26, x_rem);
+      d      = x_rem % 26;
+      x_rem -= d;
+      printf ("d = %5d,      ,      , %5d, %5d\n", d, d, x_rem);
+      if      (a >  0)  sprintf (s_sectext, "%c%c%c%c", a + 'a', b + 'a', c + 'a', d + 'a');
+      else if (b >  0)  sprintf (s_sectext, "%c%c%c"  , b + 'a', c + 'a', d + 'a');
+      else if (c >  0)  sprintf (s_sectext, "%c%c"    , c + 'a', d + 'a');
+      else              sprintf (s_sectext, "%c"      , d + 'a');
+   }
+   printf (">   %s\n", s_sectext);
+   /*---(complete)-----------------------*/
+   return s_sectext;
+}
+
 char         /*--> draw texture labels -------------------[ ------ [ ------ ]-*/
 TICK_labels        (void)
 {
@@ -462,16 +501,16 @@ TICK_labels        (void)
    int       x_labelper    =    0;
    int       x_secbeg1     =    0;
    int       x_secbeg2     =    0;
-   char      x_label1      [5];
-   char      x_label2      [5];
+   char      x_label1      [10];
+   char      x_label2      [10];
    /*---(prepare)------------------------*/
    x_yinc      = x_top / 12.0;
    x_bar       = my.p_top - my.p_bot;
    x_labelper  = (my.p_texw / 10.0) * my.p_multi;
    x_secbeg1   = x_labelper * s_section;
    x_secbeg2   = x_secbeg1 + x_labelper;
-   sprintf (x_label1, "%c", s_section + 'a');
-   sprintf (x_label2, "%c", s_section + 'b');
+   strlcpy (x_label1, TICK_sectext (s_section    ), 10);
+   strlcpy (x_label2, TICK_sectext (s_section + 1), 10);
    /*---(leg labels)---------------------*/
    for (i = x_beg; i < x_end; i += x_xinc * 100) {
       for (j = 0; j < 12; ++j) {
@@ -532,11 +571,10 @@ TICK_labels        (void)
    return 0;
 }
 
-char         /*--> draw texture for progress ticker ------[ ------ [ ------ ]-*/
-TICK_draw          (void)
+char
+TICK_globals       (void)
 {
    /*---(locals)-----------+-----------+-*/
-   int         i;                             /* loop iterator                  */
    float       x_inc       =    10.0;
    /*---(set single leg vars)------------*/
    s_texbot    = (my.p_leg + 0)  * (1.0 / 12.0);
@@ -545,7 +583,7 @@ TICK_draw          (void)
    s_texavail  = my.w_width * 2.0;
    s_texpct    = s_texavail / my.p_texw;
    s_texctr    = s_texpct / 2.0;
-   s_start     = (s_section + 0) * my.p_texw;
+   s_start     = s_section * my.p_texw;
    s_cutmid    = my.p_texw;
    s_cutend    = my.p_texw * 2;
    /*---(seconds)------------------------*/
@@ -555,7 +593,18 @@ TICK_draw          (void)
    s_plenp     = ((my.p_len * s_tsec) - s_start) / my.p_texw;
    if (s_plenp > 2.0)  s_plenp = 2.0;
    if (s_plenp < 0.0)  s_plenp = 0.0;
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
+
+char         /*--> draw texture for progress ticker ------[ ------ [ ------ ]-*/
+TICK_draw          (void)
+{
+   /*---(locals)-----------+-----------+-*/
+   int         i;                             /* loop iterator                  */
    /*---(new)----------------------------*/
+   TICK_globals ();
    TICK_start   ();
    TICK_back    ();
    for (i = 0; i <= 5; ++i) TICK_servos  (i);
@@ -568,18 +617,24 @@ TICK_draw          (void)
 char         /*--> calculate texture positioning ---------[ ------ [ ------ ]-*/
 TICK_current       (void)
 {
+   /*---(locals)-----------+-----------+-*/
+   char        rc          = 0;
+   int         x_save      = s_section;
    /*---(current pos)--------------------*/
    s_curp      = ((my.p_cursec * s_tsec) - s_start) / my.p_texw;
    while (s_curp  > 1.60) {
       ++s_section;
-      TICK_draw ();
+      TICK_globals ();
       s_curp      = ((my.p_cursec * s_tsec) - s_start) / my.p_texw;
+      ++rc;
    }
    while (s_curp  < 0.40) {
       --s_section;
-      TICK_draw ();
+      TICK_globals ();
       s_curp      = ((my.p_cursec * s_tsec) - s_start) / my.p_texw;
+      ++rc;
    }
+   if (s_section != x_save)  TICK_draw ();
    /*---(script fits screen)-------------*/
    if (s_plenp <= s_texpct) {
       s_texbeg = 0.0f;
@@ -617,13 +672,13 @@ TICK_current       (void)
          s_texend  = s_texbeg  + s_texpct;
          break;
       }
-      if (s_texbeg < 0.0) {
-         s_texbeg  = 0.0f;
-         s_texend  = s_texpct;
-      } else if (s_texend > s_plenp) {
-         s_texend  = s_plenp;
-         s_texbeg  = s_texend - s_texpct;
-      }
+      /*> if (s_texbeg < 0.0) {                                                       <* 
+       *>    s_texbeg  = 0.0f;                                                        <* 
+       *>    s_texend  = s_texpct;                                                    <* 
+       *> } else if (s_texend > s_plenp) {                                            <* 
+       *>    s_texend  = s_plenp;                                                     <* 
+       *>    s_texbeg  = s_texend - s_texpct;                                         <* 
+       *> }                                                                           <*/
    }
    /*---(prepare for multitex)-----------*/
    s_texbeg1 = s_texend1 = s_texpct1 = s_texbeg2 = s_texend2 = s_texpct2 = 0.0;
@@ -669,13 +724,15 @@ TICK_current       (void)
    /*---(current pos)--------------------*/
    s_cur       = ((s_curp - s_texbeg) / s_texpct) * my.w_width;
    /*---(complete)-----------------------*/
-   return 0;
+   return rc;
 }
 char         /*--> show texture on screen ----------------[ ------ [ ------ ]-*/
 TICK_showtex       (float a_height, float a_top, float a_bot)
 {
-   /*---(firgure current)----------------*/
-   TICK_current    ();
+   /*---(locals)-----------+-----------+-*/
+   char        rc          = 0;
+   /*---(figure current)-----------------*/
+   rc = TICK_current    ();
    /*---(draw texture)-------------------*/
    glBindTexture   (GL_TEXTURE_2D, my.p_tex);
    /*---(first part)---------------------*/
@@ -724,12 +781,14 @@ TICK_showtex       (float a_height, float a_top, float a_bot)
       } glEnd   ();
    } glPopMatrix();
    /*---(complete)-----------------------*/
-   return 0;
+   return rc;
 }
 
 char         /*--> show texture on screen ----------------[ ------ [ ------ ]-*/
 TICK_full          (void)
 {
+   /*---(locals)-------------------------*/
+   char        rc          = 0;
    /*---(setup view)---------------------*/
    glViewport      (    0, 0.0        , my.w_width, my.w_height);
    glMatrixMode    (GL_PROJECTION);
@@ -737,14 +796,16 @@ TICK_full          (void)
    glOrtho         ( 0.0f, my.w_width, 0.0     , my.w_height,  -500.0,   500.0);
    glMatrixMode    (GL_MODELVIEW);
    /*---(firgure current)----------------*/
-   TICK_showtex    (my.w_height,  0.5,  0.0);
+   rc = TICK_showtex    (my.w_height,  0.5,  0.0);
    /*---(complete)-----------------------*/
-   return 0;
+   return rc;
 }
 
 char         /*--> show texture on screen ----------------[ ------ [ ------ ]-*/
 TICK_show          (void)
 {
+   /*---(locals)-------------------------*/
+   char        rc          = 0;
    /*---(setup view)---------------------*/
    glViewport      (    0, my.p_bottom, my.w_width, my.p_height);
    glMatrixMode    (GL_PROJECTION);
@@ -752,7 +813,7 @@ TICK_show          (void)
    glOrtho         ( 0.0f, my.w_width, 0.0 , my.p_height,  -500.0,   500.0);
    glMatrixMode    (GL_MODELVIEW);
    /*---(firgure current)----------------*/
-   TICK_showtex    (my.p_height,  s_textop,  s_texbot);
+   rc = TICK_showtex    (my.p_height,  s_textop,  s_texbot);
    /*---(show debug)---------------------*/
    if (my.p_debug == 'y') {
       printf ("TICK_show ()  debugging\n");
@@ -796,7 +857,7 @@ TICK_show          (void)
       my.p_debug = '-';
    }
    /*---(complete)-----------------------*/
-   return 0;
+   return rc;
 }
 
 
@@ -1241,9 +1302,11 @@ draw_setup ()
    return 0;
 }
 
-void       /* ---- : driver for main drawing cycle ---------------------------*/
+char       /* ---- : driver for main drawing cycle ---------------------------*/
 draw_main          (void)
 {
+   /*---(locals)-------*-----------------*/
+   char        rc          = 0;
    /*---(prepare)------------------------*/
    draw_spider ();
    glClear         (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1256,20 +1319,20 @@ draw_main          (void)
        *> else                     view_gait   ();                                       <*/
       /*> view_top    ();                                                                <*/
       view_3d     ();
-      TICK_show   ();
+      rc = TICK_show   ();
       CMD_show    ();
       /*> view_leg    ();                                                                <*/
       /*> view_ik();                                                                     <*/
    }
    /*---(progress)-----------------------*/
    else if (SCRN_PROG) {
-      TICK_full   ();
+      rc = TICK_full   ();
    }
    /*---(send for processing)------------*/
    glXSwapBuffers(DISP, BASE);
    glFlush();
    /*---(complete)-----------------------*/
-   return;
+   return rc;
 }
 
 char       /* ---- : display key information near leg ------------------------*/
