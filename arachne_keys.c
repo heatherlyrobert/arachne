@@ -98,14 +98,6 @@ MODE_progress      (char a_major, char a_minor)
       if (strchr ("_KkjJG", a_minor) != 0) {
          yVIKEYS_keys_vert    (a_minor, &my.p_leg, 1.0, 0.0, 5.0);
       }
-      /*> switch (a_minor) {                                                          <* 
-       *> case '_': my.p_leg  = 5;    break;                                          <* 
-       *> case 'K': my.p_leg += 5;    break;                                          <* 
-       *> case 'k': my.p_leg += 1;    break;                                          <* 
-       *> case 'j': my.p_leg -= 1;    break;                                          <* 
-       *> case 'J': my.p_leg -= 5;    break;                                          <* 
-       *> case 'G': my.p_leg  = 0;    break;                                          <* 
-       *> }                                                                           <*/
       if (x_leg != my.p_leg) TICK_draw ();
       /*---(zoom and retreat)------------*/
       switch (a_minor) {
@@ -181,6 +173,7 @@ MODE_progress      (char a_major, char a_minor)
    /*---(buffer/area)--------------------*/
    if (a_major == ',') {
       switch (a_minor) {
+      case ',':
       case 'a':
          yVIKEYS_mode_exit  ();
          TICK_draw ();

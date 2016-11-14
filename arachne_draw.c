@@ -904,6 +904,42 @@ CMD_show           (void)
 /*====================------------------------------------====================*/
 static void      o___LEG_GK__________________o (void) {;}
 
+static double  s_loc      [16];
+static double  s_xpos     = 0.0;
+static double  s_zpos     = 0.0;
+static double  s_ypos     = 0.0;
+
+char       /*----: determine the current opengl position ---------------------*/
+draw_locate_NEW    (VOID)
+{
+   /*---(locals)-------------------------*/
+   char      x_msg [100];
+   /*---(current)------------------------*/
+   glGetDoublev(GL_MODELVIEW_MATRIX,  s_loc);
+   s_xpos     = s_loc[12];
+   s_zpos     = s_loc[14];
+   s_ypos     = s_loc[13];
+   /*---(draw)---------------------------*/
+   glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+   glPushMatrix (); {
+      /*---(x_pos)-------*/
+      glTranslatef(    0.0  ,    40.0 ,     0.0  );
+      snprintf (x_msg, 20, "x = %.1lf", s_xpos);
+      yFONT_print (txf_bg,  3, YF_TOPLEF, x_msg);
+      /*---(z_pos)-------*/
+      glTranslatef(    0.0  ,    -5.0 ,     0.0  );
+      snprintf (x_msg, 20, "z = %.1lf", s_zpos);
+      yFONT_print (txf_bg,  3, YF_TOPLEF, x_msg);
+      /*---(y_pos)-------*/
+      glTranslatef(    0.0  ,    -5.0 ,     0.0  );
+      snprintf (x_msg, 20, "y = %.1lf", s_ypos);
+      yFONT_print (txf_bg,  3, YF_TOPLEF, x_msg);
+      /*---(done)--------*/
+   } glPopMatrix ();
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
 char       /*----: determine the current opengl position ---------------------*/
 draw_locate        (tSEG *a_curr, tSEG *a_prev, tSEG *a_orig)
 {
@@ -945,18 +981,19 @@ draw_locate        (tSEG *a_curr, tSEG *a_prev, tSEG *a_orig)
    return 0;
 }
 
+
 char       /*----: draw the leg to opengl ------------------------------------*/
-draw_leg_NEW       (int a_num, float a_body, float a_femu, float a_pate, float a_tibi)
+draw_leg_NEW       (int a_num, float a_body, float a_coxa, float a_femu, float a_pate, float a_tibi)
 {
    /*---(locals)-------------------------*/
    float     d;
-   float     x,  y,  z;
-   float     px, py, pz;
+   float     x,  y,  z,  xz,  l;
    char      x_msg [100];
    /*---(begin)--------------------------*/
    glPushMatrix (); {
       /*---(thorax)----------------------*/
       glTranslatef (a_body,  0.0,  0.0f);
+      draw_locate_NEW ();
       if (a_num == my.p_leg) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
       glPushMatrix (); {
          /*---(label)-------*/
@@ -972,7 +1009,7 @@ draw_leg_NEW       (int a_num, float a_body, float a_femu, float a_pate, float a
          /*---(coxa)--------*/
          glTranslatef(    0.0  ,    -8.0 ,     0.0  );
          yFONT_print (txf_bg,  5, YF_TOPRIG, "coxa");
-         snprintf (x_msg, 25, ": %+.0f", a_body);
+         snprintf (x_msg, 25, ": %+.0f", a_coxa);
          yFONT_print (txf_bg,  5, YF_TOPLEF, x_msg);
          /*---(femu)--------*/
          glTranslatef(    0.0  ,    -8.0 ,     0.0  );
@@ -993,15 +1030,19 @@ draw_leg_NEW       (int a_num, float a_body, float a_femu, float a_pate, float a
       } glPopMatrix ();
       /*---(coxa)------------------------*/
       glCallList (dl_coxa);
+      draw_locate_NEW ();
       /*---(femur)--------------------------*/
       glRotatef  ( a_femu, 0.0f, 1.0f, 0.0f);
       glCallList (dl_femur);
+      draw_locate_NEW ();
       /*---(patella)------------------------*/
       glRotatef  (-a_pate, 0.0f, 0.0f, 1.0f);
       glCallList (dl_patella);
+      draw_locate_NEW ();
       /*---(tibia)--------------------------*/
       glRotatef  (-a_tibi, 0.0f, 0.0f, 1.0f);
       glCallList (dl_tibia);
+      draw_locate_NEW ();
    } glPopMatrix ();
    /*---(complete)-----------------------*/
    return 0;
@@ -1469,6 +1510,7 @@ draw_spider        (void)
 {
    /*---(locals)-------*-----------------*/
    int       i         = 0;
+   float       x_coxa      = 0.0;
    float       x_femu      = 0.0;
    float       x_pate      = 0.0;
    float       x_tibi      = 0.0;
@@ -1489,13 +1531,14 @@ draw_spider        (void)
          glPushMatrix (); {
             glColor3f(1.0f, 1.0f, 1.0f);
             glRotatef( gk[i / 3][THOR].d, 0.0f, 1.0f, 0.0f);
+            x_coxa = gk[i / 3][THOR].d;
             x_femu =  0.0;
             x_pate =  0.0;
             x_tibi = 90.0;
             if (g_servos [i    ].curr != NULL)  my.s_femu = x_femu = g_servos [i    ].deg;
             if (g_servos [i + 1].curr != NULL)  my.s_pate = x_pate = g_servos [i + 1].deg;
             if (g_servos [i + 2].curr != NULL)  my.s_tibi = x_tibi = g_servos [i + 2].deg;
-            draw_leg_NEW   (i / 3, gk[i / 3][THOR].l, x_femu, x_pate, x_tibi);
+            draw_leg_NEW   (i / 3, gk[i / 3][THOR].l, x_coxa, x_femu, x_pate, x_tibi);
             /*> if (flag_annotate == 'y')  draw__annotate (i);                        <*/
          } glPopMatrix ();
       }
