@@ -93,8 +93,8 @@ dlist_ground()
     *> glColor4f (0.5f, 0.0f, 1.0f, 0.5f);                                            <* 
     *> for (deg = 0; deg < 365; deg += 15) {                                          <* 
     *>    rad = deg * DEG2RAD;                                                        <* 
-    *>    x   = (segs_len [THOR] / 5) * cos (rad);                                    <* 
-    *>    z   = (segs_len [THOR] / 5) * sin (rad);                                    <* 
+    *>    x   = (segs_len [YKINE_THOR] / 5) * cos (rad);                                    <* 
+    *>    z   = (segs_len [YKINE_THOR] / 5) * sin (rad);                                    <* 
     *>    glVertex3f ( x,  10.00f, z);                                                <* 
     *> }                                                                              <* 
     *> glEnd     ();                                                                  <* 
@@ -213,8 +213,8 @@ dlist_body_ORIG    (void)
       glColor3f(1.0f, 1.0f, 0.0f);
       for (deg = 0; deg < 365; deg += 10) {
          rad = deg * DEG2RAD;
-         x   = segs_len [THOR] * cos(rad);
-         z   = segs_len [THOR] * sin(rad);
+         x   = segs_len [YKINE_THOR] * cos(rad);
+         z   = segs_len [YKINE_THOR] * sin(rad);
          glVertex3f( x,  10.00f, z);
          glVertex3f( x, -10.00f, z);
       }
@@ -232,11 +232,11 @@ dlist_coxa_ORIG    (void)
    dl_coxa    = glGenLists(1);
    glNewList     (dl_coxa, GL_COMPILE);
    /*---(draw segment)-------------------*/
-   dlist__link   (segs_len  [COXA]);
-   glTranslatef  ( segs_len [COXA], 0.00f,  0.00f);
+   dlist__link   (segs_len  [YKINE_COXA]);
+   glTranslatef  ( segs_len [YKINE_COXA], 0.00f,  0.00f);
    glPushMatrix  (); {
       glRotatef     ( 90.00f, 1.00f, 0.00f,  0.00f);
-      dlist__joint  (segs_min [FEMU], segs_max [FEMU]);
+      dlist__joint  (segs_min [YKINE_FEMU], segs_max [YKINE_FEMU]);
    } glPopMatrix    ();
    glEndList     ();
    /*---(complete)-----------------------*/
@@ -255,9 +255,9 @@ dlist_femur_ORIG   (void)
    dl_femur   = glGenLists(1);
    glNewList     (dl_femur, GL_COMPILE);
    /*---(draw segment)-------------------*/
-   dlist__link   (segs_len [FEMU]);
-   glTranslatef  (segs_len [FEMU], 0.00f,  0.00f);
-   dlist__joint  (segs_min [PATE], segs_max [PATE]);
+   dlist__link   (segs_len [YKINE_FEMU]);
+   glTranslatef  (segs_len [YKINE_FEMU], 0.00f,  0.00f);
+   dlist__joint  (segs_min [YKINE_PATE], segs_max [YKINE_PATE]);
    glEndList     ();
    /*---(complete)-----------------------*/
    return 0;
@@ -275,9 +275,9 @@ dlist_patella_ORIG ()
    dl_patella = glGenLists(1);
    glNewList     (dl_patella, GL_COMPILE);
    /*---(draw segment)-------------------*/
-   dlist__link   (segs_len [PATE]);
-   glTranslatef  (segs_len [PATE], 0.00f,  0.00f);
-   dlist__joint  (segs_min [TIBI], segs_max [TIBI]);
+   dlist__link   (segs_len [YKINE_PATE]);
+   glTranslatef  (segs_len [YKINE_PATE], 0.00f,  0.00f);
+   dlist__joint  (segs_min [YKINE_TIBI], segs_max [YKINE_TIBI]);
    glEndList     ();
    /*---(complete)-----------------------*/
    return 0;
@@ -295,8 +295,8 @@ dlist_tibia_ORIG   (void)
    dl_tibia = glGenLists(1);
    glNewList     (dl_tibia, GL_COMPILE);
    /*---(draw segment)-------------------*/
-   dlist__link (segs_len  [TIBI]);
-   glTranslatef  ( segs_len [TIBI], 0.00f,  0.00f);
+   dlist__link (segs_len  [YKINE_TIBI]);
+   glTranslatef  ( segs_len [YKINE_TIBI], 0.00f,  0.00f);
    glEndList     ();
    /*---(complete)-----------------------*/
    return 0;
@@ -374,12 +374,12 @@ dlist_tibia        (void)
     *> glLineWidth (2.0);                                                             <* 
     *> glBegin(GL_LINES); {                                                           <* 
     *>    glVertex3f( -5.00f     * 25,  0.00f,  0.00f);                               <* 
-    *>    glVertex3f( segs_len [TIBI]     ,  0.00f,  0.00f);                          <* 
+    *>    glVertex3f( segs_len [YKINE_TIBI]     ,  0.00f,  0.00f);                          <* 
     *> } glEnd();                                                                     <* 
     *> glLineWidth (0.5);                                                             <* 
     *> glDisable(GL_LINE_STIPPLE);                                                    <*/
    /*---(prepare for next segment)-------*/
-   glTranslatef( segs_len [TIBI], 0.00f,  0.00f);
+   glTranslatef( segs_len [YKINE_TIBI], 0.00f,  0.00f);
    glEndList();
    /*---(complete)-----------------------*/
    return 0;
@@ -429,12 +429,12 @@ dlist_tibia_OLDER  (void)
    glLineWidth (2.0);
    glBegin(GL_LINES);
    glVertex3f( -5.00f     * 25,  0.00f,  0.00f);
-   glVertex3f( segs_len [TIBI]     ,  0.00f,  0.00f);
+   glVertex3f( segs_len [YKINE_TIBI]     ,  0.00f,  0.00f);
    glEnd();
    glLineWidth (0.5);
    glDisable(GL_LINE_STIPPLE);
    /*---(prepare for next segment)-------*/
-   glTranslatef( segs_len [TIBI], 0.00f,  0.00f);
+   glTranslatef( segs_len [YKINE_TIBI], 0.00f,  0.00f);
    glEndList();
    /*---(complete)-----------------------*/
    return 0;
@@ -484,9 +484,9 @@ dlist_patella      ()
        *> glLineWidth (0.5);                                                          <* 
        *> glDisable(GL_LINE_STIPPLE);                                                 <*/
       /*---(prepare for next segment)------------------------*/
-      glTranslatef( segs_len [PATE], 0.00f,  0.00f);
+      glTranslatef( segs_len [YKINE_PATE], 0.00f,  0.00f);
       /*---(draw)--------------------------------------------*/
-      dlist__joint  (segs_min [TIBI], segs_max [TIBI]);
+      dlist__joint  (segs_min [YKINE_TIBI], segs_max [YKINE_TIBI]);
       /*> glPointSize(1.0f);                                                          <* 
        *> int d;                                                                      <* 
        *> float r, x, y;                                                              <* 
@@ -548,9 +548,9 @@ dlist_femur     ()
        *> glLineWidth (0.5);                                                          <* 
        *> glDisable(GL_LINE_STIPPLE);                                                 <*/
       /*---(prepare for next segment)------------------------*/
-      glTranslatef( segs_len [FEMU], 0.00f,  0.00f);
+      glTranslatef( segs_len [YKINE_FEMU], 0.00f,  0.00f);
       /*---(draw)--------------------------------------------*/
-      dlist__joint  (segs_min [TIBI], segs_max [TIBI]);
+      dlist__joint  (segs_min [YKINE_TIBI], segs_max [YKINE_TIBI]);
       /*> int d;                                                                         <* 
        *> float r, x, y;                                                                 <* 
        *> glBegin(GL_QUAD_STRIP);                                                        <* 
@@ -603,10 +603,10 @@ dlist_coxa      ()
          } glEnd();
       }
       /*---(prepare for next segment)--------------*/
-      glTranslatef( segs_len [COXA], 0.00f,  0.00f);
+      glTranslatef( segs_len [YKINE_COXA], 0.00f,  0.00f);
       /*---(draw joint pin)------------------------*/
       glRotatef     ( 90.00f, 1.00f, 0.00f,  0.00f);
-      dlist__joint  (segs_min [TIBI], segs_max [TIBI]);
+      dlist__joint  (segs_min [YKINE_TIBI], segs_max [YKINE_TIBI]);
       glRotatef     (-90.00f, 1.00f, 0.00f,  0.00f);
       /*> int d;                                                                         <* 
        *> float r, x, z;                                                                 <* 
@@ -645,8 +645,8 @@ dlist_body         (void)
             for (deg = 0; deg < 365; deg +=  5) {
                /*---(calc)------------------------*/
                rad = deg * DEG2RAD;
-               nx  = segs_len [THOR] * cos(rad);
-               nz  = segs_len [THOR] * sin(rad);
+               nx  = segs_len [YKINE_THOR] * cos(rad);
+               nz  = segs_len [YKINE_THOR] * sin(rad);
                /*---(color)-----------------------*/
                if (deg % 10 == 0) glColor4f (0.0f, 1.0f, 0.0f, 0.5f);
                else               glColor4f (0.0f, 0.5f, 0.0f, 0.5f);
@@ -683,8 +683,8 @@ dlist_body         (void)
        *>       glColor3f(1.0f, 1.0f, 0.0f);                                                 <* 
        *>       for (deg = 0; deg < 365; deg += 15) {                                        <* 
        *>          rad = deg * DEG2RAD;                                                      <* 
-       *>          x   = segs_len [THOR] * cos(rad);                                         <* 
-       *>          z   = segs_len [THOR] * sin(rad);                                         <* 
+       *>          x   = segs_len [YKINE_THOR] * cos(rad);                                         <* 
+       *>          z   = segs_len [YKINE_THOR] * sin(rad);                                         <* 
        *>          glVertex3f( x,   8.00f, z);                                               <* 
        *>          glVertex3f( x, -12.00f, z);                                               <* 
        *>       }                                                                            <* 

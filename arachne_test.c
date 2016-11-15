@@ -30,27 +30,27 @@ unit_accessor      (char *a_question, int a_leg, int a_seg)
    strncpy(unit_answer, "unknown request", 100);
    if (strcmp(a_question, "IK_final") == 0) {
       sprintf(unit_answer, "IK %1d/final     : %8.2fx,%8.2fz,%8.2fy", 
-            a_leg, ik[a_leg][CALC].x, ik[a_leg][CALC].z, ik[a_leg][CALC].y);
+            a_leg, ik[a_leg][YKINE_CALC].x, ik[a_leg][YKINE_CALC].z, ik[a_leg][YKINE_CALC].y);
    } else if (strcmp(a_question, "FK_final") == 0) {
       sprintf(unit_answer, "FK %1d/final     : %8.2fx,%8.2fz,%8.2fy", 
-            a_leg, fk[a_leg][CALC].x, fk[a_leg][CALC].z, fk[a_leg][CALC].y);
+            a_leg, fk[a_leg][YKINE_CALC].x, fk[a_leg][YKINE_CALC].z, fk[a_leg][YKINE_CALC].y);
    } else if (strcmp(a_question, "IK_target") == 0) {
       sprintf(unit_answer, "IK %1d/target    : %8.2fx,%8.2fz,%8.2fy", 
-            a_leg, ik[a_leg][TARG].x, ik[a_leg][TARG].z, ik[a_leg][TARG].y);
+            a_leg, ik[a_leg][YKINE_TARG].x, ik[a_leg][YKINE_TARG].z, ik[a_leg][YKINE_TARG].y);
    } else if (strcmp(a_question, "IK_match") == 0) {
-      if (  ik[a_leg][CALC].x == ik[a_leg][TARG].x &&
-            ik[a_leg][CALC].z == ik[a_leg][TARG].z &&
-            ik[a_leg][CALC].y == ik[a_leg][TARG].y )
+      if (  ik[a_leg][YKINE_CALC].x == ik[a_leg][YKINE_TARG].x &&
+            ik[a_leg][YKINE_CALC].z == ik[a_leg][YKINE_TARG].z &&
+            ik[a_leg][YKINE_CALC].y == ik[a_leg][YKINE_TARG].y )
          sprintf(unit_answer, "IK %1d/success", a_leg);
       else
          sprintf(unit_answer, "IK %1d/FAILURE", a_leg);
    } else if (strcmp(a_question, "IK_angles_OLD") == 0) {
       sprintf(unit_answer, "IK %1d/angles    : %8.2fc,%8.2ff,%8.2fp,%8.2ft", 
-            a_leg, ik[a_leg][COXA].d, ik[a_leg][FEMU].d,
-            ik[a_leg][PATE].d, ik[a_leg][TIBI].d);
+            a_leg, ik[a_leg][YKINE_COXA].d, ik[a_leg][YKINE_FEMU].d,
+            ik[a_leg][YKINE_PATE].d, ik[a_leg][YKINE_TIBI].d);
    } else if (strcmp(a_question, "IK_lower")  == 0) {
       sprintf(unit_answer, "IK %1d/lower     : %8.3fp,%8.3ft", 
-            a_leg, ik[a_leg][PATE].v, ik[a_leg][TIBI].v);
+            a_leg, ik[a_leg][YKINE_PATE].v, ik[a_leg][YKINE_TIBI].v);
    } else if (strcmp(a_question, "orient")    == 0) {
       sprintf(unit_answer, "-/- %4.4s orient   %6.3f=yaw, %6.3f=pitch, %6.3f=roll", 
             segs_long [a_seg], center.yaw,  0.0,  0.0);

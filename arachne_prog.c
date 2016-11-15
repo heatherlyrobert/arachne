@@ -253,7 +253,6 @@ PROG_args          (int argc, char *argv[])
       ++x_args;
       if      (strcmp(a, "--sizing"     ) == 0)  debug_sizing = 'y';
       /*> else if (strcmp(a, "--moving"     ) == 0)  my.p_moving  = 'y';              <*/
-      else if (strcmp(a, "--setup"      ) == 0)  umake_setup  = 'y';
       else if (strcmp(a, "--init"       ) == 0)  umake_init   = 'y';
       else if (strcmp(a, "--model"      ) == 0) {
          if (i + 1 <  argc)  strncpy (model_name, argv[++i], 25);
@@ -309,16 +308,11 @@ PROG_begin         (void)
    DEBUG_ARGS  yLOG_value  ("width"     , my.w_width);
    DEBUG_ARGS  yLOG_value  ("height"    , my.w_height);
    yXINIT_start (my.w_title, my.w_width, my.w_height, YX_FOCUSABLE, YX_FIXED, YX_SILENT);
-   draw_begin   ();
+   DRAW_begin   ();
    draw_setup   ();
    font_load    ();
    dlist_begin  ();
-   if (umake_init == 'y') {
-      unit_init();
-      exit(0);
-   }
    yGOD_start();
-   /*> kinetics_scripter();                                                           <*/
    gait.dmax   = 100;
    /*> stat_masscenter();                                                             <*/
    DEBUG_PROG   yLOG_exit    (__FUNCTION__);
@@ -337,7 +331,7 @@ PROG_end           (void)
    DEBUG_PROG   yLOG_enter   (__FUNCTION__);
    font_delete ();
    dlist_end   ();
-   draw_end    ();
+   DRAW_end    ();
    yXINIT_end  ();
    DEBUG_PROG   yLOG_exit    (__FUNCTION__);
    DEBUG_TOPS   yLOG_end     ();

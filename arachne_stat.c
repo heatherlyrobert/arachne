@@ -45,7 +45,7 @@ float   segs_min  [MAX_SEGS]      = {   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   
 
 char    segs_long [MAX_SEGS][25]  = { "core", "thorax", "coxa", "femur", "patella", "tibia", "tarsus", "foot", "toes", "target", "original", "vertical", "calc" };
 char    segs_name [MAX_SEGS][ 5]  = { "core", "thor", "coxa", "femu", "pate", "tibi", "tars", "foot", "toes", "targ", "orig", "vert", "calc" };
-char    segs_caps [MAX_SEGS][ 5]  = { "CORE", "THOR", "COXA", "FEMU", "PATE", "TIBI", "TARS", "FOOT", "TOES", "TARG", "ORIG", "VERT", "CALC" };
+char    segs_caps [MAX_SEGS][ 5]  = { "YKINE_CORE", "YKINE_THOR", "YKINE_COXA", "YKINE_FEMU", "YKINE_PATE", "YKINE_TIBI", "YKINE_TARS", "FOOT", "TOES", "YKINE_TARG", "YKINE_ORIG", "YKINE_LOWR", "YKINE_CALC" };
 
 
 
@@ -134,14 +134,14 @@ stat_init          (char  *a_model)
          strncpy (legs_name [type - '0'], p, 4);
          p = strtok (NULL, " ");
          if (p == NULL)                     break;
-         legs_deg [type - '0'] = gk [type - '0'][THOR].d = gk [type - '0'][COXA].d = atof (p);
+         legs_deg [type - '0'] = gk [type - '0'][YKINE_THOR].d = gk [type - '0'][YKINE_COXA].d = atof (p);
          p = strtok (NULL, " ");
          if (p == NULL)                     break;
          strncpy (legs_long [type - '0'], p, 22);
-         DEBUG_SIZING  fprintf (stderr, "   - leg %c at %4.0f called %s, %s\n", type, gk [type - '0'][THOR].d, legs_name [type - '0'], legs_long [type - '0']);
+         DEBUG_SIZING  fprintf (stderr, "   - leg %c at %4.0f called %s, %s\n", type, gk [type - '0'][YKINE_THOR].d, legs_name [type - '0'], legs_long [type - '0']);
          break;
       case  'l': case  'n': case  'x': case  'a': case  'b':
-         for (i = THOR; i <= TARS; ++i) {
+         for (i = YKINE_THOR; i <= YKINE_TARS; ++i) {
             p = strtok (NULL, " ");
             if (p == NULL)                  break;
             switch (type) {
@@ -155,10 +155,10 @@ stat_init          (char  *a_model)
          }
          break;
       case  'p':
-         for (i = THOR; i <= TARS; ++i) {
+         for (i = YKINE_THOR; i <= YKINE_TARS; ++i) {
             p = strtok (NULL, " ");
             if (p == NULL)                  break;
-            if (i < FEMU) continue;
+            if (i < YKINE_FEMU) continue;
             for (j = 0; j <= MAX_LEGS; ++j) gk [j][i].d = atof(p);
             /*> printf ("joint %d is %8.1f and %8.1f\n", i, atof(p), gk [j][i].d);    <*/
          }
@@ -183,8 +183,8 @@ stat_init          (char  *a_model)
 char       /* ---- : change the length of a leg segment ----------------------*/
 stat_length        (int   a_seg, float a_len, float a_def)
 {
-   if (a_seg <  THOR )   return -1;
-   if (a_seg >  TARS )   return -2;
+   if (a_seg <  YKINE_THOR )   return -1;
+   if (a_seg >  YKINE_TARS )   return -2;
    if (a_len <=  0.0 )   segs_len [a_seg] = a_def;
    else                  segs_len [a_seg] = a_len;
    return 0;
@@ -196,12 +196,12 @@ stat_lengths       (
       float a_pate, float a_tibi, float a_tars)
 {
    char      rc        = 0;
-   if (rc == 0)  rc = stat_length (THOR, a_thor, 125.0);
-   if (rc == 0)  rc = stat_length (COXA, a_coxa,  30.0);
-   if (rc == 0)  rc = stat_length (FEMU, a_femu,  30.0);
-   if (rc == 0)  rc = stat_length (PATE, a_femu,  57.0);
-   if (rc == 0)  rc = stat_length (TIBI, a_tibi, 130.0);
-   if (rc == 0)  rc = stat_length (TARS, a_tars,   0.0);
+   if (rc == 0)  rc = stat_length (YKINE_THOR, a_thor, 125.0);
+   if (rc == 0)  rc = stat_length (YKINE_COXA, a_coxa,  30.0);
+   if (rc == 0)  rc = stat_length (YKINE_FEMU, a_femu,  30.0);
+   if (rc == 0)  rc = stat_length (YKINE_PATE, a_femu,  57.0);
+   if (rc == 0)  rc = stat_length (YKINE_TIBI, a_tibi, 130.0);
+   if (rc == 0)  rc = stat_length (YKINE_TARS, a_tars,   0.0);
    return 0;
 }
 
@@ -230,7 +230,7 @@ stat_masscenter    (void)
    /*> printf ("\n");                                                                 <*/
    for (i = 0; i < LEGS; ++i) {
       /*> printf ("%d -----------------------------------------------------------------------\n", i);   <*/
-      for (j = CORE; j <= TOES; ++j) {
+      for (j = YKINE_CORE; j <= YKINE_FOOT; ++j) {
          /*---(links)--------------------*/
          mass  +=  segs_lnk [j];
          /*> printf ("   %02d/%s %8.2f (lnks) : %8.2f at", j, segs_name[j], segs_len [j], segs_lnk  [j]);   <*/
@@ -301,7 +301,7 @@ stat_masscenter    (void)
  *>    lf   = l * w;                                                                                       <* 
  *>    /+---(output)-------------------------+/                                                            <* 
  *>    /+> if (a_leg == 0) {                                                                         <*    <* 
- *>     *>    printf ("      %8.6fmm  %8.6fg\n", ik[a_leg][TIBI].xz, mass[TIBI]);                    <*    <* 
+ *>     *>    printf ("      %8.6fmm  %8.6fg\n", ik[a_leg][YKINE_TIBI].xz, mass[YKINE_TIBI]);                    <*    <* 
  *>     *>    printf ("      %8.6fm   %8.6fkg  %8.6fms  %8.6fN   %8.6fNm\n", l, m, GRAVITY, w, f);   <*    <* 
  *>     *> }                                                                                         <+/   <* 
  *>    /+---(complete)-----------------------+/                                                            <* 
@@ -332,58 +332,58 @@ stat_torque        (int  a_pos, int a_leg)
    float     center    = 0.00f;
    /*---(defense)------------------------*/
    if (gait.tleg [a_pos][a_leg] == 0) {
-      gait.torq[a_pos][a_leg][FEMU] = 0.00f;
-      gait.torq[a_pos][a_leg][PATE] = 0.00f;
-      gait.torq[a_pos][a_leg][TIBI] = 0.00f;
+      gait.torq[a_pos][a_leg][YKINE_FEMU] = 0.00f;
+      gait.torq[a_pos][a_leg][YKINE_PATE] = 0.00f;
+      gait.torq[a_pos][a_leg][YKINE_TIBI] = 0.00f;
       return 0;
    }
    /*---(sizes)--------------------------*/
-   body    = gk [a_leg][THOR].xz + gk [a_leg][COXA].xz;
-   femu    = gk [a_leg][FEMU].xz;
-   pate    = gk [a_leg][PATE].xz;
-   tibi    = gk [a_leg][TIBI].xz;
+   body    = gk [a_leg][YKINE_THOR].xz + gk [a_leg][YKINE_COXA].xz;
+   femu    = gk [a_leg][YKINE_FEMU].xz;
+   pate    = gk [a_leg][YKINE_PATE].xz;
+   tibi    = gk [a_leg][YKINE_TIBI].xz;
    center  = (720.0 + (230.0 * (LEGS - gait.touch [a_pos]))) / gait.touch [a_pos];
    /*> fprintf (stderr, "center = %8.2f with %d touching\n", center, gait.touch [a_pos]);   <*/
    /*---(tibia)--------------------------*/
    F      = 0.00f;
-   F     += (        (pate * 0.5)        ) * segs_lnk [PATE];
-   F     += (        pate                ) * segs_act [PATE];
-   F     += (        pate + (femu * 0.5) ) * segs_lnk [FEMU];
-   F     += (        pate + femu         ) * segs_act [FEMU];
+   F     += (        (pate * 0.5)        ) * segs_lnk [YKINE_PATE];
+   F     += (        pate                ) * segs_act [YKINE_PATE];
+   F     += (        pate + (femu * 0.5) ) * segs_lnk [YKINE_FEMU];
+   F     += (        pate + femu         ) * segs_act [YKINE_FEMU];
    F     += (        pate + femu + body  ) * center;
    F     *= 0.000001;
-   gait.torq  [a_pos][a_leg][TIBI]  = F;
-   gait.torqp [a_pos][a_leg][TIBI]  = (F / HT475HB) * 100.0;
+   gait.torq  [a_pos][a_leg][YKINE_TIBI]  = F;
+   gait.torqp [a_pos][a_leg][YKINE_TIBI]  = (F / HT475HB) * 100.0;
    /*---(tibia)--------------------------*/
    /*> F      = 0.00f;                                                                <* 
-    *> F     += ( tibi * 0.5                 ) * segs_lnk [TIBI];                     <* 
-    *> F     += ( tibi                       ) * segs_act [TIBI];                     <* 
-    *> F     += ( tibi + (pate * 0.5)        ) * segs_lnk [PATE];                     <* 
-    *> F     += ( tibi + pate                ) * segs_act [PATE];                     <* 
-    *> F     += ( tibi + pate + (femu * 0.5) ) * segs_lnk [FEMU];                     <* 
-    *> F     += ( tibi + pate + femu         ) * segs_act [FEMU];                     <* 
+    *> F     += ( tibi * 0.5                 ) * segs_lnk [YKINE_TIBI];                     <* 
+    *> F     += ( tibi                       ) * segs_act [YKINE_TIBI];                     <* 
+    *> F     += ( tibi + (pate * 0.5)        ) * segs_lnk [YKINE_PATE];                     <* 
+    *> F     += ( tibi + pate                ) * segs_act [YKINE_PATE];                     <* 
+    *> F     += ( tibi + pate + (femu * 0.5) ) * segs_lnk [YKINE_FEMU];                     <* 
+    *> F     += ( tibi + pate + femu         ) * segs_act [YKINE_FEMU];                     <* 
     *> F     += ( tibi + pate + femu + body  ) * center;                              <* 
     *> F     *= 0.000001 * GRAVITY;                                                   <* 
-    *> gait.torq  [a_pos][a_leg][TIBI]  = F;                                          <* 
-    *> gait.torqp [a_pos][a_leg][TIBI]  = (F / HT475HB) * 100.0;                      <*/
+    *> gait.torq  [a_pos][a_leg][YKINE_TIBI]  = F;                                          <* 
+    *> gait.torqp [a_pos][a_leg][YKINE_TIBI]  = (F / HT475HB) * 100.0;                      <*/
    /*---(femur/hip)----------------------*/
    /*> l     = thor + coxa;                                                           <* 
     *> m     = body;                                                                  <* 
     *> F     = l * m * GRAVITY;                                                       <* 
-    *> gait.torq  [a_pos][a_leg][FEMU] = F;                                           <* 
-    *> gait.torqp [a_pos][a_leg][FEMU] = (F / HT475HB) * 100.0;                       <*/
+    *> gait.torq  [a_pos][a_leg][YKINE_FEMU] = F;                                           <* 
+    *> gait.torqp [a_pos][a_leg][YKINE_FEMU] = (F / HT475HB) * 100.0;                       <*/
    /*---(patella)------------------------*/
    /*> l    = (thor + coxa + femu) / 1000.0;                                          <* 
     *> m    =  b / 1000.0;                                                            <* 
     *> F    = l * m * GRAVITY;                                                        <* 
     *> l    = (femu) / 1000.0;                                                        <* 
-    *> m    =  segs_act  [COXA]                              / 1000.0;                <* 
+    *> m    =  segs_act  [YKINE_COXA]                              / 1000.0;                <* 
     *> F   += l * m * GRAVITY;                                                        <* 
     *> l    = (femu * 0.5)                       / 1000.0;                            <* 
-    *> m    =  segs_lnk  [FEMU]                              / 1000.0;                <* 
+    *> m    =  segs_lnk  [YKINE_FEMU]                              / 1000.0;                <* 
     *> F   += l * m * GRAVITY;                                                        <* 
-    *> gait.torq  [a_pos][a_leg][PATE] = F;                                           <* 
-    *> gait.torqp [a_pos][a_leg][PATE] = (F / HT475HB) * 100.0;                       <*/
+    *> gait.torq  [a_pos][a_leg][YKINE_PATE] = F;                                           <* 
+    *> gait.torqp [a_pos][a_leg][YKINE_PATE] = (F / HT475HB) * 100.0;                       <*/
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -397,8 +397,8 @@ stat_settle        (void)
    int       leg       = 1;            /* leg of shortest gap                 */
    /*---(find min)-----------------------*/
    for (i = 0; i < LEGS; ++i) {
-      if (ik [i][TIBI].cy < ymin) {
-         ymin = ik [i][TIBI].cy;
+      if (ik [i][YKINE_TIBI].cy < ymin) {
+         ymin = ik [i][YKINE_TIBI].cy;
          leg = i;
       }
    }

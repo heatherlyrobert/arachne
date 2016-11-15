@@ -79,46 +79,47 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7a"
-#define VER_TXT   "gather opengl actual joint positions and display"
+#define VER_NUM   "0.7b"
+#define VER_TXT   "converted fully to new yKINE constants"
 
 
 
 /*===[[ HEADERS ]]========================================*/
 /*---(ansi-c standard)-------------------*/
-#include  <stdio.h>               /* clibc  standard input/output             */
-#include  <stdlib.h>              /* clibc  standard general purpose          */
-#include  <string.h>              /* clibc  standard string handling          */
-#include  <unistd.h>              /* clibc  standard unix interface           */
-#include  <error.h>               /* clibc  standard error handling           */
-#include  <fcntl.h>               /* clibc  standard file control             */
-#include  <termios.h>             /* clibc  standard terminal control         */
-#include  <math.h>                /* clibc  standard math functions           */
-#include  <signal.h>              /* clibc  standard signal handling          */
-#include  <time.h>                /* clibc  standard time and date handling   */
-#include  <ctype.h>               /* clibc  standard character classes        */
+#include    <stdio.h>             /* CLIBC  standard input/output             */
+#include    <stdlib.h>            /* CLIBC  standard general purpose          */
+#include    <string.h>            /* CLIBC  standard string handling          */
+#include    <unistd.h>            /* CLIBC  standard unix interface           */
+#include    <error.h>             /* CLIBC  standard error handling           */
+#include    <fcntl.h>             /* CLIBC  standard file control             */
+#include    <termios.h>           /* CLIBC  standard terminal control         */
+#include    <math.h>              /* CLIBC  standard math functions           */
+#include    <signal.h>            /* CLIBC  standard signal handling          */
+#include    <time.h>              /* CLIBC  standard time and date handling   */
+#include    <ctype.h>             /* CLIBC  standard character classes        */
 
 /*---(posix standard)--------------------*/
-#include  <unistd.h>              /* POSIX  standard operating system API     */
-#include  <sys/time.h>            /* POSIX  standard time access              */
+#include    <unistd.h>            /* POSIX  standard operating system API     */
+#include    <sys/time.h>          /* POSIX  standard time access              */
 
 /*---(X11 standard)----------------------*/
-#include  <X11/X.h>               /* X11    standard overall file             */
-#include  <X11/Xlib.h>            /* X11    standard C API                    */
+#include    <X11/X.h>             /* X11    standard overall file             */
+#include    <X11/Xlib.h>          /* X11    standard C API                    */
 
 
 /*---(opengl standard)-------------------*/
-#include  <GL/gl.h>               /* opengl standard primary header           */
-#include  <GL/glx.h>              /* opengl standard X11 integration          */
+#include    <GL/gl.h>             /* OPENGL standard primary header           */
+#include    <GL/glx.h>            /* OPENGL standard X11 integration          */
 
 /*---(heatherly made)--------------------*/
-#include  <yX11.h>                /* heatherly xlib/glx setup/teardown        */
-#include  <yVAR.h>                /* heatherly variable testing               */
-#include  <yGOD.h>                /* heatherly opengl godview                 */
-#include  <yVIKEYS.h>             /* heatherly vi_keys standard               */
-#include  <yFONT.h>               /* heatherly texture-mapped fonts           */
-#include  <ySTR.h>                /* heatherly string handling                */
-#include  <yLOG.h>                /* heatherly logging                        */
+#include    <yX11.h>              /* CUSTOM heatherly xlib/glx setup/teardown */
+#include    <yVAR.h>              /* CUSTOM heatherly variable testing        */
+#include    <yGOD.h>              /* CUSTOM heatherly opengl godview          */
+#include    <yKINE.h>             /* CUSTOM heatherly kinematics              */
+#include    <yVIKEYS.h>           /* CUSTOM heatherly vi_keys standard        */
+#include    <yFONT.h>             /* CUSTOM heatherly texture-mapped fonts    */
+#include    <ySTR.h>              /* CUSTOM heatherly string handling         */
+#include    <yLOG.h>              /* CUSTOM heatherly program logging         */
 
 
 
@@ -314,7 +315,6 @@ extern    char      model_desc [100];
 
 /*===[[ CLI ARGS ]]=======================================*/
 extern    char      debug_sizing;
-extern    char      umake_setup;
 extern    char      umake_init;
 extern    char      umake_leg;
 extern    float     arg_thor;
@@ -326,8 +326,6 @@ extern    float     arg_y;
 
 /*===[[ CONSTANTS and ENUMS ]]============================*/
 extern    int       LEGS;
-enum      leg_nums { L_RF=0  , L_RM=1  , L_RR=2  , L_LR=3  , L_LM=4  , L_LF=5   };
-enum      seg_nums { CORE=0, THOR=1, COXA=2, FEMU=3, PATE=4, TIBI=5, TARS=6, FOOT=7, TOES=8, TARG=9, ORIG=10, VERT=11, CALC=12 };
 extern    const     double    DEG2RAD;
 extern    const     double    RAD2DEG;
 
@@ -575,7 +573,6 @@ char       dlist_end         (void);
 
 void       glx_draw          (void);
 int        glx_init          (void);
-void       glx_resize        (uint, uint);
 
 
 /*---(arachne_draw)----------------------*/
@@ -585,9 +582,9 @@ char      TICK_draw          (void);
 char      TICK_show          (void);
 char      CMD_show           (void);
 
-char      draw_begin         (void);      /* prepare drawing environment      */
-char      draw_reset         (void);      /* set starting point for drawing   */
-char      draw_end           (void);      /* teardown drawing environment     */
+char      DRAW_begin         (void);      /* prepare drawing environment      */
+char      DRAW_reset         (void);      /* set starting point for drawing   */
+char      DRAW_end           (void);      /* teardown drawing environment     */
 
 
 char      draw_setup         (void);
@@ -620,12 +617,6 @@ char       view_step         (void);
 char       view_waves        (void);
 char       view_torque       (void);
 
-void       view_fk           (void);
-void       view_ik           (void);
-void       view_unit         (void);
-void       view_fkline       (int a_leg, int a_seg, char* a_name);
-void       view_ikline       (int a_leg, int a_seg, char* a_name);
-void       view_iikline      (int a_leg, int a_seg, char* a_name);
 
 /*---(new)------------------------------------*/
 void       leg_init          (tSEG a_leg);
@@ -635,14 +626,8 @@ void       leg_init          (tSEG a_leg);
 /*---(kinematics)---------------------*/
 char      kine_init          (void);
 char      kine_clear         (char *a_name, tSEG *a_curr, int a_nleg, int a_nseg);
-char      kine_header        (void);
-char      kine_print         (tSEG *a_curr, tSEG *a_comp);
-char      kine_forward       (int, float, float, float, float);
-char      kine_inverse       (int, float, float, float, float, char);
-char      kine_max           (float, float, float);
 
 
-int       arachne_init       (void);
 
 char      kine_center        (float a_x, float a_z);
 char      kine_height        (float a_y);
@@ -650,16 +635,6 @@ char      kine_pivot         (float a_x, float a_z);
 char      kine_attitude      (float, float, float);
 
 
-void       kinetics_fk_print (int, int, char*);
-void       kinetics_ik_print (int, int, char*);
-
-int        ik_femur          (int);
-int        kinetics_lower    (int);
-int        kinetics_ik_lower (int, float, float);
-
-int        kinetics_orient   (int, int);
-
-int        kinetics_body     (void);
 
 
 /*---(scripting)----------------------*/
@@ -670,11 +645,6 @@ int        kinetics_body     (void);
 
 /*---(unit testing)---------------------------------------*/
 char     *unit_accessor      (char*, int, int);
-int       kinetics_scripter  (void);
-char      unit_SCRP          (char*, char*);
-char      unit_init          (void);
-char      unit_FK            (void);
-char      unit_IK            (void);
 
 char      font_load          (void);
 char      font_delete        (void);

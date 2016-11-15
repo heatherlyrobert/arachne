@@ -33,7 +33,7 @@ main (int argc, char *argv[])
    int   the_bytes;
    char  is_moved = 'n';
    /*> if (is_test) printf("handling the event loop...\n");                           <*/
-   /*> printf("pre-while   : gk[0][CORE].cy = %8.1f, fk[0][CORE].cy = %8.1f\n", gk[0][CORE].cy, fk[0][CORE].cy);   <*/
+   /*> printf("pre-while   : gk[0][YKINE_CORE].cy = %8.1f, fk[0][YKINE_CORE].cy = %8.1f\n", gk[0][YKINE_CORE].cy, fk[0][YKINE_CORE].cy);   <*/
    yVIKEYS_mode_mesg (my.message, "");
    while (1) {
       while (XPending(DISP)) {
@@ -42,23 +42,8 @@ main (int argc, char *argv[])
          ++updates;
          switch(EVNT.type) {
          case Expose:
-            /*> if (is_test_inp) printf("   - exposed  %d times\n", EVNT.xexpose.count);   <*/
-            is_moved = 'y';
             break;
          case ConfigureNotify:
-            if (EVNT.xconfigure.width != X || EVNT.xconfigure.height != Y) {
-               /*> if (is_test_inp) printf("   - moved    x=%4d, y=%4d", X, Y);   <*/
-               X = EVNT.xconfigure.width;
-               Y = EVNT.xconfigure.height;
-               /*> if (is_test_inp) printf("  TO  x=%4d, y=%4d\n", X, Y);             <*/
-               /*> draw_main();                                                       <*/
-            }
-            if (EVNT.xconfigure.width != (int) WIDTH || EVNT.xconfigure.height != (int) HEIGHT) {
-               /*> if (is_test_inp) printf("   - resized  w=%3d, h=%3d\n",            <* 
-                *>       EVNT.xconfigure.width, EVNT.xconfigure.height);        <*/
-               glx_resize(EVNT.xconfigure.width, EVNT.xconfigure.height);
-            }
-            is_moved = 'y';
             break;
          case KeyPress:
             /*---(prepare)---------------*/
@@ -96,36 +81,6 @@ main (int argc, char *argv[])
             if   (x_savemode != yVIKEYS_mode_curr() || yVIKEYS_mode_curr() == MODE_COMMAND) {
                yVIKEYS_mode_mesg (my.message, "");
             }
-            /*---(progress)-------------*/
-            /*> if (my_mode == 'o') {                                                 <* 
-             *>    switch (the_key[0]) {                                              <* 
-             *>    case '+': SCALE_smaller ();   /+ in  +/     break;                 <* 
-             *>    case '-': SCALE_larger  ();   /+ out +/     break;                 <* 
-             *>    case ',': my.p_moving  = 'y';                    break;                 <* 
-             *>    case '.': my.p_moving  = 'n';                    break;                 <* 
-             *>    case '>': my.p_moving  = 'n'; my.p_cursec +=  my.p_inc;          break;      <* 
-             *>    case '<': my.p_moving  = 'n'; my.p_cursec -=  my.p_inc;          break;      <* 
-             *>    case ')': my.p_moving  = 'n'; my.p_cursec +=  my.p_inc * 5;      break;      <* 
-             *>    case '(': my.p_moving  = 'n'; my.p_cursec -=  my.p_inc * 5;      break;      <* 
-             *>    }                                                                  <* 
-             *> }                                                                     <*/
-            /*---(unknown)--------------*/
-            /*> case 'a': if (flag_annotate == 'y') flag_annotate = 'n'; else flag_annotate = 'y'; break;   <*/
-            /*> case 'w': ++flag_view; if (flag_view > 4) flag_view = 0; break;    <*/
-            /*> case 'u': view_unit();      break;                                    <*/
-            /*> if (my_mode == 'p') {                                                 <* 
-             *>    switch (the_key[0]) {                                              <* 
-             *>    case 'o': my_mode = 'o';  break;                                   <* 
-             *>    case '>': my_inc *= 2.0;  break;                                   <* 
-             *>    case 'n': my_inc  = 1.0;  break;                                   <* 
-             *>    case '<': my_inc /= 2.0;  break;                                   <* 
-             *>    case '0': my_run  = 0  ; my.p_cursec = 0;       break;                  <* 
-             *>    case '$': my_run  = 0  ; my.p_cursec = my_len;  break;                  <* 
-             *>    case 'l': my_run  = 0  ; ++my.p_cursec;         break;                  <* 
-             *>    case 'h': my_run  = 0  ; --my.p_cursec;         break;                  <* 
-             *>    case 'Q': exit(0);        break;                                   <* 
-             *>    }                                                                  <* 
-             *> }                                                                     <*/
             if (the_key[0] == 'Q')  exit(0);
             is_moved = 'y';
             break;
@@ -147,7 +102,6 @@ main (int argc, char *argv[])
       /*---(check boundaries)------------*/
       stat_masscenter();
       draw_main();
-      if (umake_leg  == 'y')  unit_FK();
       is_moved = 'n';
       my_ppos = my.p_cursec;
       /*---(wait)-----------------------------------------*/

@@ -905,20 +905,30 @@ CMD_show           (void)
 static void      o___LEG_GK__________________o (void) {;}
 
 static double  s_loc      [16];
+static double  s_xpos_p   = 0.0;
+static double  s_zpos_p   = 0.0;
+static double  s_ypos_p   = 0.0;
 static double  s_xpos     = 0.0;
 static double  s_zpos     = 0.0;
 static double  s_ypos     = 0.0;
+static double  s_xz       = 0.0;
+static double  s_len      = 0.0;
 
 char       /*----: determine the current opengl position ---------------------*/
-draw_locate_NEW    (VOID)
+draw_locate_NEW    (int a_leg, int a_seg)
 {
    /*---(locals)-------------------------*/
    char      x_msg [100];
+   double    x, y, z;
    /*---(current)------------------------*/
    glGetDoublev(GL_MODELVIEW_MATRIX,  s_loc);
    s_xpos     = s_loc[12];
    s_zpos     = s_loc[14];
    s_ypos     = s_loc[13];
+   x          = s_xpos - s_xpos_p;
+   z          = s_zpos - s_zpos_p;
+   y          = s_ypos - s_ypos_p;
+   s_len      = sqrt ((x * x) + (z * z) + (y * y));
    /*---(draw)---------------------------*/
    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
    glPushMatrix (); {
@@ -934,9 +944,32 @@ draw_locate_NEW    (VOID)
       glTranslatef(    0.0  ,    -5.0 ,     0.0  );
       snprintf (x_msg, 20, "y = %.1lf", s_ypos);
       yFONT_print (txf_bg,  3, YF_TOPLEF, x_msg);
+      /*---(len)---------*/
+      glTranslatef(    0.0  ,    -5.0 ,     0.0  );
+      snprintf (x_msg, 20, "l = %.1lf", s_len);
+      yFONT_print (txf_bg,  3, YF_TOPLEF, x_msg);
       /*---(done)--------*/
    } glPopMatrix ();
+   /*---(save)---------------------------*/
+   s_xpos_p   = s_xpos;
+   s_zpos_p   = s_zpos;
+   s_ypos_p   = s_ypos;
    /*---(complete)-----------------------*/
+   return 0;
+}
+
+char
+TEST_cond          (void)
+{
+   printf ("COND       v21  automated opengl test for yKINE                              ----------------------------------------------------------------------------------------------------  ----------  ---------------------------------------------------------------------- \n");
+   printf ("     set      v21  force thorax degrees for testing     yKINE__setter         \"seg_degree\"   , L_RF      , YKINE_THOR      ,   30.0                                                       i_equal     0                                                                      \n");
+   printf ("     set      v21  force thorax degrees for testing     yKINE__setter         \"seg_degree\"   , L_RF      , YKINE_THOR      ,   30.0                                                       i_equal     0                                                                      \n");
+   return 0;
+}
+
+char
+TEST_seg           (void)
+{
    return 0;
 }
 
@@ -983,25 +1016,30 @@ draw_locate        (tSEG *a_curr, tSEG *a_prev, tSEG *a_orig)
 
 
 char       /*----: draw the leg to opengl ------------------------------------*/
-draw_leg_NEW       (int a_num, float a_body, float a_coxa, float a_femu, float a_pate, float a_tibi)
+draw_leg_NEW       (int a_leg, float a_body, float a_coxa, float a_femu, float a_pate, float a_tibi)
 {
    /*---(locals)-------------------------*/
    float     d;
    float     x,  y,  z,  xz,  l;
    char      x_msg [100];
+   /*---(prepare)------------------------*/
+   s_xpos = s_xpos_p = 0.0;
+   s_zpos = s_zpos_p = 0.0;
+   s_ypos = s_ypos_p = 0.0;
+   s_len  = 0.0;
    /*---(begin)--------------------------*/
    glPushMatrix (); {
       /*---(thorax)----------------------*/
       glTranslatef (a_body,  0.0,  0.0f);
-      draw_locate_NEW ();
-      if (a_num == my.p_leg) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+      draw_locate_NEW (a_leg, YKINE_THOR);
+      if (a_leg == my.p_leg) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
       glPushMatrix (); {
          /*---(label)-------*/
-         snprintf (x_msg, 10, "#%d/%s", a_num, legs_name [a_num]);
+         snprintf (x_msg, 10, "#%d/%s", a_leg, legs_name [a_leg]);
          glTranslatef(    0.0  ,   -15.0 ,     0.0  );
          yFONT_print (txf_bg, 12, YF_TOPLEF, x_msg);
          /*---(desc)--------*/
-         snprintf (x_msg, 25, "%s", legs_long[a_num]);
+         snprintf (x_msg, 25, "%s", legs_long [a_leg]);
          glTranslatef(    0.0  ,   -18.0 ,     0.0  );
          yFONT_print (txf_bg,  5, YF_TOPLEF, x_msg);
          /*---(prep)--------*/
@@ -1009,40 +1047,40 @@ draw_leg_NEW       (int a_num, float a_body, float a_coxa, float a_femu, float a
          /*---(coxa)--------*/
          glTranslatef(    0.0  ,    -8.0 ,     0.0  );
          yFONT_print (txf_bg,  5, YF_TOPRIG, "coxa");
-         snprintf (x_msg, 25, ": %+.0f", a_coxa);
+         snprintf (x_msg, 25, ": %+.1f", a_coxa);
          yFONT_print (txf_bg,  5, YF_TOPLEF, x_msg);
          /*---(femu)--------*/
          glTranslatef(    0.0  ,    -8.0 ,     0.0  );
          yFONT_print (txf_bg,  5, YF_TOPRIG, "femur");
-         snprintf (x_msg, 25, ": %+.0f", a_femu);
+         snprintf (x_msg, 25, ": %+.1f", a_femu);
          yFONT_print (txf_bg,  5, YF_TOPLEF, x_msg);
          /*---(pate)--------*/
          glTranslatef(    0.0  ,    -8.0 ,     0.0  );
          yFONT_print (txf_bg,  5, YF_TOPRIG, "patella");
-         snprintf (x_msg, 25, ": %+.0f", a_pate);
+         snprintf (x_msg, 25, ": %+.1f", a_pate);
          yFONT_print (txf_bg,  5, YF_TOPLEF, x_msg);
          /*---(tibi)--------*/
          glTranslatef(    0.0  ,    -8.0 ,     0.0  );
          yFONT_print (txf_bg,  5, YF_TOPRIG, "tibia");
-         snprintf (x_msg, 25, ": %+.0f", a_tibi);
+         snprintf (x_msg, 25, ": %+.1f", a_tibi);
          yFONT_print (txf_bg,  5, YF_TOPLEF, x_msg);
          /*---(done)--------*/
       } glPopMatrix ();
       /*---(coxa)------------------------*/
       glCallList (dl_coxa);
-      draw_locate_NEW ();
+      draw_locate_NEW (a_leg, YKINE_COXA);
       /*---(femur)--------------------------*/
       glRotatef  ( a_femu, 0.0f, 1.0f, 0.0f);
       glCallList (dl_femur);
-      draw_locate_NEW ();
+      draw_locate_NEW (a_leg, YKINE_FEMU);
       /*---(patella)------------------------*/
       glRotatef  (-a_pate, 0.0f, 0.0f, 1.0f);
       glCallList (dl_patella);
-      draw_locate_NEW ();
+      draw_locate_NEW (a_leg, YKINE_PATE);
       /*---(tibia)--------------------------*/
       glRotatef  (-a_tibi, 0.0f, 0.0f, 1.0f);
       glCallList (dl_tibia);
-      draw_locate_NEW ();
+      draw_locate_NEW (a_leg, YKINE_TIBI);
    } glPopMatrix ();
    /*---(complete)-----------------------*/
    return 0;
@@ -1059,12 +1097,12 @@ draw_leg           (int a_num, tSEG a_curr[], char a_loc)
    /*---(begin)--------------------------*/
    glPushMatrix (); {
       /*---(core)------------------------*/
-      if (a_loc == 'y') draw_locate (&a_curr[CORE], NULL, &a_curr[CORE]);
+      if (a_loc == 'y') draw_locate (&a_curr[YKINE_CORE], NULL, &a_curr[YKINE_CORE]);
       /*---(thorax)----------------------*/
-      d = a_curr[THOR].d;
-      a_curr[THOR].h   = d * DEG2RAD;
-      glTranslatef(a_curr[THOR].l,  0.0,  0.0f);
-      if (a_loc == 'y') draw_locate (&a_curr[THOR], &a_curr[CORE], &a_curr[CORE]);
+      d = a_curr[YKINE_THOR].d;
+      a_curr[YKINE_THOR].h   = d * DEG2RAD;
+      glTranslatef(a_curr[YKINE_THOR].l,  0.0,  0.0f);
+      if (a_loc == 'y') draw_locate (&a_curr[YKINE_THOR], &a_curr[YKINE_CORE], &a_curr[YKINE_CORE]);
       if (a_num == my_curr) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
       glPushMatrix (); {
          snprintf (msg, 10, "#%d/%s", a_num, legs_name [a_num]);
@@ -1075,25 +1113,25 @@ draw_leg           (int a_num, tSEG a_curr[], char a_loc)
          yFONT_print (txf_bg,  5, YF_TOPLEF, msg);
       } glPopMatrix ();
       /*---(coxa)------------------------*/
-      d = a_curr[COXA].d;
-      a_curr[COXA].h   = d * DEG2RAD;
+      d = a_curr[YKINE_COXA].d;
+      a_curr[YKINE_COXA].h   = d * DEG2RAD;
       glCallList(dl_coxa);
-      if (a_loc == 'y') draw_locate (&a_curr[COXA], &a_curr[THOR], &a_curr[CORE]);
+      if (a_loc == 'y') draw_locate (&a_curr[YKINE_COXA], &a_curr[YKINE_THOR], &a_curr[YKINE_CORE]);
       /*---(femur)--------------------------*/
-      d = a_curr[FEMU].d;
-      a_curr[FEMU].h   = d * DEG2RAD;
+      d = a_curr[YKINE_FEMU].d;
+      a_curr[YKINE_FEMU].h   = d * DEG2RAD;
       glRotatef(d, 0.0f, 1.0f, 0.0f);
       glCallList(dl_femur);
-      if (a_loc == 'y') draw_locate (&a_curr[FEMU], &a_curr[COXA], &a_curr[CORE]);
+      if (a_loc == 'y') draw_locate (&a_curr[YKINE_FEMU], &a_curr[YKINE_COXA], &a_curr[YKINE_CORE]);
       /*---(patella)------------------------*/
-      d = a_curr[PATE].d;
-      a_curr[PATE].v   = d * DEG2RAD;
+      d = a_curr[YKINE_PATE].d;
+      a_curr[YKINE_PATE].v   = d * DEG2RAD;
       glRotatef(d, 0.0f, 0.0f, 1.0f);
       glCallList(dl_patella);
-      if (a_loc == 'y') draw_locate (&a_curr[PATE], &a_curr[FEMU], &a_curr[CORE]);
+      if (a_loc == 'y') draw_locate (&a_curr[YKINE_PATE], &a_curr[YKINE_FEMU], &a_curr[YKINE_CORE]);
       /*---(tibia)--------------------------*/
-      d = a_curr[TIBI].d;
-      a_curr[TIBI].v   = d * DEG2RAD;
+      d = a_curr[YKINE_TIBI].d;
+      a_curr[YKINE_TIBI].v   = d * DEG2RAD;
       glRotatef(d, 0.0f, 0.0f, 1.0f);
       /*---(text)---------------------------*/
       if (a_num == my_curr) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
@@ -1105,99 +1143,9 @@ draw_leg           (int a_num, tSEG a_curr[], char a_loc)
        *>    yFONT_print (txf_bg, 18, YF_TOPLEF, msg);                                <* 
        *> } glPopMatrix ();                                                           <*/
       glCallList(dl_tibia);
-      if (a_loc == 'y') draw_locate (&a_curr[TIBI], &a_curr[PATE], &a_curr[CORE]);
+      if (a_loc == 'y') draw_locate (&a_curr[YKINE_TIBI], &a_curr[YKINE_PATE], &a_curr[YKINE_CORE]);
       /*---(tarsus)-------------------------*/
-      if (a_loc == 'y') draw_locate (&a_curr[TARS], &a_curr[TIBI], &a_curr[CORE]);
-   } glPopMatrix ();
-   /*---(information box)----------------*/
-   /*> glPushMatrix (); {                                                             <* 
-    *>    snprintf (msg, 10, "%d", a_num);                                            <* 
-    *>    glTranslatef(    0.0  ,    43.0 ,    10.0  );                               <* 
-    *>    yFONT_print (txf_bg, 18, YF_TOPLEF, msg);                                   <* 
-    *>    glTranslatef(    0.0  ,     0.0 ,   -20.0  );                               <* 
-    *>    yFONT_print (txf_bg, 18, YF_TOPLEF, msg);                                   <* 
-    *> } glPopMatrix ();                                                              <*/
-   /*---(complete)-----------------------*/
-   return 0;
-}
-
-char       /*----: draw the leg to opengl ------------------------------------*/
-draw_leg_ORIG      (int a_num, tSEG a_curr[], char a_loc)
-{
-   /*---(locals)-------------------------*/
-   float     d;
-   float     x,  y,  z;
-   float     px, py, pz;
-   char      msg [100];
-   /*---(begin)--------------------------*/
-   glPushMatrix (); {
-      /*---(core)------------------------*/
-      if (a_loc == 'y') draw_locate (&a_curr[CORE], NULL, &a_curr[CORE]);
-      /*---(thorax)----------------------*/
-      d = a_curr[THOR].d;
-      a_curr[THOR].h   = d * DEG2RAD;
-      glTranslatef(a_curr[THOR].l,  0.0,  0.0f);
-      if (a_loc == 'y') draw_locate (&a_curr[THOR], &a_curr[CORE], &a_curr[CORE]);
-      if (a_num == my_curr) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-      glPushMatrix (); {
-         snprintf (msg, 10, "#%d/%s", a_num, legs_name [a_num]);
-         glTranslatef(    0.0  ,   -15.0 ,     0.0  );
-         yFONT_print (txf_bg, 12, YF_TOPLEF, msg);
-         snprintf (msg, 25, "%s", legs_long[a_num]);
-         glTranslatef(    0.0  ,   -18.0 ,     0.0  );
-         yFONT_print (txf_bg,  5, YF_TOPLEF, msg);
-      } glPopMatrix ();
-      if (flag_annotate == 'y') {
-         glPushMatrix (); {
-            snprintf (msg, 15, "%6.3fkg-m/%d", gait.torq [gait.pos][a_num][FEMU], gait.torqp [gait.pos][a_num][FEMU]);
-            glTranslatef(  -30.0  ,    35.0 ,    10.0  );
-            yFONT_print (txf_sm, 10, YF_TOPLEF, msg);
-         } glPopMatrix ();
-         glPushMatrix (); {
-            snprintf (msg, 15, "%6.3fkg-m/%d", gait.torq [gait.pos][a_num][PATE], gait.torqp [gait.pos][a_num][PATE]);
-            glTranslatef(    5.0  ,    50.0 ,    10.0  );
-            yFONT_print (txf_sm, 10, YF_TOPLEF, msg);
-         } glPopMatrix ();
-         glPushMatrix (); {
-            snprintf (msg, 15, "%6.3fkg-m/%d", gait.torq [gait.pos][a_num][TIBI], gait.torqp [gait.pos][a_num][TIBI]);
-            glTranslatef(   45.0  ,    65.0 ,    10.0  );
-            yFONT_print (txf_sm, 10, YF_TOPLEF, msg);
-         } glPopMatrix ();
-      }
-      /*---(coxa)------------------------*/
-      d = a_curr[COXA].d;
-      a_curr[COXA].h   = d * DEG2RAD;
-      glCallList(dl_coxa);
-      if (a_loc == 'y') draw_locate (&a_curr[COXA], &a_curr[THOR], &a_curr[CORE]);
-      /*---(femur)--------------------------*/
-      d = a_curr[FEMU].d;
-      a_curr[FEMU].h   = d * DEG2RAD;
-      glRotatef(d, 0.0f, 1.0f, 0.0f);
-      glCallList(dl_femur);
-      if (a_loc == 'y') draw_locate (&a_curr[FEMU], &a_curr[COXA], &a_curr[CORE]);
-      /*---(patella)------------------------*/
-      d = a_curr[PATE].d;
-      a_curr[PATE].v   = d * DEG2RAD;
-      glRotatef(d, 0.0f, 0.0f, 1.0f);
-      glCallList(dl_patella);
-      if (a_loc == 'y') draw_locate (&a_curr[PATE], &a_curr[FEMU], &a_curr[CORE]);
-      /*---(tibia)--------------------------*/
-      d = a_curr[TIBI].d;
-      a_curr[TIBI].v   = d * DEG2RAD;
-      glRotatef(d, 0.0f, 0.0f, 1.0f);
-      /*---(text)---------------------------*/
-      if (a_num == my_curr) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-      /*> glPushMatrix (); {                                                          <* 
-       *>    snprintf (msg, 10, "%d", a_num);                                         <* 
-       *>    glTranslatef(    0.0  ,    43.0 ,    10.0  );                            <* 
-       *>    yFONT_print (txf_bg, 18, YF_TOPLEF, msg);                                <* 
-       *>    glTranslatef(    0.0  ,     0.0 ,   -20.0  );                            <* 
-       *>    yFONT_print (txf_bg, 18, YF_TOPLEF, msg);                                <* 
-       *> } glPopMatrix ();                                                           <*/
-      glCallList(dl_tibia);
-      if (a_loc == 'y') draw_locate (&a_curr[TIBI], &a_curr[PATE], &a_curr[CORE]);
-      /*---(tarsus)-------------------------*/
-      if (a_loc == 'y') draw_locate (&a_curr[TARS], &a_curr[TIBI], &a_curr[CORE]);
+      if (a_loc == 'y') draw_locate (&a_curr[YKINE_TARS], &a_curr[YKINE_TIBI], &a_curr[YKINE_CORE]);
    } glPopMatrix ();
    /*---(information box)----------------*/
    /*> glPushMatrix (); {                                                             <* 
@@ -1219,7 +1167,7 @@ draw_leg_ORIG      (int a_num, tSEG a_curr[], char a_loc)
 static void      o___ENVIRON_________________o (void) {;}
 
 char       /* ---- : establish rational drawing settings ---------------------*/
-draw_begin         (void)
+DRAW_begin         (void)
 {
    /*---(color)--------------------------*/
    glClearColor    (0.1f, 0.1f, 0.1f, 1.0f);
@@ -1249,7 +1197,7 @@ draw_begin         (void)
 }
 
 char       /* ---- : reset drawing environment for a drawing run -------------*/
-draw_reset         (void)
+DRAW_reset         (void)
 {
    glLineWidth     (0.50f);
    glPointSize     (5.00f);
@@ -1257,27 +1205,9 @@ draw_reset         (void)
 }
 
 char       /* ---- : teardown drawing environment ----------------------------*/
-draw_end           (void)
+DRAW_end           (void)
 {
    return 0;
-}
-
-void
-glx_resize(uint a_w, uint a_h)
-{
-   if (a_h == 0) a_h = 1;
-   /*> printf("making gl window to %dw, %dh\n", a_w, a_h);                            <*/
-   /*> WIDTH  = a_w;                                                                   <* 
-    *> HEIGHT  = a_h;                                                                   <*/
-   WIDTH  = 1024;
-   HEIGHT  = 768;
-   /*> glViewport(0, 0, WIDTH, HEIGHT);    /+ Reset The Current Viewport And Perspective Transformation +/   <*/
-   glViewport(0, 100, WIDTH, HEIGHT);    /* Reset The Current Viewport And Perspective Transformation */
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   gluPerspective(45.0f, (GLfloat) WIDTH / (GLfloat) HEIGHT, 0.01f, 150.0f);
-   glMatrixMode(GL_MODELVIEW);
-   return;
 }
 
 char
@@ -1285,8 +1215,6 @@ draw_setup ()
 {
    int       i;
    float     d;
-   if (umake_setup == 'y') printf("\n");
-   if (umake_setup == 'y') printf("setting leg positions\n");
    for(i = 0; i < LEGS; ++i) {
       /*---(fix angle)--------------------*/
       d = (float) (i - 1) * 60.0f;
@@ -1294,46 +1222,39 @@ draw_setup ()
       /*---(set height)-------------------*/
       /*---(set degrees)------------------*/
       if (umake_leg == 'y') {
-         /*> gk[i][THOR].d    +=  arg_thor;                                           <* 
-          *> gk[i][COXA].d    +=  arg_thor;                                           <*/
-         /*> gk[i][THOR].d     =  d      + arg_thor;                                  <* 
-          *> gk[i][COXA].d     =  d      + arg_thor;                                  <*/
-         gk[i][FEMU].d     =  arg_femu;
-         gk[i][PATE].d     =  arg_pate;
-         gk[i][TIBI].d     =  arg_tibi;
-         gk[i][TARS].d     =    0.0f;
-         if (umake_setup == 'y')
-            printf("  custom  leg pos : %d, d=%4.0f, th=%4.0f, co=%4.0f, fe=%4.0f, pa=%4.0f, ti=%4.0f, ta=%4.0f\n", i, d,
-                  gk[i][THOR].d, gk[i][COXA].d, gk[i][FEMU].d, gk[i][PATE].d, gk[i][TIBI].d, gk[i][TARS].d);
+         /*> gk[i][YKINE_THOR].d    +=  arg_thor;                                           <* 
+          *> gk[i][YKINE_COXA].d    +=  arg_thor;                                           <*/
+         /*> gk[i][YKINE_THOR].d     =  d      + arg_thor;                                  <* 
+          *> gk[i][YKINE_COXA].d     =  d      + arg_thor;                                  <*/
+         gk[i][YKINE_FEMU].d     =  arg_femu;
+         gk[i][YKINE_PATE].d     =  arg_pate;
+         gk[i][YKINE_TIBI].d     =  arg_tibi;
+         gk[i][YKINE_TARS].d     =    0.0f;
       } else {
-         /*> gk[i][THOR].d     =  d      + arg_thor;                                  <* 
-          *> gk[i][COXA].d     =  d      + arg_thor;                                  <*/
-         /*> gk[i][THOR].d    +=  arg_thor;                                           <* 
-          *> gk[i][COXA].d    +=  arg_thor;                                           <*/
-         /*> gk[i][FEMU].d     =    0.0f;                                             <* 
-          *> gk[i][PATE].d     =    0.0f;                                             <* 
-          *> gk[i][TIBI].d     =  -90.0f;                                             <*/
-         /*> gk[i][FEMU].d     =    0.0f;                                             <* 
-          *> gk[i][PATE].d     =   20.0f;                                             <* 
-          *> gk[i][TIBI].d     =  -90.0f;                                             <*/
-         /*> gk[i][FEMU].d     =   30.0f;                                                <* 
-          *> gk[i][PATE].d     =   45.0f;                                                <* 
-          *> gk[i][TIBI].d     =  -90.0f;                                                <*/
-         /*> gk[i][FEMU].d     =    0.0f;                                                <* 
-          *> gk[i][PATE].d     =    0.0f;                                                <* 
-          *> gk[i][TIBI].d     =    0.0f;                                                <*/
-         gk[i][TARS].d     =    0.0f;
-         if (umake_setup == 'y')
-            printf("  default leg pos : %d, d=%4.0f, th=%4.0f, co=%4.0f, fe=%4.0f, pa=%4.0f, ti=%4.0f, ta=%4.0f\n", i, d,
-                  gk[i][THOR].d, gk[i][COXA].d, gk[i][FEMU].d, gk[i][PATE].d, gk[i][TIBI].d, gk[i][TARS].d);
+         /*> gk[i][YKINE_THOR].d     =  d      + arg_thor;                                  <* 
+          *> gk[i][YKINE_COXA].d     =  d      + arg_thor;                                  <*/
+         /*> gk[i][YKINE_THOR].d    +=  arg_thor;                                           <* 
+          *> gk[i][YKINE_COXA].d    +=  arg_thor;                                           <*/
+         /*> gk[i][YKINE_FEMU].d     =    0.0f;                                             <* 
+          *> gk[i][YKINE_PATE].d     =    0.0f;                                             <* 
+          *> gk[i][YKINE_TIBI].d     =  -90.0f;                                             <*/
+         /*> gk[i][YKINE_FEMU].d     =    0.0f;                                             <* 
+          *> gk[i][YKINE_PATE].d     =   20.0f;                                             <* 
+          *> gk[i][YKINE_TIBI].d     =  -90.0f;                                             <*/
+         /*> gk[i][YKINE_FEMU].d     =   30.0f;                                                <* 
+          *> gk[i][YKINE_PATE].d     =   45.0f;                                                <* 
+          *> gk[i][YKINE_TIBI].d     =  -90.0f;                                                <*/
+         /*> gk[i][YKINE_FEMU].d     =    0.0f;                                                <* 
+          *> gk[i][YKINE_PATE].d     =    0.0f;                                                <* 
+          *> gk[i][YKINE_TIBI].d     =    0.0f;                                                <*/
+         gk[i][YKINE_TARS].d     =    0.0f;
       }
    }
    if (arg_y != 0.0) {
       printf("setting center to %8.1f\n", arg_y);
       center.by = arg_y;
    }
-   if (umake_setup == 'y') printf("\n");
-   /*> my_y   = lens[TIBI];                                                           <*/
+   /*> my_y   = lens[YKINE_TIBI];                                                           <*/
    my_y   = center.by;
    /*-------- label   min     max   start    step   minor   major -----*/
    yGOD_axis( 'v',      0,    360,     25,      1,      5,     45);
@@ -1365,7 +1286,6 @@ draw_main          (void)
       rc = TICK_show   ();
       CMD_show    ();
       /*> view_leg    ();                                                                <*/
-      /*> view_ik();                                                                     <*/
    }
    /*---(progress)-----------------------*/
    else if (SCRN_PROG) {
@@ -1376,87 +1296,6 @@ draw_main          (void)
    glFlush();
    /*---(complete)-----------------------*/
    return rc;
-}
-
-char       /* ---- : display key information near leg ------------------------*/
-draw__annotate     (int a_num)
-{
-   /*---(locals)-------*-----------------*/
-   char      msg [200] = "";
-   /*---(prepare)------------------------*/
-   glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-   /*---(upper bar)----------------------*/
-   glColor4f(1.00f, 0.00f, 0.00f, 0.10f);
-   glPushMatrix (); {
-      glTranslatef(gk[a_num][THOR].l +  73.00f, 127.00f,  -2.00f);
-      glBegin (GL_POLYGON);
-      glVertex3f (    0.00f,    0.00f,    0.00f);
-      glVertex3f (  210.00f,    0.00f,    0.00f);
-      glVertex3f (  210.00f,  -50.00f,    0.00f);
-      glVertex3f (    0.00f,  -50.00f,    0.00f);
-      glEnd   ();
-   } glPopMatrix ();
-   /*---(upper bar)----------------------*/
-   glColor4f(1.00f, 0.00f, 0.00f, 1.00f);
-   glPushMatrix (); {
-      glTranslatef(gk[a_num][THOR].l +  73.00f, 128.00f,   0.00f);
-      glLineWidth (2.00f);
-      glBegin (GL_LINES);
-      glVertex3f (    0.00f,    0.00f,    0.00f);
-      glVertex3f (  210.00f,    0.00f,    0.00f);
-      glEnd   ();
-      glLineWidth (0.50f);
-   } glPopMatrix ();
-   /*---(position)-----------------------*/
-   glPushMatrix (); {
-      glTranslatef(gk[a_num][THOR].l +  75.00f, 125.00f,   0.00f);
-      snprintf (msg, 30, "targ x = %7.2f", gait.cx  [a_num]);
-      yFONT_print (txf_sm,   5, YF_TOPLEF, msg);
-      glTranslatef(  0.00f, -9.00f,   0.00f);
-      snprintf (msg, 30, "targ z = %7.2f", gait.cz  [a_num]);
-      yFONT_print (txf_sm,   5, YF_TOPLEF, msg);
-      glTranslatef(  0.00f, -9.00f,   0.00f);
-      snprintf (msg, 30, "targ y = %7.2f", gait.cy  [a_num]);
-      yFONT_print (txf_sm,   5, YF_TOPLEF, msg);
-      glTranslatef(  0.00f, -9.00f,   0.00f);
-      snprintf (msg, 30, "npos   = %7d",   gait.dmax );
-      yFONT_print (txf_sm,   5, YF_TOPLEF, msg);
-      glTranslatef(  0.00f, -9.00f,   0.00f);
-      snprintf (msg, 30, "pos    = %7d",   gait.cur [a_num]);
-      yFONT_print (txf_sm,   5, YF_TOPLEF, msg);
-   } glPopMatrix ();
-   /*---(angles)-------------------------*/
-   glPushMatrix (); {
-      glTranslatef(gk[a_num][THOR].l + 145.00f, 125.00f,   0.00f);
-      snprintf (msg, 30, "coxa   = %7.2f", gk[a_num][COXA].d);
-      yFONT_print (txf_sm,   5, YF_TOPLEF, msg);
-      glTranslatef(  0.00f, -9.00f,   0.00f);
-      snprintf (msg, 30, "femu   = %7.2f", gk[a_num][FEMU].d);
-      yFONT_print (txf_sm,   5, YF_TOPLEF, msg);
-      glTranslatef(  0.00f, -9.00f,   0.00f);
-      snprintf (msg, 30, "pate   = %7.2f", gk[a_num][PATE].d);
-      yFONT_print (txf_sm,   5, YF_TOPLEF, msg);
-      glTranslatef(  0.00f, -9.00f,   0.00f);
-      snprintf (msg, 30, "tibi   = %7.2f", gk[a_num][TIBI].d);
-      yFONT_print (txf_sm,   5, YF_TOPLEF, msg);
-      glTranslatef(  0.00f, -9.00f,   0.00f);
-      snprintf (msg, 30, "phase  = %7d"  , gait.dphz [gait.cur [a_num]]);
-      yFONT_print (txf_sm,   5, YF_TOPLEF, msg);
-   } glPopMatrix ();
-   /*---(angles)-------------------------*/
-   glPushMatrix (); {
-      glTranslatef(gk[a_num][THOR].l + 215.00f, 125.00f,   0.00f);
-      snprintf (msg, 30, "tib cx = %7.2f", gk[a_num][TIBI].cx);
-      yFONT_print (txf_sm,   5, YF_TOPLEF, msg);
-      glTranslatef(  0.00f, -9.00f,   0.00f);
-      snprintf (msg, 30, "tib cz = %7.2f", gk[a_num][TIBI].cz);
-      yFONT_print (txf_sm,   5, YF_TOPLEF, msg);
-      glTranslatef(  0.00f, -9.00f,   0.00f);
-      snprintf (msg, 30, "tib cy = %7.2f", gk[a_num][TIBI].cy);
-      yFONT_print (txf_sm,   5, YF_TOPLEF, msg);
-   } glPopMatrix ();
-   /*---(complete)-----------------------*/
-   return 0;
 }
 
 char       /* ---- : display key body information ----------------------------*/
@@ -1515,7 +1354,7 @@ draw_spider        (void)
    float       x_pate      = 0.0;
    float       x_tibi      = 0.0;
    /*> draw_axis();                                                                   <*/
-   draw_reset  ();
+   DRAW_reset  ();
    if (dl_spider != 0) glDeleteLists(dl_spider, 1);
    dl_spider = glGenLists(1);
    glNewList       (dl_spider, GL_COMPILE_AND_EXECUTE);
@@ -1530,16 +1369,15 @@ draw_spider        (void)
       for (i = 0; i < 18; i += 3) {
          glPushMatrix (); {
             glColor3f(1.0f, 1.0f, 1.0f);
-            glRotatef( gk[i / 3][THOR].d, 0.0f, 1.0f, 0.0f);
-            x_coxa = gk[i / 3][THOR].d;
+            glRotatef( gk[i / 3][YKINE_THOR].d, 0.0f, 1.0f, 0.0f);
+            x_coxa = gk[i / 3][YKINE_THOR].d;
             x_femu =  0.0;
             x_pate =  0.0;
             x_tibi = 90.0;
             if (g_servos [i    ].curr != NULL)  my.s_femu = x_femu = g_servos [i    ].deg;
             if (g_servos [i + 1].curr != NULL)  my.s_pate = x_pate = g_servos [i + 1].deg;
             if (g_servos [i + 2].curr != NULL)  my.s_tibi = x_tibi = g_servos [i + 2].deg;
-            draw_leg_NEW   (i / 3, gk[i / 3][THOR].l, x_coxa, x_femu, x_pate, x_tibi);
-            /*> if (flag_annotate == 'y')  draw__annotate (i);                        <*/
+            draw_leg_NEW   (i / 3, gk[i / 3][YKINE_THOR].l, x_coxa, x_femu, x_pate, x_tibi);
          } glPopMatrix ();
       }
       /*> draw_contact    ();                                                         <*/
@@ -1727,7 +1565,7 @@ view_3d()
    gluPerspective  (45.0f, (GLfloat) 800 / (GLfloat) 580, 0.01f, 4000.0f);
    glMatrixMode    (GL_MODELVIEW);
 
-   draw_reset      ();
+   DRAW_reset      ();
    glPushMatrix    (); {
       glTranslatef (  -40.0f,  -32.0f, -100.0f);
       yGOD_orient ();
@@ -1768,17 +1606,17 @@ char view_top_curve     (int a_leg, int a_joint, float a_radius, float a_max, fl
    float     xpos      = 0.0;
    /*---(set min/max)--------------------*/
    switch (a_joint) {
-   case FEMU : xmin = - (M_PI /  2);
+   case YKINE_FEMU : xmin = - (M_PI /  2);
                xmax = + (M_PI /  2);
                xcur = - gk[a_leg][a_joint].d * DEG2RAD;
                xpos = 0.0;
                break;
-   case PATE : xmin = - (M_PI /  2);
+   case YKINE_PATE : xmin = - (M_PI /  2);
                xmax = + (M_PI /  4);
                xcur = - gk[a_leg][a_joint].d * DEG2RAD;
                xpos = 1.0;
                break;
-   case TIBI : xmin = + (M_PI / 36);
+   case YKINE_TIBI : xmin = + (M_PI / 36);
                xmax = + (M_PI * 0.75);
                xcur = - gk[a_leg][a_joint].d * DEG2RAD;
                xpos = 2.0;
@@ -1829,7 +1667,7 @@ void view_top() {
    glLoadIdentity  ();
    glOrtho         (-500.0, 500.0 , -500.0, 500.0,-500.0,  500.0);
    glMatrixMode    (GL_MODELVIEW);
-   draw_reset      ();
+   DRAW_reset      ();
    /*---(setup specifics)----------------*/
    glPushMatrix    ();
    glRotatef( 90.0, 1.0f, 0.0f, 0.0f);
@@ -1837,16 +1675,16 @@ void view_top() {
    glCallList(dl_spider);
    /*---(draw curves)--------------------*/
    glColor3f(1.0f, 0.0f, 0.0f);
-   view_top_curve (my_curr, FEMU, 370.0, 450.0,  10.0);
+   view_top_curve (my_curr, YKINE_FEMU, 370.0, 450.0,  10.0);
    glColor3f(0.0f, 0.5f, 1.0f);
-   view_top_curve (my_curr, PATE, 390.0, 450.0,   0.0);
+   view_top_curve (my_curr, YKINE_PATE, 390.0, 450.0,   0.0);
    glColor3f(1.0f, 0.5f, 0.0f);
-   view_top_curve (my_curr, TIBI, 410.0, 450.0, -10.0);
+   view_top_curve (my_curr, YKINE_TIBI, 410.0, 450.0, -10.0);
    /*===[[ PATELLA ]]=====================================*/
    /*> glBegin(GL_LINE_STRIP);                                                                         <* 
-    *> for (j = ik[i][COXA].v - (M_PI_2); j <= ik[i][COXA].v + (M_PI / 4); j += M_PI / 36) {           <* *>    x   = 390.0f * cos(j);                                                                       <* *>    z   = 390.0f * sin(j);                                                                       <* *>    glVertex3f( x, 0.0, z);                                                                      <* *> }                                                                                               <* *> glEnd();                                                                                        <* *> glBegin(GL_LINES);                                                                              <* *> r   = -ik[i][PATE].v;                                                                           <* *> x   = 390.0f * cos(r);                                                                          <* *> z   = 390.0f * sin(r);
-    <* *> glVertex3f( x,  0, z);                                                                          <* *> x   = 450.0f * cos(r);                                                                          <* *> z   = 450.0f * sin(r);                                                                          <* *> glVertex3f( x,  0, z);                                                                          <* *> glEnd();                                                                                        <* *> /+===[[ TIBIA ]]=======================================+/                                       <* *> glColor3f(0.0f, 0.0f, 1.0f);                                                                    <* *> glBegin(GL_LINE_STRIP);                                                                         <* *> for (j = -ik[i][PATE].v + (M_PI / 36); j <= -ik[i][PATE].v + (0.75 * M_PI); j += M_PI / 36) {   <* *>    x   = 410.0f * cos(j);
-    <* *>    z   = 410.0f * sin(j);                                                                       <* *>    glVertex3f( x,  -9.0, z);                                                                    <* *> }                                                                                               <* *> glEnd();                                                                                        <* *> glBegin(GL_LINES);                                                                              <* *> r   = -ik[i][TIBI].v;                                                                           <* *> x   = 410.0f * cos(r);                                                                          <* *> z   = 410.0f * sin(r);                                                                          <* *> glVertex3f( x,  -9.0, z);                                                                       <* *> x   = 450.0f * cos(r);
+    *> for (j = ik[i][YKINE_COXA].v - (M_PI_2); j <= ik[i][YKINE_COXA].v + (M_PI / 4); j += M_PI / 36) {           <* *>    x   = 390.0f * cos(j);                                                                       <* *>    z   = 390.0f * sin(j);                                                                       <* *>    glVertex3f( x, 0.0, z);                                                                      <* *> }                                                                                               <* *> glEnd();                                                                                        <* *> glBegin(GL_LINES);                                                                              <* *> r   = -ik[i][YKINE_PATE].v;                                                                           <* *> x   = 390.0f * cos(r);                                                                          <* *> z   = 390.0f * sin(r);
+    <* *> glVertex3f( x,  0, z);                                                                          <* *> x   = 450.0f * cos(r);                                                                          <* *> z   = 450.0f * sin(r);                                                                          <* *> glVertex3f( x,  0, z);                                                                          <* *> glEnd();                                                                                        <* *> /+===[[ TIBIA ]]=======================================+/                                       <* *> glColor3f(0.0f, 0.0f, 1.0f);                                                                    <* *> glBegin(GL_LINE_STRIP);                                                                         <* *> for (j = -ik[i][YKINE_PATE].v + (M_PI / 36); j <= -ik[i][YKINE_PATE].v + (0.75 * M_PI); j += M_PI / 36) {   <* *>    x   = 410.0f * cos(j);
+    <* *>    z   = 410.0f * sin(j);                                                                       <* *>    glVertex3f( x,  -9.0, z);                                                                    <* *> }                                                                                               <* *> glEnd();                                                                                        <* *> glBegin(GL_LINES);                                                                              <* *> r   = -ik[i][YKINE_TIBI].v;                                                                           <* *> x   = 410.0f * cos(r);                                                                          <* *> z   = 410.0f * sin(r);                                                                          <* *> glVertex3f( x,  -9.0, z);                                                                       <* *> x   = 450.0f * cos(r);
     <* *> z   = 450.0f * sin(r);                                                                          <* *> glVertex3f( x,  -9.0, z);                                                                       <* *> glVertex3f(15.0, -10.0,  5.0);                                                                  <* *> glVertex3f(17.0, -10.0,  5.0);                                                                  <* *> glEnd();                                                                                        <*/
    /*---(tarsus to origin line)-----------------*/
    glLineWidth( 1.50f);
@@ -1855,7 +1693,7 @@ void view_top() {
    glBegin(GL_LINES);
    glColor3f(1.0f, 1.0f, 0.0f);
    glVertex3f( 0.00f, 0.00f, 0.00f);
-   glVertex3f( fk[i][TARS].cx, fk[i][TARS].cy, fk[i][TARS].cz);
+   glVertex3f( fk[i][YKINE_TARS].cx, fk[i][YKINE_TARS].cy, fk[i][YKINE_TARS].cz);
    glEnd();
    /*===[[ DRAW AXIS ]]==================================*/
    glEnable(GL_LINE_STIPPLE);
@@ -1943,7 +1781,7 @@ void view_side() {
    glOrtho         (-500.0, 500.0 ,  -50.0, 150.0,-500.0,  500.0);
    glMatrixMode    (GL_MODELVIEW);
    glPolygonMode   (GL_FRONT_AND_BACK, GL_FILL);
-   draw_reset      ();
+   DRAW_reset      ();
    glPushMatrix    ();
    glTranslatef( 0.0,  center.by, 0);
    /*> glRotatef(- my_yaw  , 0.0f, 1.0f, 0.0f);                                       <* 
@@ -1974,7 +1812,7 @@ view_setup         (char *a_title, char *a_desc)
    glLoadIdentity  ();
    glOrtho         (-500.0, 500.0 ,  -25.0, 175.0,-500.0,  500.0);
    glMatrixMode    (GL_MODELVIEW);
-   draw_reset      ();
+   DRAW_reset      ();
    /*---(defaults)-----------------------*/
    glPolygonMode   (GL_FRONT_AND_BACK, GL_FILL);
    /*---(show title)---------------------*/
@@ -2440,181 +2278,6 @@ view_torque        (void)
 }
 
 void
-view_fk()
-{
-   /*---(setup view)-----------------------------*/
-   glViewport      (  0,   0, 700, 100);
-   glMatrixMode    (GL_PROJECTION);
-   glLoadIdentity  ();
-   glOrtho         (  0.0, 35.0 ,   0.0, 10.0, 10.0, -10.0);
-   glMatrixMode    (GL_MODELVIEW);
-   draw_reset      ();
-   /*---(setup specifics)------------------------*/
-   glPushMatrix    ();
-   glPolygonMode   (GL_FRONT_AND_BACK, GL_FILL);
-   glColor4f       (1.00f, 1.00f, 1.00f, 1.00f);
-   glTranslatef    ( 10.00,  5.00,  0.00);
-   yFONT_print (txf_bg,  100, YF_TOPLEF, "testing");
-   glPopMatrix();
-   /*> view_fkline(my_curr, 0, "body");                                               <* 
-    *> view_fkline(my_curr, 1, "coxa");                                               <* 
-    *> view_fkline(my_curr, 2, "femur");                                              <* 
-    *> view_fkline(my_curr, 3, "patella");                                            <* 
-    *> view_fkline(my_curr, 4, "tibia");                                              <* 
-    *> view_fkline(my_curr, 5, "tarsus");                                             <* 
-    *> view_fkline(my_curr, 6, "final");                                              <*/
-   /*> view_iikline(my_curr, 0, "body");                                              <* 
-    *> view_iikline(my_curr, 1, "coxa");                                              <* 
-    *> view_iikline(my_curr, 2, "femur");                                             <* 
-    *> view_iikline(my_curr, 3, "patella");                                           <* 
-    *> view_iikline(my_curr, 4, "tibia");                                             <* 
-    *> view_iikline(my_curr, 5, "tarsus");                                            <* 
-    *> view_iikline(my_curr, 6, "final");                                             <*/
-   /*> glRasterPos2f( 2.0f,  8.0f);                                                                <* 
-    *> if (font == NULL) font_load();                                                              <* 
-    *> ftglRenderFont(font, "forward kinetics (fk) -------------------------", FTGL_RENDER_ALL);   <*/
-   return;
-}
-
-/*> void                                                                                                     <* 
- *> view_ik()                                                                                                <* 
- *> {                                                                                                        <* 
- *>    int      i = 0;              /+ iterator         +/                                                   <* 
- *>    float    x, y, z;            /+ basic x, y, z    +/                                                   <* 
- *>    float    r, d;               /+ rads and degs    +/                                                   <* 
- *>    float    l, xz;              /+ full and xz lens +/                                                   <* 
- *>    float    v, h, dh;           /+ vert/horz rads   +/                                                   <* 
- *>    float    dx, dy, dz;         /+ delta x, y, z    +/                                                   <* 
- *>    /+---(setup view)-----------------------------+/                                                      <* 
- *>    glViewport(350,   0, 350, 100);                                                                       <* 
- *>    glMatrixMode(GL_PROJECTION);                                                                          <* 
- *>    glLoadIdentity();                                                                                     <* 
- *>    glOrtho(  0.0, 35.0 ,   0.0, 10.0, 10.0, -10.0);                                                      <* 
- *>    glMatrixMode(GL_MODELVIEW);                                                                           <* 
- *>    view_setup();                                                                                         <* 
- *>    glPushMatrix();                                                                                       <* 
- *>    /+---(calculate_ik)---------------------------+/                                                      <* 
- *>    for (i = 1; i < 7; ++i) {                                                                             <* 
- *>       /+---(set target)-----------------------------------+/                                             <* 
- *>       dx = x  = ik[i][6].x = fk[i][6].x;                                                                 <* 
- *>       dz = z  = ik[i][6].z = fk[i][6].z;                                                                 <* 
- *>       dy = y  = ik[i][6].y = fk[i][6].y;                                                                 <* 
- *>       l  = sqrt((x * x) + (y * y) + (z * z));                                                            <* 
- *>       xz = sqrt((x * x) + (z * z));                                                                      <* 
- *>       ik[i][6].l  = l;                                                                                   <* 
- *>       ik[i][6].h  = atan2(z, x);                                                                         <* 
- *>       ik[i][6].v  = atan2(y, xz);                                                                        <* 
- *>       ik[i][6].xz = xz;                                                                                  <* 
- *>       /+---(clear tarsus)---------------------------------+/                                             <* 
- *>       ik[i][5].l  = 0.00;                                                                                <* 
- *>       ik[i][5].h  = 0.00;                                                                                <* 
- *>       ik[i][5].v  = 0.00;                                                                                <* 
- *>       ik[i][5].x  = 0.00;                                                                                <* 
- *>       ik[i][5].z  = 0.00;                                                                                <* 
- *>       ik[i][5].y  = 0.00;                                                                                <* 
- *>       ik[i][5].xz = 0.00;                                                                                <* 
- *>       /+---(body)-----------------------------------------+/                                             <* 
- *>       d   = (float) (i - 1) * 60.0f;                                                                     <* 
- *>       r   = d * ((2 * M_PI) / 360);                                                                      <* 
- *>       l   = ik[i][0].l  = 4.25;                                                                          <* 
- *>       h   = ik[i][0].h  = r;                                                                             <* 
- *>       dx -= x   = ik[i][0].x  = l * cos(r);                                                              <* 
- *>       dz -= z   = ik[i][0].z  = l * sin(r);                                                              <* 
- *>       dy -= y   = ik[i][0].v  = 0.00;                                                                    <* 
- *>       xz  = ik[i][0].xz  = sqrt((l * l) - (y * y));                                                      <* 
- *>       /+---(coxa)-----------------------------------------+/                                             <* 
- *>       l   = ik[i][1].l  = 1.12;                                                                          <* 
- *>       h   = ik[i][1].h  = r;                                                                             <* 
- *>       v   = ik[i][1].v  = 0.00;                                                                          <* 
- *>       dx -= x  = ik[i][1].x  = l * cos(r);                                                               <* 
- *>       dz -= z  = ik[i][1].z  = l * sin(r);                                                               <* 
- *>       dy -= y  = ik[i][1].y  = 0.65;                                                                     <* 
- *>       xz  = ik[i][1].xz  = sqrt((l * l) - (y * y));                                                      <* 
- *>       /+---(femur)----------------------------------------+/                                             <* 
- *>       l  = sqrt((dx * dx) + (dy * dy) + (dz * dz));                                                      <* 
- *>       xz = sqrt((dx * dx) + (dz * dz));                                                                  <* 
- *>       h  = atan2(dz, dx);                                                                                <* 
- *>       dh = h - ik[i][1].h;                                                                               <* 
- *>       if      (dh >=  1.57) h = ik[i][1].h;                                                              <* 
- *>       else if (dh <= -1.57) h = ik[i][1].h;                                                              <* 
- *>       l  = ik[i][2].l = 1.00;                                                                            <* 
- *>       ik[i][2].v = 0.00;                                                                                 <* 
- *>       ik[i][2].h = h;                                                                                    <* 
- *>       dx -= x  = ik[i][2].x = cos(h);                                                                    <* 
- *>       dz -= z  = ik[i][2].z = sin(h);                                                                    <* 
- *>       dy -= y  = ik[i][2].y = 0.00;                                                                      <* 
- *>       xz  = ik[i][2].xz  = sqrt((l * l) - (y * y));                                                      <* 
- *>       /+---(patella/tibia)--------------------------------+/                                             <* 
- *>       float a1, a2, a3, aY;                                                                              <* 
- *>       float d1, d2, d3, dY;                                                                              <* 
-*>       l  = sqrt((dx * dx) + (dz * dz) + (dy * dy));                                                      <* 
-*>       xz = sqrt((dx * dx) + (dz * dz));                                                                  <* 
-*>       a1 = acos(((l * l)   + (5.50 * 5.50) - (2.25 * 2.25)) / (2 * l  * 5.50));                          <* 
-*>       a2 = acos(((l * l)   + (2.25 * 2.25) - (5.50 * 5.50)) / (2 * l  * 2.25));                          <* 
-*>       a3 = acos(((5.50 * 5.50) + (2.25 * 2.25) - (l * l)  ) / (2 * 2.25 * 5.50));                        <* 
-*>       aY = cos(dy / l);                                                                                  <* 
-*>       d1 = a1 * (360 / (2 * M_PI));                                                                      <* 
-*>       d2 = a2 * (360 / (2 * M_PI));                                                                      <* 
-*>       d3 = a3 * (360 / (2 * M_PI));                                                                      <* 
-*>       dY = aY * (360 / (2 * M_PI));                                                                      <* 
-*>       x = ik[i][6].x;                                                                                    <* 
-*>       z = ik[i][6].z;                                                                                    <* 
-*>       float xz6 = sqrt(( x *  x) + ( z *  z));                                                           <* 
-*>       x = ik[i][2].x + ik[i][1].x + ik[i][0].x;                                                          <* 
-*>       z = ik[i][2].z + ik[i][1].z + ik[i][0].z;                                                          <* 
-*>       float xz3 = sqrt(( x *  x) + ( z *  z));                                                           <* 
-*>       float dxz = 1;                                                                                     <* 
-*>       if (xz6 < xz3) dxz *= -1;                                                                          <* 
-*>       /+---(DEBUG)----------------------------------+/                                                   <* 
-*>       ik[i][5].l  = l;                                                                                   <* 
-*>       ik[i][5].h  = h;                                                                                   <* 
-*>       x   = ik[i][5].x   = dx;                                                                           <* 
-*>       z   = ik[i][5].z   = dz;                                                                           <* 
-*>       y   = ik[i][5].y   = dy;                                                                           <* 
-*>       xz  = ik[i][5].xz  = sqrt((dx * dx) + (dz * dz)) * dxz;                                            <* 
-*>       v   = ik[i][5].v   = atan2(y, xz);                                                                 <* 
-*>       if (v < -(M_PI / 2)) {                                                                             <* 
-   *>          ik[i][5].h   = h   += M_PI;                                                                     <* 
-      *>       }                                                                                                  <* 
-      *>       /+---(DEBUG)----------------------------------+/                                                   <* 
-      *>       ik[i][4].h   = ik[i][3].h = ik[i][2].h;                                                            <* 
-      *>       /+---(patella)--------------------------------+/                                                   <* 
-      *>       l   = ik[i][3].l   = 2.25;                                                                         <* 
-      *>       h   = ik[i][3].h   = ik[i][2].h;                                                                   <* 
-      *>       v   = ik[i][3].v   = ik[i][5].v + a2;                                                              <* 
-      *>       y   = ik[i][3].y   = l  * sin(v);                                                                  <* 
-      *>       xz  = ik[i][3].xz  = l  * cos(v);                                                                  <* 
-      *>       x   = ik[i][3].x   = xz * cos(h);                                                                  <* 
-      *>       z   = ik[i][3].z   = xz * sin(h);                                                                  <* 
-      *>       /+---(tibia)----------------------------------+/                                                   <* 
-      *>       l   = ik[i][4].l   = 5.50;                                                                         <* 
-      *>       h   = ik[i][4].h   = ik[i][3].h;                                                                   <* 
-      *>       v   = ik[i][4].v   = ik[i][3].v - (M_PI - a3);                                                     <* 
-      *>       y   = ik[i][4].y   = l  * sin(v);                                                                  <* 
-      *>       xz  = ik[i][4].xz  = l  * cos(v);                                                                  <* 
-      *>       x   = ik[i][4].x   = xz * cos(h);                                                                  <* 
-      *>       z   = ik[i][4].z   = xz * sin(h);                                                                  <* 
-      *>       if (v < -(M_PI / 2)) {                                                                             <* 
-         *>          ik[i][4].h   = h   += M_PI;                                                                     <* 
-            *>       }                                                                                                  <* 
-            *>    }                                                                                                     <* 
-            *>    /+---(setup specifics)------------------------+/                                                      <* 
-            *>    glPopMatrix();                                                                                        <* 
-            *>    glColor3f(1.0f, 1.0f, 1.0f);                                                                          <* 
-            *>    view_ikline(my_curr, 0, "body");                                                                      <* 
-            *>    view_ikline(my_curr, 1, "coxa");                                                                      <* 
-            *>    view_ikline(my_curr, 2, "femur");                                                                     <* 
-            *>    view_ikline(my_curr, 3, "patella");                                                                   <* 
-            *>    view_ikline(my_curr, 4, "tibia");                                                                     <* 
-            *>    view_ikline(my_curr, 5, "lower");                                                                     <* 
-            *>    view_ikline(my_curr, 6, "target");                                                                    <* 
-            *>    /+> glRasterPos2f( 2.0f, 8.0f);                                                                 <*    <* 
-            *>     *> if (font == NULL) font_load();                                                              <*    <* 
-            *>     *> ftglRenderFont(font, "inverse kinetics (ik) -------------------------", FTGL_RENDER_ALL);   <+/   <* 
-            *>    return;                                                                                               <* 
-            *> }                                                                                                        <*/
-
-void
 view_leg()
 {
    /*---(locals)-------*-----------------*/
@@ -2623,7 +2286,7 @@ view_leg()
    char      message [100];
    float     offset    = 0.00f;
    /*---(figure out left offset)---------*/
-   offset = segs_len [THOR];
+   offset = segs_len [YKINE_THOR];
    if (offset > 25.0) offset -= 25.0;
    /*---(setup view)---------------------*/
    glViewport      (700, 168, 300, 300);
@@ -2631,12 +2294,12 @@ view_leg()
    glLoadIdentity  ();
    glOrtho         (offset, 300.0 + offset, -150.0, 150.0,-150.0,  150.0);
    glMatrixMode    (GL_MODELVIEW);
-   draw_reset      ();
+   DRAW_reset      ();
    /*---(draw leg segment)---------------*/
    glPushMatrix();
    glColor3f(1.0f, 1.0f, 1.0f);
-   /*> glTranslatef (  0.0,  lens [THOR], 0.0);                                       <*/
-   /*> glTranslatef (  0.0,  lens [THOR], 0.0);                                       <*/
+   /*> glTranslatef (  0.0,  lens [YKINE_THOR], 0.0);                                       <*/
+   /*> glTranslatef (  0.0,  lens [YKINE_THOR], 0.0);                                       <*/
    i = my_curr;
    glCallList      (dl_body);
    draw_leg   (i, gk[i], 'n');
@@ -2848,104 +2511,6 @@ view_leg()
 }
 
 
-void
-view_fkline (int a_leg, int a_seg, char* a_name)
-{
-   return;
-   static char  lmessage[200] = "";
-   char  message[200];
-   strcat(lmessage, message);
-   /*> if (font_small == NULL) font_load();                                            <* 
-    *> if (a_seg == 0) {                                                               <* 
-    *>    glRasterPos2f( 0.5f, 8.00f);                                                 <* 
-    *>    snprintf(message, msg_len,                                                   <* 
-    *>          "forward        l"                                                     <* 
-    *>          "        d        h        v        x        z        y       xz   "   <* 
-    *>          "       cd       ch       cv       cx       cz       cy"               <* 
-    *>          "       gx       gz       gy    time");                                <* 
-    *>    ftglRenderFont(font_small, message, FTGL_RENDER_ALL);                        <* 
-    *> }                                                                               <* 
-    *> glRasterPos2f( 0.5f, 7.0f - a_seg);                                             <*/
-   /*> snprintf(message, 200,                                                         <* 
-    *>       "%d/%-7.7s %8.1f %8.1f %8.3f %8.3f %8.1f %8.1f %8.1f %8.1f    "          <* 
-    *>       "%8.1f %8.3f %8.3f %8.1f %8.1f %8.1f %8.1f %8.1f %8.1f    %8.3f",        <* 
-    *>       a_leg, a_name, fk[a_leg][a_seg].l,                                       <* 
-    *>       fk[a_leg][a_seg].d, fk[a_leg][a_seg].h, fk[a_leg][a_seg].v,              <* 
-    *>       fk[a_leg][a_seg].x, fk[a_leg][a_seg].z, fk[a_leg][a_seg].y,              <* 
-    *>       fk[a_leg][a_seg].xz,                                                     <* 
-    *>       fk[a_leg][a_seg].cd, fk[a_leg][a_seg].ch, fk[a_leg][a_seg].cv,           <* 
-    *>       fk[a_leg][a_seg].cx, fk[a_leg][a_seg].cz, fk[a_leg][a_seg].cy,           <* 
-    *>       fk[a_leg][a_seg].gx, fk[a_leg][a_seg].gz, fk[a_leg][a_seg].gy,           <* 
-    *>       fps);                                                                    <* 
-    *> if (strcmp(lmessage, message) == 0) return;                                    <* 
-    *> printf("%s\n", message);                                                       <*/
-   glPushMatrix ();
-   glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-   glColor4f (1.0, 1.0, 1.0, 1.0);
-   glTranslatef (  5.0,  5.0, 0.0);
-   yFONT_print (txf_bg, 100, YF_TOPLEF, "testing");
-   /*> ftglRenderFont(font_small, message, FTGL_RENDER_ALL);                          <*/
-   glPopMatrix  ();
-   return;
-}
-
-
-/*> void                                                                                                   <* 
- *> view_ikline(int a_leg, int a_seg, char* a_name)                                                        <* 
- *> {                                                                                                      <* 
- *>    return;                                                                                             <* 
- *>    static char  lmessage[100] = "";                                                                    <* 
- *>    char  message[100];                                                                                 <* 
- *>    strcat(lmessage, message);                                                                          <* 
- *>    /+> if (font_small == NULL) font_load();                                                      <*    <* 
- *>     *> if (a_seg == 0) {                                                                         <*    <* 
- *>     *>    glRasterPos2f( 0.5f, 8.00f);                                                           <*    <* 
- *>     *>    sprintf(message, "inverse      l      h      v      x      z      y     xz     ex");   <*    <* 
- *>     *>    ftglRenderFont(font_small, message, FTGL_RENDER_ALL);                                  <*    <* 
- *>     *>    glBegin(GL_LINES);                                                                     <*    <* 
- *>     *>    glVertex3f(  0.00f,   8.50f,   0.00f);                                                 <*    <* 
- *>     *>    glVertex3f(  0.00f,   0.80f,   0.00f);                                                 <*    <* 
- *>     *>    glEnd();                                                                               <*    <* 
- *>     *> }                                                                                         <*    <* 
- *>     *> glRasterPos2f( 0.5f, 7.0f - a_seg);                                                       <+/   <* 
- *>    sprintf(message, "%-7.7s %6.2f %6.2f %6.2f %6.2f %6.2f %6.2f %6.2f %6.2f", a_name,                  <* 
- *>          ik[a_leg][a_seg].l, ik[a_leg][a_seg].h, ik[a_leg][a_seg].v,                                   <* 
- *>          ik[a_leg][a_seg].x, ik[a_leg][a_seg].z, ik[a_leg][a_seg].y,                                   <* 
- *>          ik[a_leg][a_seg].xz, 0.00);                                                                   <* 
- *>    if (strcmp(lmessage, message) == 0) return;                                                         <* 
- *>    printf("%s\n", message);                                                                            <* 
- *>    /+> ftglRenderFont(font_small, message, FTGL_RENDER_ALL);                          <+/              <* 
- *>    return;                                                                                             <* 
- *> }                                                                                                      <*/
-
-
-/*> void                                                                                                   <* 
- *> view_iikline(int a_leg, int a_seg, char* a_name)                                                       <* 
- *> {                                                                                                      <* 
- *>    return;                                                                                             <* 
- *>    static char  lmessage[100] = "";                                                                    <* 
- *>    char  message[100];                                                                                 <* 
- *>    strcat(lmessage, message);                                                                          <* 
- *>    /+> if (font_small == NULL) font_load();                                                      <*    <* 
- *>     *> if (a_seg == 0) {                                                                         <*    <* 
- *>     *>    glRasterPos2f( 0.5f, 8.00f);                                                           <*    <* 
- *>     *>    sprintf(message, "NEW inverse  l      h      v      x      z      y     xz     ex");   <*    <* 
- *>     *>    ftglRenderFont(font_small, message, FTGL_RENDER_ALL);                                  <*    <* 
- *>     *>    glBegin(GL_LINES);                                                                     <*    <* 
- *>     *>    glVertex3f(  0.00f,   8.50f,   0.00f);                                                 <*    <* 
- *>     *>    glVertex3f(  0.00f,   0.80f,   0.00f);                                                 <*    <* 
- *>     *>    glEnd();                                                                               <*    <* 
- *>     *> }                                                                                         <*    <* 
- *>     *> glRasterPos2f( 0.5f, 7.0f - a_seg);                                                       <+/   <* 
- *>    sprintf(message, "%-7.7s %6.2f %6.2f %6.2f %6.2f %6.2f %6.2f %6.2f %6.2f", a_name,                  <* 
- *>          iik[a_leg][a_seg].l, iik[a_leg][a_seg].h, iik[a_leg][a_seg].v,                                <* 
- *>          iik[a_leg][a_seg].x, iik[a_leg][a_seg].z, iik[a_leg][a_seg].y,                                <* 
- *>          iik[a_leg][a_seg].xz, 0.00);                                                                  <* 
- *>    if (strcmp(lmessage, message) == 0) return;                                                         <* 
- *>    printf("%s\n", message);                                                                            <* 
- *>    /+> ftglRenderFont(font_small, message, FTGL_RENDER_ALL);                          <+/              <* 
- *>    return;                                                                                             <* 
- *> }                                                                                                      <*/
 
 
 
@@ -3305,15 +2870,15 @@ position_draw(int a_leg)
  *>     *> a_leg.bott.l = 0.00;                                                           <*    <* 
  *>     *> a_leg.full.l = 0.00;                                                           <*    <* 
  *>     *> a_leg.targ.l = 0.00;                                                           <+/   <* 
- *>    /+> a_leg->[THOR].l = 4.25;                                                        <*    <* 
- *>     *> a_leg->[COXA].l = 1.12;                                                        <*    <* 
- *>     *> a_leg->[FEMU].l = 1.00;                                                        <*    <* 
- *>     *> a_leg->[PATE].l = 2.25;                                                        <*    <* 
- *>     *> a_leg->[TIBI].l = 5.50;                                                        <*    <* 
- *>     *> a_leg->[TARS].l = 0.00;                                                        <*    <* 
+ *>    /+> a_leg->[YKINE_THOR].l = 4.25;                                                        <*    <* 
+ *>     *> a_leg->[YKINE_COXA].l = 1.12;                                                        <*    <* 
+ *>     *> a_leg->[YKINE_FEMU].l = 1.00;                                                        <*    <* 
+ *>     *> a_leg->[YKINE_PATE].l = 2.25;                                                        <*    <* 
+ *>     *> a_leg->[YKINE_TIBI].l = 5.50;                                                        <*    <* 
+ *>     *> a_leg->[YKINE_TARS].l = 0.00;                                                        <*    <* 
  *>     *> a_leg->[BOTT].l = 0.00;                                                        <*    <* 
  *>     *> a_leg->[FULL].l = 0.00;                                                        <*    <* 
- *>     *> a_leg->[TARG].l = 0.00;                                                        <+/   <* 
+ *>     *> a_leg->[YKINE_TARG].l = 0.00;                                                        <+/   <* 
  *>    return;                                                                                  <* 
  *> }                                                                                           <*/
 
@@ -3521,7 +3086,7 @@ draw_contact       (void)
    glBegin         (GL_POLYGON);
    for (i = 0; i < LEGS; ++i) {
       if (gait.tleg[(int) my.p_cursec][i] != 1) continue;
-      glVertex3f      ( gk [i][TIBI].cx - center.bx, -center.by , gk [i][TIBI].cz - center.bz);
+      glVertex3f      ( gk [i][YKINE_TIBI].cx - center.bx, -center.by , gk [i][YKINE_TIBI].cz - center.bz);
    }
    glEnd           ();
    /*---(touches)------------------------*/
@@ -3542,8 +3107,8 @@ draw_contact       (void)
          glBegin   (GL_LINE_STRIP);
          for (deg = 0; deg < 365; deg +=  5) {
             rad = deg * DEG2RAD;
-            x   = 25.0 * cos (rad) + gk[i][TIBI].cx - center.bx;
-            z   = 25.0 * sin (rad) + gk[i][TIBI].cz - center.bz;
+            x   = 25.0 * cos (rad) + gk[i][YKINE_TIBI].cx - center.bx;
+            z   = 25.0 * sin (rad) + gk[i][YKINE_TIBI].cz - center.bz;
             glVertex3f ( x, -center.by + 2.0, z);
          }
          glEnd     ();
@@ -3551,8 +3116,8 @@ draw_contact       (void)
       glBegin   (GL_LINE_STRIP);
       for (deg = 0; deg < 365; deg +=  5) {
          rad = deg * DEG2RAD;
-         x   =  5.0 * cos (rad) + gk[i][TIBI].cx - center.bx;
-         z   =  5.0 * sin (rad) + gk[i][TIBI].cz - center.bz;
+         x   =  5.0 * cos (rad) + gk[i][YKINE_TIBI].cx - center.bx;
+         z   =  5.0 * sin (rad) + gk[i][YKINE_TIBI].cz - center.bz;
          glVertex3f ( x, -center.by + 2.0, z);
       }
       glEnd     ();
