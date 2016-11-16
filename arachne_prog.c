@@ -303,7 +303,7 @@ PROG_begin         (void)
 {
    DEBUG_PROG   yLOG_enter   (__FUNCTION__);
    stat_init    (model_name);
-   kine_init    ();
+   KINE_begin   ();
    DEBUG_ARGS  yLOG_info   ("title"     , my.w_title);
    DEBUG_ARGS  yLOG_value  ("width"     , my.w_width);
    DEBUG_ARGS  yLOG_value  ("height"    , my.w_height);

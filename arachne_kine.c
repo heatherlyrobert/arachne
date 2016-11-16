@@ -4,10 +4,19 @@
 
 
 
-
 /*---[[ CONSTANTS ]]----------------------------------------------------------*/
-char   *legscon[MAX_LEGS]  = { "L_RF", "L_RM", "L_RR", "L_LR", "L_LM", "L_LF"};
+char    legs_name [YKINE_MAX_LEGS][LEN_LABEL];
+char    legs_long [YKINE_MAX_LEGS][LEN_LABEL];
+float   legs_deg  [YKINE_MAX_LEGS];
 
+char    segs_name [YKINE_MAX_SEGS][LEN_LABEL];
+char    segs_long [YKINE_MAX_SEGS][LEN_LABEL];
+float   segs_len  [YKINE_MAX_SEGS];
+float   segs_max  [YKINE_MAX_SEGS];
+float   segs_min  [YKINE_MAX_SEGS];
+
+float   segs_lnk  [YKINE_MAX_SEGS]      = {   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0  };
+float   segs_act  [YKINE_MAX_SEGS]      = {   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0  };
 
 
 const    double   DEG2RAD   = M_PI / 180.0;
@@ -30,65 +39,99 @@ char      umake_leg     = 'n';
 /*====================------------------------------------====================*/
 static void      o___INIT____________________o (void) {;}
 
-char       /*----: set all segments to defaults ------------------------------*/
-kine_init          (void)
+char
+KINE_load          (void)
 {
-   /*---(locals)-------------------------*/
-   int      x_leg = 0;              /* iterator         */
-   int      x_seg = 0;              /* iterator         */
-   /*---(set body)-----------------------*/
-   kine_center       (0.0f, 0.0f);
-   kine_height       (segs_len [YKINE_TIBI]);
-   kine_pivot        (0.0f, 0.0f);
-   kine_attitude     (0.0f, 0.0f, 0.0f);
-   /*---(clean legs)---------------------*/
-   for (x_leg = 0; x_leg < MAX_LEGS; ++x_leg) {
-      for (x_seg = 0; x_seg < MAX_SEGS; ++x_seg) {
-         kine_clear ("gk", &gk[x_leg][x_seg], x_leg, x_seg);
-         kine_clear ("fk", &fk[x_leg][x_seg], x_leg, x_seg);
-         kine_clear ("ik", &ik[x_leg][x_seg], x_leg, x_seg);
-      }
+   /*---(locals)-----------+-----------+-*/
+   int         i           = 0;
+   /*---(gather leg data)----------------*/
+   for (i = 0; i < YKINE_MAX_LEGS; ++i) {
+      strlcpy (legs_name [i], yKINE_legcaps (i), LEN_LABEL);
+      strlcpy (legs_long [i], yKINE_legfull (i), LEN_LABEL);
+      legs_deg  [i] = yKINE_legdeg (i);
+   }
+   /*---(gather segment data)------------*/
+   for (i = 0; i < YKINE_MAX_SEGS; ++i) {
+      strlcpy (segs_name [i], yKINE_segfour (i), LEN_LABEL);
+      strlcpy (segs_long [i], yKINE_segfull (i), LEN_LABEL);
+      segs_len  [i] = yKINE_seglen (i);
+      segs_min  [i] = yKINE_segmin (i);
+      segs_max  [i] = yKINE_segmax (i);
    }
    /*---(complete)-----------------------*/
    return 0;
 }
 
-char       /*----: set segment kimematics to defaults ------------------------*/
-kine_clear         (char *a_name, tSEG *a_curr, int a_nleg, int a_nseg)
+char
+KINE_begin         (void)
 {
-   /*---(defenses)-----------------------*/
-   if (strlen(a_name) != 2)                   return -1;
-   if (a_curr  == NULL)                       return -2;
-   if (a_nleg  <  0  || a_nleg >= MAX_LEGS)   return -3;
-   if (a_nleg  <  0  || a_nleg >= MAX_SEGS)   return -4;
-   /*---(set name)-----------------------*/
-   snprintf(a_curr->n, 11, "%s.%s.%s", legs_name [a_nleg], segs_name[a_nseg], a_name);
-   /*---(set lengths)--------------------*/
-   a_curr->l   = segs_len [a_nseg];
-   a_curr->sl  = segs_len [a_nseg];
-   a_curr->fl  =   0.0;
-   /*---(angles)-------------------------*/
-   if (a_nseg <= YKINE_COXA)    a_curr->d   = legs_deg [a_nleg];
-   a_curr->h   =   0.0;
-   a_curr->v   =   0.0;
-   a_curr->cd  =   0.0;
-   a_curr->ch  =   0.0;
-   a_curr->cv  =   0.0;
-   /*---(coordinates)--------------------*/
-   a_curr->x   =   0.0;
-   a_curr->z   =   0.0;
-   a_curr->xz  =   0.0;
-   a_curr->y   =   0.0;
-   a_curr->cx  =   0.0;
-   a_curr->cz  =   0.0;
-   a_curr->cy  =   0.0;
-   /*---(control)------------------------*/
-   a_curr->p   =   'n';
-   a_curr->m   =   'i';
-   a_curr->c   =   'n';
-   /*---(complete)-----------------------*/
+   yKINE_init      (0);
+   yKINE_center    (0.0, 0.0, 0.0);
+   KINE_load       ();
    return 0;
 }
+
+
+
+/*> char       /+----: set all segments to defaults ------------------------------+/   <* 
+ *> kine_init          (void)                                                          <* 
+ *> {                                                                                  <* 
+ *>    /+---(locals)-------------------------+/                                        <* 
+ *>    int      x_leg = 0;              /+ iterator         +/                         <* 
+ *>    int      x_seg = 0;              /+ iterator         +/                         <* 
+ *>    /+---(set body)-----------------------+/                                        <* 
+ *>    kine_center       (0.0f, 0.0f);                                                 <* 
+ *>    kine_height       (segs_len [YKINE_TIBI]);                                      <* 
+ *>    kine_pivot        (0.0f, 0.0f);                                                 <* 
+ *>    kine_attitude     (0.0f, 0.0f, 0.0f);                                           <* 
+ *>    /+---(clean legs)---------------------+/                                        <* 
+ *>    for (x_leg = 0; x_leg < MAX_LEGS; ++x_leg) {                                    <* 
+ *>       for (x_seg = 0; x_seg < MAX_SEGS; ++x_seg) {                                 <* 
+ *>          kine_clear ("gk", &gk[x_leg][x_seg], x_leg, x_seg);                       <* 
+ *>          kine_clear ("fk", &fk[x_leg][x_seg], x_leg, x_seg);                       <* 
+ *>          kine_clear ("ik", &ik[x_leg][x_seg], x_leg, x_seg);                       <* 
+ *>       }                                                                            <* 
+ *>    }                                                                               <* 
+ *>    /+---(complete)-----------------------+/                                        <* 
+ *>    return 0;                                                                       <* 
+ *> }                                                                                  <*/
+
+/*> char       /+----: set segment kimematics to defaults ------------------------+/         <* 
+ *> kine_clear         (char *a_name, tSEG *a_curr, int a_nleg, int a_nseg)                  <* 
+ *> {                                                                                        <* 
+ *>    /+---(defenses)-----------------------+/                                              <* 
+ *>    if (strlen(a_name) != 2)                   return -1;                                 <* 
+ *>    if (a_curr  == NULL)                       return -2;                                 <* 
+ *>    if (a_nleg  <  0  || a_nleg >= MAX_LEGS)   return -3;                                 <* 
+ *>    if (a_nleg  <  0  || a_nleg >= MAX_SEGS)   return -4;                                 <* 
+ *>    /+---(set name)-----------------------+/                                              <* 
+ *>    snprintf(a_curr->n, 11, "%s.%s.%s", legs_name [a_nleg], segs_name[a_nseg], a_name);   <* 
+ *>    /+---(set lengths)--------------------+/                                              <* 
+ *>    a_curr->l   = segs_len [a_nseg];                                                      <* 
+ *>    a_curr->sl  = segs_len [a_nseg];                                                      <* 
+ *>    a_curr->fl  =   0.0;                                                                  <* 
+ *>    /+---(angles)-------------------------+/                                              <* 
+ *>    if (a_nseg <= YKINE_COXA)    a_curr->d   = legs_deg [a_nleg];                         <* 
+ *>    a_curr->h   =   0.0;                                                                  <* 
+ *>    a_curr->v   =   0.0;                                                                  <* 
+ *>    a_curr->cd  =   0.0;                                                                  <* 
+ *>    a_curr->ch  =   0.0;                                                                  <* 
+ *>    a_curr->cv  =   0.0;                                                                  <* 
+ *>    /+---(coordinates)--------------------+/                                              <* 
+ *>    a_curr->x   =   0.0;                                                                  <* 
+ *>    a_curr->z   =   0.0;                                                                  <* 
+ *>    a_curr->xz  =   0.0;                                                                  <* 
+ *>    a_curr->y   =   0.0;                                                                  <* 
+ *>    a_curr->cx  =   0.0;                                                                  <* 
+ *>    a_curr->cz  =   0.0;                                                                  <* 
+ *>    a_curr->cy  =   0.0;                                                                  <* 
+ *>    /+---(control)------------------------+/                                              <* 
+ *>    a_curr->p   =   'n';                                                                  <* 
+ *>    a_curr->m   =   'i';                                                                  <* 
+ *>    a_curr->c   =   'n';                                                                  <* 
+ *>    /+---(complete)-----------------------+/                                              <* 
+ *>    return 0;                                                                             <* 
+ *> }                                                                                        <*/
 
 
 

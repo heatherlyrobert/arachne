@@ -32,20 +32,6 @@ char      model_name [100]    = "";
 char      model_desc [100]    = "";
 int       LEGS           = 6;
 
-/*---(global characteristics)----------------------*/
-char    legs_name [MAX_LEGS][ 5]  = {   "RF",   "RM",   "RR",   "LR",   "LM",   "LF"};
-char    legs_long [MAX_LEGS][25]  = {   "RF",   "RM",   "RR",   "LR",   "LM",   "LF"};
-float   legs_deg  [MAX_LEGS]      = {   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 };
-
-float   segs_len  [MAX_SEGS]      = {   0.0 , 125.0 ,  30.0 ,  30.0 ,  57.0 , 130.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0  };
-float   segs_act  [MAX_SEGS]      = {   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0  };
-float   segs_lnk  [MAX_SEGS]      = {   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0  };
-float   segs_max  [MAX_SEGS]      = {   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0  };
-float   segs_min  [MAX_SEGS]      = {   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0  };
-
-char    segs_long [MAX_SEGS][25]  = { "core", "thorax", "coxa", "femur", "patella", "tibia", "tarsus", "foot", "toes", "target", "original", "vertical", "calc" };
-char    segs_name [MAX_SEGS][ 5]  = { "core", "thor", "coxa", "femu", "pate", "tibi", "tars", "foot", "toes", "targ", "orig", "vert", "calc" };
-char    segs_caps [MAX_SEGS][ 5]  = { "YKINE_CORE", "YKINE_THOR", "YKINE_COXA", "YKINE_FEMU", "YKINE_PATE", "YKINE_TIBI", "YKINE_TARS", "FOOT", "TOES", "YKINE_TARG", "YKINE_ORIG", "YKINE_LOWR", "YKINE_CALC" };
 
 
 

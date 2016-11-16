@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7b"
-#define VER_TXT   "converted fully to new yKINE constants"
+#define VER_NUM   "0.7c"
+#define VER_TXT   "switched to using yKINE to load static leg/seg data"
 
 
 
@@ -379,19 +379,18 @@ extern    tSEG      ik [MAX_LEGS] [MAX_SEGS];    /* inverse kinematics        */
 
 
 /*===[[ REFERENCE TEXT ]]=================================*/
-extern char    legs_name [MAX_LEGS][ 5];
-extern char    legs_long [MAX_LEGS][25];
-extern float   legs_deg  [MAX_LEGS];
+extern char    legs_name [YKINE_MAX_LEGS][LEN_LABEL];
+extern char    legs_long [YKINE_MAX_LEGS][LEN_LABEL];
+extern float   legs_deg  [YKINE_MAX_LEGS];
 
-extern char    segs_name [MAX_SEGS][ 5];
-extern char    segs_caps [MAX_SEGS][ 5];
-extern char    segs_long [MAX_SEGS][25];
+extern char    segs_name [YKINE_MAX_SEGS][LEN_LABEL];
+extern char    segs_long [YKINE_MAX_SEGS][LEN_LABEL];
 
-extern float   segs_len  [MAX_SEGS];
-extern float   segs_act  [MAX_SEGS];
-extern float   segs_lnk  [MAX_SEGS];
-extern float   segs_max  [MAX_SEGS];
-extern float   segs_min  [MAX_SEGS];
+extern float   segs_len  [YKINE_MAX_SEGS];
+extern float   segs_act  [YKINE_MAX_SEGS];
+extern float   segs_lnk  [YKINE_MAX_SEGS];
+extern float   segs_max  [YKINE_MAX_SEGS];
+extern float   segs_min  [YKINE_MAX_SEGS];
 
 
 
@@ -624,11 +623,12 @@ void       leg_init          (tSEG a_leg);
 
 
 /*---(kinematics)---------------------*/
-char      kine_init          (void);
-char      kine_clear         (char *a_name, tSEG *a_curr, int a_nleg, int a_nseg);
+/*> char      kine_init          (void);                                              <*/
+/*> char      kine_clear         (char *a_name, tSEG *a_curr, int a_nleg, int a_nseg);   <*/
 
 
 
+char      KINE_begin         (void);
 char      kine_center        (float a_x, float a_z);
 char      kine_height        (float a_y);
 char      kine_pivot         (float a_x, float a_z);

@@ -932,8 +932,11 @@ draw_locate_NEW    (int a_leg, int a_seg)
    /*---(draw)---------------------------*/
    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
    glPushMatrix (); {
+      /*---(label)-------*/
+      glTranslatef(    0.0  ,    45.0 ,     0.0  );
+      yFONT_print (txf_bg,  3, YF_TOPLEF, segs_long [a_seg]);
       /*---(x_pos)-------*/
-      glTranslatef(    0.0  ,    40.0 ,     0.0  );
+      glTranslatef(    0.0  ,    -5.0 ,     0.0  );
       snprintf (x_msg, 20, "x = %.1lf", s_xpos);
       yFONT_print (txf_bg,  3, YF_TOPLEF, x_msg);
       /*---(z_pos)-------*/
@@ -1347,8 +1350,10 @@ draw__center       (void)
 void
 draw_spider        (void)
 {
-   /*---(locals)-------*-----------------*/
-   int       i         = 0;
+   /*---(locals)-----------+-----------+-*/
+   int         i           = 0;
+   int         x_leg       = 0;
+   int         x_servo     = 0;
    float       x_coxa      = 0.0;
    float       x_femu      = 0.0;
    float       x_pate      = 0.0;
@@ -1366,18 +1371,19 @@ draw_spider        (void)
       /*> if (flag_annotate == 'y')  draw__center ();                                 <*/
       glCallList      (dl_body);
       MOVE_curall ( my.p_cursec);
-      for (i = 0; i < 18; i += 3) {
+      for (x_leg = 0; x_leg < 6; ++x_leg) {
          glPushMatrix (); {
             glColor3f(1.0f, 1.0f, 1.0f);
-            glRotatef( gk[i / 3][YKINE_THOR].d, 0.0f, 1.0f, 0.0f);
-            x_coxa = gk[i / 3][YKINE_THOR].d;
+            glRotatef( legs_deg [x_leg], 0.0f, 1.0f, 0.0f);
+            x_coxa = legs_deg [x_leg];
             x_femu =  0.0;
             x_pate =  0.0;
             x_tibi = 90.0;
-            if (g_servos [i    ].curr != NULL)  my.s_femu = x_femu = g_servos [i    ].deg;
-            if (g_servos [i + 1].curr != NULL)  my.s_pate = x_pate = g_servos [i + 1].deg;
-            if (g_servos [i + 2].curr != NULL)  my.s_tibi = x_tibi = g_servos [i + 2].deg;
-            draw_leg_NEW   (i / 3, gk[i / 3][YKINE_THOR].l, x_coxa, x_femu, x_pate, x_tibi);
+            x_servo = x_leg * 3;
+            if (g_servos [  x_servo].curr != NULL)  my.s_femu = x_femu = g_servos [x_servo].deg;
+            if (g_servos [++x_servo].curr != NULL)  my.s_pate = x_pate = g_servos [x_servo].deg;
+            if (g_servos [++x_servo].curr != NULL)  my.s_tibi = x_tibi = g_servos [x_servo].deg;
+            draw_leg_NEW   (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
          } glPopMatrix ();
       }
       /*> draw_contact    ();                                                         <*/
