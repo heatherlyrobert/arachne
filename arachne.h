@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7e"
-#define VER_TXT   "calling yKINE to save opengl actuals and calc FK each step"
+#define VER_NUM   "0.7f"
+#define VER_TXT   "added comparison and file dump of opengl vs yKINE fk numbers"
 
 
 
@@ -200,6 +200,7 @@ struct cDEBUG
    char        data;                   /* d) complex data structure handling  */
    char        envi;                   /* e) environment processing           */
    /*---(specific)-----------------------*/
+   char        kine;                   /* e) environment processing           */
    /*---(done)---------------------------*/
 };
 extern tDEBUG      debug;
@@ -220,6 +221,7 @@ extern tDEBUG      debug;
 #define     DEBUG_GRAF          if (debug.graf      == 'y')
 #define     DEBUG_DATA          if (debug.data      == 'y')
 #define     DEBUG_ENVI          if (debug.envi      == 'y')
+
 
 
 
@@ -629,6 +631,10 @@ void       leg_init          (tSEG a_leg);
 
 
 char      KINE_begin         (void);
+char      KINE_end           (void);
+char      KINE_write         (void);
+char      KINE_compare       (int   a_seg);
+
 char      kine_center        (float a_x, float a_z);
 char      kine_height        (float a_y);
 char      kine_pivot         (float a_x, float a_z);

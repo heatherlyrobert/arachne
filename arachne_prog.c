@@ -58,6 +58,7 @@ PROG_logger        (int a_argc, char *a_argv[])
    DEBUG_TOPS   yLOG_info     ("purpose" , "wickedly useful spider robot visualization");
    DEBUG_TOPS   yLOG_info     ("namesake", "beautiful young female master weaver transformed into a spider");
    DEBUG_TOPS   yLOG_info     ("arachne" , PROG_version    ());
+   DEBUG_TOPS   yLOG_info     ("yKINE"   , yKINE_version   ());
    DEBUG_TOPS   yLOG_info     ("yX11"    , yX11_version    ());
    DEBUG_TOPS   yLOG_info     ("yFONT"   , yFONT_version   ());
    DEBUG_TOPS   yLOG_info     ("yVIKEYS" , yVIKEYS_version ());
@@ -137,7 +138,7 @@ PROG_urgsmass      (char a_set, char a_extra)
    debug.envi   = a_set;
    /*---(specific)-----------------------*/
    if (a_extra == 'y') {
-      ;;
+      debug.kine   = a_set;
    }
    /*---(complete)-----------------------*/
    return 0;
@@ -206,6 +207,9 @@ PROG_urgs          (int argc, char *argv[])
       else if (strncmp(a, "@@full"    ,10) == 0)  PROG_urgsmass ('y', '-');
       else if (strncmp(a, "@k"        ,10) == 0)  PROG_urgsmass ('y', 'y');
       else if (strncmp(a, "@@kitchen" ,10) == 0)  PROG_urgsmass ('y', 'y');
+      /*---(special)---------------------*/
+      else if (strncmp(a, "@@kine"    ,10) == 0)  debug.tops = debug.kine  = 'y';
+      /*---(done)------------------------*/
    }
    DEBUG_ARGS  yLOG_note   ("summarization of urgent processing");
    DEBUG_ARGS  yLOG_value  ("entries"   , x_total);
@@ -226,6 +230,7 @@ PROG_urgs          (int argc, char *argv[])
    DEBUG_ARGS  yLOG_char   ("@g,@@graf" , debug.graf);
    DEBUG_ARGS  yLOG_char   ("@d,@@data" , debug.data);
    DEBUG_ARGS  yLOG_char   ("@e,@@envi" , debug.envi);
+   DEBUG_ARGS  yLOG_char   ("@@kine"    , debug.kine);
    /*---(complete)-----------------------*/
    DEBUG_TOPS  yLOG_exit  (__FUNCTION__);
    return 0;
@@ -301,8 +306,9 @@ PROG_args          (int argc, char *argv[])
 char       /*----: drive program setup activities ----------------------------*/
 PROG_begin         (void)
 {
-   DEBUG_PROG   yLOG_enter   (__FUNCTION__);
+   DEBUG_TOPS   yLOG_enter   (__FUNCTION__);
    stat_init    (model_name);
+   /*> if (debug.kine == 'y')  yKINE_debug ('y');                                     <*/
    KINE_begin   ();
    DEBUG_ARGS  yLOG_info   ("title"     , my.w_title);
    DEBUG_ARGS  yLOG_value  ("width"     , my.w_width);
@@ -315,7 +321,7 @@ PROG_begin         (void)
    yGOD_start();
    gait.dmax   = 100;
    /*> stat_masscenter();                                                             <*/
-   DEBUG_PROG   yLOG_exit    (__FUNCTION__);
+   DEBUG_TOPS   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -329,6 +335,7 @@ char       /*----: drive the program closure activities ----------------------*/
 PROG_end           (void)
 {
    DEBUG_PROG   yLOG_enter   (__FUNCTION__);
+   KINE_end    ();
    font_delete ();
    dlist_end   ();
    DRAW_end    ();

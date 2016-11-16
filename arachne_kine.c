@@ -32,6 +32,7 @@ char      umake_init    = 'n';
 char      umake_leg     = 'n';
 
 
+static   FILE  *f_unit  = NULL;
 
 
 /*====================------------------------------------====================*/
@@ -68,6 +69,133 @@ KINE_begin         (void)
    yKINE_init      (0);
    yKINE_center    (0.0, 0.0, 0.0);
    KINE_load       ();
+   f_unit = fopen ("arachne.dump", "w");
+   return 0;
+}
+
+char
+KINE_end           (void)
+{
+   fclose (f_unit);
+   return 0;
+}
+
+char
+KINE_compare       (int a_seg)
+{
+   float       x_len       = 0.0;
+   float       x_xpos      = 0.0;
+   float       x_zpos      = 0.0;
+   float       x_ypos      = 0.0;
+   float       x_coxa      = 0.0;
+   float       x_femu      = 0.0;
+   float       x_pate      = 0.0;
+   float       x_tibi      = 0.0;
+   printf ("--------  --coxa--  --femu--  --pate--  --tibi--\n");
+   yKINE_angles     (my.p_leg, &x_coxa, &x_femu, &x_pate, &x_tibi);
+   printf ("angles    %8.2f  %8.2f  %8.2f  %8.2f\n", x_coxa, x_femu, x_pate, x_tibi);
+   printf ("%-4s----  --flen--  --xpos--  --zpos--  --ypos--\n", segs_name [a_seg]);
+   yKINE_finalgk    (my.p_leg, a_seg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   printf ("opengl    %8.2f  %8.2f  %8.2f  %8.2f\n", x_len, x_xpos, x_zpos, x_ypos);
+   yKINE_finalfk    (my.p_leg, a_seg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   printf ("fk        %8.2f  %8.2f  %8.2f  %8.2f\n", x_len, x_xpos, x_zpos, x_ypos);
+   yKINE_finaldiff  (my.p_leg, a_seg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   printf ("diff      %8.2f  %8.2f  %8.2f  %8.2f\n", x_len, x_xpos, x_zpos, x_ypos);
+   printf ("\n");
+   return 0;
+}
+
+char
+KINE_write         (void)
+{
+   static int       x_lines     =    0;
+   static double    x_secs      = -1.0;
+   float       x_len       = 0.0;
+   float       x_xpos      = 0.0;
+   float       x_zpos      = 0.0;
+   float       x_ypos      = 0.0;
+   float       x_coxa      = 0.0;
+   float       x_femu      = 0.0;
+   float       x_pate      = 0.0;
+   float       x_tibi      = 0.0;
+   float       x_total     = 0.0;
+   char        x_msg       [LEN_LABEL];
+   /*---(defense)------------------------*/
+   if (my.p_cursec == x_secs)  return 0;
+   x_secs = my.p_cursec;
+   /*---(breaks)-------------------------*/
+   if (x_lines % 10 == 0) {
+      fprintf (f_unit, "header------------  --coxa------------------------------------------------  --femur-----------------------------------------------  --patella---------------------------------------------  --tibia-----------------------------------------------\n");
+      fprintf (f_unit, "--line--  --secs--  note  --len---  --degs--  --xpos--  --zpos--  --ypos--  note  --len---  --degs--  --xpos--  --zpos--  --ypos--  note  --len---  --degs--  --xpos--  --zpos--  --ypos--  note  --len---  --degs--  --xpos--  --zpos--  --ypos--\n");
+      fprintf (f_unit, "\n");
+   }
+   fprintf (f_unit, "%-8d  %8.4f  ", x_lines,  my.p_cursec);
+   /*---(angles)-------------------------*/
+   yKINE_angles     (my.p_leg, &x_coxa, &x_femu, &x_pate, &x_tibi);
+   /*---(coxa)---------------------------*/
+   yKINE_finalgk    (my.p_leg, YKINE_COXA, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   fprintf (f_unit, "      %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_len, x_coxa, x_xpos, x_zpos, x_ypos);
+   /*---(femu)---------------------------*/
+   yKINE_finalgk    (my.p_leg, YKINE_FEMU, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   fprintf (f_unit, "      %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_len, x_femu, x_xpos, x_zpos, x_ypos);
+   /*---(pate)---------------------------*/
+   yKINE_finalgk    (my.p_leg, YKINE_PATE, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   fprintf (f_unit, "      %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_len, x_pate, x_xpos, x_zpos, x_ypos);
+   /*---(pate)---------------------------*/
+   yKINE_finalgk    (my.p_leg, YKINE_TIBI, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   fprintf (f_unit, "      %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_len, x_tibi, x_xpos, x_zpos, x_ypos);
+   fprintf (f_unit, "\n");
+   /*---(other)--------------------------*/
+
+   fprintf (f_unit, "                    ");
+   /*---(coxa)---------------------------*/
+   yKINE_finalfk    (my.p_leg, YKINE_COXA, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   fprintf (f_unit, "      %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_len, x_coxa, x_xpos, x_zpos, x_ypos);
+   /*---(femu)---------------------------*/
+   yKINE_finalfk    (my.p_leg, YKINE_FEMU, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   fprintf (f_unit, "      %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_len, x_femu, x_xpos, x_zpos, x_ypos);
+   /*---(pate)---------------------------*/
+   yKINE_finalfk    (my.p_leg, YKINE_PATE, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   fprintf (f_unit, "      %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_len, x_pate, x_xpos, x_zpos, x_ypos);
+   /*---(pate)---------------------------*/
+   yKINE_finalfk    (my.p_leg, YKINE_TIBI, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   fprintf (f_unit, "      %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_len, x_tibi, x_xpos, x_zpos, x_ypos);
+   fprintf (f_unit, "\n");
+
+   fprintf (f_unit, "                    ");
+   /*---(coxa)---------------------------*/
+   yKINE_finaldiff  (my.p_leg, YKINE_COXA, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   x_total = fabs (x_xpos) + fabs (x_zpos) + fabs (x_ypos);
+   strlcpy (x_msg, "    ", LEN_LABEL);
+   if (x_total >= 0.1)  strlcpy (x_msg, "BOOM", LEN_LABEL);
+   fprintf (f_unit, "%s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_len, x_coxa, x_xpos, x_zpos, x_ypos);
+   /*---(femu)---------------------------*/
+   yKINE_finaldiff  (my.p_leg, YKINE_FEMU, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   x_total = fabs (x_xpos) + fabs (x_zpos) + fabs (x_ypos);
+   strlcpy (x_msg, "    ", LEN_LABEL);
+   if (x_total >= 0.1)  strlcpy (x_msg, "BOOM", LEN_LABEL);
+   fprintf (f_unit, "%s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_len, x_femu, x_xpos, x_zpos, x_ypos);
+   /*---(pate)---------------------------*/
+   yKINE_finaldiff  (my.p_leg, YKINE_PATE, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   x_total = fabs (x_xpos) + fabs (x_zpos) + fabs (x_ypos);
+   strlcpy (x_msg, "    ", LEN_LABEL);
+   if (x_total >= 0.1)  strlcpy (x_msg, "BOOM", LEN_LABEL);
+   fprintf (f_unit, "%s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_len, x_pate, x_xpos, x_zpos, x_ypos);
+   /*---(pate)---------------------------*/
+   yKINE_finaldiff  (my.p_leg, YKINE_TIBI, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   x_total = fabs (x_xpos) + fabs (x_zpos) + fabs (x_ypos);
+   strlcpy (x_msg, "    ", LEN_LABEL);
+   if (x_total >= 0.1)  strlcpy (x_msg, "BOOM", LEN_LABEL);
+   fprintf (f_unit, "%s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_len, x_tibi, x_xpos, x_zpos, x_ypos);
+   fprintf (f_unit, "\n");
+   fprintf (f_unit, "\n");
+
+
+   /*> yKINE_finalfk    (my.p_leg, a_seg, &x_len, &x_xpos, &x_zpos, &x_ypos);         <*/
+   /*> yKINE_finaldiff  (my.p_leg, a_seg, &x_len, &x_xpos, &x_zpos, &x_ypos);         <*/
+   /*---(next)---------------------------*/
+   ++x_lines;
+   /*---(complete)-----------------------*/
    return 0;
 }
 

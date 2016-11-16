@@ -335,7 +335,7 @@ TICK_servoline     (char a_type, float a_base, float a_sec1, float a_sec2, float
    switch (a_type) {
    case 'f' : y_inc = 5; z_pos = 30.0;  break;   /* femur         */
    case 'p' : y_inc = 2; z_pos = 33.0;  break;   /* patella       */
-   case 't' : y_inc = 1; z_pos = 36.0;  break;   /* tibia         */
+   case 't' : y_inc = 0; z_pos = 36.0;  break;   /* tibia         */
    case 'e' : x_inc = 5; z_pos = 39.0;  break;   /* end point     */
    case 'c' : x_inc = 0; z_pos = 39.0;  break;   /* current       */
    }
@@ -400,7 +400,7 @@ TICK_servos        (int a_leg)
    } glPopMatrix();
    /*---(patella)------------------------*/
    glColor4f    (0.25f, 0.25f, 0.00f, 1.0f);
-   glLineWidth  ( 5.0f);
+   glLineWidth  (10.0f);
    glPushMatrix(); {
       rc = MOVE_first ((a_leg * 3) + 1, &x_sec1, &x_deg1);
       while (rc >= 0) {
@@ -425,7 +425,7 @@ TICK_servos        (int a_leg)
          rc = MOVE_next  (&x_sec2, &x_deg2);
          if (rc <  0) break;
          /*---(fix points)--*/
-         TICK_servoline     ('p', x_base, x_sec1, x_sec2, x_deg1, x_deg2, x_unit);
+         TICK_servoline     ('t', x_base, x_sec1, x_sec2, x_deg1, x_deg2, x_unit);
          /*---(save)--------*/
          x_sec1 = x_sec2;
          x_deg1 = x_deg2;
@@ -1385,6 +1385,7 @@ draw_spider        (void)
             draw_leg_NEW   (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
             /*---(calc in yKINE)---------*/
             yKINE_forward  (x_leg, x_femu, x_pate, x_tibi);
+            KINE_write     ();
             /*---(done)------------------*/
          } glPopMatrix ();
       }

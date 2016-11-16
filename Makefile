@@ -22,8 +22,8 @@ INCS    = -I/usr/local/include
 LINK    = gcc
 LIBDIR  = -L/usr/local/lib
 LIBS    = ${LIBDIR}         -lX11             -lGL              -lGLU             -lyX11            -lyGOD            -lyKINE           -lyVIKEYS         -lyFONT           -lySTR            -lyVAR            -lm
-LIBD    = ${LIBS}           -lyLOG
-LIBU    = ${LIBD}           -lyUNIT
+LIBD    = ${LIBDIR}         -lX11             -lGL              -lGLU             -lyX11            -lyGOD            -lyKINE_debug     -lyVIKEYS         -lyFONT           -lySTR            -lyVAR            -lm               -lyLOG
+LIBU    = ${LIBDIR}         -lX11             -lGL              -lGLU             -lyX11            -lyGOD            -lyKINE_debug     -lyVIKEYS         -lyFONT           -lySTR            -lyVAR            -lm               -lyLOG            -lyUNIT
 
 #===(file lists)============================================================================================================================================================================#
 #------   (0)-------------- (1)-------------- (2)-------------- (3)-------------- (4)-------------- (5)-------------- (6)-------------- (7)-------------- (8)-------------- (9)-------------- (A)-------------- (B)-------------- (C)-------------- (D)-------------- (5)--------------

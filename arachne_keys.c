@@ -93,6 +93,10 @@ MODE_progress      (char a_major, char a_minor)
          return a_minor;
          break;
       }
+      /*---(unit test data)--------------*/
+      if (a_minor == '#') {
+         KINE_compare (YKINE_PATE);
+      }
       /*---(vertical movement)-----------*/
       x_leg = my.p_leg;
       if (strchr ("_KkjJG", a_minor) != 0) {
