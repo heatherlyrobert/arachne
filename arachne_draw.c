@@ -515,14 +515,7 @@ TICK_labels        (void)
    for (i = x_beg; i < x_end; i += x_xinc * 100) {
       for (j = 0; j < 12; ++j) {
          x_pos = my.p_texh - (j * x_yinc);
-         switch (j) {
-         case  0 : case  6 : strcpy (x_msg, "0/RR");  break;
-         case  1 : case  7 : strcpy (x_msg, "1/RM");  break;
-         case  2 : case  8 : strcpy (x_msg, "2/RF");  break;
-         case  3 : case  9 : strcpy (x_msg, "3/LF");  break;
-         case  4 : case 10 : strcpy (x_msg, "4/LM");  break;
-         case  5 : case 11 : strcpy (x_msg, "5/LR");  break;
-         }
+         sprintf (x_msg, "%d/%s", j % 6, legs_name [j % 6]);
          glColor4f    (0.50f, 0.50f, 0.00f, 1.0f);
          glPushMatrix(); {
             glTranslatef ( i + 30.0 , x_pos    -  125.0    ,    60.0  );

@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7c"
-#define VER_TXT   "switched to using yKINE to load static leg/seg data"
+#define VER_NUM   "0.7d"
+#define VER_TXT   "get progress texture using yKINE labels too"
 
 
 
