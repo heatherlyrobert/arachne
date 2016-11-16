@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7d"
-#define VER_TXT   "get progress texture using yKINE labels too"
+#define VER_NUM   "0.7e"
+#define VER_TXT   "calling yKINE to save opengl actuals and calc FK each step"
 
 
 

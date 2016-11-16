@@ -950,6 +950,8 @@ draw_locate_NEW    (int a_leg, int a_seg)
    s_xpos_p   = s_xpos;
    s_zpos_p   = s_zpos;
    s_ypos_p   = s_ypos;
+   /*---(save to yKINE)------------------*/
+   yKINE_opengl   (a_leg, a_seg, s_xpos, s_zpos, s_ypos, s_len);
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -1366,17 +1368,24 @@ draw_spider        (void)
       MOVE_curall ( my.p_cursec);
       for (x_leg = 0; x_leg < 6; ++x_leg) {
          glPushMatrix (); {
+            /*---(prepare)---------------*/
             glColor3f(1.0f, 1.0f, 1.0f);
             glRotatef( legs_deg [x_leg], 0.0f, 1.0f, 0.0f);
-            x_coxa = legs_deg [x_leg];
-            x_femu =  0.0;
-            x_pate =  0.0;
-            x_tibi = 90.0;
+            /*---(default values)--------*/
+            x_coxa  = legs_deg [x_leg];
+            x_femu  =  0.0;
+            x_pate  =  0.0;
+            x_tibi  = 90.0;
+            /*---(check servos)----------*/
             x_servo = x_leg * 3;
             if (g_servos [  x_servo].curr != NULL)  my.s_femu = x_femu = g_servos [x_servo].deg;
             if (g_servos [++x_servo].curr != NULL)  my.s_pate = x_pate = g_servos [x_servo].deg;
             if (g_servos [++x_servo].curr != NULL)  my.s_tibi = x_tibi = g_servos [x_servo].deg;
+            /*---(draw)------------------*/
             draw_leg_NEW   (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
+            /*---(calc in yKINE)---------*/
+            yKINE_forward  (x_leg, x_femu, x_pate, x_tibi);
+            /*---(done)------------------*/
          } glPopMatrix ();
       }
       /*> draw_contact    ();                                                         <*/
