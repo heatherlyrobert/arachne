@@ -908,7 +908,7 @@ static double  s_xz       = 0.0;
 static double  s_len      = 0.0;
 
 char       /*----: determine the current opengl position ---------------------*/
-draw_locate_NEW    (int a_leg, int a_seg)
+draw_locate_NEW    (int a_leg, int a_seg, float a_deg)
 {
    /*---(locals)-------------------------*/
    char      x_msg [100];
@@ -951,7 +951,8 @@ draw_locate_NEW    (int a_leg, int a_seg)
    s_zpos_p   = s_zpos;
    s_ypos_p   = s_ypos;
    /*---(save to yKINE)------------------*/
-   yKINE_opengl   (a_leg, a_seg, s_xpos, s_zpos, s_ypos, s_len);
+   yKINE_opengl   (a_leg, a_seg, a_deg, s_xpos, s_zpos, s_ypos, s_len);
+   if (a_seg == YKINE_TIBI)  yKINE_inverse (my.p_leg, s_xpos, s_zpos, s_ypos);
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -1029,7 +1030,7 @@ draw_leg_NEW       (int a_leg, float a_body, float a_coxa, float a_femu, float a
    glPushMatrix (); {
       /*---(thorax)----------------------*/
       glTranslatef (a_body,  0.0,  0.0f);
-      draw_locate_NEW (a_leg, YKINE_THOR);
+      draw_locate_NEW (a_leg, YKINE_THOR, a_coxa);
       if (a_leg == my.p_leg) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
       glPushMatrix (); {
          /*---(label)-------*/
@@ -1066,19 +1067,19 @@ draw_leg_NEW       (int a_leg, float a_body, float a_coxa, float a_femu, float a
       } glPopMatrix ();
       /*---(coxa)------------------------*/
       glCallList (dl_coxa);
-      draw_locate_NEW (a_leg, YKINE_COXA);
+      draw_locate_NEW (a_leg, YKINE_COXA, a_coxa);
       /*---(femur)--------------------------*/
       glRotatef  ( a_femu, 0.0f, 1.0f, 0.0f);
       glCallList (dl_femur);
-      draw_locate_NEW (a_leg, YKINE_FEMU);
+      draw_locate_NEW (a_leg, YKINE_FEMU, a_femu);
       /*---(patella)------------------------*/
       glRotatef  (-a_pate, 0.0f, 0.0f, 1.0f);
       glCallList (dl_patella);
-      draw_locate_NEW (a_leg, YKINE_PATE);
+      draw_locate_NEW (a_leg, YKINE_PATE, a_pate);
       /*---(tibia)--------------------------*/
       glRotatef  (-a_tibi, 0.0f, 0.0f, 1.0f);
       glCallList (dl_tibia);
-      draw_locate_NEW (a_leg, YKINE_TIBI);
+      draw_locate_NEW (a_leg, YKINE_TIBI, a_tibi);
    } glPopMatrix ();
    /*---(complete)-----------------------*/
    return 0;

@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7f"
-#define VER_TXT   "added comparison and file dump of opengl vs yKINE fk numbers"
+#define VER_NUM   "0.7g"
+#define VER_TXT   "added target and lower to kinematics dump"
 
 
 
@@ -383,16 +383,16 @@ extern    tSEG      ik [MAX_LEGS] [MAX_SEGS];    /* inverse kinematics        */
 /*===[[ REFERENCE TEXT ]]=================================*/
 extern char    legs_name [YKINE_MAX_LEGS][LEN_LABEL];
 extern char    legs_long [YKINE_MAX_LEGS][LEN_LABEL];
-extern float   legs_deg  [YKINE_MAX_LEGS];
+extern double  legs_deg  [YKINE_MAX_LEGS];
 
 extern char    segs_name [YKINE_MAX_SEGS][LEN_LABEL];
 extern char    segs_long [YKINE_MAX_SEGS][LEN_LABEL];
 
-extern float   segs_len  [YKINE_MAX_SEGS];
-extern float   segs_act  [YKINE_MAX_SEGS];
-extern float   segs_lnk  [YKINE_MAX_SEGS];
-extern float   segs_max  [YKINE_MAX_SEGS];
-extern float   segs_min  [YKINE_MAX_SEGS];
+extern double  segs_len  [YKINE_MAX_SEGS];
+extern double  segs_act  [YKINE_MAX_SEGS];
+extern double  segs_lnk  [YKINE_MAX_SEGS];
+extern double  segs_max  [YKINE_MAX_SEGS];
+extern double  segs_min  [YKINE_MAX_SEGS];
 
 
 
@@ -404,7 +404,7 @@ struct cSERVO {
    char        count;
    /*---(current)------------------------*/
    tMOVE      *curr;
-   float       deg;
+   double      deg;
    /*---(list)---------------------------*/
    tMOVE      *head;
    tMOVE      *tail;
@@ -422,14 +422,14 @@ struct      cMOVE {
    int         seq;
    char        type;
    tSERVO     *servo;
-   float       sec_dur;
-   float       deg_beg;
-   float       deg_end;
-   float       sec_beg;
-   float       sec_end;
-   float       x_pos;
-   float       y_pos;
-   float       z_pos;
+   double      sec_dur;
+   double      deg_beg;
+   double      deg_end;
+   double      sec_beg;
+   double      sec_end;
+   double      x_pos;
+   double      y_pos;
+   double      z_pos;
    tMOVE      *m_prev;
    tMOVE      *m_next;
    tMOVE      *s_prev;
@@ -635,10 +635,10 @@ char      KINE_end           (void);
 char      KINE_write         (void);
 char      KINE_compare       (int   a_seg);
 
-char      kine_center        (float a_x, float a_z);
-char      kine_height        (float a_y);
-char      kine_pivot         (float a_x, float a_z);
-char      kine_attitude      (float, float, float);
+char      kine_center        (double a_x, double a_z);
+char      kine_height        (double a_y);
+char      kine_pivot         (double a_x, double a_z);
+char      kine_attitude      (double, double, double);
 
 
 
