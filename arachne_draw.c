@@ -952,7 +952,7 @@ draw_locate_NEW    (int a_leg, int a_seg, float a_deg)
    s_ypos_p   = s_ypos;
    /*---(save to yKINE)------------------*/
    yKINE_opengl   (a_leg, a_seg, a_deg, s_xpos, s_zpos, s_ypos, s_len);
-   if (a_seg == YKINE_TIBI)  yKINE_inverse (my.p_leg, s_xpos, s_zpos, s_ypos);
+   if (a_seg == YKINE_TIBI)  yKINE_inverse (a_leg, s_xpos, s_zpos, s_ypos);
    /*---(complete)-----------------------*/
    return 0;
 }

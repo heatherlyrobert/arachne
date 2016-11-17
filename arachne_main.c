@@ -81,7 +81,10 @@ main (int argc, char *argv[])
             if   (x_savemode != yVIKEYS_mode_curr() || yVIKEYS_mode_curr() == MODE_COMMAND) {
                yVIKEYS_mode_mesg (my.message, "");
             }
-            if (the_key[0] == 'Q')  exit(0);
+            if (the_key[0] == 'Q') {
+               PROG_end ();
+               exit     (0);
+            }
             is_moved = 'y';
             break;
          }

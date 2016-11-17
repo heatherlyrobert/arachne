@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7g"
-#define VER_TXT   "added target and lower to kinematics dump"
+#define VER_NUM   "0.7h"
+#define VER_TXT   "solved some yKINE FK issues to align with opengl actuals"
 
 
 
