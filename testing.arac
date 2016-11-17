@@ -2,6 +2,46 @@
 #   spider visualization and simulation
 
 
+#==(verb)======  ver  ==(what)==  ==(degs)==  ==(secs)== 
+servo            -a-  RM.femu          0.000       0.000 
+servo            -a-  RM.pate          0.000       0.000 
+servo            -a-  RM.tibi         90.000       0.000 
+
+#==(verb)======  ver  ==(what)==  ==(degs)==  ==(secs)== 
+servo            -a-  RM.femu        -85.000       0.500 
+servo            -a-  RM.pate        -90.000       0.500 
+servo            -a-  RM.tibi         10.000       0.500 
+
+
+#servo            -a-  RM.femu         85.000     128.000 
+
+#  SEGNO            -a-  RM.pate    
+#  SEGNO            -a-  RM.tibi    
+
+  servo          -a-  RM.pate         45.000      16.000 
+
+    servo        -a-  RM.tibi        130.000       0.500 
+    servo        -a-  RM.tibi         10.000       0.500 
+    REPEAT       -a-  RM.tibi              2          15 
+
+  servo          -a-  RM.pate        -90.000      16.000 
+
+    servo        -a-  RM.tibi        130.000       0.500 
+    servo        -a-  RM.tibi         10.000       0.500 
+    REPEAT       -a-  RM.tibi              2          15 
+
+#  DAL SEGNO        -a-  RM.pate              0           8 
+#  DAL SEGNO        -a-  RM.tibi              0           8 
+
+
+
+
+
+
+
+
+
+
 #==(verb)===  ver  ==(what)==  ==(degs)==  ==(secs)== 
 servo         -a-  RR.femu          0.000       0.000 
 servo         -a-  RR.pate          0.000       0.000 

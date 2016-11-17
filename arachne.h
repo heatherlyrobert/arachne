@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7h"
-#define VER_TXT   "solved some yKINE FK issues to align with opengl actuals"
+#define VER_NUM   "0.7i"
+#define VER_TXT   "added REPEAT operator to script interpretation"
 
 
 
@@ -401,7 +401,7 @@ extern double  segs_min  [YKINE_MAX_SEGS];
 struct cSERVO {
    /*---(overall)------------------------*/
    char        label       [20];
-   char        count;
+   int         count;
    /*---(current)------------------------*/
    tMOVE      *curr;
    double      deg;
@@ -422,6 +422,8 @@ struct      cMOVE {
    int         seq;
    char        type;
    tSERVO     *servo;
+   char        label       [LEN_LABEL];
+   int         line;
    double      sec_dur;
    double      deg_beg;
    double      deg_end;
@@ -557,7 +559,8 @@ char        PROG_testloud      (void);
 
 
 
-char        MOVE_create        (char a_type, tSERVO *a_servo, float a_deg, float a_sec);
+char        MOVE_create        (char a_type, tSERVO *a_servo, char *a_label, int a_line, float a_deg, float a_sec);
+char        MOVE_copyappend    (tSERVO *a_servo, char *a_label, int a_count, int a_times);
 char        MOVE_curall        (float a_time);
 char        MOVE_first         (int a_servo, float *a_sec, float *a_deg);
 char        MOVE_next          (float *a_sec, float *a_deg);

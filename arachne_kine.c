@@ -95,7 +95,7 @@ KINE_end           (void)
    fprintf (f_unit, "targ errors = %-4d, warnings = %-4d                        ", s_error [YKINE_TARG][YKINE_FK], s_warn  [YKINE_TARG][YKINE_FK]);
    fprintf (f_unit, "lowr errors = %-4d, warnings = %-4d                        ", s_error [YKINE_LOWR][YKINE_FK], s_warn  [YKINE_LOWR][YKINE_FK]);
    fprintf (f_unit, "\n");
-   fprintf (f_unit, "TOTAL IK ERRORS     ");
+   fprintf (f_unit, "TOTAL IK ERRORS        ");
    fprintf (f_unit, "coxa errors = %-4d, warnings = %-4d                        ", s_error [YKINE_COXA][YKINE_IK], s_warn  [YKINE_COXA][YKINE_IK]);
    fprintf (f_unit, "femu errors = %-4d, warnings = %-4d                        ", s_error [YKINE_FEMU][YKINE_IK], s_warn  [YKINE_FEMU][YKINE_IK]);
    fprintf (f_unit, "pate errors = %-4d, warnings = %-4d                        ", s_error [YKINE_PATE][YKINE_IK], s_warn  [YKINE_PATE][YKINE_IK]);

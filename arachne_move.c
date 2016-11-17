@@ -44,6 +44,7 @@ MOVE__new          (void)
    x_new->servo   = NULL;
    x_new->type    = MOVE_NULL;
    x_new->seq     = 0;
+   strlcpy (x_new->label, "", LEN_LABEL);
    /*---(position)-----------------------*/
    DEBUG_DATA   yLOG_note    ("default positions");
    x_new->deg_beg =  0.0f;
@@ -128,6 +129,8 @@ MOVE_create        (
       /*----------+-----------+-----------------------------------------------*/
       char        a_type      ,   /* type of move (pause, servo, ...)         */
       tSERVO     *a_servo     ,   /* servo                                    */
+      char       *a_label     ,   /* step label                               */
+      int         a_line      ,   /* source line                              */
       float       a_deg       ,   /* end position                             */
       float       a_sec       )   /* duration                                 */
 {
@@ -230,6 +233,69 @@ MOVE_addloc        (
    a_servo->tail->x_pos    = a_xpos;
    a_servo->tail->y_pos    = a_ypos;
    a_servo->tail->z_pos    = a_zpos;
+   /*---(complete)-----------------------*/
+   DEBUG_DATA   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
+char         /*--> copy an existing move to end ----------[ ------ [ ------ ]-*/
+MOVE_copyappend    (
+      /*----------+-----------+-----------------------------------------------*/
+      tSERVO     *a_servo     ,   /* servo                                    */
+      char       *a_label     ,   /* step label                               */
+      int         a_count     ,   /* how many steps to copy (off end)         */
+      int         a_times     )   /* how many times to copy                   */
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         = -10;           /* return code for errors         */
+   char        x_label     [LEN_LABEL];
+   tMOVE      *x_curr      = NULL;
+   tMOVE      *x_moves     [100];
+   int         i           = 0;
+   int         j           = 0;
+   /*---(header)-------------------------*/
+   DEBUG_DATA   yLOG_enter   (__FUNCTION__);
+   DEBUG_DATA   yLOG_point   ("a_servo"   , a_servo);
+   DEBUG_DATA   yLOG_info    ("a_label"   , a_label);
+   DEBUG_DATA   yLOG_value   ("a_count"   , a_count);
+   DEBUG_DATA   yLOG_value   ("a_times"   , a_times);
+   /*---(defense)------------------------*/
+   --rce;  if (a_servo        == NULL) {
+      DEBUG_DATA   yLOG_note    ("not a valid servo");
+      DEBUG_DATA   yLOG_exit    (__FUNCTION__);
+      return rce;
+   }
+   DEBUG_DATA   yLOG_info    ("servo"     , a_servo->label);
+   --rce;  if (a_servo->tail  == NULL) {
+      DEBUG_DATA   yLOG_note    ("no moves on servo, nothing to repeat");
+      DEBUG_DATA   yLOG_exit    (__FUNCTION__);
+      return rce;
+   }
+   DEBUG_DATA   yLOG_value   ("count"     , a_servo->count);
+   --rce;  if (a_servo->count <  a_count) {
+      DEBUG_DATA   yLOG_note    ("not enough moves on servo to repeat count");
+      DEBUG_DATA   yLOG_exit    (__FUNCTION__);
+      return rce;
+   }
+   /*---(build queue)--------------------*/
+   for (i = 0; i < 100; ++i) {
+      x_moves [i] = NULL;
+   }
+   x_curr = a_servo->tail;
+   for (i = 1; i < a_count; ++i) {
+      x_curr = x_curr->s_prev;
+   }
+   for (i = 0; i < a_count; ++i) {
+      x_moves [i] = x_curr;
+      x_curr      = x_curr->s_next;
+   }
+   /*---(add)----------------------------*/
+   for (i = 0; i < a_times; ++i) {
+      for (j = 0; j < a_count; ++j) {
+         sprintf (x_label, "repeat %d.%d", i,j);
+         MOVE_create (MOVE_SERVO, a_servo, x_label, x_moves [j]->line, x_moves [j]->deg_end, x_moves [j]->sec_dur);
+      }
+   }
    /*---(complete)-----------------------*/
    DEBUG_DATA   yLOG_exit    (__FUNCTION__);
    return 0;

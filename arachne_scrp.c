@@ -121,6 +121,9 @@ static void      o___PARSING_________________o (void) {;}
 #define     FIELD_YPOS     5
 #define     FIELD_ZPOS     6
 
+#define     FIELD_COUNT    2
+#define     FIELD_TIMES    3
+
 int         s_len       = 0;
 char       *s_q         = "";               /* strtok delimeters         */
 char       *s_context   = NULL;               /* strtok context variable   */
@@ -167,7 +170,7 @@ SCRP_move          (void)
    /*---(header)-------------------------*/
    DEBUG_INPT   yLOG_enter   (__FUNCTION__);
    /*---(read fields)--------------------*/
-   for (i = FIELD_SVO ; i <= FIELD_ZPOS ; ++i) {
+   for (i = FIELD_SVO  ; i <= FIELD_ZPOS ; ++i) {
       /*---(parse field)-----------------*/
       DEBUG_INPT   yLOG_note    ("read next field");
       p = strtok_r (NULL  , s_q, &s_context);
@@ -181,7 +184,7 @@ SCRP_move          (void)
       DEBUG_INPT  yLOG_info    ("field"     , p);
       /*---(handle)----------------------*/
       switch (i) {
-      case  FIELD_SVO  :  /*---(servo)----*/
+      case  FIELD_SVO   :  /*---(servo)----*/
          x_servo = SCRP_servo (p);
          --rce;  if (x_servo < 0) {
             DEBUG_INPT  yLOG_warn    ("servo"     , "not found");
@@ -189,14 +192,79 @@ SCRP_move          (void)
             return rce;
          }
          break;
-      case  FIELD_DEG  :  /*---(degrees)--*/
+      case  FIELD_DEG   :  /*---(degrees)--*/
          x_degs = atof (p);
          DEBUG_INPT  yLOG_double  ("degrees"   , x_degs);
          break;
-      case  FIELD_SEC  :  /*---(seconds)--*/
+      case  FIELD_SEC   :  /*---(seconds)--*/
          x_secs = atof (p);
          DEBUG_INPT  yLOG_double  ("seconds"   , x_secs);
-         MOVE_create (MOVE_SERVO, g_servos + x_servo, x_degs, x_secs);
+         MOVE_create (MOVE_SERVO, g_servos + x_servo, "", 0, x_degs, x_secs);
+         break;
+      }
+      DEBUG_INPT   yLOG_note    ("done with loop");
+   } 
+   DEBUG_INPT   yLOG_note    ("done parsing fields");
+   /*---(complete)-----------------------*/
+   DEBUG_INPT   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
+char         /*--> parse a low level repeat --------------[ ------ [ ------ ]-*/
+SCRP_repeat        (void)
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         = -10;                /* return code for errors    */
+   char        rc          = 0;
+   char       *p           = NULL;
+   int         i           = 0;
+   int         x_len       = 0;
+   int         x_servo     = -1;
+   int         x_count     = -1;
+   int         x_times     = -1;
+   /*---(header)-------------------------*/
+   DEBUG_INPT   yLOG_enter   (__FUNCTION__);
+   /*---(read fields)--------------------*/
+   for (i = FIELD_SVO  ; i <= FIELD_TIMES; ++i) {
+      /*---(parse field)-----------------*/
+      DEBUG_INPT   yLOG_note    ("read next field");
+      p = strtok_r (NULL  , s_q, &s_context);
+      --rce;  if (p == NULL) {
+         DEBUG_INPT   yLOG_note    ("strtok_r came up empty");
+         DEBUG_INPT   yLOG_exit    (__FUNCTION__);
+         break;
+      }
+      strltrim (p, ySTR_BOTH, LEN_RECD);
+      x_len = strlen (p);
+      DEBUG_INPT  yLOG_info    ("field"     , p);
+      /*---(handle)----------------------*/
+      switch (i) {
+      case  FIELD_SVO   :  /*---(servo to repeat)----*/
+         x_servo = SCRP_servo (p);
+         --rce;  if (x_servo < 0) {
+            DEBUG_INPT  yLOG_warn    ("servo"     , "not found");
+            DEBUG_INPT  yLOG_exit    (__FUNCTION__);
+            return rce;
+         }
+         break;
+      case  FIELD_COUNT :  /*---(moves to repeat)----*/
+         x_count = atoi (p);
+         DEBUG_INPT  yLOG_value   ("x_count"   , x_count);
+         --rce;  if (x_count < 1 || x_count > 100) {
+            DEBUG_INPT  yLOG_warn    ("moves"     , "out of range (1 - 100)");
+            DEBUG_INPT  yLOG_exit    (__FUNCTION__);
+            return rce;
+         }
+         break;
+      case  FIELD_TIMES :  /*---(times to repeat)----*/
+         x_times = atoi (p);
+         DEBUG_INPT  yLOG_value   ("x_times"   , x_times);
+         --rce;  if (x_times < 1 || x_times > 100) {
+            DEBUG_INPT  yLOG_warn    ("times"     , "out of range (1 - 100)");
+            DEBUG_INPT  yLOG_exit    (__FUNCTION__);
+            return rce;
+         }
+         MOVE_copyappend (g_servos + x_servo, "repeat", x_count, x_times);
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -287,8 +355,11 @@ SCRP_main          (void)
       DEBUG_INPT  yLOG_char    ("version"   , x_ver);
       /*---(handle types)----------------*/
       switch (x_type [0]) {
+      case 'R' : /* repeat             */
+         SCRP_repeat ();
+         break;
       case 's' : /* servo, start       */
-         SCRP_move ();
+         SCRP_move   ();
          break;
       default  :
          DEBUG_INPT  yLOG_note    ("verb not recognized and skipped");
