@@ -200,6 +200,12 @@ MOVE_create        (
       DEBUG_DATA   yLOG_note    ("end time greater than current length");
       DEBUG_DATA   yLOG_double  ("my.p_len"  , my.p_len);
    }
+   /*---(check segno)--------------------*/
+   if (a_servo->segno_flag == 'y') {
+      if (a_servo->segno == NULL) {
+         a_servo->segno = x_move;
+      }
+   }
    /*---(complete)-----------------------*/
    DEBUG_DATA   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -238,11 +244,10 @@ MOVE_addloc        (
    return 0;
 }
 
-char         /*--> copy an existing move to end ----------[ ------ [ ------ ]-*/
-MOVE_copyappend    (
+char         /*--> repeat the last moves -----------------[ ------ [ ------ ]-*/
+MOVE_repeat        (
       /*----------+-----------+-----------------------------------------------*/
       tSERVO     *a_servo     ,   /* servo                                    */
-      char       *a_label     ,   /* step label                               */
       int         a_count     ,   /* how many steps to copy (off end)         */
       int         a_times     )   /* how many times to copy                   */
 {
@@ -256,7 +261,6 @@ MOVE_copyappend    (
    /*---(header)-------------------------*/
    DEBUG_DATA   yLOG_enter   (__FUNCTION__);
    DEBUG_DATA   yLOG_point   ("a_servo"   , a_servo);
-   DEBUG_DATA   yLOG_info    ("a_label"   , a_label);
    DEBUG_DATA   yLOG_value   ("a_count"   , a_count);
    DEBUG_DATA   yLOG_value   ("a_times"   , a_times);
    /*---(defense)------------------------*/
@@ -296,6 +300,62 @@ MOVE_copyappend    (
          MOVE_create (MOVE_SERVO, a_servo, x_label, x_moves [j]->line, x_moves [j]->deg_end, x_moves [j]->sec_dur);
       }
    }
+   /*---(complete)-----------------------*/
+   DEBUG_DATA   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
+char         /*--> repeat from the last segno ------------[ ------ [ ------ ]-*/
+MOVE_dalsegno      (
+      /*----------+-----------+-----------------------------------------------*/
+      tSERVO     *a_servo     ,   /* servo                                    */
+      int         a_times     )   /* how many times to copy                   */
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         = -10;           /* return code for errors         */
+   char        x_label     [LEN_LABEL];
+   tMOVE      *x_curr      = NULL;
+   tMOVE      *x_end       = NULL;
+   int         i           = 0;
+   int         j           = 0;
+   /*---(header)-------------------------*/
+   DEBUG_DATA   yLOG_enter   (__FUNCTION__);
+   DEBUG_DATA   yLOG_point   ("a_servo"   , a_servo);
+   DEBUG_DATA   yLOG_value   ("a_times"   , a_times);
+   /*---(defense)------------------------*/
+   --rce;  if (a_servo        == NULL) {
+      DEBUG_DATA   yLOG_note    ("not a valid servo");
+      DEBUG_DATA   yLOG_exit    (__FUNCTION__);
+      return rce;
+   }
+   DEBUG_DATA   yLOG_info    ("servo"     , a_servo->label);
+   --rce;  if (a_servo->tail  == NULL) {
+      DEBUG_DATA   yLOG_note    ("no moves on servo, nothing to repeat");
+      DEBUG_DATA   yLOG_exit    (__FUNCTION__);
+      return rce;
+   }
+   DEBUG_DATA   yLOG_char    ("segno_flag", a_servo->segno_flag);
+   --rce;  if (a_servo->segno_flag != 'y') {
+      DEBUG_DATA   yLOG_note    ("a segno is not ready for use");
+      DEBUG_DATA   yLOG_exit    (__FUNCTION__);
+      return rce;
+   }
+   /*---(add)----------------------------*/
+   x_end  = a_servo->tail;
+   for (i = 0; i < a_times; ++i) {
+      x_curr = a_servo->segno;
+      j = 0;
+      while (x_curr != NULL) {
+         sprintf (x_label, "segno %d.%d", i,j);
+         MOVE_create (MOVE_SERVO, a_servo, x_label, x_curr->line, x_curr->deg_end, x_curr->sec_dur);
+         if (x_curr == x_end)  break;
+         x_curr = x_curr->s_next;
+         ++j;
+      }
+   }
+   /*---(clear)--------------------------*/
+   a_servo->segno      = NULL;
+   a_servo->segno_flag = '-';
    /*---(complete)-----------------------*/
    DEBUG_DATA   yLOG_exit    (__FUNCTION__);
    return 0;

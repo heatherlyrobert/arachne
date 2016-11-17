@@ -5,26 +5,27 @@
 
 tGAIT     gait;
 
+
 tSERVO     g_servos  [MAX_SERVO] = {
-   { "RR.femu"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "RR.pate"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "RR.tibi"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "RM.femu"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "RM.pate"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "RM.tibi"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "RF.femu"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "RF.pate"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "RF.tibi"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "LF.femu"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "LF.pate"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "LF.tibi"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "LM.femu"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "LM.pate"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "LM.tibi"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "LR.femu"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "LR.pate"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "LR.tibi"      ,   0,  NULL,  0.0,  NULL, NULL },
-   { "end-of-list"  ,   0,  NULL,  0.0,  NULL, NULL },
+   { "RR.femu"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "RR.pate"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "RR.tibi"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "RM.femu"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "RM.pate"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "RM.tibi"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "RF.femu"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "RF.pate"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "RF.tibi"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "LF.femu"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "LF.pate"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "LF.tibi"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "LM.femu"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "LM.pate"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "LM.tibi"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "LR.femu"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "LR.pate"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "LR.tibi"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   { "end-of-list"  ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
 };
 
 
@@ -210,6 +211,54 @@ SCRP_move          (void)
    return 0;
 }
 
+char         /*--> parse a segno marker ------------------[ ------ [ ------ ]-*/
+SCRP_segno         (void)
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         = -10;                /* return code for errors    */
+   char        rc          = 0;
+   char       *p           = NULL;
+   int         i           = 0;
+   int         x_len       = 0;
+   int         x_servo     = -1;
+   int         x_count     = -1;
+   int         x_times     = -1;
+   /*---(header)-------------------------*/
+   DEBUG_INPT   yLOG_enter   (__FUNCTION__);
+   /*---(read fields)--------------------*/
+   for (i = FIELD_SVO  ; i <= FIELD_SVO  ; ++i) {
+      /*---(parse field)-----------------*/
+      DEBUG_INPT   yLOG_note    ("read next field");
+      p = strtok_r (NULL  , s_q, &s_context);
+      --rce;  if (p == NULL) {
+         DEBUG_INPT   yLOG_note    ("strtok_r came up empty");
+         DEBUG_INPT   yLOG_exit    (__FUNCTION__);
+         break;
+      }
+      strltrim (p, ySTR_BOTH, LEN_RECD);
+      x_len = strlen (p);
+      DEBUG_INPT  yLOG_info    ("field"     , p);
+      /*---(handle)----------------------*/
+      switch (i) {
+      case  FIELD_SVO   :  /*---(servo to repeat)----*/
+         x_servo = SCRP_servo (p);
+         --rce;  if (x_servo < 0) {
+            DEBUG_INPT  yLOG_warn    ("servo"     , "not found");
+            DEBUG_INPT  yLOG_exit    (__FUNCTION__);
+            return rce;
+         }
+         g_servos [x_servo].segno_flag = 'y';
+         g_servos [x_servo].segno      = NULL;
+         break;
+      }
+      DEBUG_INPT   yLOG_note    ("done with loop");
+   } 
+   DEBUG_INPT   yLOG_note    ("done parsing fields");
+   /*---(complete)-----------------------*/
+   DEBUG_INPT   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
 char         /*--> parse a low level repeat --------------[ ------ [ ------ ]-*/
 SCRP_repeat        (void)
 {
@@ -264,7 +313,64 @@ SCRP_repeat        (void)
             DEBUG_INPT  yLOG_exit    (__FUNCTION__);
             return rce;
          }
-         MOVE_copyappend (g_servos + x_servo, "repeat", x_count, x_times);
+         MOVE_repeat     (g_servos + x_servo, x_count, x_times);
+         break;
+      }
+      DEBUG_INPT   yLOG_note    ("done with loop");
+   } 
+   DEBUG_INPT   yLOG_note    ("done parsing fields");
+   /*---(complete)-----------------------*/
+   DEBUG_INPT   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
+char         /*--> parse a high level repeat -------------[ ------ [ ------ ]-*/
+SCRP_dalsegno      (void)
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         = -10;                /* return code for errors    */
+   char        rc          = 0;
+   char       *p           = NULL;
+   int         i           = 0;
+   int         x_len       = 0;
+   int         x_servo     = -1;
+   int         x_times     = -1;
+   /*---(header)-------------------------*/
+   DEBUG_INPT   yLOG_enter   (__FUNCTION__);
+   /*---(read fields)--------------------*/
+   for (i = FIELD_SVO  ; i <= FIELD_TIMES; ++i) {
+      /*---(parse field)-----------------*/
+      DEBUG_INPT   yLOG_note    ("read next field");
+      p = strtok_r (NULL  , s_q, &s_context);
+      --rce;  if (p == NULL) {
+         DEBUG_INPT   yLOG_note    ("strtok_r came up empty");
+         DEBUG_INPT   yLOG_exit    (__FUNCTION__);
+         break;
+      }
+      strltrim (p, ySTR_BOTH, LEN_RECD);
+      x_len = strlen (p);
+      DEBUG_INPT  yLOG_info    ("field"     , p);
+      /*---(handle)----------------------*/
+      switch (i) {
+      case  FIELD_SVO   :  /*---(servo to repeat)----*/
+         x_servo = SCRP_servo (p);
+         --rce;  if (x_servo < 0) {
+            DEBUG_INPT  yLOG_warn    ("servo"     , "not found");
+            DEBUG_INPT  yLOG_exit    (__FUNCTION__);
+            return rce;
+         }
+         break;
+      case  FIELD_COUNT :  /*---(moves to repeat)----*/
+         break;
+      case  FIELD_TIMES :  /*---(times to repeat)----*/
+         x_times = atoi (p);
+         DEBUG_INPT  yLOG_value   ("x_times"   , x_times);
+         --rce;  if (x_times < 1 || x_times > 100) {
+            DEBUG_INPT  yLOG_warn    ("times"     , "out of range (1 - 100)");
+            DEBUG_INPT  yLOG_exit    (__FUNCTION__);
+            return rce;
+         }
+         MOVE_dalsegno   (g_servos + x_servo, x_times);
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -356,10 +462,16 @@ SCRP_main          (void)
       /*---(handle types)----------------*/
       switch (x_type [0]) {
       case 'R' : /* repeat             */
-         SCRP_repeat ();
+         SCRP_repeat    ();
+         break;
+      case 'S' : /* segno              */
+         SCRP_segno     ();
+         break;
+      case 'D' : /* dal segno          */
+         SCRP_dalsegno  ();
          break;
       case 's' : /* servo, start       */
-         SCRP_move   ();
+         SCRP_move      ();
          break;
       default  :
          DEBUG_INPT  yLOG_note    ("verb not recognized and skipped");

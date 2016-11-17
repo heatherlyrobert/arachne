@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7i"
-#define VER_TXT   "added REPEAT operator to script interpretation"
+#define VER_NUM   "0.7j"
+#define VER_TXT   "added DALSEGNO operator to script interpretation"
 
 
 
@@ -405,6 +405,8 @@ struct cSERVO {
    /*---(current)------------------------*/
    tMOVE      *curr;
    double      deg;
+   char        segno_flag;
+   tMOVE      *segno;
    /*---(list)---------------------------*/
    tMOVE      *head;
    tMOVE      *tail;
@@ -560,7 +562,8 @@ char        PROG_testloud      (void);
 
 
 char        MOVE_create        (char a_type, tSERVO *a_servo, char *a_label, int a_line, float a_deg, float a_sec);
-char        MOVE_copyappend    (tSERVO *a_servo, char *a_label, int a_count, int a_times);
+char        MOVE_repeat        (tSERVO *a_servo, int a_count, int a_times);
+char        MOVE_dalsegno      (tSERVO *a_servo, int a_times);
 char        MOVE_curall        (float a_time);
 char        MOVE_first         (int a_servo, float *a_sec, float *a_deg);
 char        MOVE_next          (float *a_sec, float *a_deg);
