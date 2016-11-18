@@ -7,26 +7,29 @@ tGAIT     gait;
 
 
 tSERVO     g_servos  [MAX_SERVO] = {
-   { "RR.femu"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "RR.pate"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "RR.tibi"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "RM.femu"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "RM.pate"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "RM.tibi"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "RF.femu"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "RF.pate"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "RF.tibi"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "LF.femu"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "LF.pate"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "LF.tibi"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "LM.femu"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "LM.pate"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "LM.tibi"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "LR.femu"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "LR.pate"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "LR.tibi"      ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
-   { "end-of-list"  ,   0,  NULL,  0.0, '-',  NULL,  NULL,  NULL },
+   /* label--------   cnt   curr  degs  --segno--  --coda--- scrp  prev  next */
+   { "RR.femu"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RR.pate"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RR.tibi"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RM.femu"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RM.pate"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RM.tibi"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RF.femu"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RF.pate"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RF.tibi"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LF.femu"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LF.pate"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LF.tibi"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LM.femu"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LM.pate"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LM.tibi"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LR.femu"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LR.pate"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LR.tibi"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "end-of-list"  ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   /* label--------   cnt   curr  degs  --segno--  --coda--- scrp  prev  next */
 };
+int         g_nservo;
 
 
 
@@ -38,6 +41,19 @@ static void      o___ACCESS__________________o (void) {;}
 static FILE    *s_file  = NULL;
 static int      s_lines = 0;
 static char     s_recd  [LEN_RECD];
+
+
+char         /*--> prepare for use ---------s-------------[ leaf   [ ------ ]-*/
+SCRP_init          (void)
+{
+   int         i           = 0;
+   g_nservo = 0;
+   for (i = 0; i < MAX_SERVO; ++i) {
+      if (g_servos [i].label [0] == 'e')   break;
+      ++g_nservo;
+   }
+   return 0;
+}
 
 char         /*--> open file for reading -----------------[ leaf   [ ------ ]-*/
 SCRP_open          (void)
@@ -71,6 +87,8 @@ SCRP_open          (void)
       return rce;
    }
    DEBUG_INPT  yLOG_note    ("file successfully opened");
+   /*---(init values)--------------*/
+   SCRP_init ();
    /*---(complete)-----------------*/
    DEBUG_INPT  yLOG_exit    (__FUNCTION__);
    return 0;
@@ -139,10 +157,13 @@ SCRP_servo         (char *a_label)
    /*---(header)-------------------------*/
    DEBUG_INPT   yLOG_senter  (__FUNCTION__);
    /*---(cycle)--------------------------*/
-   for (i = 0; i < MAX_SERVO; ++i) {
+   /*> printf ("SCRP_servo         looking for %s\n", a_label);                       <*/
+   for (i = 0; i < g_nservo; ++i) {
       if (a_label [0] != g_servos [i].label [0])       continue;
       if (strcmp (a_label, g_servos [i].label) != 0)   continue;
       DEBUG_INPT   yLOG_snote   ("servo label found");
+      g_servos [i].scrp = 'y';
+     /*> printf ("SCRP_servo                        found\n");                        <*/
       x_index = i;
       break;
    }
@@ -156,6 +177,103 @@ SCRP_servo         (char *a_label)
    return x_index;
 }
 
+char         /*--> locate a servo entry ------------------[ ------ [ ------ ]-*/
+SCRP_servos        (char *a_label)
+{  /*---(design notes)-------------------*/
+   /*
+    *  L=left  , R=right
+    *  F=front , M=middle, R=rear
+    *  a=all   , +=large , -=small
+    *
+    *  troc = trocanter
+    *  femu = femur
+    *  pate = patella
+    *  tibi = tibia
+    *  meta = metatarsus
+    *  tars = tarsus
+    *  foot = foot
+    *  claw = claw
+    *  magn = magnet
+    *  hook = hook
+    *
+    *  servo labels start with two-char leg, '.', and four-char segment
+    *     LF.femu    = left-front leg's femur
+    *     aF.femu    = femur on both front legs
+    *     La.femu    = femurs on the left side
+    *     aa.femu    = all femurs
+    *     -F.femu    = femurs on the front small legs
+    *     +F.femu    = femurs on the front large legs
+    *     L-.femu    = femurs on the left small legs
+    *     L+.femu    = femurs on the left large legs
+    *     ++.femu    = femurs on all large legs
+    *     --.femu    = femurs on all small legs
+    *
+    *   need to add front to back, side to side, and other mirroring
+    *
+    *
+    */
+   /*---(locals)-----------+-----------+-*/
+   char        rce         = -10;                /* return code for errors    */
+   int         i           = 0;
+   int         j           = 0;
+   int         x_index     = -1;
+   char        x_side      [LEN_LABEL] = "";
+   int         x_nside     = 0;
+   char        x_rank      [LEN_LABEL] = "";
+   int         x_nrank     = 0;
+   char        x_label     [LEN_LABEL] = "";
+   /*---(header)-------------------------*/
+   DEBUG_INPT   yLOG_enter   (__FUNCTION__);
+   /*---(interpret side-to-side)---------*/
+   switch (a_label [0]) {
+   case 'L' : strlcpy (x_side  , "L"         , LEN_LABEL);   break;
+   case 'R' : strlcpy (x_side  , "R"         , LEN_LABEL);   break;
+   case 'l' : strlcpy (x_side  , "l"         , LEN_LABEL);   break;
+   case 'r' : strlcpy (x_side  , "r"         , LEN_LABEL);   break;
+   case '<' : strlcpy (x_side  , "Ll"        , LEN_LABEL);   break;
+   case '>' : strlcpy (x_side  , "Rr"        , LEN_LABEL);   break;
+   case '+' : strlcpy (x_side  , "LR"        , LEN_LABEL);   break;
+   case '-' : strlcpy (x_side  , "lr"        , LEN_LABEL);   break;
+   case 'a' : strlcpy (x_side  , "LRlr"      , LEN_LABEL);   break;
+   default  : strlcpy (x_side  , ""          , LEN_LABEL);   break;
+   }
+   x_nside = strlen (x_side);
+   /*> printf ("SCRP_servos  x_side (%d) %s\n", x_nside, x_side);                     <*/
+   --rce;  if (x_nside == 0) {
+      DEBUG_INPT   yLOG_sexit   (__FUNCTION__);
+      DEBUG_INPT   yLOG_exit    (__FUNCTION__);
+      return rce;
+   }
+   /*---(interpret front-to-back)--------*/
+   switch (a_label [1]) {
+   case 'R' : strlcpy (x_rank  , "R"         , LEN_LABEL);   break;
+   case 'M' : strlcpy (x_rank  , "M"         , LEN_LABEL);   break;
+   case 'F' : strlcpy (x_rank  , "F"         , LEN_LABEL);   break;
+   case 'r' : strlcpy (x_rank  , "r"         , LEN_LABEL);   break;
+   case 'f' : strlcpy (x_rank  , "f"         , LEN_LABEL);   break;
+   case '^' : strlcpy (x_rank  , "Ff"        , LEN_LABEL);   break;
+   case '_' : strlcpy (x_rank  , "Rr"        , LEN_LABEL);   break;
+   case '+' : strlcpy (x_rank  , "RMF"       , LEN_LABEL);   break;
+   case '-' : strlcpy (x_rank  , "rf"        , LEN_LABEL);   break;
+   case 'a' : strlcpy (x_rank  , "RMFrf"     , LEN_LABEL);   break;
+   default  : strlcpy (x_rank  , ""          , LEN_LABEL);   break;
+   }
+   x_nrank = strlen (x_rank);
+   /*> printf ("SCRP_servos  x_rank (%d) %s\n", x_nrank, x_rank);                     <*/
+   if (x_nrank == 0)  return -1;
+   /*---(cycle)--------------------------*/
+   for (i = 0; i < x_nside; ++i) {
+      for (j = 0; j < x_nrank; ++j) {
+         sprintf (x_label, "%c%c.%s", x_side [i], x_rank [j], a_label + 3);
+        /*> printf ("SCRP_servos     x_label %s\n", x_label);                         <*/
+         x_index = SCRP_servo (x_label);
+      }
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_INPT   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
 char         /*--> parse a move entry --------------------[ ------ [ ------ ]-*/
 SCRP_move          (void)
 {
@@ -164,6 +282,7 @@ SCRP_move          (void)
    char        rc          = 0;
    char       *p           = NULL;
    int         i           = 0;
+   int         j           = 0;
    int         x_len       = 0;
    int         x_servo     = -1;
    float       x_degs      = -1;
@@ -186,7 +305,7 @@ SCRP_move          (void)
       /*---(handle)----------------------*/
       switch (i) {
       case  FIELD_SVO   :  /*---(servo)----*/
-         x_servo = SCRP_servo (p);
+         x_servo = SCRP_servos (p);
          --rce;  if (x_servo < 0) {
             DEBUG_INPT  yLOG_warn    ("servo"     , "not found");
             DEBUG_INPT  yLOG_exit    (__FUNCTION__);
@@ -200,7 +319,10 @@ SCRP_move          (void)
       case  FIELD_SEC   :  /*---(seconds)--*/
          x_secs = atof (p);
          DEBUG_INPT  yLOG_double  ("seconds"   , x_secs);
-         MOVE_create (MOVE_SERVO, g_servos + x_servo, "", 0, x_degs, x_secs);
+         for (j = 0; j < g_nservo; ++j) {
+            if (g_servos [j].scrp != 'y') continue;
+            MOVE_create (MOVE_SERVO, g_servos + j, "", 0, x_degs, x_secs);
+         }
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -219,6 +341,7 @@ SCRP_segno         (void)
    char        rc          = 0;
    char       *p           = NULL;
    int         i           = 0;
+   int         j           = 0;
    int         x_len       = 0;
    int         x_servo     = -1;
    int         x_count     = -1;
@@ -241,14 +364,17 @@ SCRP_segno         (void)
       /*---(handle)----------------------*/
       switch (i) {
       case  FIELD_SVO   :  /*---(servo to repeat)----*/
-         x_servo = SCRP_servo (p);
+         x_servo = SCRP_servos (p);
          --rce;  if (x_servo < 0) {
             DEBUG_INPT  yLOG_warn    ("servo"     , "not found");
             DEBUG_INPT  yLOG_exit    (__FUNCTION__);
             return rce;
          }
-         g_servos [x_servo].segno_flag = 'y';
-         g_servos [x_servo].segno      = NULL;
+         for (j = 0; j < g_nservo; ++j) {
+            if (g_servos [j].scrp != 'y') continue;
+            g_servos [j].segno_flag = 'y';
+            g_servos [j].segno      = NULL;
+         }
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -267,6 +393,7 @@ SCRP_repeat        (void)
    char        rc          = 0;
    char       *p           = NULL;
    int         i           = 0;
+   int         j           = 0;
    int         x_len       = 0;
    int         x_servo     = -1;
    int         x_count     = -1;
@@ -289,7 +416,7 @@ SCRP_repeat        (void)
       /*---(handle)----------------------*/
       switch (i) {
       case  FIELD_SVO   :  /*---(servo to repeat)----*/
-         x_servo = SCRP_servo (p);
+         x_servo = SCRP_servos (p);
          --rce;  if (x_servo < 0) {
             DEBUG_INPT  yLOG_warn    ("servo"     , "not found");
             DEBUG_INPT  yLOG_exit    (__FUNCTION__);
@@ -313,7 +440,10 @@ SCRP_repeat        (void)
             DEBUG_INPT  yLOG_exit    (__FUNCTION__);
             return rce;
          }
-         MOVE_repeat     (g_servos + x_servo, x_count, x_times);
+         for (j = 0; j < g_nservo; ++j) {
+            if (g_servos [j].scrp != 'y') continue;
+            MOVE_repeat     (g_servos + j, x_count, x_times);
+         }
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -332,6 +462,7 @@ SCRP_dalsegno      (void)
    char        rc          = 0;
    char       *p           = NULL;
    int         i           = 0;
+   int         j           = 0;
    int         x_len       = 0;
    int         x_servo     = -1;
    int         x_times     = -1;
@@ -353,7 +484,7 @@ SCRP_dalsegno      (void)
       /*---(handle)----------------------*/
       switch (i) {
       case  FIELD_SVO   :  /*---(servo to repeat)----*/
-         x_servo = SCRP_servo (p);
+         x_servo = SCRP_servos (p);
          --rce;  if (x_servo < 0) {
             DEBUG_INPT  yLOG_warn    ("servo"     , "not found");
             DEBUG_INPT  yLOG_exit    (__FUNCTION__);
@@ -370,7 +501,10 @@ SCRP_dalsegno      (void)
             DEBUG_INPT  yLOG_exit    (__FUNCTION__);
             return rce;
          }
-         MOVE_dalsegno   (g_servos + x_servo, x_times);
+         for (j = 0; j < g_nservo; ++j) {
+            if (g_servos [j].scrp != 'y') continue;
+            MOVE_dalsegno   (g_servos + j, x_times);
+         }
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -393,6 +527,16 @@ SCRP_dalsegno      (void)
 static void      o___DRIVER__________________o (void) {;}
 
 char         /* file reading driver ----------------------[--------[--------]-*/
+SCRP_prep          (void)
+{
+   int         i           = 0;
+   for (i = 0; i < g_nservo; ++i) {
+      g_servos [i].scrp  = '-';
+   }
+   return 0;
+}
+
+char         /* file reading driver ----------------------[--------[--------]-*/
 SCRP_main          (void)
 {
    /*---(locals)-----------+-----------+-*/
@@ -412,6 +556,8 @@ SCRP_main          (void)
    /*---(read lines)---------------------*/
    DEBUG_INPT  yLOG_note    ("read lines");
    while (1) {
+      /*---(prepare)---------------------*/
+      SCRP_prep      ();
       /*---(read and clean)--------------*/
       ++s_lines;
       DEBUG_INPT  yLOG_value   ("line"      , s_lines);

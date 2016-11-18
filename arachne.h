@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7k"
-#define VER_TXT   "added CLI options for autoplay and selecting current leg"
+#define VER_NUM   "0.7l"
+#define VER_TXT   "added wildcards for servo specification"
 
 
 
@@ -407,12 +407,16 @@ struct cSERVO {
    double      deg;
    char        segno_flag;
    tMOVE      *segno;
+   char        coda_flag;
+   tMOVE      *coda;
+   char        scrp;
    /*---(list)---------------------------*/
    tMOVE      *head;
    tMOVE      *tail;
    /*---(done)---------------------------*/
 };
 extern      tSERVO      g_servos    [MAX_SERVO];
+extern      int         g_nservo;
 
 
 
