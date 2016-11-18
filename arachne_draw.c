@@ -1591,12 +1591,12 @@ view_3d()
       /*> view_progress   ();                                                         <*/
       glLineWidth ( 0.50f);
       yGOD_view       ();
-      glTranslatef    (    0.0  , -center.by,     0.0  );
+      /*> glTranslatef    (    0.0  , -center.by,     0.0  );                         <*/
       /*> yGOD_locate ();                                                             <*/
-      glLineWidth ( 0.50f);
-      glCallList      (dl_ground);
+      /*> glLineWidth ( 0.50f);                                                       <*/
+      /*> glCallList      (dl_ground);                                                <*/
       /*> glTranslatef    (center.bx,      0.0  , center.bz);                         <*/
-      glTranslatef    (      0.0,  center.by,       0.0);
+      /*> glTranslatef    (      0.0,  center.by,       0.0);                         <*/
       /*---(body)---------------------------*/
       glCallList      (dl_spider);
    } glPopMatrix   ();

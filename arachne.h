@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7j"
-#define VER_TXT   "added DALSEGNO operator to script interpretation"
+#define VER_NUM   "0.7k"
+#define VER_TXT   "added CLI options for autoplay and selecting current leg"
 
 
 

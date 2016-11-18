@@ -96,6 +96,7 @@ PROG_init          (void)
    /*---(other progress settings)--------*/
    DEBUG_TOPS   yLOG_note  ("defaul progress ticker values");
    my.p_len     =  0.0;
+   my.p_leg     =  0.0;
    /*---(setup modes)--------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");
    yVIKEYS_mode_init    ();
@@ -256,7 +257,14 @@ PROG_args          (int argc, char *argv[])
       if (a[0] == '@')  continue;
       DEBUG_ARGS  yLOG_info    ("cli arg", a);
       ++x_args;
-      if      (strcmp(a, "--sizing"     ) == 0)  debug_sizing = 'y';
+      if      (strcmp(a, "--play"       ) == 0)  yVIKEYS_speed_play   (&my.p_waitns);
+      else if (strcmp(a, "--RR"         ) == 0)  my.p_leg = 0.0;
+      else if (strcmp(a, "--RM"         ) == 0)  my.p_leg = 1.0;
+      else if (strcmp(a, "--RF"         ) == 0)  my.p_leg = 2.0;
+      else if (strcmp(a, "--LF"         ) == 0)  my.p_leg = 3.0;
+      else if (strcmp(a, "--LM"         ) == 0)  my.p_leg = 4.0;
+      else if (strcmp(a, "--LR"         ) == 0)  my.p_leg = 5.0;
+      else if (strcmp(a, "--sizing"     ) == 0)  debug_sizing = 'y';
       /*> else if (strcmp(a, "--moving"     ) == 0)  my.p_moving  = 'y';              <*/
       else if (strcmp(a, "--init"       ) == 0)  umake_init   = 'y';
       else if (strcmp(a, "--model"      ) == 0) {
