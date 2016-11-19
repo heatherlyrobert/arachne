@@ -958,15 +958,6 @@ draw_locate_NEW    (int a_leg, int a_seg, float a_deg)
 }
 
 char
-TEST_cond          (void)
-{
-   printf ("COND       v21  automated opengl test for yKINE                              ----------------------------------------------------------------------------------------------------  ----------  ---------------------------------------------------------------------- \n");
-   printf ("     set      v21  force thorax degrees for testing     yKINE__setter         \"seg_degree\"   , L_RF      , YKINE_THOR      ,   30.0                                                       i_equal     0                                                                      \n");
-   printf ("     set      v21  force thorax degrees for testing     yKINE__setter         \"seg_degree\"   , L_RF      , YKINE_THOR      ,   30.0                                                       i_equal     0                                                                      \n");
-   return 0;
-}
-
-char
 TEST_seg           (void)
 {
    return 0;

@@ -134,14 +134,15 @@ SCRP_close         (void)
 static void      o___PARSING_________________o (void) {;}
 
 #define     FIELD_SVO      1
-#define     FIELD_DEG      2
-#define     FIELD_SEC      3
-#define     FIELD_XPOS     4
-#define     FIELD_YPOS     5
-#define     FIELD_ZPOS     6
+#define     FIELD_ARG      2
+#define     FIELD_DEG      3
+#define     FIELD_SEC      4
+#define     FIELD_XPOS     5
+#define     FIELD_YPOS     6
+#define     FIELD_ZPOS     7
 
-#define     FIELD_COUNT    2
-#define     FIELD_TIMES    3
+#define     FIELD_COUNT    3
+#define     FIELD_TIMES    4
 
 int         s_len       = 0;
 char       *s_q         = "";               /* strtok delimeters         */
@@ -312,6 +313,8 @@ SCRP_move          (void)
             return rce;
          }
          break;
+      case  FIELD_ARG   :  /*---(args)-----*/
+         break;
       case  FIELD_DEG   :  /*---(degrees)--*/
          x_degs = atof (p);
          DEBUG_INPT  yLOG_double  ("degrees"   , x_degs);
@@ -423,6 +426,8 @@ SCRP_repeat        (void)
             return rce;
          }
          break;
+      case  FIELD_ARG   :  /*---(args)-----*/
+         break;
       case  FIELD_COUNT :  /*---(moves to repeat)----*/
          x_count = atoi (p);
          DEBUG_INPT  yLOG_value   ("x_count"   , x_count);
@@ -490,6 +495,8 @@ SCRP_dalsegno      (void)
             DEBUG_INPT  yLOG_exit    (__FUNCTION__);
             return rce;
          }
+         break;
+      case  FIELD_ARG   :  /*---(args)-----*/
          break;
       case  FIELD_COUNT :  /*---(moves to repeat)----*/
          break;

@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7l"
-#define VER_TXT   "added wildcards for servo specification"
+#define VER_NUM   "0.7m"
+#define VER_TXT   "put in basics of unit test condition writing for yKINE"
 
 
 

@@ -32,7 +32,8 @@ char      umake_init    = 'n';
 char      umake_leg     = 'n';
 
 
-static   FILE  *f_unit  = NULL;
+static   FILE  *f_dump  = NULL;
+static   FILE  *f_cond  = NULL;
 
 
 static  int   s_error [YKINE_MAX_SEGS][YKINE_MAX_METH];
@@ -79,31 +80,37 @@ KINE_begin         (void)
    yKINE_init      (0);
    yKINE_center    (0.0, 0.0, 0.0);
    KINE_load       ();
-   f_unit = fopen ("arachne.dump", "w");
+   f_dump = fopen ("arachne.dump", "w");
+   f_cond = fopen ("arachne.cond", "w");
+   fprintf (f_cond, "\n");
+   fprintf (f_cond, "   COND       v21  initialize the global data                                   ----------------------------------------------------------------------------------------------------  ----------  ---------------------------------------------------------------------- \n");
+   fprintf (f_cond, "     set      v21  start testing                        yKINE__testloud                                                                                                             i_equal     0                                                                      \n");
+   fprintf (f_cond, "     exec     v21  run init                             yKINE_init            '0'                                                                                                   i_equal     0                                                                      \n");
    return 0;
 }
 
 char
 KINE_end           (void)
 {
-   fprintf (f_unit, "\n");
-   fprintf (f_unit, "TOTAL FK ERRORS        ");
-   fprintf (f_unit, "coxa errors = %-5d, warnings = %-5d                      ", s_error [YKINE_COXA][YKINE_FK], s_warn  [YKINE_COXA][YKINE_FK]);
-   fprintf (f_unit, "femu errors = %-5d, warnings = %-5d                      ", s_error [YKINE_FEMU][YKINE_FK], s_warn  [YKINE_FEMU][YKINE_FK]);
-   fprintf (f_unit, "pate errors = %-5d, warnings = %-5d                      ", s_error [YKINE_PATE][YKINE_FK], s_warn  [YKINE_PATE][YKINE_FK]);
-   fprintf (f_unit, "tibi errors = %-5d, warnings = %-5d                      ", s_error [YKINE_TIBI][YKINE_FK], s_warn  [YKINE_TIBI][YKINE_FK]);
-   fprintf (f_unit, "targ errors = %-5d, warnings = %-5d                      ", s_error [YKINE_TARG][YKINE_FK], s_warn  [YKINE_TARG][YKINE_FK]);
-   fprintf (f_unit, "lowr errors = %-5d, warnings = %-5d                      ", s_error [YKINE_LOWR][YKINE_FK], s_warn  [YKINE_LOWR][YKINE_FK]);
-   fprintf (f_unit, "\n");
-   fprintf (f_unit, "TOTAL IK ERRORS        ");
-   fprintf (f_unit, "coxa errors = %-5d, warnings = %-5d                      ", s_error [YKINE_COXA][YKINE_IK], s_warn  [YKINE_COXA][YKINE_IK]);
-   fprintf (f_unit, "femu errors = %-5d, warnings = %-5d                      ", s_error [YKINE_FEMU][YKINE_IK], s_warn  [YKINE_FEMU][YKINE_IK]);
-   fprintf (f_unit, "pate errors = %-5d, warnings = %-5d                      ", s_error [YKINE_PATE][YKINE_IK], s_warn  [YKINE_PATE][YKINE_IK]);
-   fprintf (f_unit, "tibi errors = %-5d, warnings = %-5d                      ", s_error [YKINE_TIBI][YKINE_IK], s_warn  [YKINE_TIBI][YKINE_IK]);
-   fprintf (f_unit, "targ errors = %-5d, warnings = %-5d                      ", s_error [YKINE_TARG][YKINE_IK], s_warn  [YKINE_TARG][YKINE_IK]);
-   fprintf (f_unit, "lowr errors = %-5d, warnings = %-5d                      ", s_error [YKINE_LOWR][YKINE_IK], s_warn  [YKINE_LOWR][YKINE_IK]);
-   fprintf (f_unit, "\n");
-   fclose  (f_unit);
+   fclose  (f_cond);
+   fprintf (f_dump, "\n");
+   fprintf (f_dump, "TOTAL FK ERRORS        ");
+   fprintf (f_dump, "coxa errors = %-5d, warnings = %-5d                      ", s_error [YKINE_COXA][YKINE_FK], s_warn  [YKINE_COXA][YKINE_FK]);
+   fprintf (f_dump, "femu errors = %-5d, warnings = %-5d                      ", s_error [YKINE_FEMU][YKINE_FK], s_warn  [YKINE_FEMU][YKINE_FK]);
+   fprintf (f_dump, "pate errors = %-5d, warnings = %-5d                      ", s_error [YKINE_PATE][YKINE_FK], s_warn  [YKINE_PATE][YKINE_FK]);
+   fprintf (f_dump, "tibi errors = %-5d, warnings = %-5d                      ", s_error [YKINE_TIBI][YKINE_FK], s_warn  [YKINE_TIBI][YKINE_FK]);
+   fprintf (f_dump, "targ errors = %-5d, warnings = %-5d                      ", s_error [YKINE_TARG][YKINE_FK], s_warn  [YKINE_TARG][YKINE_FK]);
+   fprintf (f_dump, "lowr errors = %-5d, warnings = %-5d                      ", s_error [YKINE_LOWR][YKINE_FK], s_warn  [YKINE_LOWR][YKINE_FK]);
+   fprintf (f_dump, "\n");
+   fprintf (f_dump, "TOTAL IK ERRORS        ");
+   fprintf (f_dump, "coxa errors = %-5d, warnings = %-5d                      ", s_error [YKINE_COXA][YKINE_IK], s_warn  [YKINE_COXA][YKINE_IK]);
+   fprintf (f_dump, "femu errors = %-5d, warnings = %-5d                      ", s_error [YKINE_FEMU][YKINE_IK], s_warn  [YKINE_FEMU][YKINE_IK]);
+   fprintf (f_dump, "pate errors = %-5d, warnings = %-5d                      ", s_error [YKINE_PATE][YKINE_IK], s_warn  [YKINE_PATE][YKINE_IK]);
+   fprintf (f_dump, "tibi errors = %-5d, warnings = %-5d                      ", s_error [YKINE_TIBI][YKINE_IK], s_warn  [YKINE_TIBI][YKINE_IK]);
+   fprintf (f_dump, "targ errors = %-5d, warnings = %-5d                      ", s_error [YKINE_TARG][YKINE_IK], s_warn  [YKINE_TARG][YKINE_IK]);
+   fprintf (f_dump, "lowr errors = %-5d, warnings = %-5d                      ", s_error [YKINE_LOWR][YKINE_IK], s_warn  [YKINE_LOWR][YKINE_IK]);
+   fprintf (f_dump, "\n");
+   fclose  (f_dump);
    return 0;
 }
 
@@ -143,43 +150,43 @@ KINE_line          (int a_line, char a_meth)
    double      x_ypos      = 0.0;
    switch (a_meth) {
    case  YKINE_GK :
-      fprintf (f_unit, "%-8d  %8.4f  %d  ", a_line,  my.p_cursec, (int) my.p_leg);
+      fprintf (f_dump, "%-8d  %8.4f  %d  ", a_line,  my.p_cursec, (int) my.p_leg);
       strlcpy (x_type, "gk", LEN_LABEL);
       break;
    case  YKINE_FK :
-      fprintf (f_unit, "                       ");
+      fprintf (f_dump, "                       ");
       strlcpy (x_type, "fk", LEN_LABEL);
       break;
    case  YKINE_IK :
-      fprintf (f_unit, "                       ");
+      fprintf (f_dump, "                       ");
       strlcpy (x_type, "ik", LEN_LABEL);
       break;
    }
    /*---(coxa)---------------------------*/
-   yKINE_final      ((int) my.p_leg, YKINE_COXA, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
-   fprintf (f_unit, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   yKINE_endpoint   ((int) my.p_leg, YKINE_COXA, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   fprintf (f_dump, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(femur)--------------------------*/
-   yKINE_final      ((int) my.p_leg, YKINE_FEMU, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
-   if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_unit, "%-7s     - - -     - - -     - - -     - - -     - - -  ", x_type);
-   else                                  fprintf (f_unit, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   yKINE_endpoint   ((int) my.p_leg, YKINE_FEMU, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_dump, "%-7s     - - -     - - -     - - -     - - -     - - -  ", x_type);
+   else                                  fprintf (f_dump, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(patella)------------------------*/
-   yKINE_final      ((int) my.p_leg, YKINE_PATE, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
-   if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_unit, "%-7s     - - -     - - -     - - -     - - -     - - -  ", x_type);
-   else                                  fprintf (f_unit, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   yKINE_endpoint   ((int) my.p_leg, YKINE_PATE, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_dump, "%-7s     - - -     - - -     - - -     - - -     - - -  ", x_type);
+   else                                  fprintf (f_dump, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(tibia)--------------------------*/
-   yKINE_final      ((int) my.p_leg, YKINE_TIBI, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
-   if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_unit, "%-7s     - - -     - - -     - - -     - - -     - - -  ", x_type);
-   else                                  fprintf (f_unit, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   yKINE_endpoint   ((int) my.p_leg, YKINE_TIBI, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_dump, "%-7s     - - -     - - -     - - -     - - -     - - -  ", x_type);
+   else                                  fprintf (f_dump, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(lower)--------------------------*/
-   yKINE_final      ((int) my.p_leg, YKINE_TARG, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
-   if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_unit, "%-7s     - - -     - - -     - - -     - - -     - - -  ", x_type);
-   else                                  fprintf (f_unit, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   yKINE_endpoint   ((int) my.p_leg, YKINE_TARG, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_dump, "%-7s     - - -     - - -     - - -     - - -     - - -  ", x_type);
+   else                                  fprintf (f_dump, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(lower)--------------------------*/
-   yKINE_final      ((int) my.p_leg, YKINE_LOWR, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
-   if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_unit, "%-7s     - - -     - - -     - - -     - - -     - - -  ", x_type);
-   else                                  fprintf (f_unit, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   yKINE_endpoint   ((int) my.p_leg, YKINE_LOWR, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_dump, "%-7s     - - -     - - -     - - -     - - -     - - -  ", x_type);
+   else                                  fprintf (f_dump, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(wrap line)----------------------*/
-   fprintf (f_unit, "\n");
+   fprintf (f_dump, "\n");
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -236,33 +243,33 @@ KINE_diff          (int a_line, char a_meth)
    double      x_zpos      = 0.0;
    double      x_ypos      = 0.0;
    int         rc          =   0;
-   fprintf (f_unit, "                       ");
+   fprintf (f_dump, "                       ");
    /*---(coxa)---------------------------*/
-   yKINE_diff         ((int) my.p_leg, YKINE_COXA, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   yKINE_enddiff      ((int) my.p_leg, YKINE_COXA, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    rc += KINE_diffmsg (x_msg         , YKINE_COXA, a_meth,  x_deg,  x_len,  x_xpos,  x_zpos,  x_ypos);
-   fprintf (f_unit, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   fprintf (f_dump, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(femur)--------------------------*/
-   yKINE_diff         ((int) my.p_leg, YKINE_FEMU, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   yKINE_enddiff      ((int) my.p_leg, YKINE_FEMU, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    rc += KINE_diffmsg (x_msg         , YKINE_FEMU, a_meth,  x_deg,  x_len,  x_xpos,  x_zpos,  x_ypos);
-   fprintf (f_unit, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   fprintf (f_dump, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(patella)------------------------*/
-   yKINE_diff         ((int) my.p_leg, YKINE_PATE, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   yKINE_enddiff      ((int) my.p_leg, YKINE_PATE, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    rc += KINE_diffmsg (x_msg         , YKINE_PATE, a_meth,  x_deg,  x_len,  x_xpos,  x_zpos,  x_ypos);
-   fprintf (f_unit, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   fprintf (f_dump, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(tibia)--------------------------*/
-   yKINE_diff         ((int) my.p_leg, YKINE_TIBI, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   yKINE_enddiff      ((int) my.p_leg, YKINE_TIBI, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    rc += KINE_diffmsg (x_msg         , YKINE_TIBI, a_meth,  x_deg,  x_len,  x_xpos,  x_zpos,  x_ypos);
-   fprintf (f_unit, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   fprintf (f_dump, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(target)-------------------------*/
-   yKINE_diff         ((int) my.p_leg, YKINE_TARG, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   yKINE_enddiff      ((int) my.p_leg, YKINE_TARG, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    rc += KINE_diffmsg (x_msg         , YKINE_TARG, a_meth,  x_deg,  x_len,  x_xpos,  x_zpos,  x_ypos);
-   fprintf (f_unit, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   fprintf (f_dump, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(lower)--------------------------*/
-   yKINE_diff         ((int) my.p_leg, YKINE_LOWR, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
+   yKINE_enddiff      ((int) my.p_leg, YKINE_LOWR, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    rc += KINE_diffmsg (x_msg         , YKINE_LOWR, a_meth,  x_deg,  x_len,  x_xpos,  x_zpos,  x_ypos);
-   fprintf (f_unit, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   fprintf (f_dump, "%-7s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(wrap line)----------------------*/
-   fprintf (f_unit, "\n");
+   fprintf (f_dump, "\n");
    /*---(complete)-----------------------*/
    return rc;
 }
@@ -278,9 +285,9 @@ KINE_write         (void)
    x_secs = my.p_cursec;
    /*---(breaks)-------------------------*/
    if (x_lines % 10 == 0) {
-      fprintf (f_unit, "header---------------  --coxa---------------------------------------------------  --femur--------------------------------------------------  --patella------------------------------------------------  --tibia--------------------------------------------------  --target-------------------------------------------------  --lower--------------------------------------------------\n");
-      fprintf (f_unit, "--line--  --secs--  #  note---  --deg---  --len---  --xpos--  --zpos--  --ypos--  note---  --deg---  --len---  --xpos--  --zpos--  --ypos--  note---  --deg---  --len---  --xpos--  --zpos--  --ypos--  note---  --deg---  --len---  --xpos--  --zpos--  --ypos--  note---  --deg---  --len---  --xpos--  --zpos--  --ypos--  note---  --deg---  --len---  --xpos--  --zpos--  --ypos--\n");
-      fprintf (f_unit, "\n");
+      fprintf (f_dump, "header---------------  --coxa---------------------------------------------------  --femur--------------------------------------------------  --patella------------------------------------------------  --tibia--------------------------------------------------  --target-------------------------------------------------  --lower--------------------------------------------------\n");
+      fprintf (f_dump, "--line--  --secs--  #  note---  --deg---  --len---  --xpos--  --zpos--  --ypos--  note---  --deg---  --len---  --xpos--  --zpos--  --ypos--  note---  --deg---  --len---  --xpos--  --zpos--  --ypos--  note---  --deg---  --len---  --xpos--  --zpos--  --ypos--  note---  --deg---  --len---  --xpos--  --zpos--  --ypos--  note---  --deg---  --len---  --xpos--  --zpos--  --ypos--\n");
+      fprintf (f_dump, "\n");
    }
    /*---(next)---------------------------*/
 
@@ -289,10 +296,74 @@ KINE_write         (void)
    rc += KINE_diff  (x_lines, YKINE_FK);
    KINE_line  (x_lines, YKINE_IK);
    rc += KINE_diff  (x_lines, YKINE_IK);
-   fprintf (f_unit, "\n");
+   fprintf (f_dump, "\n");
    /*---(next)---------------------------*/
    ++x_lines;
    /*---(complete)-----------------------*/
+   return 0;
+}
+
+
+
+char
+KINE_cond          (void)
+{
+   double      l           = 0.0;
+   double      d           = 0.0;
+   double      x           = 0.0;
+   double      z           = 0.0;
+   double      y           = 0.0;
+   double      v           = 0.0;
+   double      h           = 0.0;
+   char        x_leg       [LEN_LABEL];
+
+   /*---(prepare common vars)------------*/
+   strlcpy  (x_leg, legs_name [(int) my.p_leg], LEN_LABEL);
+   /*---(header)-------------------------*/
+   fprintf (f_cond, "   COND       v21  automated opengl test for yKINE (sec = %8.3lf)             ----------------------------------------------------------------------------------------------------  ----------  ---------------------------------------------------------------------- \n", my.p_cursec);
+   /*---(prepare for testing)------------*/
+   fprintf (f_cond, "     exec     v21  clear the FK numbers                 yKINE__wipe            YKINE_%s    , YKINE_FK                                                                             i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "     exec     v21  clear the IK numbers                 yKINE__wipe            YKINE_%s    , YKINE_IK                                                                             i_equal     0                                                                      \n", x_leg);
+   /*---(calc consistent positions)------*/
+   fprintf (f_cond, "     exec     v21  calc thorax                          yKINE__thor            YKINE_%s                                                                                           i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "     exec     v21  calc coxa                            yKINE__coxa            YKINE_%s                                                                                           i_equal     0                                                                      \n", x_leg);
+   yKINE_segment   (my.p_leg, YKINE_COXA, YKINE_FK, &l, &d, &x, &z, &y);
+   fprintf (f_cond, "     get      v21  verify fk endpoint for coxa          yKINE__getter         \"FK_seg_end\"   , YKINE_%s, YKINE_COXA                                                               u_round/1   FK-%soxa end :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"        , x_leg, x_leg, l, x, z, y);
+   fprintf (f_cond, "     get      v21  verify ik endpoint for coxa          yKINE__getter         \"IK_seg_end\"   , YKINE_%s, YKINE_COXA                                                               u_round/1   IK-%soxa end :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"        , x_leg, x_leg, l, x, z, y);
+   fprintf (f_cond, "     exec     v21  calc trochanter                      yKINE__troc            YKINE_%s                                                                                           i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "     get      v21  verify fk endpoint for trochanter    yKINE__getter         \"FK_seg_end\"   , YKINE_%s, YKINE_TROC                                                               u_round/1   FK-%sroc end :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"        , x_leg, x_leg, l, x, z, y);
+   fprintf (f_cond, "     get      v21  verify ik endpoint for trochanter    yKINE__getter         \"IK_seg_end\"   , YKINE_%s, YKINE_TROC                                                               u_round/1   IK-%sroc end :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"        , x_leg, x_leg, l, x, z, y);
+   /*---(calc forward kinematics)--------*/
+   fprintf (f_cond, "     exec     v21  calc femur                           yKINE__femu            YKINE_%s    ,  -85.0                                                                               i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "     get      v21  verify fk endpoint for femur         yKINE__getter         \"FK_seg_end\"   , YKINE_%s, YKINE_FEMU                                                               u_round/1   FK-%semu end :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"        , x_leg, x_leg, l, x, z, y);
+   fprintf (f_cond, "     exec     v21  calc patella                         yKINE__pate            YKINE_%s    ,  -90.0                                                                               i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "     get      v21  verify fk endpoint for patella       yKINE__getter         \"FK_seg_end\"   , YKINE_%s, YKINE_PATE                                                               u_round/1   FK-%sate end :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"        , x_leg, x_leg, l, x, z, y);
+   fprintf (f_cond, "     exec     v21  calc tibia                           yKINE__tibi            YKINE_%s    ,   90.0                                                                               i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "     get      v21  verify fk endpoint for tibia         yKINE__getter         \"FK_seg_end\"   , YKINE_%s, YKINE_TIBI                                                               u_round/1   FK-%sibi end :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"        , x_leg, x_leg, l, x, z, y);
+   fprintf (f_cond, "     exec     v21  calc target                          yKINE__FK_targ         YKINE_%s    , YKINE_FK                                                                             i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "     get      v21  verify fk endpoint for target        yKINE__getter         \"FK_seg_end\"   , YKINE_%s, YKINE_TARG                                                               u_round/1   FK-%sarg end :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"        , x_leg, x_leg, l, x, z, y);
+   fprintf (f_cond, "     exec     v21  calc lower leg                       yKINE__lower           YKINE_%s    , YKINE_FK                                                                             i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "     get      v21  verify fk endpoint for lower         yKINE__getter         \"FK_seg_end\"   , YKINE_%s, YKINE_TARG                                                               u_round/1   FK-%sarg end :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"        , x_leg, x_leg, l, x, z, y);
+   /*---(calc inverse kinematics)--------*/
+   fprintf (f_cond, "     get      v21  set the ik target                    yKINE__IK_targ         YKINE_%s    ,   -53.6,   226.0,    57.0                                                            i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "     get      v21  verify ik endpoint for target        yKINE__getter         \"IK_seg_end\"   , YKINE_%s, YKINE_TARG                                                               u_round/1   IK-%sarg end :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"        , x_leg, x_leg, l, x, z, y);
+   fprintf (f_cond, "     exec     v21  calc femur                           yKINE__IK_femu         YKINE_%s                                                                                           i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "     get      v21  verify ik endpoint for femur         yKINE__getter         \"IK_seg_end\"   , YKINE_%s, YKINE_FEMU                                                               u_round/1   IK-%semu end :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"        , x_leg, x_leg, l, x, z, y);
+   fprintf (f_cond, "     exec     v21  calc lower leg                       yKINE__lower           YKINE_%s    , YKINE_IK                                                                             i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "     exec     v21  calc patella                         yKINE__IK_pate         YKINE_%s                                                                                           i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "     get      v21  verify ik endpoint for patella       yKINE__getter         \"IK_seg_end\"   , YKINE_%s, YKINE_PATE                                                               u_round/1   IK-%sate end :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"        , x_leg, x_leg, l, x, z, y);
+   fprintf (f_cond, "     exec     v21  calc tibi                            yKINE__IK_tibi         YKINE_%s                                                                                           i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "     get      v21  verify ik endpoint for tibia         yKINE__getter         \"IK_seg_end\"   , YKINE_%s, YKINE_TIBI                                                               u_round/1   IK-%sibi end :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"        , x_leg, x_leg, l, x, z, y);
+   /*---(add some space)-----------------*/
+   fprintf (f_cond, "\n");
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
+
+char
+TEST_cond          (void)
+{
    return 0;
 }
 
