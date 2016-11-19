@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7m"
-#define VER_TXT   "put in basics of unit test condition writing for yKINE"
+#define VER_NUM   "0.7n"
+#define VER_TXT   "awesome basics for fullsome unit test writing"
 
 
 
@@ -644,6 +644,7 @@ char      KINE_begin         (void);
 char      KINE_end           (void);
 char      KINE_write         (void);
 char      KINE_compare       (int   a_seg);
+char      KINE_unitcond      (void);
 
 char      kine_center        (double a_x, double a_z);
 char      kine_height        (double a_y);
