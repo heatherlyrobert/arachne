@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7n"
-#define VER_TXT   "awesome basics for fullsome unit test writing"
+#define VER_NUM   "0.7o"
+#define VER_TXT   "puts out complete FK/IK condition testing"
 
 
 

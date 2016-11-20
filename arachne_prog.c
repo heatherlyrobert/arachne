@@ -264,27 +264,8 @@ PROG_args          (int argc, char *argv[])
       else if (strcmp(a, "--LF"         ) == 0)  my.p_leg = 3.0;
       else if (strcmp(a, "--LM"         ) == 0)  my.p_leg = 4.0;
       else if (strcmp(a, "--LR"         ) == 0)  my.p_leg = 5.0;
-      else if (strcmp(a, "--sizing"     ) == 0)  debug_sizing = 'y';
-      /*> else if (strcmp(a, "--moving"     ) == 0)  my.p_moving  = 'y';              <*/
-      else if (strcmp(a, "--init"       ) == 0)  umake_init   = 'y';
-      else if (strcmp(a, "--model"      ) == 0) {
-         if (i + 1 <  argc)  strncpy (model_name, argv[++i], 25);
-         printf("model     = %s\n", model_name);
-      }
-      else if (strcmp(a, "--y"          ) == 0) {
-         if (i + 1 <  argc)  arg_y    = atof(argv[++i]);
-      }
-      else if (strcmp(a, "--thor"       ) == 0) {
-         if (i + 1 <  argc)  arg_thor = atof(argv[++i]);
-      }
-      else if (strcmp(a, "--FK"         ) == 0) {
-         if (i + 4 <  argc)  {
-            arg_thor = atof(argv[++i]);
-            arg_femu = atof(argv[++i]);
-            arg_pate = atof(argv[++i]);
-            arg_tibi = atof(argv[++i]);
-            umake_leg    = 'y';
-         }
+      else if (strcmp(a, "--secs"       ) == 0) {
+         if (i + 1 <  argc)  my.p_cursec = atof (argv[++i]);
       }
       else if (a[0] != '-'                     ) {
          DEBUG_ARGS  yLOG_note   ("found a file name");
