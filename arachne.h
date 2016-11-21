@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7q"
-#define VER_TXT   "added CLI progress bar scale setting option"
+#define VER_NUM   "0.7r"
+#define VER_TXT   "added CLI option to quit after playing script"
 
 
 
@@ -266,6 +266,7 @@ struct cACCESSOR {
    char        p_curpos;                    /* position of current bar (shcle)*/
    double      p_cursec;                    /* current timeline seconds       */
    double      p_endsec;                    /* end second for timeline play   */
+   char        p_quit;                      /* quit after initial playing     */
    double      p_leg;                       /* leg currently viewed           */
    int         p_texw;                      /* texture full width             */
    int         p_texh;                      /* texture full height            */

@@ -99,6 +99,7 @@ PROG_init          (void)
    my.p_leg     =  0.0;
    my.p_cursec  =  0.0;
    my.p_endsec  =  0.0;
+   my.p_quit    =  '-';
    /*---(setup modes)--------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");
    yVIKEYS_mode_init    ();
@@ -260,12 +261,14 @@ PROG_args          (int argc, char *argv[])
       DEBUG_ARGS  yLOG_info    ("cli arg", a);
       ++x_args;
       if      (strcmp(a, "--play"       ) == 0)  yVIKEYS_speed_play   (&my.p_waitns);
-      else if (strcmp(a, "--RR"         ) == 0)  my.p_leg = 0.0;
-      else if (strcmp(a, "--RM"         ) == 0)  my.p_leg = 1.0;
-      else if (strcmp(a, "--RF"         ) == 0)  my.p_leg = 2.0;
-      else if (strcmp(a, "--LF"         ) == 0)  my.p_leg = 3.0;
-      else if (strcmp(a, "--LM"         ) == 0)  my.p_leg = 4.0;
-      else if (strcmp(a, "--LR"         ) == 0)  my.p_leg = 5.0;
+      else if (strcmp(a, "--pause"      ) == 0)  yVIKEYS_speed_stop   (&my.p_waitns);
+      else if (strcmp(a, "--quit"       ) == 0)  my.p_quit = 'y';
+      else if (strcmp(a, "--RR"         ) == 0)  my.p_leg  = 0.0;
+      else if (strcmp(a, "--RM"         ) == 0)  my.p_leg  = 1.0;
+      else if (strcmp(a, "--RF"         ) == 0)  my.p_leg  = 2.0;
+      else if (strcmp(a, "--LF"         ) == 0)  my.p_leg  = 3.0;
+      else if (strcmp(a, "--LM"         ) == 0)  my.p_leg  = 4.0;
+      else if (strcmp(a, "--LR"         ) == 0)  my.p_leg  = 5.0;
       else if (strcmp(a, "--begsec"     ) == 0) {
          if (i + 1 <  argc)  my.p_cursec = atof (argv[++i]);
       }
