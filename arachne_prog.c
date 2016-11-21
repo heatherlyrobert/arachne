@@ -272,6 +272,11 @@ PROG_args          (int argc, char *argv[])
       else if (strcmp(a, "--endsec"     ) == 0) {
          if (i + 1 <  argc)  my.p_endsec = atof (argv[++i]);
       }
+      else if (strcmp(a, "--scale"      ) == 0) {
+         if (i + 1 <  argc) {
+            yVIKEYS_scale_set    (argv[++i], &my.p_inc);
+         }
+      }
       else if (a[0] != '-'                     ) {
          DEBUG_ARGS  yLOG_note   ("found a file name");
          strncpy (my.f_base , a        , LEN_STR);

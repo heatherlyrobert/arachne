@@ -165,27 +165,27 @@ KINE_line          (int a_line, char a_meth)
    }
    /*---(coxa)---------------------------*/
    yKINE_endpoint   ((int) my.p_leg, YKINE_COXA, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
-   fprintf (f_dump, "%-10s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   fprintf (f_dump, "%-10s  %8.1f  %8.1f  %8.1f  %8.1f  %8.1f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(femur)--------------------------*/
    yKINE_endpoint   ((int) my.p_leg, YKINE_FEMU, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_dump, "%-10s     - - -     - - -     - - -     - - -     - - -  ", x_type);
-   else                                  fprintf (f_dump, "%-10s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   else                                  fprintf (f_dump, "%-10s  %8.1f  %8.1f  %8.1f  %8.1f  %8.1f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(patella)------------------------*/
    yKINE_endpoint   ((int) my.p_leg, YKINE_PATE, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_dump, "%-10s     - - -     - - -     - - -     - - -     - - -  ", x_type);
-   else                                  fprintf (f_dump, "%-10s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   else                                  fprintf (f_dump, "%-10s  %8.1f  %8.1f  %8.1f  %8.1f  %8.1f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(tibia)--------------------------*/
    yKINE_endpoint   ((int) my.p_leg, YKINE_TIBI, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_dump, "%-10s     - - -     - - -     - - -     - - -     - - -  ", x_type);
-   else                                  fprintf (f_dump, "%-10s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   else                                  fprintf (f_dump, "%-10s  %8.1f  %8.1f  %8.1f  %8.1f  %8.1f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(lower)--------------------------*/
    yKINE_endpoint   ((int) my.p_leg, YKINE_TARG, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_dump, "%-10s     - - -     - - -     - - -     - - -     - - -  ", x_type);
-   else                                  fprintf (f_dump, "%-10s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   else                                  fprintf (f_dump, "%-10s  %8.1f  %8.1f  %8.1f  %8.1f  %8.1f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(lower)--------------------------*/
    yKINE_endpoint   ((int) my.p_leg, YKINE_LOWR, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    if (x_xpos + x_zpos + x_ypos == 0.0)  fprintf (f_dump, "%-10s     - - -     - - -     - - -     - - -     - - -  ", x_type);
-   else                                  fprintf (f_dump, "%-10s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   else                                  fprintf (f_dump, "%-10s  %8.1f  %8.1f  %8.1f  %8.1f  %8.1f  ", x_type, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(wrap line)----------------------*/
    fprintf (f_dump, "\n");
    /*---(complete)-----------------------*/
@@ -216,14 +216,14 @@ KINE_diffmsg       (char *a_msg, int a_seg, int a_meth, double a_deg, double a_l
    case YKINE_IK   :  strlcpy (x_meth, "IK" , LEN_LABEL);   break;
    }
    /*---(warnings)-----------------------*/
-   if (a_meth == YKINE_FK)   x_forgive = 0.10;
-   else                      x_forgive = 0.90;
+   if (a_meth == YKINE_FK)   x_forgive = 1.00;
+   else                      x_forgive = 2.00;
    if (fabs (a_deg ) >= x_forgive)  strlcpy (x_msg, "warn", LEN_LABEL);
    if (fabs (a_xpos) >= x_forgive)  strlcpy (x_msg, "warn", LEN_LABEL);
    if (fabs (a_zpos) >= x_forgive)  strlcpy (x_msg, "warn", LEN_LABEL);
    if (fabs (a_ypos) >= x_forgive)  strlcpy (x_msg, "warn", LEN_LABEL);
    /*---(bombs)--------------------------*/
-   if (a_meth == YKINE_FK)   x_forgive = 1.00;
+   if (a_meth == YKINE_FK)   x_forgive = 2.00;
    else                      x_forgive = 9.00;
    if (fabs (a_deg ) >= x_forgive)  strlcpy (x_msg, "BOOM", LEN_LABEL);
    if (fabs (a_xpos) >= x_forgive)  strlcpy (x_msg, "BOOM", LEN_LABEL);
@@ -261,27 +261,27 @@ KINE_diff          (int a_line, char a_meth)
    /*---(coxa)---------------------------*/
    yKINE_enddiff      ((int) my.p_leg, YKINE_COXA, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    rc += KINE_diffmsg (x_msg         , YKINE_COXA, a_meth,  x_deg,  x_len,  x_xpos,  x_zpos,  x_ypos);
-   fprintf (f_dump, "%-10s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   fprintf (f_dump, "%-10s  %8.1f  %8.1f  %8.1f  %8.1f  %8.1f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(femur)--------------------------*/
    yKINE_enddiff      ((int) my.p_leg, YKINE_FEMU, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    rc += KINE_diffmsg (x_msg         , YKINE_FEMU, a_meth,  x_deg,  x_len,  x_xpos,  x_zpos,  x_ypos);
-   fprintf (f_dump, "%-10s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   fprintf (f_dump, "%-10s  %8.1f  %8.1f  %8.1f  %8.1f  %8.1f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(patella)------------------------*/
    yKINE_enddiff      ((int) my.p_leg, YKINE_PATE, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    rc += KINE_diffmsg (x_msg         , YKINE_PATE, a_meth,  x_deg,  x_len,  x_xpos,  x_zpos,  x_ypos);
-   fprintf (f_dump, "%-10s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   fprintf (f_dump, "%-10s  %8.1f  %8.1f  %8.1f  %8.1f  %8.1f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(tibia)--------------------------*/
    yKINE_enddiff      ((int) my.p_leg, YKINE_TIBI, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    rc += KINE_diffmsg (x_msg         , YKINE_TIBI, a_meth,  x_deg,  x_len,  x_xpos,  x_zpos,  x_ypos);
-   fprintf (f_dump, "%-10s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   fprintf (f_dump, "%-10s  %8.1f  %8.1f  %8.1f  %8.1f  %8.1f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(target)-------------------------*/
    yKINE_enddiff      ((int) my.p_leg, YKINE_TARG, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    rc += KINE_diffmsg (x_msg         , YKINE_TARG, a_meth,  x_deg,  x_len,  x_xpos,  x_zpos,  x_ypos);
-   fprintf (f_dump, "%-10s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   fprintf (f_dump, "%-10s  %8.1f  %8.1f  %8.1f  %8.1f  %8.1f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(lower)--------------------------*/
    yKINE_enddiff      ((int) my.p_leg, YKINE_LOWR, a_meth, &x_deg, &x_len, &x_xpos, &x_zpos, &x_ypos);
    rc += KINE_diffmsg (x_msg         , YKINE_LOWR, a_meth,  x_deg,  x_len,  x_xpos,  x_zpos,  x_ypos);
-   fprintf (f_dump, "%-10s  %8.2f  %8.2f  %8.2f  %8.2f  %8.2f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
+   fprintf (f_dump, "%-10s  %8.1f  %8.1f  %8.1f  %8.1f  %8.1f  ", x_msg, x_deg, x_len, x_xpos, x_zpos, x_ypos);
    /*---(wrap line)----------------------*/
    fprintf (f_dump, "\n");
    /*---(complete)-----------------------*/

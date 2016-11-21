@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7p"
-#define VER_TXT   "added CLI play controls and converted IK/FK to trunc mm"
+#define VER_NUM   "0.7q"
+#define VER_TXT   "added CLI progress bar scale setting option"
 
 
 
