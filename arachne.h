@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7r"
-#define VER_TXT   "added CLI option to quit after playing script"
+#define VER_NUM   "0.7s"
+#define VER_TXT   "cleaned up and expanded error reporting in arachne.dump"
 
 
 

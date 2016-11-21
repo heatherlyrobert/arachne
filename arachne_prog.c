@@ -98,7 +98,7 @@ PROG_init          (void)
    my.p_len     =  0.0;
    my.p_leg     =  0.0;
    my.p_cursec  =  0.0;
-   my.p_endsec  =  0.0;
+   my.p_endsec  = -1.0;
    my.p_quit    =  '-';
    /*---(setup modes)--------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");

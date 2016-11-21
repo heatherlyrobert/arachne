@@ -81,7 +81,10 @@ main (int argc, char *argv[])
             if   (x_savemode != yVIKEYS_mode_curr() || yVIKEYS_mode_curr() == MODE_COMMAND) {
                yVIKEYS_mode_mesg (my.message, "");
             }
-            if (the_key[0] == 'Q')   break;
+            if (the_key[0] == 'Q') {
+               PROG_end ();
+               exit (0);
+            }
             is_moved = 'y';
             break;
          }
@@ -93,12 +96,14 @@ main (int argc, char *argv[])
       if (my.p_cursec <  0.0f)   {
          yVIKEYS_speed_stop (&my.p_waitns);
          my.p_cursec = 0.0;
+         if (my.p_quit == 'y')  break;
       }
       if (my.p_cursec >= my.p_len) {
          yVIKEYS_speed_stop (&my.p_waitns);
          my.p_cursec = my.p_len;
+         if (my.p_quit == 'y')  break;
       }
-      if (my.p_cursec >= my.p_endsec) {
+      if (my.p_endsec > 0.0 && my.p_cursec >= my.p_endsec) {
          yVIKEYS_speed_stop (&my.p_waitns);
          if (my.p_quit == 'y')  break;
       }
