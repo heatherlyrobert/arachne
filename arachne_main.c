@@ -101,6 +101,9 @@ main (int argc, char *argv[])
          yVIKEYS_speed_stop (&my.p_waitns);
          my.p_cursec = my.p_len;
       }
+      if (my.p_cursec >= my.p_endsec) {
+         yVIKEYS_speed_stop (&my.p_waitns);
+      }
       gait.pos = my.p_cursec;
       /*---(check boundaries)------------*/
       stat_masscenter();

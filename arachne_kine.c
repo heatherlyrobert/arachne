@@ -349,7 +349,7 @@ KINE_unitseg       (char *a_leg, int a_seg, int a_meth)
       x_forgive = 1;
    } else { 
       strlcpy  (x_meth, "IK", LEN_LABEL);
-      x_forgive = 9;
+      x_forgive = 3;
    }
    yKINE_angle     (my.p_leg, a_seg, YKINE_GK, &d, &l, &v, &h);       
    yKINE_endpoint  (my.p_leg, a_seg, YKINE_GK, &d, &l, &x, &z, &y);
@@ -366,11 +366,11 @@ KINE_unitseg       (char *a_leg, int a_seg, int a_meth)
    } else if (a_seg == YKINE_TARG && a_meth == YKINE_IK) {
       fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__IK_%s        YKINE_%s       , %8.3lf       , %8.3lf       , %8.3lf                                           i_equal     0                                                                      \n"   , x_meth, a_leg, x_full, x_seg, a_leg, x, z, y);
    }
-   fprintf (f_cond, "     get      v21  -- verify %s angles                  yKINE__getter         \"%s_seg_angle\" , YKINE_%s       , YKINE_%s                                                          u_round/%d   %s-%s.%s ang :%8.1lfd,%8.3lfv,%8.3lfh                          \n" , x_meth, x_meth, a_leg, x_segupper, x_forgive, x_meth, a_leg, x_seg, d, v, h);
+   fprintf (f_cond, "     get      v21  -- verify %s angles                  yKINE__getter         \"%s_seg_angle\" , YKINE_%s       , YKINE_%s                                                          u_round/%d   %s-%s.%s ang :%8.0lfd,%8.2lfv,%8.2lfh                          \n" , x_meth, x_meth, a_leg, x_segupper, x_forgive, x_meth, a_leg, x_seg, d, v, h);
    yKINE_segment   (my.p_leg, a_seg, YKINE_GK, &d, &l, &x, &z, &y);
-   fprintf (f_cond, "     get      v21  -- verify %s segment                 yKINE__getter         \"%s_seg_size\"  , YKINE_%s       , YKINE_%s                                                          u_round/%d   %s-%s.%s siz :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"   , x_meth, x_meth, a_leg, x_segupper, x_forgive, x_meth, a_leg, x_seg, l, x, z, y);
+   fprintf (f_cond, "     get      v21  -- verify %s segment                 yKINE__getter         \"%s_seg_size\"  , YKINE_%s       , YKINE_%s                                                          u_round/%d   %s-%s.%s siz :%8.0lfm,%8.0lfx,%8.0lfz,%8.0lfy                \n"   , x_meth, x_meth, a_leg, x_segupper, x_forgive, x_meth, a_leg, x_seg, l, x, z, y);
    yKINE_endpoint  (my.p_leg, a_seg, YKINE_GK, &d, &l, &x, &z, &y);
-   fprintf (f_cond, "     get      v21  -- verify %s endpoint                yKINE__getter         \"%s_seg_end\"   , YKINE_%s       , YKINE_%s                                                          u_round/%d   %s-%s.%s end :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                \n"   , x_meth, x_meth, a_leg, x_segupper, x_forgive, x_meth, a_leg, x_seg, l, x, z, y);
+   fprintf (f_cond, "     get      v21  -- verify %s endpoint                yKINE__getter         \"%s_seg_end\"   , YKINE_%s       , YKINE_%s                                                          u_round/%d   %s-%s.%s end :%8.0lfm,%8.0lfx,%8.0lfz,%8.0lfy                \n"   , x_meth, x_meth, a_leg, x_segupper, x_forgive, x_meth, a_leg, x_seg, l, x, z, y);
    return 0;
 }
 

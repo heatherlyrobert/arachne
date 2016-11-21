@@ -97,6 +97,8 @@ PROG_init          (void)
    DEBUG_TOPS   yLOG_note  ("defaul progress ticker values");
    my.p_len     =  0.0;
    my.p_leg     =  0.0;
+   my.p_cursec  =  0.0;
+   my.p_endsec  =  0.0;
    /*---(setup modes)--------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");
    yVIKEYS_mode_init    ();
@@ -264,8 +266,11 @@ PROG_args          (int argc, char *argv[])
       else if (strcmp(a, "--LF"         ) == 0)  my.p_leg = 3.0;
       else if (strcmp(a, "--LM"         ) == 0)  my.p_leg = 4.0;
       else if (strcmp(a, "--LR"         ) == 0)  my.p_leg = 5.0;
-      else if (strcmp(a, "--secs"       ) == 0) {
+      else if (strcmp(a, "--begsec"     ) == 0) {
          if (i + 1 <  argc)  my.p_cursec = atof (argv[++i]);
+      }
+      else if (strcmp(a, "--endsec"     ) == 0) {
+         if (i + 1 <  argc)  my.p_endsec = atof (argv[++i]);
       }
       else if (a[0] != '-'                     ) {
          DEBUG_ARGS  yLOG_note   ("found a file name");

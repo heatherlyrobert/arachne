@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7o"
-#define VER_TXT   "puts out complete FK/IK condition testing"
+#define VER_NUM   "0.7p"
+#define VER_TXT   "added CLI play controls and converted IK/FK to trunc mm"
 
 
 
@@ -265,6 +265,7 @@ struct cACCESSOR {
    int         p_bottom;
    char        p_curpos;                    /* position of current bar (shcle)*/
    double      p_cursec;                    /* current timeline seconds       */
+   double      p_endsec;                    /* end second for timeline play   */
    double      p_leg;                       /* leg currently viewed           */
    int         p_texw;                      /* texture full width             */
    int         p_texh;                      /* texture full height            */
