@@ -100,6 +100,7 @@ PROG_init          (void)
    my.p_cursec  =  0.0;
    my.p_endsec  = -1.0;
    my.p_quit    =  '-';
+   my.p_dump    =  '-';
    /*---(setup modes)--------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");
    yVIKEYS_mode_init    ();
@@ -269,6 +270,8 @@ PROG_args          (int argc, char *argv[])
       else if (strcmp(a, "--LF"         ) == 0)  my.p_leg  = 3.0;
       else if (strcmp(a, "--LM"         ) == 0)  my.p_leg  = 4.0;
       else if (strcmp(a, "--LR"         ) == 0)  my.p_leg  = 5.0;
+      else if (strcmp(a, "--dump"       ) == 0)  my.p_dump = 'c';
+      else if (strcmp(a, "--dumpall"    ) == 0)  my.p_dump = 'a';
       else if (strcmp(a, "--begsec"     ) == 0) {
          if (i + 1 <  argc)  my.p_cursec = atof (argv[++i]);
       }

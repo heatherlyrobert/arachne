@@ -1384,7 +1384,7 @@ draw_spider        (void)
             draw_leg_NEW   (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
             /*---(calc in yKINE)---------*/
             yKINE_forward  (x_leg, x_femu, x_pate, x_tibi);
-            KINE_write     ();
+            KINE_write     (x_leg);
             /*---(done)------------------*/
          } glPopMatrix ();
       }

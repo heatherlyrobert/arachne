@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7s"
-#define VER_TXT   "cleaned up and expanded error reporting in arachne.dump"
+#define VER_NUM   "0.7t"
+#define VER_TXT   "added a --dumpall CLI option to get full dump for all legs"
 
 
 
@@ -273,6 +273,7 @@ struct cACCESSOR {
    int         p_top;                       /* topmost y of progress bar      */
    int         p_bot;                       /* bottommost y of progress bar   */
    double      p_len;                       /* length of script               */
+   char        p_dump;                      /* dump none, curr, or all        */
    /*---(progress handles)*/
    uint        p_tex;                       /* texture for image              */
    uint        p_fbo;                       /* framebuffer                    */
@@ -644,7 +645,7 @@ void       leg_init          (tSEG a_leg);
 
 char      KINE_begin         (void);
 char      KINE_end           (void);
-char      KINE_write         (void);
+char      KINE_write         (int   a_leg);
 char      KINE_compare       (int   a_seg);
 char      KINE_unitcond      (void);
 
