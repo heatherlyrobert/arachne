@@ -1,58 +1,25 @@
 #!/usr/local/bin/arachne
 #   spider visualization and simulation script
 
+full_leg         -a-  RF               0.000       0.000       0.000      90.000  - - -                
 
-#==(verb)======  ver  =(servos)=  ==(secs)==  ==(degs)==  ==========  ==========  ==(adjs)============ 
-servo            -b-  aa.femu          0.000       0.000  - - -       - - -       L2R                  
-servo            -b-  aa.pate          0.000       0.000  - - -       - - -       - - -                
-servo            -b-  aa.tibi          0.000      90.000  - - -       - - -       - - -                
+#==(verb)======  ver  ==(leg)===  ==(secs)==  ==(femu)==  ==(pate)==  ==(tibi)==  ==(adjs)============ 
+full_leg         -a-  RF               0.500     -45.000      45.000      10.000  - - -                
+full_leg         -a-  RF               0.500      45.000     -45.000     130.000  - - -                
+full_leg         -a-  RF               0.500     -45.000      45.000      10.000  - - -                
+full_leg         -a-  RF               0.500      45.000     -45.000     130.000  - - -                
+full_leg         -a-  RF               0.500     -45.000      45.000      10.000  - - -                
+full_leg         -a-  RF               0.500      45.000     -45.000     130.000  - - -                
+full_leg         -a-  RF               0.500     -45.000      45.000      10.000  - - -                
+full_leg         -a-  RF               0.500      45.000     -45.000     130.000  - - -                
 
-#==(verb)======  ver  =(servos)=  ==(secs)==  ==(degs)==  ==========  ==========  ==(adjs)============ 
-servo            -b-  aa.femu          0.500     -85.000  - - -       - - -       L2R                  
-servo            -b-  aa.pate          0.500     -90.000  - - -       - - -       - - -                
-servo            -b-  aa.tibi          0.500      90.000  - - -       - - -       - - -                
-
-#==(verb)======  ver  =(servos)=  ==(secs)==  ==(degs)==  ==========  ==========  ==(adjs)============ 
-servo            -b-  aa.femu        179.200      85.000  - - -       - - -       L2R                  
-
-  #==(verb)====  ver  =(servos)=  ==(secs)==  ==(degs)==  ==========  ==========  ==(adjs)============ 
-  SEGNO          -a-  aa.pate     - - -       - - -       - - -       - - -       - - -                
-  SEGNO          -a-  aa.tibi     - - -       - - -       - - -       - - -       - - -                
-
-  #==(verb)====  ver  =(servos)=  ==(secs)==  ==(degs)==  ==========  ==========  ==(adjs)============ 
-  servo          -b-  aa.pate         11.200      45.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.300      30.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100      15.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100      10.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100      15.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100      30.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.300     110.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100     125.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100     130.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100     125.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100     110.000  - - -       - - -       - - -                
-    REPEAT       -b-  aa.tibi              7          10  - - -       - - -       - - -                
-
-  #==(verb)====  ver  =(servos)=  ==(secs)==  ==(degs)==  ==========  ==========  ==(adjs)============ 
-  servo          -b-  aa.pate         11.200     -90.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.300      30.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100      15.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100      10.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100      15.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100      30.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.300     110.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100     125.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100     130.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100     125.000  - - -       - - -       - - -                
-    servo        -b-  aa.tibi          0.100     110.000  - - -       - - -       - - -                
-    REPEAT       -b-  aa.tibi              7          10  - - -       - - -       - - -                
-
-  #==(verb)====  ver  =(servos)=  ==(secs)==  ==(degs)==  ==========  ==========  ==(adjs)============ 
-  DAL SEGNO      -b-  aa.pate              7  - - -       - - -       - - -       - - -       - - -                
-  DAL SEGNO      -b-  aa.tibi              7  - - -       - - -       - - -       - - -       - - -                
-
+full_leg         -a-  RF               0.500       0.000       0.000      90.000  - - -                
 
 #==(verb)======  ver  ==(leg)===  ==(secs)==  ==(xpos)==  ==(zpos)==  ==(ypos)==  ==(adjs)============ 
-position         -a-  RF               0.500     -90.000     -90.000      11.200  - - -                
+#relative         -a-  RF               0.500     -10.000     -30.000       0.000  attn,fore            
+#relative         -a-  RF               0.500     -10.000      30.000       0.000  attn,fore            
+#relative         -a-  RF               0.250     -10.000     -30.000       0.000  attn,fore            
+
+#REPEAT           -b-  aa.tibi              7          10  - - -       - - -       - - -                
 
 #end-of-file

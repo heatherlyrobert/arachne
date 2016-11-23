@@ -133,16 +133,24 @@ SCRP_close         (void)
 /*====================------------------------------------====================*/
 static void      o___PARSING_________________o (void) {;}
 
+/*---(prefix)-------------------------*/
 #define     FIELD_SVO      1
 #define     FIELD_SEC      2
+/*---(servo related)------------------*/
 #define     FIELD_DEG      3
+/*---(leg related)--------------------*/
+#define     FIELD_FEMU     3
+#define     FIELD_PATE     4
+#define     FIELD_TIBI     5
+/*---(position related)---------------*/
 #define     FIELD_XPOS     3
 #define     FIELD_ZPOS     4
 #define     FIELD_YPOS     5
-#define     FIELD_ARGS     6
-
+/*---(repeat related)-----------------*/
 #define     FIELD_TIMES    2
 #define     FIELD_COUNT    3
+/*---(suffix)-------------------------*/
+#define     FIELD_ARGS     6
 
 int         s_len       = 0;
 char       *s_q         = "";               /* strtok delimeters         */
@@ -323,6 +331,81 @@ SCRP_move          (void)
          for (j = 0; j < g_nservo; ++j) {
             if (g_servos [j].scrp != 'y') continue;
             MOVE_create (MOVE_SERVO, g_servos + j, "", 0, x_degs, x_secs);
+         }
+         break;
+      case  FIELD_ARGS  :  /*---(args)-----*/
+         break;
+      }
+      DEBUG_INPT   yLOG_note    ("done with loop");
+   } 
+   DEBUG_INPT   yLOG_note    ("done parsing fields");
+   /*---(complete)-----------------------*/
+   DEBUG_INPT   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
+char         /*--> parse a move entry --------------------[ ------ [ ------ ]-*/
+SCRP_fullleg       (void)
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         = -10;                /* return code for errors    */
+   char        rc          = 0;
+   char       *p           = NULL;
+   int         i           = 0;
+   int         j           = 0;
+   char        x_request   [LEN_LABEL];
+   int         x_len       = 0;
+   int         x_servo     = -1;
+   float       x_secs      = -1;
+   double      x_femu      = 0.0;
+   double      x_pate      = 0.0;
+   double      x_tibi      = 0.0;
+   /*---(header)-------------------------*/
+   DEBUG_INPT   yLOG_enter   (__FUNCTION__);
+   /*---(read fields)--------------------*/
+   for (i = FIELD_SVO  ; i <= FIELD_ARGS ; ++i) {
+      /*---(parse field)-----------------*/
+      DEBUG_INPT   yLOG_note    ("read next field");
+      p = strtok_r (NULL  , s_q, &s_context);
+      --rce;  if (p == NULL) {
+         DEBUG_INPT   yLOG_note    ("strtok_r came up empty");
+         DEBUG_INPT   yLOG_exit    (__FUNCTION__);
+         break;
+      }
+      strltrim (p, ySTR_BOTH, LEN_RECD);
+      x_len = strlen (p);
+      DEBUG_INPT  yLOG_info    ("field"     , p);
+      /*---(handle)----------------------*/
+      switch (i) {
+      case  FIELD_SVO   :  /*---(servo)----*/
+         sprintf (x_request, "%s.femu", p);
+         x_servo = SCRP_servos (x_request);
+         --rce;  if (x_servo < 0) {
+            DEBUG_INPT  yLOG_warn    ("servo"     , "not found");
+            DEBUG_INPT  yLOG_exit    (__FUNCTION__);
+            return rce;
+         }
+         break;
+      case  FIELD_SEC   :  /*---(seconds)--*/
+         x_secs = atof (p);
+         DEBUG_INPT  yLOG_double  ("seconds"   , x_secs);
+         break;
+      case  FIELD_FEMU  :  /*---(degrees)--*/
+         x_femu = atof (p);
+         DEBUG_INPT  yLOG_double  ("femu deg"  , x_femu);
+         break;
+      case  FIELD_PATE  :  /*---(degrees)--*/
+         x_pate = atof (p);
+         DEBUG_INPT  yLOG_double  ("pate deg"  , x_pate);
+         break;
+      case  FIELD_TIBI  :  /*---(degrees)--*/
+         x_tibi = atof (p);
+         DEBUG_INPT  yLOG_double  ("tibi deg"  , x_tibi);
+         for (j = 0; j < g_nservo; ++j) {
+            if (g_servos [j].scrp != 'y') continue;
+            MOVE_create (MOVE_SERVO, g_servos + j + 0, "", 0, x_femu, x_secs);
+            MOVE_create (MOVE_SERVO, g_servos + j + 1, "", 0, x_pate, x_secs);
+            MOVE_create (MOVE_SERVO, g_servos + j + 2, "", 0, x_tibi, x_secs);
          }
          break;
       case  FIELD_ARGS  :  /*---(args)-----*/
@@ -625,6 +708,9 @@ SCRP_main          (void)
          break;
       case 's' : /* servo, start       */
          SCRP_move      ();
+         break;
+      case 'f' : /* servo, start       */
+         SCRP_fullleg   ();
          break;
       default  :
          DEBUG_INPT  yLOG_note    ("verb not recognized and skipped");
