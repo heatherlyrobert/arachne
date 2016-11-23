@@ -91,6 +91,21 @@ KINE_begin         (void)
       f_dump = fopen ("arachne.dump", "w");
    }
    f_cond = fopen ("arachne.cond", "w");
+   fprintf (f_cond, "#!/usr/local/bin/koios\n");
+   fprintf (f_cond, "\n");
+   fprintf (f_cond, "\n");
+   fprintf (f_cond, "\n");
+   fprintf (f_cond, "#23456789012  123  123456789-123456789-123456789-12345  123456789-123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-  123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789- \n");
+   fprintf (f_cond, "#==(verb)===  ver  ===========(description)===========  =====(function)=====  ============================================(arguments)=============================================  ==(test)==  ==========================(results)=================================== \n");
+   fprintf (f_cond, "PREP          v21  include the prototype headers                               \n");
+   fprintf (f_cond, "   incl       v21  include public header                yKINE.h              \n");
+   fprintf (f_cond, "   incl       v21  include private header               yKINE_priv.h         \n");
+   fprintf (f_cond, "\n");
+   fprintf (f_cond, "\n");
+   fprintf (f_cond, "\n");
+   fprintf (f_cond, "#23456789012  123  123456789-123456789-123456789-12345  123456789-123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-  123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789- \n");
+   fprintf (f_cond, "#==(verb)===  ver  ===========(description)===========  =====(function)=====  ============================================(arguments)=============================================  ==(test)==  ==========================(results)=================================== \n");
+   fprintf (f_cond, "SCRP          v21  debug arachne bombs                                                                                                                                                ----------  ---------------------------------------------------------------------- \n");
    fprintf (f_cond, "\n");
    fprintf (f_cond, "   COND       v21  initialize the global data                                   ----------------------------------------------------------------------------------------------------  ----------  ---------------------------------------------------------------------- \n");
    fprintf (f_cond, "     set      v21  start testing                        yKINE__testloud                                                                                                             i_equal     0                                                                      \n");
@@ -129,6 +144,8 @@ KINE_warns         (int a_meth)
 char
 KINE_end           (void)
 {
+   fprintf (f_cond, "\n");
+   fprintf (f_cond, "#---end-of-unit-test-script\n");
    fclose  (f_cond);
    if (my.p_dump   != '-') {
       fprintf (f_dump, "\n");
@@ -450,6 +467,9 @@ KINE_unitcond      (void)
    KINE_unitseg  (x_leg, YKINE_LOWR, YKINE_IK);
    KINE_unitseg  (x_leg, YKINE_PATE, YKINE_IK);
    KINE_unitseg  (x_leg, YKINE_TIBI, YKINE_IK);
+   KINE_unitseg  (x_leg, YKINE_META, YKINE_IK);
+   KINE_unitseg  (x_leg, YKINE_TARS, YKINE_IK);
+   KINE_unitseg  (x_leg, YKINE_FOOT, YKINE_IK);
    /*---(add some space)-----------------*/
    fprintf (f_cond, "\n");
    /*---(complete)-----------------------*/

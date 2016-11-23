@@ -283,6 +283,9 @@ PROG_args          (int argc, char *argv[])
             yVIKEYS_scale_set    (argv[++i], &my.p_inc);
          }
       }
+      else if (strcmp(a, "--progress"   ) == 0) {
+         yVIKEYS_mode_enter  (MODE_PROGRESS);
+      }
       else if (a[0] != '-'                     ) {
          DEBUG_ARGS  yLOG_note   ("found a file name");
          strncpy (my.f_base , a        , LEN_STR);

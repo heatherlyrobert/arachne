@@ -134,15 +134,15 @@ SCRP_close         (void)
 static void      o___PARSING_________________o (void) {;}
 
 #define     FIELD_SVO      1
-#define     FIELD_ARG      2
+#define     FIELD_SEC      2
 #define     FIELD_DEG      3
-#define     FIELD_SEC      4
-#define     FIELD_XPOS     5
-#define     FIELD_YPOS     6
-#define     FIELD_ZPOS     7
+#define     FIELD_XPOS     3
+#define     FIELD_ZPOS     4
+#define     FIELD_YPOS     5
+#define     FIELD_ARGS     6
 
+#define     FIELD_TIMES    2
 #define     FIELD_COUNT    3
-#define     FIELD_TIMES    4
 
 int         s_len       = 0;
 char       *s_q         = "";               /* strtok delimeters         */
@@ -291,7 +291,7 @@ SCRP_move          (void)
    /*---(header)-------------------------*/
    DEBUG_INPT   yLOG_enter   (__FUNCTION__);
    /*---(read fields)--------------------*/
-   for (i = FIELD_SVO  ; i <= FIELD_ZPOS ; ++i) {
+   for (i = FIELD_SVO  ; i <= FIELD_ARGS ; ++i) {
       /*---(parse field)-----------------*/
       DEBUG_INPT   yLOG_note    ("read next field");
       p = strtok_r (NULL  , s_q, &s_context);
@@ -313,19 +313,19 @@ SCRP_move          (void)
             return rce;
          }
          break;
-      case  FIELD_ARG   :  /*---(args)-----*/
+      case  FIELD_SEC   :  /*---(seconds)--*/
+         x_secs = atof (p);
+         DEBUG_INPT  yLOG_double  ("seconds"   , x_secs);
          break;
       case  FIELD_DEG   :  /*---(degrees)--*/
          x_degs = atof (p);
          DEBUG_INPT  yLOG_double  ("degrees"   , x_degs);
-         break;
-      case  FIELD_SEC   :  /*---(seconds)--*/
-         x_secs = atof (p);
-         DEBUG_INPT  yLOG_double  ("seconds"   , x_secs);
          for (j = 0; j < g_nservo; ++j) {
             if (g_servos [j].scrp != 'y') continue;
             MOVE_create (MOVE_SERVO, g_servos + j, "", 0, x_degs, x_secs);
          }
+         break;
+      case  FIELD_ARGS  :  /*---(args)-----*/
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -352,7 +352,7 @@ SCRP_segno         (void)
    /*---(header)-------------------------*/
    DEBUG_INPT   yLOG_enter   (__FUNCTION__);
    /*---(read fields)--------------------*/
-   for (i = FIELD_SVO  ; i <= FIELD_SVO  ; ++i) {
+   for (i = FIELD_SVO  ; i <= FIELD_ARGS ; ++i) {
       /*---(parse field)-----------------*/
       DEBUG_INPT   yLOG_note    ("read next field");
       p = strtok_r (NULL  , s_q, &s_context);
@@ -404,7 +404,7 @@ SCRP_repeat        (void)
    /*---(header)-------------------------*/
    DEBUG_INPT   yLOG_enter   (__FUNCTION__);
    /*---(read fields)--------------------*/
-   for (i = FIELD_SVO  ; i <= FIELD_TIMES; ++i) {
+   for (i = FIELD_SVO  ; i <= FIELD_ARGS ; ++i) {
       /*---(parse field)-----------------*/
       DEBUG_INPT   yLOG_note    ("read next field");
       p = strtok_r (NULL  , s_q, &s_context);
@@ -426,7 +426,14 @@ SCRP_repeat        (void)
             return rce;
          }
          break;
-      case  FIELD_ARG   :  /*---(args)-----*/
+      case  FIELD_TIMES :  /*---(times to repeat)----*/
+         x_times = atoi (p);
+         DEBUG_INPT  yLOG_value   ("x_times"   , x_times);
+         --rce;  if (x_times < 1 || x_times > 100) {
+            DEBUG_INPT  yLOG_warn    ("times"     , "out of range (1 - 100)");
+            DEBUG_INPT  yLOG_exit    (__FUNCTION__);
+            return rce;
+         }
          break;
       case  FIELD_COUNT :  /*---(moves to repeat)----*/
          x_count = atoi (p);
@@ -436,19 +443,12 @@ SCRP_repeat        (void)
             DEBUG_INPT  yLOG_exit    (__FUNCTION__);
             return rce;
          }
-         break;
-      case  FIELD_TIMES :  /*---(times to repeat)----*/
-         x_times = atoi (p);
-         DEBUG_INPT  yLOG_value   ("x_times"   , x_times);
-         --rce;  if (x_times < 1 || x_times > 100) {
-            DEBUG_INPT  yLOG_warn    ("times"     , "out of range (1 - 100)");
-            DEBUG_INPT  yLOG_exit    (__FUNCTION__);
-            return rce;
-         }
          for (j = 0; j < g_nservo; ++j) {
             if (g_servos [j].scrp != 'y') continue;
             MOVE_repeat     (g_servos + j, x_count, x_times);
          }
+         break;
+      case  FIELD_ARGS  :  /*---(args)-----*/
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -474,7 +474,7 @@ SCRP_dalsegno      (void)
    /*---(header)-------------------------*/
    DEBUG_INPT   yLOG_enter   (__FUNCTION__);
    /*---(read fields)--------------------*/
-   for (i = FIELD_SVO  ; i <= FIELD_TIMES; ++i) {
+   for (i = FIELD_SVO  ; i <= FIELD_ARGS ; ++i) {
       /*---(parse field)-----------------*/
       DEBUG_INPT   yLOG_note    ("read next field");
       p = strtok_r (NULL  , s_q, &s_context);
@@ -496,10 +496,6 @@ SCRP_dalsegno      (void)
             return rce;
          }
          break;
-      case  FIELD_ARG   :  /*---(args)-----*/
-         break;
-      case  FIELD_COUNT :  /*---(moves to repeat)----*/
-         break;
       case  FIELD_TIMES :  /*---(times to repeat)----*/
          x_times = atoi (p);
          DEBUG_INPT  yLOG_value   ("x_times"   , x_times);
@@ -512,6 +508,10 @@ SCRP_dalsegno      (void)
             if (g_servos [j].scrp != 'y') continue;
             MOVE_dalsegno   (g_servos + j, x_times);
          }
+         break;
+      case  FIELD_COUNT :  /*---(moves to repeat)----*/
+         break;
+      case  FIELD_ARGS  :  /*---(args)-----*/
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");

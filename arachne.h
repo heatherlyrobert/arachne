@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.7t"
-#define VER_TXT   "added a --dumpall CLI option to get full dump for all legs"
+#define VER_NUM   "0.8a"
+#define VER_TXT   "adjusted script format to request IK positions also"
 
 
 
