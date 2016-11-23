@@ -344,6 +344,100 @@ SCRP_move          (void)
    return 0;
 }
 
+char         /*--> parse a IK based move -----------------[ ------ [ ------ ]-*/
+SCRP_ik            (void)
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         = -10;                /* return code for errors    */
+   char        rc          = 0;
+   char       *p           = NULL;
+   int         i           = 0;
+   int         j           = 0;
+   char        x_request   [LEN_LABEL];
+   int         x_len       = 0;
+   int         x_servo     = -1;
+   float       x_secs      = -1;
+   double      x_xpos      = 0.0;
+   double      x_zpos      = 0.0;
+   double      x_ypos      = 0.0;
+   int         x_leg       = 0.0;
+   double      x_xbase     = 0.0;
+   double      x_zbase     = 0.0;
+   double      x_ybase     = 0.0;
+   double      x_femu      = 0.0;
+   double      x_pate      = 0.0;
+   double      x_tibi      = 0.0;
+   /*---(header)-------------------------*/
+   DEBUG_INPT   yLOG_enter   (__FUNCTION__);
+   /*---(read fields)--------------------*/
+   for (i = FIELD_SVO  ; i <= FIELD_ARGS ; ++i) {
+      /*---(parse field)-----------------*/
+      DEBUG_INPT   yLOG_note    ("read next field");
+      p = strtok_r (NULL  , s_q, &s_context);
+      --rce;  if (p == NULL) {
+         DEBUG_INPT   yLOG_note    ("strtok_r came up empty");
+         DEBUG_INPT   yLOG_exit    (__FUNCTION__);
+         break;
+      }
+      strltrim (p, ySTR_BOTH, LEN_RECD);
+      x_len = strlen (p);
+      DEBUG_INPT  yLOG_info    ("field"     , p);
+      /*---(handle)----------------------*/
+      switch (i) {
+      case  FIELD_SVO   :  /*---(servo)----*/
+         sprintf (x_request, "%s.femu", p);
+         x_servo = SCRP_servos (x_request);
+         --rce;  if (x_servo < 0) {
+            DEBUG_INPT  yLOG_warn    ("servo"     , "not found");
+            DEBUG_INPT  yLOG_exit    (__FUNCTION__);
+            return rce;
+         }
+         break;
+      case  FIELD_SEC   :  /*---(seconds)--*/
+         x_secs = atof (p);
+         DEBUG_INPT  yLOG_double  ("seconds"   , x_secs);
+         break;
+      case  FIELD_XPOS  :  /*---(coords)---*/
+         x_xpos = atof (p);
+         DEBUG_INPT  yLOG_double  ("xpos"      , x_xpos);
+         break;
+      case  FIELD_ZPOS  :  /*---(coords)---*/
+         x_zpos = atof (p);
+         DEBUG_INPT  yLOG_double  ("zpos"      , x_zpos);
+         break;
+      case  FIELD_YPOS  :  /*---(coords)---*/
+         x_ypos = atof (p);
+         DEBUG_INPT  yLOG_double  ("ypos"      , x_ypos);
+         for (j = 0; j < g_nservo; ++j) {
+            if (g_servos [j].scrp != 'y') continue;
+            x_leg = j / 3.0;
+            DEBUG_INPT  yLOG_value   ("x_leg"     , x_leg);
+            yKINE_forward  (x_leg, 0.0, 0.0, 90.0);
+            yKINE_endpoint (x_leg, YKINE_TARG, YKINE_FK, NULL, NULL, &x_xbase, &x_zbase, &x_ybase);
+            DEBUG_INPT  yLOG_double  ("x_xbase"   , x_xbase);
+            DEBUG_INPT  yLOG_double  ("x_zbase"   , x_zbase);
+            DEBUG_INPT  yLOG_double  ("x_ybase"   , x_ybase);
+            yKINE_inverse  (x_leg, x_xbase + x_xpos, x_zbase + x_zpos, x_ybase + x_ypos);
+            yKINE_angles   (x_leg, YKINE_IK, NULL, &x_femu, &x_pate, &x_tibi);
+            DEBUG_INPT  yLOG_double  ("femu deg"  , x_femu);
+            DEBUG_INPT  yLOG_double  ("pate deg"  , x_pate);
+            DEBUG_INPT  yLOG_double  ("tibi deg"  , x_tibi);
+            MOVE_create (MOVE_SERVO, g_servos + j + 0, "", 0, x_femu, x_secs);
+            MOVE_create (MOVE_SERVO, g_servos + j + 1, "", 0, x_pate, x_secs);
+            MOVE_create (MOVE_SERVO, g_servos + j + 2, "", 0, x_tibi, x_secs);
+         }
+         break;
+      case  FIELD_ARGS  :  /*---(args)-----*/
+         break;
+      }
+      DEBUG_INPT   yLOG_note    ("done with loop");
+   } 
+   DEBUG_INPT   yLOG_note    ("done parsing fields");
+   /*---(complete)-----------------------*/
+   DEBUG_INPT   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
 char         /*--> parse a move entry --------------------[ ------ [ ------ ]-*/
 SCRP_fullleg       (void)
 {
@@ -711,6 +805,9 @@ SCRP_main          (void)
          break;
       case 'f' : /* servo, start       */
          SCRP_fullleg   ();
+         break;
+      case 'i' : /* IK based position  */
+         SCRP_ik        ();
          break;
       default  :
          DEBUG_INPT  yLOG_note    ("verb not recognized and skipped");

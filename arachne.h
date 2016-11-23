@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8b"
-#define VER_TXT   "added functionality for full leg (all servo) coordinated move"
+#define VER_NUM   "0.8c"
+#define VER_TXT   "added functionality for IK leg coordinated move"
 
 
 
