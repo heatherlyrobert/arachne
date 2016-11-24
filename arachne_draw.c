@@ -1352,6 +1352,13 @@ draw_spider        (void)
    float       x_femu      = 0.0;
    float       x_pate      = 0.0;
    float       x_tibi      = 0.0;
+   double      x_xpos1     = 0.0;
+   double      x_zpos1     = 0.0;
+   double      x_ypos1     = 0.0;
+   double      x_xpos2     = 0.0;
+   double      x_zpos2     = 0.0;
+   double      x_ypos2     = 0.0;
+   char        x_debug     = '-';
    /*> draw_axis();                                                                   <*/
    DRAW_reset  ();
    if (dl_spider != 0) glDeleteLists(dl_spider, 1);
@@ -1386,6 +1393,37 @@ draw_spider        (void)
             yKINE_forward  (x_leg, x_femu, x_pate, x_tibi);
             KINE_write     (x_leg);
             /*---(done)------------------*/
+         } glPopMatrix ();
+         glPushMatrix (); {
+            /*---(figure move line)------*/
+            x_debug = '-';
+            if (strcmp (g_servos [x_servo].label, "RR.tibi") == 0) x_debug = 'y';
+            /*> if (x_debug == 'y') {                                                 <*/
+               if (x_debug == 'y')  printf ("name = %s\n", g_servos [x_servo].label);
+               if (x_debug == 'y')  printf ("curr = %p\n", g_servos [x_servo].curr);
+               if (x_debug == 'y')  printf ("prev = %p\n", g_servos [x_servo].curr->s_prev);
+               if (g_servos [x_servo].curr->s_prev != NULL) {
+                  x_xpos1 = g_servos [x_servo].curr->s_prev->x_pos;
+                  x_zpos1 = g_servos [x_servo].curr->s_prev->z_pos;
+                  x_ypos1 = g_servos [x_servo].curr->s_prev->y_pos;
+                  if (x_debug == 'y')  printf ("   pos1  %8.1lfx, %8.1lfz, %8.1lfy\n", x_xpos1, x_zpos1, x_ypos1);
+                  x_xpos2 = g_servos [x_servo].curr->x_pos;
+                  x_zpos2 = g_servos [x_servo].curr->z_pos;
+                  x_ypos2 = g_servos [x_servo].curr->y_pos;
+                  if (x_debug == 'y')  printf ("   pos2  %8.1lfx, %8.1lfz, %8.1lfy\n", x_xpos2, x_zpos2, x_ypos2);
+                  glLineWidth  ( 2.00f);
+                  glColor4f    (1.0f, 0.0f, 0.0f, 1.0f);
+                  glBegin      (GL_LINES); {
+                     glVertex3f  (x_xpos1, x_ypos1, x_zpos1);
+                     glVertex3f  (x_xpos2, x_ypos2, x_zpos2);
+                  } glEnd   ();
+                  glColor4f    (1.0f, 0.0f, 1.0f, 1.0f);
+                  glBegin      (GL_POINTS); {
+                     glVertex3f  (x_xpos1, x_ypos1, x_zpos1);
+                     glVertex3f  (x_xpos2, x_ypos2, x_zpos2);
+                  } glEnd   ();
+               }
+            /*> }                                                                     <*/
          } glPopMatrix ();
       }
       /*> draw_contact    ();                                                         <*/
@@ -1615,20 +1653,20 @@ char view_top_curve     (int a_leg, int a_joint, float a_radius, float a_max, fl
    /*---(set min/max)--------------------*/
    switch (a_joint) {
    case YKINE_FEMU : xmin = - (M_PI /  2);
-               xmax = + (M_PI /  2);
-               xcur = - gk[a_leg][a_joint].d * DEG2RAD;
-               xpos = 0.0;
-               break;
+                     xmax = + (M_PI /  2);
+                     xcur = - gk[a_leg][a_joint].d * DEG2RAD;
+                     xpos = 0.0;
+                     break;
    case YKINE_PATE : xmin = - (M_PI /  2);
-               xmax = + (M_PI /  4);
-               xcur = - gk[a_leg][a_joint].d * DEG2RAD;
-               xpos = 1.0;
-               break;
+                     xmax = + (M_PI /  4);
+                     xcur = - gk[a_leg][a_joint].d * DEG2RAD;
+                     xpos = 1.0;
+                     break;
    case YKINE_TIBI : xmin = + (M_PI / 36);
-               xmax = + (M_PI * 0.75);
-               xcur = - gk[a_leg][a_joint].d * DEG2RAD;
-               xpos = 2.0;
-               break;
+                     xmax = + (M_PI * 0.75);
+                     xcur = - gk[a_leg][a_joint].d * DEG2RAD;
+                     xpos = 2.0;
+                     break;
    }
    glLineWidth(5.00f);
    /*---(draw range curve)---------------*/

@@ -2,7 +2,7 @@
 #   spider visualization and simulation script
 
 #==(verb)======  ver  ==(leg)===  ==(secs)==  ==(femu)==  ==(pate)==  ==(tibi)==  ==(adjs)============ 
-full_leg         -a-  RF               0.000       0.000       0.000      90.000  -                    
+full_leg         -a-  aa               0.000       0.000       0.000      90.000  -                    
 
 #==(verb)======  ver  ==(leg)===  ==(secs)==  ==(femu)==  ==(pate)==  ==(tibi)==  ==(adjs)============ 
 #full_leg         -a-  RF               0.500     -45.000      45.000      10.000  -                    

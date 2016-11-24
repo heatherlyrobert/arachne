@@ -303,7 +303,7 @@ dlist_tibia_ORIG   (void)
 }
 
 static int   /* ---- : create a saved shape for a tibia ------------------------*/
-dlist_tibia        (void)
+dlist_tibia_BETTER (void)
 {
    /*---(locals)-------*-----------------*/
    float     z         = 0.0f;
@@ -378,6 +378,99 @@ dlist_tibia        (void)
     *> } glEnd();                                                                     <* 
     *> glLineWidth (0.5);                                                             <* 
     *> glDisable(GL_LINE_STIPPLE);                                                    <*/
+   /*---(prepare for next segment)-------*/
+   glTranslatef( segs_len [YKINE_TIBI], 0.00f,  0.00f);
+   glEndList();
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
+static int   /* ---- : create a saved shape for a tibia ------------------------*/
+dlist_tibia        (void)
+{
+   /*---(locals)-------*-----------------*/
+   float     z         = 0.0f;
+   /*---(begin)--------------------------*/
+   dl_tibia = glGenLists(1);
+   glNewList(dl_tibia, GL_COMPILE);
+   /*---(draw both sides)----------------*/
+   for(z = -0.20 * 25; z <= 0.20 * 25; z += 0.39 * 25) {
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      /*---(interior)--------------------*/
+      glColor4f(0.0f, 0.4f, 0.0f, 0.5f);
+      glBegin(GL_TRIANGLE_FAN); {
+         glVertex3f (-0.50f * 25,  0.50f * 25,  z);
+         glVertex3f (-2.00f * 25,  0.50f * 25,  z);
+         glVertex3f (-1.00f * 25,  0.00f * 25,  z);
+         glVertex3f (-0.75f * 25, -0.50f * 25,  z);
+         glVertex3f ( 1.50f * 25, -0.50f * 25,  z);
+         glVertex3f ( 2.50f * 25, -0.00f * 25,  z);
+         glVertex3f ( 3.50f * 25,  0.15f * 25,  z);
+         glVertex3f (-0.25f * 25,  1.00f * 25,  z);
+      } glEnd      ();
+      glBegin(GL_TRIANGLE_FAN); {
+         glVertex3f (-0.25f * 25,  1.00f * 25,  z);
+         glVertex3f ( 3.50f * 25,  0.15f * 25,  z);
+         glVertex3f ( 4.50f * 25, -0.00f * 25,  z);
+         glVertex3f ( 5.15f * 25, -0.20f * 25,  z);
+         glVertex3f ( 5.20f * 25, -0.00f * 25,  z);
+         glVertex3f ( 5.15f * 25,  0.20f * 25,  z);
+         glVertex3f ( 3.50f * 25,  0.75f * 25,  z);
+         glVertex3f ( 1.50f * 25,  1.50f * 25,  z);
+         glVertex3f (-0.00f * 25,  1.75f * 25,  z);
+         glVertex3f (-1.00f * 25,  1.50f * 25,  z);
+      } glEnd      ();
+      /*---(outline to clarify)----------*/
+      glColor4f(0.0f, 0.1f, 0.0f, 1.0f);
+      glLineWidth(2.0);
+      glBegin    (GL_LINE_STRIP); {
+         glVertex3f (-2.00f * 25,  0.50f * 25,  z);
+         glVertex3f (-1.00f * 25,  0.00f * 25,  z);
+         glVertex3f (-0.75f * 25, -0.50f * 25,  z);
+         glVertex3f ( 1.50f * 25, -0.50f * 25,  z);
+         glVertex3f ( 2.50f * 25, -0.00f * 25,  z);
+         glVertex3f ( 3.50f * 25,  0.15f * 25,  z);
+         glVertex3f ( 4.50f * 25, -0.00f * 25,  z);
+         glVertex3f ( 5.15f * 25, -0.20f * 25,  z);
+         glVertex3f ( 5.20f * 25, -0.00f * 25,  z);
+         glVertex3f ( 5.15f * 25,  0.20f * 25,  z);
+         glVertex3f ( 3.50f * 25,  0.75f * 25,  z);
+         glVertex3f ( 1.50f * 25,  1.50f * 25,  z);
+         glVertex3f (-0.00f * 25,  1.75f * 25,  z);
+         glVertex3f (-1.00f * 25,  1.50f * 25,  z);
+         glVertex3f (-0.25f * 25,  1.00f * 25,  z);
+         glVertex3f (-0.50f * 25,  0.50f * 25,  z);
+         glVertex3f (-2.00f * 25,  0.50f * 25,  z);
+      } glEnd      ();
+      /*---(interior hole)---------------*/
+      glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+      glBegin(GL_POLYGON); {
+         glVertex3f( 0.75f * 25,  1.10f * 25,  z * 2);
+         glVertex3f( 1.20f * 25,  0.25f * 25,  z * 2);
+         glVertex3f( 2.00f * 25,  0.43f * 25,  z * 2);
+         glVertex3f( 3.25f * 25,  0.50f * 25,  z * 2);
+      } glEnd();
+   }
+   /*---(lengthwise alignment line)------*/
+   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+   glColor3f(0.3f, 0.8f, 0.0f);
+   glEnable(GL_LINE_STIPPLE);
+   glLineStipple(1, 0xA0A0);
+   glLineWidth (2.0);
+   glBegin(GL_LINES); {
+      glVertex3f( -5.00f     * 25,  0.00f,  0.00f);
+      glVertex3f( segs_len [YKINE_TIBI] + (0.5 * 25.0) ,  0.00f,  0.00f);
+   } glEnd();
+   glBegin(GL_LINES); {
+      glVertex3f(  5.20f * 25.0, -0.50f * 25.0,  0.00f);
+      glVertex3f(  5.20f * 25.0,  0.50f * 25.0,  0.00f);
+   } glEnd();
+   glBegin(GL_LINES); {
+      glVertex3f(  5.20f * 25.0, 0.00f, -0.50f * 25.0);
+      glVertex3f(  5.20f * 25.0, 0.00f,  0.50f * 25.0);
+   } glEnd();
+   glLineWidth (0.5);
+   glDisable(GL_LINE_STIPPLE);
    /*---(prepare for next segment)-------*/
    glTranslatef( segs_len [YKINE_TIBI], 0.00f,  0.00f);
    glEndList();

@@ -7,27 +7,27 @@ tGAIT     gait;
 
 
 tSERVO     g_servos  [MAX_SERVO] = {
-   /* label--------   cnt   curr  degs  --segno--  --coda--- scrp  prev  next */
-   { "RR.femu"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "RR.pate"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "RR.tibi"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "RM.femu"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "RM.pate"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "RM.tibi"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "RF.femu"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "RF.pate"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "RF.tibi"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "LF.femu"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "LF.pate"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "LF.tibi"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "LM.femu"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "LM.pate"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "LM.tibi"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "LR.femu"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "LR.pate"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "LR.tibi"      ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   { "end-of-list"  ,   0,  NULL,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
-   /* label--------   cnt   curr  degs  --segno--  --coda--- scrp  prev  next */
+   /* label--------   cnt   curr  degs  xpos  zpos  ypos --segno--  --coda--- scrp  prev  next */
+   { "RR.femu"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RR.pate"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RR.tibi"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RM.femu"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RM.pate"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RM.tibi"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RF.femu"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RF.pate"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "RF.tibi"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LF.femu"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LF.pate"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LF.tibi"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LM.femu"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LM.pate"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LM.tibi"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LR.femu"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LR.pate"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "LR.tibi"      ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   { "end-of-list"  ,   0,  NULL,  0.0,  0.0,  0.0,  0.0, '-', NULL, '-', NULL, '-', NULL, NULL },
+   /* label--------   cnt   curr  degs  xpos  zpos  ypos --segno--  --coda--- scrp  prev  next */
 };
 int         g_nservo;
 
@@ -147,6 +147,19 @@ SCRP_close         (void)
 /*===----                        support functions                     ----===*/
 /*====================------------------------------------====================*/
 static void      o___SUPPORT_________________o (void) {;}
+
+char         /*--> identify the leg number ---------------[ ------ [ ------ ]-*/
+SCRP_legnum        (char *a_source)
+{
+   /*---(locals)-----------+-----------+-*/
+   int         i           = 0;
+   for (i = 0; i < YKINE_MAX_LEGS; ++i) {
+      if (legs_name [i][0] != a_source[0])   continue;
+      if (legs_name [i][1] != a_source[1])   continue;
+      return i;
+   }
+   return -1;
+}
 
 char         /*--> locate a servo entry ------------------[ ------ [ ------ ]-*/
 SCRP_servo         (char *a_source)
@@ -493,6 +506,11 @@ SCRP_ik            (void)
             MOVE_create (MOVE_SERVO, g_servos + j + 0, "", 0, x_femu, x_secs);
             MOVE_create (MOVE_SERVO, g_servos + j + 1, "", 0, x_pate, x_secs);
             MOVE_create (MOVE_SERVO, g_servos + j + 2, "", 0, x_tibi, x_secs);
+            if (strcmp (g_servos [j + 2].label, "RR.tibi") == 0) {
+               printf ("   base  %8.1lfx, %8.1lfz, %8.1lfy\n", x_xbase, x_zbase, x_ybase);
+               printf ("   incr  %8.1lfx, %8.1lfz, %8.1lfy\n", x_xpos , x_zpos , x_ypos );
+            }
+            MOVE_addloc (g_servos + j + 2, x_xbase + x_xpos, x_zbase + x_zpos, x_ybase + x_ypos);
          }
          break;
       case  FIELD_ARGS  :  /*---(args)-----*/
@@ -519,10 +537,14 @@ SCRP_fullleg       (void)
    char        x_request   [LEN_LABEL];
    int         x_len       = 0;
    int         x_servo     = -1;
+   int         x_leg       =  0;
    float       x_secs      = -1;
    double      x_femu      = 0.0;
    double      x_pate      = 0.0;
    double      x_tibi      = 0.0;
+   double      x_xpos      = 0.0;
+   double      x_zpos      = 0.0;
+   double      x_ypos      = 0.0;
    /*---(header)-------------------------*/
    DEBUG_INPT   yLOG_enter   (__FUNCTION__);
    /*---(read fields)--------------------*/
@@ -569,6 +591,10 @@ SCRP_fullleg       (void)
             MOVE_create (MOVE_SERVO, g_servos + j + 0, "", 0, x_femu, x_secs);
             MOVE_create (MOVE_SERVO, g_servos + j + 1, "", 0, x_pate, x_secs);
             MOVE_create (MOVE_SERVO, g_servos + j + 2, "", 0, x_tibi, x_secs);
+            x_leg = j / 3.0;
+            yKINE_forward  (x_leg, x_femu, x_pate, x_tibi);
+            yKINE_endpoint (x_leg, YKINE_TARG, YKINE_FK, NULL, NULL, &x_xpos, &x_zpos, &x_ypos);
+            MOVE_addloc (g_servos + j + 2, x_xpos, x_zpos, x_ypos);
          }
          break;
       case  FIELD_ARGS  :  /*---(args)-----*/

@@ -215,17 +215,17 @@ char         /*--> add a location to a move object -------[ ------ [ ------ ]-*/
 MOVE_addloc        (
       /*----------+-----------+-----------------------------------------------*/
       tSERVO     *a_servo     ,   /* servo                                    */
-      float       a_xpos      ,   /* end location                             */
-      float       a_ypos      ,   /* end location                             */
-      float       a_zpos      )   /* end location                             */
+      double      a_xpos      ,   /* end location                             */
+      double      a_zpos      ,   /* end location                             */
+      double      a_ypos      )   /* end location                             */
 {
    /*---(locals)-----------+-----------+-*/
    char        rce         = -10;           /* return code for errors         */
    /*---(header)-------------------------*/
    DEBUG_DATA   yLOG_enter   (__FUNCTION__);
    DEBUG_DATA   yLOG_value   ("a_xpos"    , a_xpos);
-   DEBUG_DATA   yLOG_value   ("a_ypos"    , a_ypos);
    DEBUG_DATA   yLOG_value   ("a_zpos"    , a_zpos);
+   DEBUG_DATA   yLOG_value   ("a_ypos"    , a_ypos);
    /*---(defenses)-----------------------*/
    DEBUG_DATA   yLOG_point   ("a_servo"   , a_servo);
    --rce;  if (a_servo     == NULL) {
@@ -237,8 +237,8 @@ MOVE_addloc        (
    /*---(assign basics)---------------*/
    DEBUG_DATA   yLOG_note    ("assign location values");
    a_servo->tail->x_pos    = a_xpos;
-   a_servo->tail->y_pos    = a_ypos;
    a_servo->tail->z_pos    = a_zpos;
+   a_servo->tail->y_pos    = a_ypos;
    /*---(complete)-----------------------*/
    DEBUG_DATA   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -298,6 +298,7 @@ MOVE_repeat        (
       for (j = 0; j < a_count; ++j) {
          sprintf (x_label, "repeat %d.%d", i,j);
          MOVE_create (MOVE_SERVO, a_servo, x_label, x_moves [j]->line, x_moves [j]->deg_end, x_moves [j]->sec_dur);
+         MOVE_addloc (a_servo, x_moves [j]->x_pos, x_moves [j]->z_pos, x_moves [j]->y_pos);
       }
    }
    /*---(complete)-----------------------*/
@@ -447,7 +448,7 @@ MOVE_curone        (int a_servo, float a_time)
       DEBUG_DATA   yLOG_exit    (__FUNCTION__);
       return rc;
    }
-   /*---(calc position)------------------*/
+   /*---(calc degrees)-------------------*/
    x_curr  = g_servos [a_servo].curr;
    DEBUG_DATA   yLOG_double  ("sec_beg"   , x_curr->sec_beg);
    DEBUG_DATA   yLOG_double  ("sec_end"   , x_curr->sec_end);
@@ -463,6 +464,10 @@ MOVE_curone        (int a_servo, float a_time)
    x_pos   = x_curr->deg_beg + (x_degs * x_pct);
    DEBUG_DATA   yLOG_double  ("x_pos"     , x_pos);
    g_servos [a_servo].deg = x_pos;
+   /*---(calc position)------------------*/
+   g_servos [a_servo].xpos  = -666.0;
+   g_servos [a_servo].zpos  = -666.0;
+   g_servos [a_servo].ypos  = -666.0;
    /*---(complete)-----------------------*/
    DEBUG_DATA   yLOG_exit    (__FUNCTION__);
    return 0;

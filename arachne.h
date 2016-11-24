@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8d"
-#define VER_TXT   "added script argument parsing into a table"
+#define VER_NUM   "0.8e"
+#define VER_TXT   "alignment lines on tibia with location tracking ;)) wow"
 
 
 
@@ -398,8 +398,14 @@ extern double  segs_max  [YKINE_MAX_SEGS];
 extern double  segs_min  [YKINE_MAX_SEGS];
 
 
-
-
+typedef  struct cLOCAUDIT  tLOCAUDIT;
+struct cLOCAUDIT {
+   tMOVE      *curr;
+   double      sec;
+   double      xpos;
+   double      zpos;
+   double      ypos;
+};
 
 struct cSERVO {
    /*---(overall)------------------------*/
@@ -408,6 +414,9 @@ struct cSERVO {
    /*---(current)------------------------*/
    tMOVE      *curr;
    double      deg;
+   double      xpos;
+   double      zpos;
+   double      ypos;
    char        segno_flag;
    tMOVE      *segno;
    char        coda_flag;
