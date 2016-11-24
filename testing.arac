@@ -2,33 +2,28 @@
 #   spider visualization and simulation script
 
 #==(verb)======  ver  ==(leg)===  ==(secs)==  ==(femu)==  ==(pate)==  ==(tibi)==  ==(adjs)============ 
-full_leg         -a-  RF               0.000       0.000       0.000      90.000  - - -                
+full_leg         -a-  RF               0.000       0.000       0.000      90.000  -                    
 
 #==(verb)======  ver  ==(leg)===  ==(secs)==  ==(femu)==  ==(pate)==  ==(tibi)==  ==(adjs)============ 
-#full_leg         -a-  RF               0.500     -45.000      45.000      10.000  - - -                
-#full_leg         -a-  RF               0.500      45.000     -45.000     130.000  - - -                
-#full_leg         -a-  RF               0.500     -45.000      45.000      10.000  - - -                
-#full_leg         -a-  RF               0.500      45.000     -45.000     130.000  - - -                
-#full_leg         -a-  RF               0.500     -45.000      45.000      10.000  - - -                
-#full_leg         -a-  RF               0.500      45.000     -45.000     130.000  - - -                
-#full_leg         -a-  RF               0.500     -45.000      45.000      10.000  - - -                
-#full_leg         -a-  RF               0.500      45.000     -45.000     130.000  - - -                
+#full_leg         -a-  RF               0.500     -45.000      45.000      10.000  -                    
+#full_leg         -a-  RF               0.500      45.000     -45.000     130.000  -                    
+#full_leg         -a-  RF               0.500     -45.000      45.000      10.000  -                    
+#full_leg         -a-  RF               0.500      45.000     -45.000     130.000  -                    
+#full_leg         -a-  RF               0.500     -45.000      45.000      10.000  -                    
+#full_leg         -a-  RF               0.500      45.000     -45.000     130.000  -                    
+#full_leg         -a-  RF               0.500     -45.000      45.000      10.000  -                    
+#full_leg         -a-  RF               0.500      45.000     -45.000     130.000  -                    
 
 #==(verb)======  ver  ==(leg)===  ==(secs)==  ==(femu)==  ==(pate)==  ==(tibi)==  ==(adjs)============ 
-#full_leg         -a-  RF               0.500       0.000       0.000      90.000  - - -                
+#full_leg         -a-  RF               0.500       0.000       0.000      90.000  - -                  
 
 #==(verb)======  ver  ==(leg)===  ==(secs)==  ==(xpos)==  ==(zpos)==  ==(ypos)==  ==(adjs)============ 
 inverse          -a-  aa               1.000     -10.000     -40.000       0.000  attn,fore            
 inverse          -a-  aa               1.000     -10.000       0.000       0.000  attn,fore            
 inverse          -a-  aa               1.000     -10.000      40.000       0.000  attn,fore            
-REPEAT           -b-  aa.femu             10           3  - - -       - - -       - - -                
-REPEAT           -b-  aa.pate             10           3  - - -       - - -       - - -                
-REPEAT           -b-  aa.tibi             10           3  - - -       - - -       - - -                
-
-inverse          -a-  aa               1.000       0.000       0.000     -30.000  attn,fore            
-inverse          -a-  aa               1.000       0.000       0.000     100.000  attn,fore            
-REPEAT           -b-  aa.femu             10           2  - - -       - - -       - - -                
-REPEAT           -b-  aa.pate             10           2  - - -       - - -       - - -                
-REPEAT           -b-  aa.tibi             10           2  - - -       - - -       - - -                
+inverse          -a-  aa               1.000     -10.000       0.000      40.000  attn,fore            
+REPEAT           -b-  aa.femu             10           4  - - -       - - -       R2L                  
+REPEAT           -b-  aa.pate             10           4  - - -       - - -       F2R                  
+REPEAT           -b-  aa.tibi             10           4  - - -       - - -       -                    
 
 #end-of-file

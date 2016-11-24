@@ -32,6 +32,21 @@ tSERVO     g_servos  [MAX_SERVO] = {
 int         g_nservo;
 
 
+#define    MAX_SCRPARG      100
+typedef    struct  cSCRPARG   tSCRPARG;
+struct cSCRPARG {
+   char        name        [LEN_LABEL];
+   char        flag;
+   char        desc        [LEN_STR  ];
+};
+tSCRPARG   s_scrparg [MAX_SCRPARG] = {
+   /* label--------   cnt   description ------------------------------------- */
+   { "attn"         , '-',  "IK position calculations relative to attention"  },
+   { "F2R"          , '-',  "reflect movements of front legs to get rear"     },
+   { "R2L"          , '-',  "reflect movements of right legs to get left"     },
+   { "end-of-list"  , '-',  ""                                                },
+};
+
 
 /*====================------------------------------------====================*/
 /*===----                         file access                          ----===*/
@@ -129,35 +144,12 @@ SCRP_close         (void)
 
 
 /*====================------------------------------------====================*/
-/*===----                        record parsing                        ----===*/
+/*===----                        support functions                     ----===*/
 /*====================------------------------------------====================*/
-static void      o___PARSING_________________o (void) {;}
-
-/*---(prefix)-------------------------*/
-#define     FIELD_SVO      1
-#define     FIELD_SEC      2
-/*---(servo related)------------------*/
-#define     FIELD_DEG      3
-/*---(leg related)--------------------*/
-#define     FIELD_FEMU     3
-#define     FIELD_PATE     4
-#define     FIELD_TIBI     5
-/*---(position related)---------------*/
-#define     FIELD_XPOS     3
-#define     FIELD_ZPOS     4
-#define     FIELD_YPOS     5
-/*---(repeat related)-----------------*/
-#define     FIELD_TIMES    2
-#define     FIELD_COUNT    3
-/*---(suffix)-------------------------*/
-#define     FIELD_ARGS     6
-
-int         s_len       = 0;
-char       *s_q         = "";               /* strtok delimeters         */
-char       *s_context   = NULL;               /* strtok context variable   */
+static void      o___SUPPORT_________________o (void) {;}
 
 char         /*--> locate a servo entry ------------------[ ------ [ ------ ]-*/
-SCRP_servo         (char *a_label)
+SCRP_servo         (char *a_source)
 {
    /*---(locals)-----------+-----------+-*/
    char        rce         = -10;                /* return code for errors    */
@@ -166,13 +158,13 @@ SCRP_servo         (char *a_label)
    /*---(header)-------------------------*/
    DEBUG_INPT   yLOG_senter  (__FUNCTION__);
    /*---(cycle)--------------------------*/
-   /*> printf ("SCRP_servo         looking for %s\n", a_label);                       <*/
+   /*> printf ("SCRP_servo         looking for %s\n", a_source);                       <*/
    for (i = 0; i < g_nservo; ++i) {
-      if (a_label [0] != g_servos [i].label [0])       continue;
-      if (strcmp (a_label, g_servos [i].label) != 0)   continue;
+      if (a_source [0] != g_servos [i].label [0])       continue;
+      if (strcmp (a_source, g_servos [i].label) != 0)   continue;
       DEBUG_INPT   yLOG_snote   ("servo label found");
       g_servos [i].scrp = 'y';
-     /*> printf ("SCRP_servo                        found\n");                        <*/
+      /*> printf ("SCRP_servo                        found\n");                        <*/
       x_index = i;
       break;
    }
@@ -187,7 +179,7 @@ SCRP_servo         (char *a_label)
 }
 
 char         /*--> locate a servo entry ------------------[ ------ [ ------ ]-*/
-SCRP_servos        (char *a_label)
+SCRP_servos        (char *a_source)
 {  /*---(design notes)-------------------*/
    /*
     *  L=left  , R=right
@@ -234,7 +226,7 @@ SCRP_servos        (char *a_label)
    /*---(header)-------------------------*/
    DEBUG_INPT   yLOG_enter   (__FUNCTION__);
    /*---(interpret side-to-side)---------*/
-   switch (a_label [0]) {
+   switch (a_source [0]) {
    case 'L' : strlcpy (x_side  , "L"         , LEN_LABEL);   break;
    case 'R' : strlcpy (x_side  , "R"         , LEN_LABEL);   break;
    case 'l' : strlcpy (x_side  , "l"         , LEN_LABEL);   break;
@@ -254,7 +246,7 @@ SCRP_servos        (char *a_label)
       return rce;
    }
    /*---(interpret front-to-back)--------*/
-   switch (a_label [1]) {
+   switch (a_source [1]) {
    case 'R' : strlcpy (x_rank  , "R"         , LEN_LABEL);   break;
    case 'M' : strlcpy (x_rank  , "M"         , LEN_LABEL);   break;
    case 'F' : strlcpy (x_rank  , "F"         , LEN_LABEL);   break;
@@ -273,8 +265,8 @@ SCRP_servos        (char *a_label)
    /*---(cycle)--------------------------*/
    for (i = 0; i < x_nside; ++i) {
       for (j = 0; j < x_nrank; ++j) {
-         sprintf (x_label, "%c%c.%s", x_side [i], x_rank [j], a_label + 3);
-        /*> printf ("SCRP_servos     x_label %s\n", x_label);                         <*/
+         sprintf (x_label, "%c%c.%s", x_side [i], x_rank [j], a_source + 3);
+         /*> printf ("SCRP_servos     x_label %s\n", x_label);                         <*/
          x_index = SCRP_servo (x_label);
       }
    }
@@ -282,6 +274,81 @@ SCRP_servos        (char *a_label)
    DEBUG_INPT   yLOG_exit    (__FUNCTION__);
    return 0;
 }
+
+char         /*--> reture an argument value --------------[ ------ [ ------ ]-*/
+SCRP_argvalue      (char *a_name)
+{
+   /*---(locals)-----------+-----------+-*/
+   int         i           = 0;
+   for (i = 0; i < MAX_SCRPARG; ++i) {
+      if (strcmp (s_scrparg [i].name, "end-of-list") == 0)  break;
+      if (a_name[0] != s_scrparg [i].name [0])                   continue;
+      if (strcmp (s_scrparg [i].name, a_name) != 0)              continue;
+      return s_scrparg [i].flag;
+   }
+   return -1;
+}
+
+char         /*--> parse an argument list ----------------[ ------ [ ------ ]-*/
+SCRP_argparse      (char *a_source)
+{
+   /*---(locals)-----------+-----------+-*/
+   char       *p           = NULL;
+   char       *q           = ", ";               /* strtok delimeters         */
+   char       *s           = NULL;               /* strtok context variable   */
+   int         i           = 0;
+   /*---(header)-------------------------*/
+   DEBUG_INPT   yLOG_enter   (__FUNCTION__);
+   /*---(start the parse)-------------*/
+   /*> printf ("a_source %s\n", a_source);                                            <*/
+   p = strtok_r (a_source, q, &s);
+   while (p != NULL) {
+      /*> printf ("  search for %s\n", p);                                            <*/
+      for (i = 0; i < MAX_SCRPARG; ++i) {
+         /*> printf ("    checking %s\n", s_scrparg [i].name);                        <*/
+         if (strcmp (s_scrparg [i].name, "end-of-list") == 0)  break;
+         if (p[0] != s_scrparg [i].name [0])                   continue;
+         if (strcmp (s_scrparg [i].name, p) != 0)              continue;
+         s_scrparg [i].flag = 'y';
+         /*> printf ("    found    %s\n", s_scrparg [i].name);                        <*/
+         break;
+      }
+      p = strtok_r (NULL    , q, &s);
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_INPT   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
+
+
+/*====================------------------------------------====================*/
+/*===----                        leg movements                         ----===*/
+/*====================------------------------------------====================*/
+static void      o___MOVES___________________o (void) {;}
+
+int         s_len       = 0;
+char       *s_q         = "";               /* strtok delimeters         */
+char       *s_context   = NULL;               /* strtok context variable   */
+
+/*---(prefix)-------------------------*/
+#define     FIELD_SVO      1
+#define     FIELD_SEC      2
+/*---(servo related)------------------*/
+#define     FIELD_DEG      3
+/*---(leg related)--------------------*/
+#define     FIELD_FEMU     3
+#define     FIELD_PATE     4
+#define     FIELD_TIBI     5
+/*---(position related)---------------*/
+#define     FIELD_XPOS     3
+#define     FIELD_ZPOS     4
+#define     FIELD_YPOS     5
+/*---(repeat related)-----------------*/
+#define     FIELD_TIMES    2
+#define     FIELD_COUNT    3
+/*---(suffix)-------------------------*/
+#define     FIELD_ARGS     6
 
 char         /*--> parse a move entry --------------------[ ------ [ ------ ]-*/
 SCRP_move          (void)
@@ -334,6 +401,7 @@ SCRP_move          (void)
          }
          break;
       case  FIELD_ARGS  :  /*---(args)-----*/
+         SCRP_argparse   (p);
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -428,6 +496,7 @@ SCRP_ik            (void)
          }
          break;
       case  FIELD_ARGS  :  /*---(args)-----*/
+         SCRP_argparse   (p);
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -503,6 +572,7 @@ SCRP_fullleg       (void)
          }
          break;
       case  FIELD_ARGS  :  /*---(args)-----*/
+         SCRP_argparse   (p);
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -512,6 +582,13 @@ SCRP_fullleg       (void)
    DEBUG_INPT   yLOG_exit    (__FUNCTION__);
    return 0;
 }
+
+
+
+/*====================------------------------------------====================*/
+/*===----                          repeating                           ----===*/
+/*====================------------------------------------====================*/
+static void      o___REPEATS_________________o (void) {;}
 
 char         /*--> parse a segno marker ------------------[ ------ [ ------ ]-*/
 SCRP_segno         (void)
@@ -555,6 +632,9 @@ SCRP_segno         (void)
             g_servos [j].segno_flag = 'y';
             g_servos [j].segno      = NULL;
          }
+         break;
+      case  FIELD_ARGS  :  /*---(args)-----*/
+         SCRP_argparse   (p);
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -626,6 +706,7 @@ SCRP_repeat        (void)
          }
          break;
       case  FIELD_ARGS  :  /*---(args)-----*/
+         SCRP_argparse   (p);
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -689,6 +770,7 @@ SCRP_dalsegno      (void)
       case  FIELD_COUNT :  /*---(moves to repeat)----*/
          break;
       case  FIELD_ARGS  :  /*---(args)-----*/
+         SCRP_argparse   (p);
          break;
       }
       DEBUG_INPT   yLOG_note    ("done with loop");
@@ -698,10 +780,6 @@ SCRP_dalsegno      (void)
    DEBUG_INPT   yLOG_exit    (__FUNCTION__);
    return 0;
 }
-
-
-
-
 
 
 
@@ -716,6 +794,10 @@ SCRP_prep          (void)
    int         i           = 0;
    for (i = 0; i < g_nservo; ++i) {
       g_servos [i].scrp  = '-';
+   }
+   for (i = 0; i < MAX_SCRPARG; ++i) {
+      if (strcmp (s_scrparg [i].name, "end-of-list") == 0)  break;
+      s_scrparg [i].flag = '-';
    }
    return 0;
 }

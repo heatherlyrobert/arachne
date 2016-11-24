@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8c"
-#define VER_TXT   "added functionality for IK leg coordinated move"
+#define VER_NUM   "0.8d"
+#define VER_TXT   "added script argument parsing into a table"
 
 
 
