@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8e"
-#define VER_TXT   "alignment lines on tibia with location tracking ;)) wow"
+#define VER_NUM   "0.8f"
+#define VER_TXT   "added touch, x, z, xz, y, and full diffs to progress bars"
 
 
 
@@ -414,9 +414,9 @@ struct cSERVO {
    /*---(current)------------------------*/
    tMOVE      *curr;
    double      deg;
-   double      xpos;
-   double      zpos;
-   double      ypos;
+   double      xexp;
+   double      zexp;
+   double      yexp;
    char        segno_flag;
    tMOVE      *segno;
    char        coda_flag;
@@ -580,9 +580,11 @@ char        PROG_testloud      (void);
 char        MOVE_create        (char a_type, tSERVO *a_servo, char *a_label, int a_line, float a_deg, float a_sec);
 char        MOVE_repeat        (tSERVO *a_servo, int a_count, int a_times);
 char        MOVE_dalsegno      (tSERVO *a_servo, int a_times);
-char        MOVE_curall        (float a_time);
+char        MOVE_curleg        (double a_time, int a_leg);
+char        MOVE_curall        (double a_time);
 char        MOVE_first         (int a_servo, float *a_sec, float *a_deg);
 char        MOVE_next          (float *a_sec, float *a_deg);
+char        MOVE_exact         (double a_sec, int a_leg, double *a_diffx, double *a_diffz, double *a_diffy, double *a_y);
 
 
 /*---(mode keys)------------*/

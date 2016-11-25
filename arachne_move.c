@@ -407,7 +407,7 @@ MOVE_curset        (int a_servo, float a_time)
 }
 
 char         /*--> calc the current deg for a servo ------[ ------ [ ------ ]-*/
-MOVE_curone        (int a_servo, float a_time)
+MOVE_curone        (int a_servo, double a_time)
 {
    /*---(locals)-----------+-----------+-*/
    char        rce         = -10;           /* return code for errors         */
@@ -416,7 +416,7 @@ MOVE_curone        (int a_servo, float a_time)
    float       x_beg       = 0.0;
    float       x_end       = 0.0;
    float       x_pct       = 0.0;
-   float       x_degs      = 0.0;
+   float       x_range     = 0.0;
    float       x_pos       = 0.0;
    /*---(header)-------------------------*/
    DEBUG_DATA   yLOG_enter   (__FUNCTION__);
@@ -459,22 +459,47 @@ MOVE_curone        (int a_servo, float a_time)
    x_pct   = (a_time - x_beg) / (x_end - x_beg);
    if (x_end == 0.0)  x_pct = 0.0;
    DEBUG_DATA   yLOG_double  ("x_pct"     , x_pct);
-   x_degs  = x_curr->deg_end - x_curr->deg_beg;
-   DEBUG_DATA   yLOG_double  ("x_degs"    , x_degs);
-   x_pos   = x_curr->deg_beg + (x_degs * x_pct);
+   x_range = x_curr->deg_end - x_curr->deg_beg;
+   DEBUG_DATA   yLOG_double  ("x_range"   , x_range);
+   x_pos   = x_curr->deg_beg + (x_range * x_pct);
    DEBUG_DATA   yLOG_double  ("x_pos"     , x_pos);
    g_servos [a_servo].deg = x_pos;
    /*---(calc position)------------------*/
-   g_servos [a_servo].xpos  = -666.0;
-   g_servos [a_servo].zpos  = -666.0;
-   g_servos [a_servo].ypos  = -666.0;
+   if (x_curr->s_prev == NULL) {
+      g_servos [a_servo].xexp  = x_curr->x_pos;
+      g_servos [a_servo].zexp  = x_curr->z_pos;
+      g_servos [a_servo].yexp  = x_curr->y_pos;
+   } else {
+      x_range = x_curr->x_pos - x_curr->s_prev->x_pos;
+      g_servos [a_servo].xexp = x_curr->s_prev->x_pos + (x_range * x_pct);
+      x_range = x_curr->z_pos - x_curr->s_prev->z_pos;
+      g_servos [a_servo].zexp = x_curr->s_prev->z_pos + (x_range * x_pct);
+      x_range = x_curr->y_pos - x_curr->s_prev->y_pos;
+      g_servos [a_servo].yexp = x_curr->s_prev->y_pos + (x_range * x_pct);
+   }
+   /*> printf ("%8.3lf  %2d  %-10s  %8.2lf  %8.2lf  %8.2lf\n", a_time, a_servo,         <* 
+    *>       x_curr->label,                                                             <* 
+    *>    g_servos [a_servo].xexp, g_servos [a_servo].zexp, g_servos [a_servo].yexp);   <*/
    /*---(complete)-----------------------*/
    DEBUG_DATA   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
+char         /*--> calc current move/deg for a leg -------[ ------ [ ------ ]-*/
+MOVE_curleg        (double a_secs, int a_leg)
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         = -10;           /* return code for errors         */
+   char        rc          =   0;
+   /*---(header)-------------------------*/
+   rc = MOVE_curone  (a_leg * 3 + 0, a_secs);
+   rc = MOVE_curone  (a_leg * 3 + 1, a_secs);
+   rc = MOVE_curone  (a_leg * 3 + 2, a_secs);
+   return 0;
+}
+
 char         /*--> calc current move/deg for all servos --[ ------ [ ------ ]-*/
-MOVE_curall        (float a_time)
+MOVE_curall        (double a_time)
 {
    /*---(locals)-----------+-----------+-*/
    char        rce         = -10;           /* return code for errors         */
@@ -553,6 +578,43 @@ MOVE_next          (float *a_sec, float *a_deg)
    /*---(complete)-----------------------*/
    DEBUG_DATA   yLOG_snote   ("failed");
    DEBUG_DATA   yLOG_sexit   (__FUNCTION__);
+   return 0;
+}
+
+char         /*--> retrieve an exact place in time -------[ ------ [ ------ ]-*/
+MOVE_exact         (double a_sec, int a_leg, double *a_diffx, double *a_diffz, double *a_diffy, double *a_y)
+{
+   char        rc1         = 0;
+   char        rc2         = 0;
+   char        rc3         = 0;
+   double      x_xpos      = 0.0;
+   double      x_zpos      = 0.0;
+   double      x_ypos      = 0.0;
+   double      x_xdif      = 0.0;
+   double      x_zdif      = 0.0;
+   double      x_ydif      = 0.0;
+   int         x_leg       = 0;
+   if (a_sec < 0.0)  return -1;
+   x_leg = a_leg * 3;
+   rc1 = MOVE_curleg    (a_sec, a_leg);
+   rc2 = yKINE_forward  (a_leg, g_servos [x_leg + 0].deg, g_servos [x_leg + 1].deg, g_servos [x_leg + 2].deg);
+   rc3 = yKINE_endpoint (a_leg, YKINE_TIBI, YKINE_FK, NULL, NULL, &x_xpos, &x_zpos, &x_ypos);
+   if (a_diffx != NULL)  *a_diffx = g_servos [x_leg + 2].xexp - x_xpos;
+   if (a_diffz != NULL)  *a_diffz = g_servos [x_leg + 2].zexp - x_zpos;
+   if (a_diffy != NULL)  *a_diffy = g_servos [x_leg + 2].yexp - x_ypos;
+   if (a_y     != NULL)  *a_y     = x_ypos;
+   x_xdif = g_servos [x_leg + 2].xexp - x_xpos;
+   x_zdif = g_servos [x_leg + 2].zexp - x_zpos;
+   x_ydif = g_servos [x_leg + 2].yexp - x_ypos;
+   if (a_sec < 40.0) {
+      if (a_leg == 0)  printf ("--secs--  leg  rc1  rc2  rc3  --xpos--  --xexp--  --xdif--  --zpos--  --zexp--  --zdif--  --ypos--  --yexp--  --ydif--  --full--\n");
+      printf ("%8.3f   %d   %3d  %3d  %3d  ", a_sec, a_leg, rc1, rc2, rc3);
+      printf ("%8.1lf  %8.1lf  %8.1lf  ", x_xpos, g_servos [x_leg + 2].xexp, x_xdif);
+      printf ("%8.1lf  %8.1lf  %8.1lf  ", x_zpos, g_servos [x_leg + 2].zexp, x_zdif);
+      printf ("%8.1lf  %8.1lf  %8.1lf  ", x_ypos, g_servos [x_leg + 2].yexp, x_ydif);
+      printf ("%8.1lf", sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif) + (x_ydif * x_ydif)));
+      printf ("\n");
+   }
    return 0;
 }
 

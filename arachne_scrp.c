@@ -506,10 +506,10 @@ SCRP_ik            (void)
             MOVE_create (MOVE_SERVO, g_servos + j + 0, "", 0, x_femu, x_secs);
             MOVE_create (MOVE_SERVO, g_servos + j + 1, "", 0, x_pate, x_secs);
             MOVE_create (MOVE_SERVO, g_servos + j + 2, "", 0, x_tibi, x_secs);
-            if (strcmp (g_servos [j + 2].label, "RR.tibi") == 0) {
-               printf ("   base  %8.1lfx, %8.1lfz, %8.1lfy\n", x_xbase, x_zbase, x_ybase);
-               printf ("   incr  %8.1lfx, %8.1lfz, %8.1lfy\n", x_xpos , x_zpos , x_ypos );
-            }
+            /*> if (strcmp (g_servos [j + 2].label, "RR.tibi") == 0) {                           <* 
+             *>    printf ("   base  %8.1lfx, %8.1lfz, %8.1lfy\n", x_xbase, x_zbase, x_ybase);   <* 
+             *>    printf ("   incr  %8.1lfx, %8.1lfz, %8.1lfy\n", x_xpos , x_zpos , x_ypos );   <* 
+             *> }                                                                                <*/
             MOVE_addloc (g_servos + j + 2, x_xbase + x_xpos, x_zbase + x_zpos, x_ybase + x_ypos);
          }
          break;
