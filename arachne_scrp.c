@@ -498,6 +498,9 @@ SCRP_ik            (void)
             DEBUG_INPT  yLOG_double  ("x_xbase"   , x_xbase);
             DEBUG_INPT  yLOG_double  ("x_zbase"   , x_zbase);
             DEBUG_INPT  yLOG_double  ("x_ybase"   , x_ybase);
+            DEBUG_INPT  yLOG_double  ("x_xnew"    , x_xbase + x_xpos);
+            DEBUG_INPT  yLOG_double  ("x_znew"    , x_zbase + x_zpos);
+            DEBUG_INPT  yLOG_double  ("x_ynew"    , x_ybase + x_ypos);
             yKINE_inverse  (x_leg, x_xbase + x_xpos, x_zbase + x_zpos, x_ybase + x_ypos);
             yKINE_angles   (x_leg, YKINE_IK, NULL, &x_femu, &x_pate, &x_tibi);
             DEBUG_INPT  yLOG_double  ("femu deg"  , x_femu);

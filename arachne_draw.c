@@ -525,7 +525,7 @@ TICK_servos        (int a_leg)
       }
    } glPopMatrix();
    /*---(patella)------------------------*/
-   glColor4f    (0.25f, 0.25f, 0.00f, 1.0f);
+   glColor4f    (0.50f, 0.50f, 0.00f, 1.0f);
    glLineWidth  (10.0f);
    glPushMatrix(); {
       rc = MOVE_first ((a_leg * 3) + 1, &x_sec1, &x_deg1);
@@ -542,7 +542,7 @@ TICK_servos        (int a_leg)
       }
    } glPopMatrix();
    /*---(tibia)--------------------------*/
-   glColor4f    (0.00f, 0.25f, 0.00f, 1.0f);
+   glColor4f    (0.00f, 0.50f, 0.00f, 1.0f);
    glLineWidth  ( 5.0f);
    glPushMatrix(); {
       rc = MOVE_first ((a_leg * 3) + 2, &x_sec1, &x_deg1);
@@ -615,7 +615,7 @@ TICK_accuracy      (int a_leg, double a_sec, double a_x, double a_y)
    int       x_xoff        =  1.0;
    int       x_width       =  8.0;
    float     x_height      = 10.0;
-   float     x_yspace      = x_height + 18.0;
+   float     x_yspace      = x_height + 16.0;
    int       x_yoff        =  0.0;
    float     x_beg         =  0.0;
    float     x_end         = my.p_texw;
@@ -638,8 +638,10 @@ TICK_accuracy      (int a_leg, double a_sec, double a_x, double a_y)
    rc = MOVE_exact (a_sec, a_leg, &x_xdif, &x_zdif, &x_ydif, &x_ypos);
    /*---(touch indicator)----------------*/
    if      (rc     <   0   )   glColor4f    (0.00f, 0.00f, 0.00f, x_alpha);
-   else if (x_ypos >  -125.00) glColor4f    (0.30f, 0.30f, 0.30f, x_alpha);
-   else if (x_ypos >  -135.00) glColor4f    (0.00f, 0.75f, 0.75f, x_alpha);
+   else if (x_ypos >= -125.00) glColor4f    (0.30f, 0.30f, 0.30f, x_alpha);
+   else if (x_ypos >= -129.00) glColor4f    (0.00f, 0.00f, 1.00f, x_alpha);
+   else if (x_ypos >= -131.00) glColor4f    (0.00f, 0.75f, 0.75f, x_alpha);
+   else if (x_ypos >= -135.00) glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
    else                        glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);
    glPushMatrix(); {
       glBegin         (GL_POLYGON); {
@@ -652,8 +654,9 @@ TICK_accuracy      (int a_leg, double a_sec, double a_x, double a_y)
    /*---(x differences)------------------*/
    x_yoff += x_yspace;
    if      (rc     <   0   )   glColor4f    (0.00f, 0.00f, 0.00f, x_alpha);
-   else if (x_xdif <   1.00)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
-   else if (x_xdif <   3.00)   glColor4f    (0.00f, 0.00f, 1.00f, x_alpha);
+   else if (x_xdif <=  0.50)   glColor4f    (0.75f, 0.75f, 0.00f, x_alpha);
+   else if (x_xdif <=  1.00)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
+   else if (x_xdif <=  3.00)   glColor4f    (0.00f, 1.00f, 1.00f, x_alpha);
    else                        glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);
    glPushMatrix(); {
       glBegin         (GL_POLYGON); {
@@ -666,8 +669,9 @@ TICK_accuracy      (int a_leg, double a_sec, double a_x, double a_y)
    /*---(z differences)------------------*/
    x_yoff += x_yspace;
    if      (rc     <   0   )   glColor4f    (0.00f, 0.00f, 0.00f, x_alpha);
-   else if (x_zdif <   1.00)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
-   else if (x_zdif <   3.00)   glColor4f    (0.00f, 0.00f, 1.00f, x_alpha);
+   else if (x_xdif <=  0.50)   glColor4f    (0.75f, 0.75f, 0.00f, x_alpha);
+   else if (x_zdif <=  1.00)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
+   else if (x_zdif <=  3.00)   glColor4f    (0.00f, 1.00f, 1.00f, x_alpha);
    else                        glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);
    glPushMatrix(); {
       glBegin         (GL_POLYGON); {
@@ -681,8 +685,9 @@ TICK_accuracy      (int a_leg, double a_sec, double a_x, double a_y)
    x_yoff += x_yspace;
    x_xz   = sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif));
    if      (rc     <   0   )   glColor4f    (0.00f, 0.00f, 0.00f, x_alpha);
-   else if (x_xz   <   1.50)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
-   else if (x_xz   <   4.50)   glColor4f    (0.00f, 0.00f, 1.00f, x_alpha);
+   else if (x_xz   <=  0.75)   glColor4f    (0.75f, 0.75f, 0.00f, x_alpha);
+   else if (x_xz   <=  1.50)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
+   else if (x_xz   <=  4.50)   glColor4f    (0.00f, 1.00f, 1.00f, x_alpha);
    else                        glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);
    glPushMatrix(); {
       glBegin         (GL_POLYGON); {
@@ -695,8 +700,9 @@ TICK_accuracy      (int a_leg, double a_sec, double a_x, double a_y)
    /*---(y differences)------------------*/
    x_yoff += x_yspace + x_height;
    if      (rc     <   0   )   glColor4f    (0.00f, 0.00f, 0.00f, x_alpha);
-   else if (x_ydif <   1.00)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
-   else if (x_ydif <   3.00)   glColor4f    (0.00f, 0.00f, 1.00f, x_alpha);
+   else if (x_ydif <=  0.50)   glColor4f    (0.75f, 0.75f, 0.00f, x_alpha);
+   else if (x_ydif <=  1.00)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
+   else if (x_ydif <=  3.00)   glColor4f    (0.00f, 1.00f, 1.00f, x_alpha);
    else                        glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);
    glPushMatrix(); {
       glBegin         (GL_POLYGON); {
@@ -710,15 +716,16 @@ TICK_accuracy      (int a_leg, double a_sec, double a_x, double a_y)
    x_yoff += x_yspace;
    x_full = sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif) + (x_ydif * x_ydif));
    if      (rc     <   0   )   glColor4f    (0.00f, 0.00f, 0.00f, x_alpha);
-   else if (x_full <   2.00)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
-   else if (x_full <   6.00)   glColor4f    (0.00f, 0.00f, 1.00f, x_alpha);
+   else if (x_full <=  1.00)   glColor4f    (0.75f, 0.75f, 0.00f, x_alpha);
+   else if (x_full <=  2.00)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
+   else if (x_full <=  6.00)   glColor4f    (0.00f, 1.00f, 1.00f, x_alpha);
    else                        glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);
    glPushMatrix(); {
       glBegin         (GL_POLYGON); {
          glVertex3f  (a_x + x_xoff          , a_y - x_yoff           , x_z);
          glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff - x_height * 2.0, x_z);
-         glVertex3f  (a_x + x_xoff          , a_y - x_yoff - x_height * 2.0, x_z);
+         glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff - x_height * 3.0, x_z);
+         glVertex3f  (a_x + x_xoff          , a_y - x_yoff - x_height * 3.0, x_z);
       } glEnd   ();
    } glPopMatrix();
    /*---(complete)-----------------------*/
@@ -802,7 +809,7 @@ TICK_labels        (void)
       for (j = 0; j < 12; ++j) {
          x_pos = my.p_texh - (j * x_yinc);
          sprintf (x_msg, "%d/%s", j % 6, legs_name [j % 6]);
-         glColor4f    (0.50f, 0.50f, 0.00f, 1.0f);
+         glColor4f    (0.50f, 0.50f, 0.50f, 1.0f);
          glPushMatrix(); {
             glTranslatef ( i + 30.0 , x_pos    -  125.0    ,    60.0  );
             glRotatef  ( 90.0  , 0.0f, 0.0f, 1.0f);

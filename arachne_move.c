@@ -594,7 +594,8 @@ MOVE_exact         (double a_sec, int a_leg, double *a_diffx, double *a_diffz, d
    double      x_zdif      = 0.0;
    double      x_ydif      = 0.0;
    int         x_leg       = 0;
-   if (a_sec < 0.0)  return -1;
+   if (a_sec < 0.0     )  return -1;
+   if (a_sec > my.p_len)  return -2;
    x_leg = a_leg * 3;
    rc1 = MOVE_curleg    (a_sec, a_leg);
    rc2 = yKINE_forward  (a_leg, g_servos [x_leg + 0].deg, g_servos [x_leg + 1].deg, g_servos [x_leg + 2].deg);
@@ -606,15 +607,15 @@ MOVE_exact         (double a_sec, int a_leg, double *a_diffx, double *a_diffz, d
    x_xdif = g_servos [x_leg + 2].xexp - x_xpos;
    x_zdif = g_servos [x_leg + 2].zexp - x_zpos;
    x_ydif = g_servos [x_leg + 2].yexp - x_ypos;
-   if (a_sec < 40.0) {
-      if (a_leg == 0)  printf ("--secs--  leg  rc1  rc2  rc3  --xpos--  --xexp--  --xdif--  --zpos--  --zexp--  --zdif--  --ypos--  --yexp--  --ydif--  --full--\n");
-      printf ("%8.3f   %d   %3d  %3d  %3d  ", a_sec, a_leg, rc1, rc2, rc3);
-      printf ("%8.1lf  %8.1lf  %8.1lf  ", x_xpos, g_servos [x_leg + 2].xexp, x_xdif);
-      printf ("%8.1lf  %8.1lf  %8.1lf  ", x_zpos, g_servos [x_leg + 2].zexp, x_zdif);
-      printf ("%8.1lf  %8.1lf  %8.1lf  ", x_ypos, g_servos [x_leg + 2].yexp, x_ydif);
-      printf ("%8.1lf", sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif) + (x_ydif * x_ydif)));
-      printf ("\n");
-   }
+   /*> if (a_sec < 40.0) {                                                                                                                                                  <* 
+    *>    if (a_leg == 0)  printf ("--secs--  leg  rc1  rc2  rc3  --xpos--  --xexp--  --xdif--  --zpos--  --zexp--  --zdif--  --ypos--  --yexp--  --ydif--  --full--\n");   <* 
+    *>    printf ("%8.3f   %d   %3d  %3d  %3d  ", a_sec, a_leg, rc1, rc2, rc3);                                                                                             <* 
+    *>    printf ("%8.1lf  %8.1lf  %8.1lf  ", x_xpos, g_servos [x_leg + 2].xexp, x_xdif);                                                                                   <* 
+    *>    printf ("%8.1lf  %8.1lf  %8.1lf  ", x_zpos, g_servos [x_leg + 2].zexp, x_zdif);                                                                                   <* 
+    *>    printf ("%8.1lf  %8.1lf  %8.1lf  ", x_ypos, g_servos [x_leg + 2].yexp, x_ydif);                                                                                   <* 
+    *>    printf ("%8.1lf", sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif) + (x_ydif * x_ydif)));                                                                              <* 
+    *>    printf ("\n");                                                                                                                                                    <* 
+    *> }                                                                                                                                                                    <*/
    return 0;
 }
 

@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8f"
-#define VER_TXT   "added touch, x, z, xz, y, and full diffs to progress bars"
+#define VER_NUM   "0.8g"
+#define VER_TXT   "cleaned up progress color coding, sizing, and accuracy"
 
 
 
