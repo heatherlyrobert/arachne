@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8g"
-#define VER_TXT   "cleaned up progress color coding, sizing, and accuracy"
+#define VER_NUM   "0.8h"
+#define VER_TXT   "successfully removed MOVE and SCRP into the yKINE library"
 
 
 
@@ -255,9 +255,6 @@ struct cACCESSOR {
    /*---(spider pane)-----*/
    int         s_height;
    int         s_bottom;
-   float       s_femu;
-   float       s_pate;
-   float       s_tibi;
    /*---(progress move)---*/
    double      p_waitns;
    /*---(progress pane)---*/
@@ -407,57 +404,53 @@ struct cLOCAUDIT {
    double      ypos;
 };
 
-struct cSERVO {
-   /*---(overall)------------------------*/
-   char        label       [20];
-   int         count;
-   /*---(current)------------------------*/
-   tMOVE      *curr;
-   double      deg;
-   double      xexp;
-   double      zexp;
-   double      yexp;
-   char        segno_flag;
-   tMOVE      *segno;
-   char        coda_flag;
-   tMOVE      *coda;
-   char        scrp;
-   /*---(list)---------------------------*/
-   tMOVE      *head;
-   tMOVE      *tail;
-   /*---(done)---------------------------*/
-};
-extern      tSERVO      g_servos    [MAX_SERVO];
-extern      int         g_nservo;
+/*> struct cSERVO {                                                                   <* 
+ *>    /+---(overall)------------------------+/                                       <* 
+ *>    char        label       [20];                                                  <* 
+ *>    int         count;                                                             <* 
+ *>    /+---(current)------------------------+/                                       <* 
+ *>    tMOVE      *curr;                                                              <* 
+ *>    double      deg;                                                               <* 
+ *>    double      xexp;                                                              <* 
+ *>    double      zexp;                                                              <* 
+ *>    double      yexp;                                                              <* 
+ *>    char        segno_flag;                                                        <* 
+ *>    tMOVE      *segno;                                                             <* 
+ *>    char        coda_flag;                                                         <* 
+ *>    tMOVE      *coda;                                                              <* 
+ *>    char        scrp;                                                              <* 
+ *>    /+---(list)---------------------------+/                                       <* 
+ *>    tMOVE      *head;                                                              <* 
+ *>    tMOVE      *tail;                                                              <* 
+ *>    /+---(done)---------------------------+/                                       <* 
+ *> };                                                                                <*/
+/*> extern      tSERVO      g_servos    [MAX_SERVO];                                  <* 
+ *> extern      int         g_nservo;                                                 <*/
 
 
 
-#define     MOVE_NULL   '-'
-#define     MOVE_PAUSE  'p'
-#define     MOVE_SERVO  's'
-
-struct      cMOVE {
-   int         seq;
-   char        type;
-   tSERVO     *servo;
-   char        label       [LEN_LABEL];
-   int         line;
-   double      sec_dur;
-   double      deg_beg;
-   double      deg_end;
-   double      sec_beg;
-   double      sec_end;
-   double      x_pos;
-   double      y_pos;
-   double      z_pos;
-   tMOVE      *m_prev;
-   tMOVE      *m_next;
-   tMOVE      *s_prev;
-   tMOVE      *s_next;
-};
-extern      tMOVE      *m_head;
-extern      tMOVE      *m_tail;
-extern      int         m_count;
+/*> struct      cMOVE {                                                               <* 
+ *>    int         seq;                                                               <* 
+ *>    char        type;                                                              <* 
+ *>    tSERVO     *servo;                                                             <* 
+ *>    char        label       [LEN_LABEL];                                           <* 
+ *>    int         line;                                                              <* 
+ *>    double      sec_dur;                                                           <* 
+ *>    double      deg_beg;                                                           <* 
+ *>    double      deg_end;                                                           <* 
+ *>    double      sec_beg;                                                           <* 
+ *>    double      sec_end;                                                           <* 
+ *>    double      x_pos;                                                             <* 
+ *>    double      y_pos;                                                             <* 
+ *>    double      z_pos;                                                             <* 
+ *>    tMOVE      *m_prev;                                                            <* 
+ *>    tMOVE      *m_next;                                                            <* 
+ *>    tMOVE      *s_prev;                                                            <* 
+ *>    tMOVE      *s_next;                                                            <* 
+ *> };                                                                                <*/
+/*> extern      tMOVE      *m_head;                                                   <* 
+ *> extern      tMOVE      *m_tail;                                                   <* 
+ *> extern      int         m_count;                                                  <*/
 
 
 /*===[[ DISPLAY LISTS ]]==================================*/
@@ -581,10 +574,6 @@ char        MOVE_create        (char a_type, tSERVO *a_servo, char *a_label, int
 char        MOVE_repeat        (tSERVO *a_servo, int a_count, int a_times);
 char        MOVE_dalsegno      (tSERVO *a_servo, int a_times);
 char        MOVE_curleg        (double a_time, int a_leg);
-char        MOVE_curall        (double a_time);
-char        MOVE_first         (int a_servo, float *a_sec, float *a_deg);
-char        MOVE_next          (float *a_sec, float *a_deg);
-char        MOVE_exact         (double a_sec, int a_leg, double *a_diffx, double *a_diffz, double *a_diffy, double *a_y);
 
 
 /*---(mode keys)------------*/

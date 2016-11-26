@@ -6,6 +6,7 @@
 tDEBUG      debug;
 tACCESSOR   my;
 
+tGAIT     gait;
 
 
 
@@ -213,7 +214,10 @@ PROG_urgs          (int argc, char *argv[])
       else if (strncmp(a, "@k"        ,10) == 0)  PROG_urgsmass ('y', 'y');
       else if (strncmp(a, "@@kitchen" ,10) == 0)  PROG_urgsmass ('y', 'y');
       /*---(special)---------------------*/
-      else if (strncmp(a, "@@kine"    ,10) == 0)  debug.tops = debug.kine  = 'y';
+      else if (strncmp(a, "@@kine"    ,10) == 0){
+         debug.tops = debug.kine  = 'y';
+         yKINE_debug ('A');
+      }
       /*---(done)------------------------*/
    }
    DEBUG_ARGS  yLOG_note   ("summarization of urgent processing");

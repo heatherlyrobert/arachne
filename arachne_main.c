@@ -20,10 +20,11 @@ main (int argc, char *argv[])
       PROG_end     ();
       exit (-1);
    }
-   SCRP_main   ();
-   TICK_init   ();
-   TICK_draw   ();
-   draw_main   ();
+   yKINE_script  (&my.p_len);
+   /*> printf ("script length %8.3lf\n", my.p_len);                                   <*/
+   TICK_init     ();
+   TICK_draw     ();
+   draw_main     ();
    /*> if (is_test) printf("\nspider--------------------------------------------begin---\n\n");   <*/
    /*> strcpy(its_text, " ");                                                         <*/
    /*> counter = 0;                                                                   <*/

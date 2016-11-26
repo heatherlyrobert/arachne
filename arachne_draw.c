@@ -129,7 +129,7 @@ static float       s_texpct2   =   0.0;
 char         /*--> set values for progress ticker --------[ ------ [ ------ ]-*/
 TICK_init          (void)
 {
-   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
+   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    /*---(sizes)--------------------------*/
    DEBUG_GRAF   yLOG_note    ("setting sizes (widths and heights)");
    my.p_texw      = 4000;   /* max allowed single dimension */
@@ -146,10 +146,6 @@ TICK_init          (void)
    DEBUG_GRAF   yLOG_note    ("initializing working variables");
    /*---(debugging)----------------------*/
    my.p_debug     =  '-';
-   /*---(angles)-------------------------*/
-   my.s_femu      =  0.0;
-   my.s_pate      =  0.0;
-   my.s_tibi      =  0.0;
    /*---(generate)-----------------------*/
    DEBUG_GRAF   yLOG_note    ("request handles (tex, fbo, depth)");
    glGenFramebuffersEXT         (1, &my.p_fbo);
@@ -498,10 +494,10 @@ TICK_servos        (int a_leg)
    int       j;                             /* loop iterator                  */
    int       rc      = 0;                   /* simple return code             */
    float     x_unit        = 0;
-   float     x_sec1        = 0;
-   float     x_deg1        = 0;
-   float     x_sec2        = 0;
-   float     x_deg2        = 0;
+   double    x_sec1        = 0;
+   double    x_deg1        = 0;
+   double    x_sec2        = 0;
+   double    x_deg2        = 0;
    /*---(prepare)------------------------*/
    x_yinc    = x_top / 12.0;
    x_base    = (1500 - (x_yinc * a_leg)) - my.p_top;
@@ -511,10 +507,10 @@ TICK_servos        (int a_leg)
    glColor4f    (0.50f, 0.00f, 0.00f, 1.0f);
    glLineWidth  (15.0f);
    glPushMatrix(); {
-      rc = MOVE_first (a_leg * 3, &x_sec1, &x_deg1);
+      rc = yKINE_move_first (a_leg * 3, &x_sec1, &x_deg1);
       while (rc >= 0) {
          /*---(read next)---*/
-         rc = MOVE_next  (&x_sec2, &x_deg2);
+         rc = yKINE_move_next  (&x_sec2, &x_deg2);
          if (rc <  0) break;
          /*---(fix points)--*/
          TICK_servoline     ('f', x_base, x_sec1, x_sec2, x_deg1, x_deg2, x_unit);
@@ -528,10 +524,10 @@ TICK_servos        (int a_leg)
    glColor4f    (0.50f, 0.50f, 0.00f, 1.0f);
    glLineWidth  (10.0f);
    glPushMatrix(); {
-      rc = MOVE_first ((a_leg * 3) + 1, &x_sec1, &x_deg1);
+      rc = yKINE_move_first ((a_leg * 3) + 1, &x_sec1, &x_deg1);
       while (rc >= 0) {
          /*---(read next)---*/
-         rc = MOVE_next  (&x_sec2, &x_deg2);
+         rc = yKINE_move_next  (&x_sec2, &x_deg2);
          if (rc <  0) break;
          /*---(fix points)--*/
          TICK_servoline     ('p', x_base, x_sec1, x_sec2, x_deg1, x_deg2, x_unit);
@@ -545,10 +541,10 @@ TICK_servos        (int a_leg)
    glColor4f    (0.00f, 0.50f, 0.00f, 1.0f);
    glLineWidth  ( 5.0f);
    glPushMatrix(); {
-      rc = MOVE_first ((a_leg * 3) + 2, &x_sec1, &x_deg1);
+      rc = yKINE_move_first ((a_leg * 3) + 2, &x_sec1, &x_deg1);
       while (rc >= 0) {
          /*---(read next)---*/
-         rc = MOVE_next  (&x_sec2, &x_deg2);
+         rc = yKINE_move_next  (&x_sec2, &x_deg2);
          if (rc <  0) break;
          /*---(fix points)--*/
          TICK_servoline     ('t', x_base, x_sec1, x_sec2, x_deg1, x_deg2, x_unit);
@@ -635,7 +631,7 @@ TICK_accuracy      (int a_leg, double a_sec, double a_x, double a_y)
     *> x_bar     = my.p_top - my.p_bot;                                               <* 
     *> x_unit    = x_xinc / my.p_inc;                                                 <*/
    /*---(tibia)--------------------------*/
-   rc = MOVE_exact (a_sec, a_leg, &x_xdif, &x_zdif, &x_ydif, &x_ypos);
+   rc = yKINE_move_exact (a_sec, a_leg, &x_xdif, &x_zdif, &x_ydif, &x_ypos);
    /*---(touch indicator)----------------*/
    if      (rc     <   0   )   glColor4f    (0.00f, 0.00f, 0.00f, x_alpha);
    else if (x_ypos >= -125.00) glColor4f    (0.30f, 0.30f, 0.30f, x_alpha);
@@ -1652,10 +1648,10 @@ draw_spider        (void)
    int         i           = 0;
    int         x_leg       = 0;
    int         x_servo     = 0;
-   float       x_coxa      = 0.0;
-   float       x_femu      = 0.0;
-   float       x_pate      = 0.0;
-   float       x_tibi      = 0.0;
+   double      x_coxa      = 0.0;
+   double      x_femu      = 0.0;
+   double      x_pate      = 0.0;
+   double      x_tibi      = 0.0;
    double      x_xpos1     = 0.0;
    double      x_zpos1     = 0.0;
    double      x_ypos1     = 0.0;
@@ -1663,6 +1659,7 @@ draw_spider        (void)
    double      x_zpos2     = 0.0;
    double      x_ypos2     = 0.0;
    char        x_debug     = '-';
+   char        rc          = 0;
    /*> draw_axis();                                                                   <*/
    DRAW_reset  ();
    if (dl_spider != 0) glDeleteLists(dl_spider, 1);
@@ -1675,7 +1672,7 @@ draw_spider        (void)
       /*> draw_arrow      ();                                                         <*/
       /*> if (flag_annotate == 'y')  draw__center ();                                 <*/
       glCallList      (dl_body);
-      MOVE_curall ( my.p_cursec);
+      yKINE_move_curall ( my.p_cursec);
       for (x_leg = 0; x_leg < 6; ++x_leg) {
          glPushMatrix (); {
             /*---(prepare)---------------*/
@@ -1683,14 +1680,17 @@ draw_spider        (void)
             glRotatef( legs_deg [x_leg], 0.0f, 1.0f, 0.0f);
             /*---(default values)--------*/
             x_coxa  = legs_deg [x_leg];
-            x_femu  =  0.0;
-            x_pate  =  0.0;
-            x_tibi  = 90.0;
+            /*> x_femu  =  0.0;                                                       <*/
+            /*> x_pate  =  0.0;                                                       <*/
+            /*> x_tibi  = 90.0;                                                       <*/
             /*---(check servos)----------*/
             x_servo = x_leg * 3;
-            if (g_servos [  x_servo].curr != NULL)  my.s_femu = x_femu = g_servos [x_servo].deg;
-            if (g_servos [++x_servo].curr != NULL)  my.s_pate = x_pate = g_servos [x_servo].deg;
-            if (g_servos [++x_servo].curr != NULL)  my.s_tibi = x_tibi = g_servos [x_servo].deg;
+            rc = yKINE_servo_deg  (x_leg, YKINE_FEMU, &x_femu);
+            rc = yKINE_servo_deg  (x_leg, YKINE_PATE, &x_pate);
+            rc = yKINE_servo_deg  (x_leg, YKINE_TIBI, &x_tibi);
+            /*> if (g_servos [  x_servo].curr != NULL)  my.s_femu = x_femu = g_servos [x_servo].deg;   <* 
+             *> if (g_servos [++x_servo].curr != NULL)  my.s_pate = x_pate = g_servos [x_servo].deg;   <* 
+             *> if (g_servos [++x_servo].curr != NULL)  my.s_tibi = x_tibi = g_servos [x_servo].deg;   <*/
             /*---(draw)------------------*/
             draw_leg_NEW   (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
             /*---(calc in yKINE)---------*/
@@ -1703,18 +1703,20 @@ draw_spider        (void)
             x_debug = '-';
             /*> if (strcmp (g_servos [x_servo].label, "RR.tibi") == 0) x_debug = 'y';   <*/
             /*> if (x_debug == 'y') {                                                 <*/
-            if (x_debug == 'y')  printf ("name = %s\n", g_servos [x_servo].label);
-            if (x_debug == 'y')  printf ("curr = %p\n", g_servos [x_servo].curr);
-            if (x_debug == 'y')  printf ("prev = %p\n", g_servos [x_servo].curr->s_prev);
-            if (g_servos [x_servo].curr->s_prev != NULL) {
-               x_xpos1 = g_servos [x_servo].curr->s_prev->x_pos;
-               x_zpos1 = g_servos [x_servo].curr->s_prev->z_pos;
-               x_ypos1 = g_servos [x_servo].curr->s_prev->y_pos;
-               if (x_debug == 'y')  printf ("   pos1  %8.1lfx, %8.1lfz, %8.1lfy\n", x_xpos1, x_zpos1, x_ypos1);
-               x_xpos2 = g_servos [x_servo].curr->x_pos;
-               x_zpos2 = g_servos [x_servo].curr->z_pos;
-               x_ypos2 = g_servos [x_servo].curr->y_pos;
-               if (x_debug == 'y')  printf ("   pos2  %8.1lfx, %8.1lfz, %8.1lfy\n", x_xpos2, x_zpos2, x_ypos2);
+            /*> if (x_debug == 'y')  printf ("name = %s\n", g_servos [x_servo].label);          <* 
+             *> if (x_debug == 'y')  printf ("curr = %p\n", g_servos [x_servo].curr);           <* 
+             *> if (x_debug == 'y')  printf ("prev = %p\n", g_servos [x_servo].curr->s_prev);   <*/
+            rc = yKINE_servo_line (x_leg, YKINE_TIBI, &x_xpos1, &x_zpos1, &x_ypos1, &x_xpos2, &x_zpos2, &x_ypos2);
+            /*> if (g_servos [x_servo].curr->s_prev != NULL) {                                                        <* 
+             *>    x_xpos1 = g_servos [x_servo].curr->s_prev->x_pos;                                                  <* 
+             *>    x_zpos1 = g_servos [x_servo].curr->s_prev->z_pos;                                                  <* 
+             *>    x_ypos1 = g_servos [x_servo].curr->s_prev->y_pos;                                                  <* 
+             *>    if (x_debug == 'y')  printf ("   pos1  %8.1lfx, %8.1lfz, %8.1lfy\n", x_xpos1, x_zpos1, x_ypos1);   <* 
+             *>    x_xpos2 = g_servos [x_servo].curr->x_pos;                                                          <* 
+             *>    x_zpos2 = g_servos [x_servo].curr->z_pos;                                                          <* 
+             *>    x_ypos2 = g_servos [x_servo].curr->y_pos;                                                          <* 
+             *>    if (x_debug == 'y')  printf ("   pos2  %8.1lfx, %8.1lfz, %8.1lfy\n", x_xpos2, x_zpos2, x_ypos2);   <*/
+            if (rc >= 0) {
                glLineWidth  ( 2.00f);
                glColor4f    (1.0f, 0.0f, 0.0f, 1.0f);
                glBegin      (GL_LINES); {
