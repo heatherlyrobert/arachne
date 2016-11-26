@@ -28,9 +28,9 @@ LIBU    = ${LIBDIR}         -lX11             -lGL              -lGLU           
 #===(file lists)============================================================================================================================================================================#
 #------   (0)-------------- (1)-------------- (2)-------------- (3)-------------- (4)-------------- (5)-------------- (6)-------------- (7)-------------- (8)-------------- (9)-------------- (A)-------------- (B)-------------- (C)-------------- (D)-------------- (5)--------------
 HEADS   = ${BASE}.h
-OBJS    = ${BASE}_main.os   ${BASE}_prog.os   ${BASE}_keys.os   ${BASE}_kine.os   ${BASE}_draw.os   ${BASE}_dlist.os  ${BASE}_stat.os   ${BASE}_dyna.os   ${BASE}_test.os
-OBJD    = ${BASE}_main.o    ${BASE}_prog.o    ${BASE}_keys.o    ${BASE}_kine.o    ${BASE}_draw.o    ${BASE}_dlist.o   ${BASE}_stat.o    ${BASE}_dyna.o    ${BASE}_test.o 
-OBJU    = ${BASE}_unit.o    ${BASE}_prog.o    ${BASE}_keys.o    ${BASE}_kine.o    ${BASE}_draw.o    ${BASE}_dlist.o   ${BASE}_stat.o    ${BASE}_dyna.o    ${BASE}_test.o 
+OBJS    = ${BASE}_main.os   ${BASE}_prog.os   ${BASE}_keys.os   ${BASE}_kine.os   ${BASE}_draw.os   ${BASE}_tick.os   ${BASE}_dlist.os  ${BASE}_stat.os   ${BASE}_dyna.os   ${BASE}_test.os
+OBJD    = ${BASE}_main.o    ${BASE}_prog.o    ${BASE}_keys.o    ${BASE}_kine.o    ${BASE}_draw.o    ${BASE}_tick.o    ${BASE}_dlist.o   ${BASE}_stat.o    ${BASE}_dyna.o    ${BASE}_test.o 
+OBJU    = ${BASE}_unit.o    ${BASE}_prog.o    ${BASE}_keys.o    ${BASE}_kine.o    ${BASE}_draw.o    ${BASE}_tick.o    ${BASE}_dlist.o   ${BASE}_stat.o    ${BASE}_dyna.o    ${BASE}_test.o 
 
 #===(make variables)====================================================================================================================================================#
 COPY    = cp -f
@@ -82,6 +82,11 @@ ${BASE}_draw.o     : ${HEADS}       ${BASE}_draw.c
 	${COMP}    ${BASE}_draw.c                           ${INC}
 	${STRIP}   ${BASE}_draw.c      > ${BASE}_draw.cs
 	${COMP}    ${BASE}_draw.cs    -o ${BASE}_draw.os    ${INC}
+
+${BASE}_tick.o     : ${HEADS}       ${BASE}_tick.c
+	${COMP}    ${BASE}_tick.c                           ${INC}
+	${STRIP}   ${BASE}_tick.c      > ${BASE}_tick.cs
+	${COMP}    ${BASE}_tick.cs    -o ${BASE}_tick.os    ${INC}
 
 ${BASE}_dlist.o    : ${HEADS}       ${BASE}_dlist.c
 	${COMP}    ${BASE}_dlist.c                          ${INC}

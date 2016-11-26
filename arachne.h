@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8h"
-#define VER_TXT   "successfully removed MOVE and SCRP into the yKINE library"
+#define VER_NUM   "0.8i"
+#define VER_TXT   "moved progress ticker functions to separate file"
 
 
 
