@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8i"
-#define VER_TXT   "moved progress ticker functions to separate file"
+#define VER_NUM   "0.8j"
+#define VER_TXT   "pulled progress accuracy heat map into a separate function"
 
 
 

@@ -433,7 +433,7 @@ TICK_servos        (int a_leg)
       }
    } glPopMatrix();
    /*---(patella)------------------------*/
-   glColor4f    (0.50f, 0.50f, 0.00f, 1.0f);
+   glColor4f    (0.20f, 0.20f, 0.70f, 1.0f);
    glLineWidth  (10.0f);
    glPushMatrix(); {
       rc = yKINE_move_first ((a_leg * 3) + 1, &x_sec1, &x_deg1);
@@ -516,126 +516,85 @@ TICK_servoheat     (char a_type, float a_base, float a_sec1, float a_sec2, float
 }
 
 char         /*--> represent tibia placement accuracy ----[ ------ [ ------ ]-*/
+TICK_accline       (char a_type, char a_rc, double a_diff, double a_x, double *a_y)
+{
+   double      x_diff      =   1.00;
+   double      x_base      =   1.00;
+   double      x_width     =   8.00;
+   double      x_xoff      =   1.00;
+   double      x_height    =  10.00;
+   double      x_yoff      =  20.00;
+   double      x_alpha     =   0.50;
+   double      x_z         = 180.00;
+   if (a_rc < 0) return -1;
+   switch (a_type) {
+   case 't' :  /* touch      (xzy) */
+      x_base    *= 1.0;
+      break;
+   case 'x' : case 'z' : case 'y' :
+      x_diff     = -(fabs (a_diff));
+      break;
+   case 'h' :  /* horizontal (xz)  */
+      x_diff     = -(fabs (a_diff));
+      x_base    *= 2.0;
+      x_height  *= 1.5;
+      break;
+   case 'f' :  /* full       (xzy) */
+      x_diff     = -(fabs (a_diff));
+      x_base    *= 3.0;
+      x_height  *= 2.0;
+      break;
+   default  : return -1;
+              break;
+   }
+   /*> if      (fabs (a_diff) <=  x_base * 0.5)   glColor4f    (0.75f, 0.75f, 0.00f, x_alpha);   <* 
+    *> else if (fabs (a_diff) <=  x_base * 1.0)   glColor4f    (0.00f, 0.75f, 0.00f, x_alpha);   <* 
+    *> else if (fabs (a_diff) <=  x_base * 2.0)   glColor4f    (0.00f, 1.00f, 1.00f, x_alpha);   <* 
+    *> else if (fabs (a_diff) <=  x_base * 3.0)   glColor4f    (1.00f, 0.00f, 1.00f, x_alpha);   <* 
+    *> else                                       glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);   <*/
+   if      (a_diff >=   x_base * 3.0)   glColor4f    (0.25f, 0.25f, 0.25f, x_alpha);
+   else if (a_diff >=   x_base * 2.0)   glColor4f    (1.00f, 0.00f, 1.00f, x_alpha);
+   else if (a_diff >=   x_base * 1.0)   glColor4f    (0.00f, 0.80f, 0.80f, x_alpha);
+   else if (a_diff >=   x_base * 0.5)   glColor4f    (0.00f, 0.80f, 0.00f, x_alpha);
+   else if (a_diff >=  -x_base * 0.5)   glColor4f    (0.60f, 0.60f, 0.00f, x_alpha);
+   else if (a_diff >=  -x_base * 1.0)   glColor4f    (0.00f, 0.80f, 0.00f, x_alpha);
+   else if (a_diff >=  -x_base * 2.0)   glColor4f    (0.00f, 0.80f, 0.80f, x_alpha);
+   else if (a_diff >=  -x_base * 3.0)   glColor4f    (1.00f, 0.00f, 1.00f, x_alpha);
+   else                                 glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);
+
+   glPushMatrix(); {
+      glBegin         (GL_POLYGON); {
+         glVertex3f  (a_x + x_xoff          , *a_y           , x_z);
+         glVertex3f  (a_x + x_xoff + x_width, *a_y           , x_z);
+         glVertex3f  (a_x + x_xoff + x_width, *a_y - x_height, x_z);
+         glVertex3f  (a_x + x_xoff          , *a_y - x_height, x_z);
+      } glEnd   ();
+   } glPopMatrix();
+   *a_y -= (x_height + x_yoff);
+   return 0;
+}
+
+char         /*--> represent tibia placement accuracy ----[ ------ [ ------ ]-*/
 TICK_accuracy      (int a_leg, double a_sec, double a_x, double a_y)
 {
    /*---(locals)-----------+-----------+-*/
-   int       i;                             /* loop iterator                  */
-   int       x_xoff        =  1.0;
-   int       x_width       =  8.0;
-   float     x_height      = 10.0;
-   float     x_yspace      = x_height + 16.0;
-   int       x_yoff        =  0.0;
-   float     x_beg         =  0.0;
-   float     x_end         = my.p_texw;
    double    x_xdif        = 0.0;
    double    x_zdif        = 0.0;
    double    x_ydif        = 0.0;
    double    x_ypos        = 0.0;
-   double    x_z           = 80.0;
    double    x_xz          =  0.0;
    double    x_full        =  0.0;
-   char      x_touch       = '-';
    char      rc            = 0;
-   double    x_alpha       = 0.30;
-   /*---(prepare)------------------------*/
-   /*> x_yinc    = x_top / 12.0;                                                      <* 
-    *> x_base    = (1500 - (x_yinc * a_leg)) - my.p_top;                              <* 
-    *> x_bar     = my.p_top - my.p_bot;                                               <* 
-    *> x_unit    = x_xinc / my.p_inc;                                                 <*/
    /*---(tibia)--------------------------*/
-   rc = yKINE_move_exact (a_sec, a_leg, &x_xdif, &x_zdif, &x_ydif, &x_ypos);
-   /*---(touch indicator)----------------*/
-   if      (rc     <   0   )   glColor4f    (0.00f, 0.00f, 0.00f, x_alpha);
-   else if (x_ypos >= -125.00) glColor4f    (0.30f, 0.30f, 0.30f, x_alpha);
-   else if (x_ypos >= -129.00) glColor4f    (0.00f, 0.00f, 1.00f, x_alpha);
-   else if (x_ypos >= -131.00) glColor4f    (0.00f, 0.75f, 0.75f, x_alpha);
-   else if (x_ypos >= -135.00) glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
-   else                        glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);
-   glPushMatrix(); {
-      glBegin         (GL_POLYGON); {
-         glVertex3f  (a_x + x_xoff          , a_y - x_yoff           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff - x_height, x_z);
-         glVertex3f  (a_x + x_xoff          , a_y - x_yoff - x_height, x_z);
-      } glEnd   ();
-   } glPopMatrix();
-   /*---(x differences)------------------*/
-   x_yoff += x_yspace;
-   if      (rc     <   0   )   glColor4f    (0.00f, 0.00f, 0.00f, x_alpha);
-   else if (x_xdif <=  0.50)   glColor4f    (0.75f, 0.75f, 0.00f, x_alpha);
-   else if (x_xdif <=  1.00)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
-   else if (x_xdif <=  3.00)   glColor4f    (0.00f, 1.00f, 1.00f, x_alpha);
-   else                        glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);
-   glPushMatrix(); {
-      glBegin         (GL_POLYGON); {
-         glVertex3f  (a_x + x_xoff          , a_y - x_yoff           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff - x_height, x_z);
-         glVertex3f  (a_x + x_xoff          , a_y - x_yoff - x_height, x_z);
-      } glEnd   ();
-   } glPopMatrix();
-   /*---(z differences)------------------*/
-   x_yoff += x_yspace;
-   if      (rc     <   0   )   glColor4f    (0.00f, 0.00f, 0.00f, x_alpha);
-   else if (x_xdif <=  0.50)   glColor4f    (0.75f, 0.75f, 0.00f, x_alpha);
-   else if (x_zdif <=  1.00)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
-   else if (x_zdif <=  3.00)   glColor4f    (0.00f, 1.00f, 1.00f, x_alpha);
-   else                        glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);
-   glPushMatrix(); {
-      glBegin         (GL_POLYGON); {
-         glVertex3f  (a_x + x_xoff          , a_y - x_yoff           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff - x_height, x_z);
-         glVertex3f  (a_x + x_xoff          , a_y - x_yoff - x_height, x_z);
-      } glEnd   ();
-   } glPopMatrix();
-   /*---(xz differences)-----------------*/
-   x_yoff += x_yspace;
+   rc     = yKINE_move_exact (a_sec, a_leg, &x_xdif, &x_zdif, &x_ydif, &x_ypos);
    x_xz   = sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif));
-   if      (rc     <   0   )   glColor4f    (0.00f, 0.00f, 0.00f, x_alpha);
-   else if (x_xz   <=  0.75)   glColor4f    (0.75f, 0.75f, 0.00f, x_alpha);
-   else if (x_xz   <=  1.50)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
-   else if (x_xz   <=  4.50)   glColor4f    (0.00f, 1.00f, 1.00f, x_alpha);
-   else                        glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);
-   glPushMatrix(); {
-      glBegin         (GL_POLYGON); {
-         glVertex3f  (a_x + x_xoff          , a_y - x_yoff           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff - x_height * 2.0, x_z);
-         glVertex3f  (a_x + x_xoff          , a_y - x_yoff - x_height * 2.0, x_z);
-      } glEnd   ();
-   } glPopMatrix();
-   /*---(y differences)------------------*/
-   x_yoff += x_yspace + x_height;
-   if      (rc     <   0   )   glColor4f    (0.00f, 0.00f, 0.00f, x_alpha);
-   else if (x_ydif <=  0.50)   glColor4f    (0.75f, 0.75f, 0.00f, x_alpha);
-   else if (x_ydif <=  1.00)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
-   else if (x_ydif <=  3.00)   glColor4f    (0.00f, 1.00f, 1.00f, x_alpha);
-   else                        glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);
-   glPushMatrix(); {
-      glBegin         (GL_POLYGON); {
-         glVertex3f  (a_x + x_xoff          , a_y - x_yoff           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff - x_height, x_z);
-         glVertex3f  (a_x + x_xoff          , a_y - x_yoff - x_height, x_z);
-      } glEnd   ();
-   } glPopMatrix();
-   /*---(xzy differences)----------------*/
-   x_yoff += x_yspace;
    x_full = sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif) + (x_ydif * x_ydif));
-   if      (rc     <   0   )   glColor4f    (0.00f, 0.00f, 0.00f, x_alpha);
-   else if (x_full <=  1.00)   glColor4f    (0.75f, 0.75f, 0.00f, x_alpha);
-   else if (x_full <=  2.00)   glColor4f    (0.00f, 1.00f, 0.00f, x_alpha);
-   else if (x_full <=  6.00)   glColor4f    (0.00f, 1.00f, 1.00f, x_alpha);
-   else                        glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);
-   glPushMatrix(); {
-      glBegin         (GL_POLYGON); {
-         glVertex3f  (a_x + x_xoff          , a_y - x_yoff           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, a_y - x_yoff - x_height * 3.0, x_z);
-         glVertex3f  (a_x + x_xoff          , a_y - x_yoff - x_height * 3.0, x_z);
-      } glEnd   ();
-   } glPopMatrix();
+   TICK_accline       ('t', rc, x_ypos + 130.0, a_x, &a_y);
+   TICK_accline       ('x', rc, x_xdif        , a_x, &a_y);
+   TICK_accline       ('z', rc, x_zdif        , a_x, &a_y);
+   TICK_accline       ('h', rc, x_xz          , a_x, &a_y);
+   TICK_accline       ('y', rc, x_ydif        , a_x, &a_y);
+   TICK_accline       ('f', rc, x_full        , a_x, &a_y);
    /*---(complete)-----------------------*/
    return 0;
 }
