@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8j"
-#define VER_TXT   "pulled progress accuracy heat map into a separate function"
+#define VER_NUM   "0.8k"
+#define VER_TXT   "added option to call servo move report from yKINE"
 
 
 
@@ -232,6 +232,8 @@ extern tDEBUG      debug;
 #define     SCRN_PROG      'p'    /* all six progress lines                   */
 
 
+#define     RPTG_NONE      '-'    /* no report to generate                    */
+#define     RPTG_MOVES     'm'    /* report on final move lists               */
 
 
 struct cACCESSOR {
@@ -243,6 +245,7 @@ struct cACCESSOR {
    char        sta_error;
    char        cch;
    char        sch;
+   char        report;                      /* report to generate             */
    /*---(window)----------*/
    char        w_title     [LEN_STR];       /* window title                   */
    int         w_height;                    /* window heigth                  */
