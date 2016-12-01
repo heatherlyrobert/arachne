@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8k"
-#define VER_TXT   "added option to call servo move report from yKINE"
+#define VER_NUM   "0.8l"
+#define VER_TXT   "created a color spectrum from power program for accuracy heat map"
 
 
 

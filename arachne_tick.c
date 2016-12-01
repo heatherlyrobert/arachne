@@ -4,6 +4,45 @@
 
 
 
+#define    MAX_COLORS      25
+typedef   struct cCOLOR  tCOLOR;
+struct cCOLOR {
+   char        name        [LEN_LABEL];
+   char        hex         [LEN_LABEL];
+   char        active;
+   double      min;
+   double      red;
+   double      grn;
+   double      blu;
+};
+tCOLOR    s_colors  [MAX_COLORS] = {
+   {  "white"     , "ffffff", '-',   0.0,   0.0,   0.0,   0.0  },
+   {  "light"     , "aaaaaa", '-',   0.0,   0.0,   0.0,   0.0  },
+   {  "violet"    , "770077", 'y',  15.5,   0.0,   0.0,   0.0  },
+   {  "purple"    , "470587", 'y',  10.5,   0.0,   0.0,   0.0  },
+   {  "navy"      , "171797", 'y',   7.5,   0.0,   0.0,   0.0  },
+   {  "blue"      , "133aac", 'y',   5.5,   0.0,   0.0,   0.0  },
+   {  "teal"      , "127070", 'y',   3.5,   0.0,   0.0,   0.0  },
+   {  "forest"    , "12aa12", 'y',   2.5,   0.0,   0.0,   0.0  },
+   {  "green"     , "2dd700", 'y',   1.5,   0.0,   0.0,   0.0  },
+   {  "lime"      , "8eeb00", 'y',   0.5,   0.0,   0.0,   0.0  },
+   {  "yellow"    , "ffff00", 'y',  -0.5,   0.0,   0.0,   0.0  },
+   {  "burnt"     , "f0bb00", 'y',  -1.5,   0.0,   0.0,   0.0  },
+   {  "gold"      , "f08800", 'y',  -2.5,   0.0,   0.0,   0.0  },
+   {  "orange"    , "f05500", 'y',  -3.5,   0.0,   0.0,   0.0  },
+   {  "fushia"    , "f02222", 'y',  -5.5,   0.0,   0.0,   0.0  },
+   {  "red"       , "a51111", 'y',  -7.5,   0.0,   0.0,   0.0  },
+   {  "blood"     , "801111", 'y', -10.5,   0.0,   0.0,   0.0  },
+   {  "saddle"    , "603310", 'y', -15.5,   0.0,   0.0,   0.0  },
+   {  "brown"     , "402208", 'y',-999.0,   0.0,   0.0,   0.0  },
+   {  "dark"      , "151515", '-',   0.0,   0.0,   0.0,   0.0  },
+   {  "black"     , "000000", '-',   0.0,   0.0,   0.0,   0.0  },
+   {  "end-list"  , "000000", 'e',   0.0,   0.0,   0.0,   0.0  },
+};
+static int s_ncolor = 0;
+
+
+
 
 /*====================------------------------------------====================*/
 /*===----                       progress ticker                        ----===*/
@@ -38,9 +77,47 @@ static float       s_texbeg2   =   0.0;
 static float       s_texend2   =   0.0;
 static float       s_texpct2   =   0.0;
 
+static double      s_lowest    =   0.0;
+
+double
+unhexify           (char a_one, char a_two)
+{
+   int    value = 0;
+   switch (a_one) {
+   case '0' ... '9' :   value = (a_one - '0') * 16;          break;
+   case 'a' ... 'f' :   value = (a_one - 'a' + 10) * 16;     break;
+   }
+   switch (a_two) {
+   case '0' ... '9' :   value += (a_two - '0');              break;
+   case 'a' ... 'f' :   value += (a_two - 'a' + 10);         break;
+   }
+   return (double) value / 255.0 ;
+}
+
+static int       s_debug_leg;
+static double    s_debug_sec;
+
+char
+TICK_color      (double a_base, double a_value, char a_show)
+{
+   /*> if (a_show == 'y' && s_debug_leg == 1)  printf ("   TICK_color s_debug_leg=%2d,s_debug_sec=%8.3lf, a_base=%8.3lf, a_value=%8.3lf\n", s_debug_leg, s_debug_sec, a_base, a_value);   <*/
+   int         i           = 0;
+   for (i = 0; i < s_ncolor; ++i) {
+      /*> if (a_show == 'y' && s_debug_leg == 1)  printf ("      check   i=%2d, active=%c, min=%8.3lf, min*base=%8.3lf\n",   <* 
+       *>       i, s_colors [i].active, s_colors [i].min, s_colors [i].min * a_base);                                        <*/
+      if (s_colors [i].active != 'y' )  continue;
+      if (a_value >  s_colors [i].min * a_base) {
+         glColor4f   (s_colors [i].red, s_colors [i].grn, s_colors [i].blu, 1.0f);
+         break;
+      }
+   }
+   return 0;
+}
+
 char         /*--> set values for progress ticker --------[ ------ [ ------ ]-*/
 TICK_init          (void)
 {
+   int         i           = 0;
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    /*---(sizes)--------------------------*/
    DEBUG_GRAF   yLOG_note    ("setting sizes (widths and heights)");
@@ -87,6 +164,18 @@ TICK_init          (void)
    /*---(unbind)-------------------------*/
    DEBUG_GRAF   yLOG_note    ("unbind texture");
    glBindFramebufferEXT         (GL_FRAMEBUFFER_EXT, 0);
+   /*---(update colors)------------------*/
+   s_ncolor = 0;
+   for (i = 0; i < MAX_COLORS; ++i) {
+      if (s_colors [i].active == 'e' )  break;
+      s_colors [i].red = unhexify (s_colors [i].hex [0], s_colors [i].hex [1]);
+      s_colors [i].grn = unhexify (s_colors [i].hex [2], s_colors [i].hex [3]);
+      s_colors [i].blu = unhexify (s_colors [i].hex [4], s_colors [i].hex [5]);
+      /*> printf ("%-2d %-10s  %-10s  %5.3lf  %5.3lf  %5.3lf\n", i,                   <* 
+       *>       s_colors [i].name, s_colors [i].hex ,                                 <* 
+       *>       s_colors [i].red , s_colors [i].grn , s_colors [i].blu);              <*/
+      ++s_ncolor;
+   }
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -367,11 +456,11 @@ TICK_servoline     (char a_type, float a_base, float a_sec1, float a_sec2, float
    y_pos2   = a_base + a_deg2;
    /*---(prepare adjustments)------------*/
    switch (a_type) {
-   case 'f' : y_inc = 5; z_pos = 30.0;  break;   /* femur         */
-   case 'p' : y_inc = 2; z_pos = 33.0;  break;   /* patella       */
-   case 't' : y_inc = 0; z_pos = 36.0;  break;   /* tibia         */
-   case 'e' : x_inc = 5; z_pos = 39.0;  break;   /* end point     */
-   case 'c' : x_inc = 0; z_pos = 39.0;  break;   /* current       */
+   case 'f' : y_inc = 5; z_pos = 230.0;  break;   /* femur         */
+   case 'p' : y_inc = 2; z_pos = 233.0;  break;   /* patella       */
+   case 't' : y_inc = 1; z_pos = 236.0;  break;   /* tibia         */
+   case 'e' : x_inc = 5; z_pos = 239.0;  break;   /* end point     */
+   case 'c' : x_inc = 0; z_pos = 239.0;  break;   /* current       */
    }
    /*---(draw)--------*/
    if      (x_pos2 <  0.0     )  ;  /* line to early */
@@ -451,7 +540,7 @@ TICK_servos        (int a_leg)
    } glPopMatrix();
    /*---(tibia)--------------------------*/
    glColor4f    (0.00f, 0.50f, 0.00f, 1.0f);
-   glLineWidth  ( 5.0f);
+   glLineWidth  ( 7.0f);
    glPushMatrix(); {
       rc = yKINE_move_first ((a_leg * 3) + 2, &x_sec1, &x_deg1);
       while (rc >= 0) {
@@ -522,10 +611,11 @@ TICK_accline       (char a_type, char a_rc, double a_diff, double a_x, double *a
    double      x_base      =   1.00;
    double      x_width     =   8.00;
    double      x_xoff      =   1.00;
-   double      x_height    =  10.00;
-   double      x_yoff      =  20.00;
+   double      x_height    =   8.00;
+   double      x_yoff      =  12.00;
    double      x_alpha     =   0.50;
    double      x_z         = 180.00;
+   double      x_red, x_grn, x_blu;
    if (a_rc < 0) return -1;
    switch (a_type) {
    case 't' :  /* touch      (xzy) */
@@ -536,8 +626,10 @@ TICK_accline       (char a_type, char a_rc, double a_diff, double a_x, double *a
       break;
    case 'h' :  /* horizontal (xz)  */
       x_diff     = -(fabs (a_diff));
-      x_base    *= 2.0;
-      x_height  *= 1.5;
+      x_base    *= 1.0;
+      /*> x_base    *= 2.0;                                                           <*/
+      /*> x_height  *= 1.5;                                                           <*/
+      x_yoff    *= 6.0;
       break;
    case 'f' :  /* full       (xzy) */
       x_diff     = -(fabs (a_diff));
@@ -547,21 +639,17 @@ TICK_accline       (char a_type, char a_rc, double a_diff, double a_x, double *a
    default  : return -1;
               break;
    }
-   /*> if      (fabs (a_diff) <=  x_base * 0.5)   glColor4f    (0.75f, 0.75f, 0.00f, x_alpha);   <* 
-    *> else if (fabs (a_diff) <=  x_base * 1.0)   glColor4f    (0.00f, 0.75f, 0.00f, x_alpha);   <* 
-    *> else if (fabs (a_diff) <=  x_base * 2.0)   glColor4f    (0.00f, 1.00f, 1.00f, x_alpha);   <* 
-    *> else if (fabs (a_diff) <=  x_base * 3.0)   glColor4f    (1.00f, 0.00f, 1.00f, x_alpha);   <* 
-    *> else                                       glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);   <*/
-   if      (a_diff >=   x_base * 3.0)   glColor4f    (0.25f, 0.25f, 0.25f, x_alpha);
-   else if (a_diff >=   x_base * 2.0)   glColor4f    (1.00f, 0.00f, 1.00f, x_alpha);
-   else if (a_diff >=   x_base * 1.0)   glColor4f    (0.00f, 0.80f, 0.80f, x_alpha);
-   else if (a_diff >=   x_base * 0.5)   glColor4f    (0.00f, 0.80f, 0.00f, x_alpha);
-   else if (a_diff >=  -x_base * 0.5)   glColor4f    (0.60f, 0.60f, 0.00f, x_alpha);
-   else if (a_diff >=  -x_base * 1.0)   glColor4f    (0.00f, 0.80f, 0.00f, x_alpha);
-   else if (a_diff >=  -x_base * 2.0)   glColor4f    (0.00f, 0.80f, 0.80f, x_alpha);
-   else if (a_diff >=  -x_base * 3.0)   glColor4f    (1.00f, 0.00f, 1.00f, x_alpha);
-   else                                 glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);
-
+   if (a_type == 't')  TICK_color (x_base, a_diff, 'y');
+   else                TICK_color (x_base, a_diff, '-');
+   /*> if      (a_diff >=   x_base * 3.5)   glColor4f    (0.25f, 0.25f, 0.25f, x_alpha);   <* 
+    *> else if (a_diff >=   x_base * 2.5)   glColor4f    (1.00f, 0.00f, 1.00f, x_alpha);   <* 
+    *> else if (a_diff >=   x_base * 1.5)   glColor4f    (0.00f, 0.80f, 0.80f, x_alpha);   <* 
+    *> else if (a_diff >=   x_base * 0.5)   glColor4f    (0.00f, 0.80f, 0.00f, x_alpha);   <* 
+    *> else if (a_diff >=  -x_base * 0.5)   glColor4f    (0.60f, 0.60f, 0.00f, x_alpha);   <* 
+    *> else if (a_diff >=  -x_base * 1.5)   glColor4f    (0.00f, 0.80f, 0.00f, x_alpha);   <* 
+    *> else if (a_diff >=  -x_base * 2.5)   glColor4f    (0.00f, 0.80f, 0.80f, x_alpha);   <* 
+    *> else if (a_diff >=  -x_base * 3.5)   glColor4f    (1.00f, 0.00f, 1.00f, x_alpha);   <* 
+    *> else                                 glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);   <*/
    glPushMatrix(); {
       glBegin         (GL_POLYGON); {
          glVertex3f  (a_x + x_xoff          , *a_y           , x_z);
@@ -589,12 +677,15 @@ TICK_accuracy      (int a_leg, double a_sec, double a_x, double a_y)
    rc     = yKINE_move_exact (a_sec, a_leg, &x_xdif, &x_zdif, &x_ydif, &x_ypos);
    x_xz   = sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif));
    x_full = sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif) + (x_ydif * x_ydif));
-   TICK_accline       ('t', rc, x_ypos + 130.0, a_x, &a_y);
-   TICK_accline       ('x', rc, x_xdif        , a_x, &a_y);
-   TICK_accline       ('z', rc, x_zdif        , a_x, &a_y);
-   TICK_accline       ('h', rc, x_xz          , a_x, &a_y);
-   TICK_accline       ('y', rc, x_ydif        , a_x, &a_y);
-   TICK_accline       ('f', rc, x_full        , a_x, &a_y);
+   /*> printf ("TICK_accuracy, a_leg=%d, a_sec=%8.3lf, s_lowest=%8.1lf, x_ypos=%8.1lf\n", a_leg, a_sec, s_lowest, x_ypos);   <*/
+   s_debug_leg = a_leg;
+   s_debug_sec = a_sec;
+   TICK_accline       ('t', rc, s_lowest - x_ypos   , a_x, &a_y);
+   TICK_accline       ('x', rc, x_xdif              , a_x, &a_y);
+   TICK_accline       ('z', rc, x_zdif              , a_x, &a_y);
+   TICK_accline       ('h', rc, x_xz                , a_x, &a_y);
+   TICK_accline       ('y', rc, x_ydif              , a_x, &a_y);
+   TICK_accline       ('f', rc, x_full              , a_x, &a_y);
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -638,6 +729,33 @@ TICK_sectext       (int a_section)
    return s_sectext;
 }
 
+char
+TICK_height        (int a_sec, double a_pos)
+{
+   double    x_barrange    = 0.0;
+   double    x_bartop      = 0.0;
+   double    x_barbot      = 0.0;
+   x_barrange = s_lowest + 100.0;
+   if (x_barrange >= 0.0) {
+      glColor4f    (1.00f, 1.00f, 1.00f, 0.3f);
+      x_bartop = -155.0 + x_barrange;
+      x_barbot = -165.0;
+   } else {
+      glColor4f    (0.00f, 1.00f, 0.00f, 0.3f);
+      x_bartop = -110.0;
+      x_barbot = -120.0 + x_barrange;
+   }
+   glPushMatrix(); {
+      glBegin         (GL_POLYGON); {
+         glVertex3f  (a_sec + 2.0      , a_pos + x_bartop, 120.0);
+         glVertex3f  (a_sec + 2.0 + 6.0, a_pos + x_bartop, 120.0);
+         glVertex3f  (a_sec + 2.0 + 6.0, a_pos + x_barbot, 120.0);
+         glVertex3f  (a_sec + 2.0      , a_pos + x_barbot, 120.0);
+      } glEnd   ();
+   } glPopMatrix();
+   return 0;
+}
+
 char         /*--> draw texture labels -------------------[ ------ [ ------ ]-*/
 TICK_labels        (void)
 {
@@ -660,6 +778,9 @@ TICK_labels        (void)
    char      x_label1      [10];
    char      x_label2      [10];
    double    x_sec         = 0.0;
+   double    x_lowest      = 0.0;
+   int       x_lowcnt      = 0;
+   char      rc            = 0;
    /*---(prepare)------------------------*/
    yVIKEYS_scale_base (&my.p_multi, &my.p_base);
    x_yinc      = x_top / 12.0;
@@ -706,6 +827,7 @@ TICK_labels        (void)
    glPushMatrix(); {
       glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
       for (i = 0; i < my.p_texw; i += x_xinc) {
+         /*---(labels)-------------------*/
          if (i % (int) (x_xinc * 10) == 0) {
             for (j = 0; j < 12; ++j) {
                glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
@@ -718,17 +840,27 @@ TICK_labels        (void)
                } glPopMatrix();
             }
          }
+         /*---(accuracy heatmap)---------*/
          for (j = 0; j < 12; ++j) {
             if (j < 6) {
                x_pos = (6 - j) * x_yinc;
                x_sec = (((float) (i) / x_xinc) * my.p_multi) + x_secbeg1;
-               TICK_accuracy (j    , x_sec, i, x_pos - 40.0);
+               if (j == 0) {
+                  rc = yKINE_phys_flat   (YKINE_FK, x_sec, &s_lowest, &x_lowcnt);
+                  /*> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <*/
+               }
+               TICK_height   (i, x_pos);
+               TICK_accuracy (j    , x_sec, i, x_pos - 35.0);
             } else {
                x_pos = (12 + (6 - j)) * x_yinc;
                x_sec = (((float) (i) / x_xinc) * my.p_multi) + x_secbeg2;
-               TICK_accuracy (j - 6, x_sec, i, x_pos - 40.0);
+               if (j == 6) {
+                  yKINE_phys_flat   (YKINE_FK, x_sec, &s_lowest, &x_lowcnt);
+                  /*> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <*/
+               }
+               TICK_height   (i, x_pos);
+               TICK_accuracy (j - 6, x_sec, i, x_pos - 35.0);
             }
-            /*> printf ("%2d  %2d  %2d  %8.3lfx  %8.3lfs\n", j, 6 - j, 12 + (6 - j), x_pos, x_sec);   <*/
          }
       }
    } glPopMatrix();
@@ -770,11 +902,12 @@ TICK_draw          (void)
    /*---(locals)-----------+-----------+-*/
    int         i;                             /* loop iterator                  */
    /*---(new)----------------------------*/
+   /*> printf ("start drawing ticker\n");                                             <*/
    TICK_globals ();
    TICK_start   ();
    TICK_back    ();
-   for (i = 0; i <= 5; ++i) TICK_servos  (i);
    TICK_labels  ();
+   for (i = 0; i <= 5; ++i) TICK_servos  (i);
    TICK_end     ();
    /*---(complete)-----------------------*/
    return 0;
