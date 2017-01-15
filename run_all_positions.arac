@@ -3,14 +3,14 @@
 
 
 #==(verb)======  ver  =(servos)=  ==(secs)==  ==(degs)==  ==========  ==========  ==(adjs)============ 
-servo            -b-  aa.femu          0.000       0.000  - - -       - - -       L2R                  
-servo            -b-  aa.pate          0.000       0.000  - - -       - - -       - - -                
-servo            -b-  aa.tibi          0.000      90.000  - - -       - - -       - - -                
+start            -b-  aa.femu          1.000       0.000  - - -       - - -       L2R                  
+start            -b-  aa.pate          1.000       0.000  - - -       - - -       - - -                
+start            -b-  aa.tibi          1.000      90.000  - - -       - - -       - - -                
 
 #==(verb)======  ver  =(servos)=  ==(secs)==  ==(degs)==  ==========  ==========  ==(adjs)============ 
-servo            -b-  aa.femu          0.500     -85.000  - - -       - - -       L2R                  
-servo            -b-  aa.pate          0.500     -90.000  - - -       - - -       - - -                
-servo            -b-  aa.tibi          0.500      90.000  - - -       - - -       - - -                
+servo            -b-  aa.femu          1.000     -85.000  - - -       - - -       L2R                  
+servo            -b-  aa.pate          1.000     -90.000  - - -       - - -       - - -                
+servo            -b-  aa.tibi          1.000      90.000  - - -       - - -       - - -                
 
 #==(verb)======  ver  =(servos)=  ==(secs)==  ==(degs)==  ==========  ==========  ==(adjs)============ 
 servo            -b-  aa.femu        179.200      85.000  - - -       - - -       L2R                  

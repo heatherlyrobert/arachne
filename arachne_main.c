@@ -10,13 +10,18 @@ main (int argc, char *argv[])
    int         updates     = 0;
    char        rc          = 0;
    char        x_savemode  = '-';
+   tTSPEC      timer;
+   XKeyEvent  *key_event;
+   char        the_key[5];
+   int         the_bytes;
+   char        is_moved = 'n';
    /*---(initialize)---------------------*/
-   if (rc == 0)  rc = PROG_logger  (argc, argv);
-   if (rc == 0)  rc = PROG_init    ();
-   if (rc == 0)  rc = PROG_urgs    (argc, argv);
-   if (rc == 0)  rc = PROG_args    (argc, argv);
-   if (rc == 0)  rc = PROG_begin   ();
-   if (rc != 0)  {
+   if (rc >= 0)  rc = yURG_logger  (argc, argv);
+   if (rc >= 0)  rc = PROG_init    ();
+   if (rc >= 0)  rc = yURG_urgs    (argc, argv);
+   if (rc >= 0)  rc = PROG_args    (argc, argv);
+   if (rc >= 0)  rc = PROG_begin   ();
+   if (rc <  0)  {
       PROG_end     ();
       exit (-1);
    }
@@ -29,11 +34,6 @@ main (int argc, char *argv[])
    /*> if (is_test) printf("\nspider--------------------------------------------begin---\n\n");   <*/
    /*> strcpy(its_text, " ");                                                         <*/
    /*> counter = 0;                                                                   <*/
-   struct timespec timer;
-   XKeyEvent *key_event;
-   char  the_key[5];
-   int   the_bytes;
-   char  is_moved = 'n';
    /*> if (is_test) printf("handling the event loop...\n");                           <*/
    /*> printf("pre-while   : gk[0][YKINE_CORE].cy = %8.1f, fk[0][YKINE_CORE].cy = %8.1f\n", gk[0][YKINE_CORE].cy, fk[0][YKINE_CORE].cy);   <*/
    yVIKEYS_mode_mesg (my.message, "");

@@ -21,8 +21,8 @@
 /*===[[ SUMMARY ]]============================================================*/
 
 /*   arachne will be a wickedly accurate and useful hexapod visualizer that
- *   will allow me to test stances, movements, and interactions of a hexapod
- *   before commiting to real-world tests.
+ *   will allow me to deeply test stances, movements, and interactions of a
+ *   spider/hexapod robot before commiting to real-world tests.
  *
  */
 /*===[[ PURPOSE ]]============================================================*/
@@ -79,47 +79,48 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8l"
-#define VER_TXT   "created a color spectrum from power program for accuracy heat map"
+#define VER_NUM   "0.8m"
+#define VER_TXT   "moved to yURG processing and constants"
 
 
 
 /*===[[ HEADERS ]]========================================*/
 /*---(ansi-c standard)-------------------*/
-#include    <stdio.h>             /* CLIBC  standard input/output             */
-#include    <stdlib.h>            /* CLIBC  standard general purpose          */
-#include    <string.h>            /* CLIBC  standard string handling          */
-#include    <unistd.h>            /* CLIBC  standard unix interface           */
-#include    <error.h>             /* CLIBC  standard error handling           */
-#include    <fcntl.h>             /* CLIBC  standard file control             */
-#include    <termios.h>           /* CLIBC  standard terminal control         */
-#include    <math.h>              /* CLIBC  standard math functions           */
-#include    <signal.h>            /* CLIBC  standard signal handling          */
-#include    <time.h>              /* CLIBC  standard time and date handling   */
-#include    <ctype.h>             /* CLIBC  standard character classes        */
+#include    <stdio.h>        /* CLIBC   standard input/output                 */
+#include    <stdlib.h>       /* CLIBC   standard general purpose              */
+#include    <string.h>       /* CLIBC   standard string handling              */
+#include    <unistd.h>       /* CLIBC   standard unix interface               */
+#include    <error.h>        /* CLIBC   standard error handling               */
+#include    <fcntl.h>        /* CLIBC   standard file control                 */
+#include    <termios.h>      /* CLIBC   standard terminal control             */
+#include    <math.h>         /* CLIBC   standard math functions               */
+#include    <signal.h>       /* CLIBC   standard signal handling              */
+#include    <time.h>         /* CLIBC   standard time and date handling       */
+#include    <ctype.h>        /* CLIBC   standard character classes            */
 
 /*---(posix standard)--------------------*/
-#include    <unistd.h>            /* POSIX  standard operating system API     */
-#include    <sys/time.h>          /* POSIX  standard time access              */
+#include    <unistd.h>       /* POSIX   standard operating system API         */
+#include    <sys/time.h>     /* POSIX   standard time access                  */
 
 /*---(X11 standard)----------------------*/
-#include    <X11/X.h>             /* X11    standard overall file             */
-#include    <X11/Xlib.h>          /* X11    standard C API                    */
+#include    <X11/X.h>        /* X11     standard overall file                 */
+#include    <X11/Xlib.h>     /* X11     standard C API                        */
 
 
 /*---(opengl standard)-------------------*/
-#include    <GL/gl.h>             /* OPENGL standard primary header           */
-#include    <GL/glx.h>            /* OPENGL standard X11 integration          */
+#include    <GL/gl.h>        /* OPENGL  standard primary header               */
+#include    <GL/glx.h>       /* OPENGL  standard X11 integration              */
 
 /*---(heatherly made)--------------------*/
-#include    <yX11.h>              /* CUSTOM heatherly xlib/glx setup/teardown */
-#include    <yVAR.h>              /* CUSTOM heatherly variable testing        */
-#include    <yGOD.h>              /* CUSTOM heatherly opengl godview          */
-#include    <yKINE.h>             /* CUSTOM heatherly kinematics              */
-#include    <yVIKEYS.h>           /* CUSTOM heatherly vi_keys standard        */
-#include    <yFONT.h>             /* CUSTOM heatherly texture-mapped fonts    */
-#include    <ySTR.h>              /* CUSTOM heatherly string handling         */
-#include    <yLOG.h>              /* CUSTOM heatherly program logging         */
+#include    <yURG.h>         /* CUSTOM  heatherly urgent processing           */
+#include    <yX11.h>         /* CUSTOM  heatherly xlib/glx setup/teardown     */
+#include    <yVAR.h>         /* CUSTOM  heatherly variable testing            */
+#include    <yGOD.h>         /* CUSTOM  heatherly opengl godview              */
+#include    <yKINE.h>        /* CUSTOM  heatherly kinematics                  */
+#include    <yVIKEYS.h>      /* CUSTOM  heatherly vi_keys standard            */
+#include    <yFONT.h>        /* CUSTOM  heatherly texture-mapped fonts        */
+#include    <ySTR.h>         /* CUSTOM  heatherly string handling             */
+#include    <yLOG.h>         /* CUSTOM  heatherly program logging             */
 
 
 
@@ -157,8 +158,8 @@ typedef     unsigned    long long   ullong;
 /*---(library simplifications)---------*/
 typedef     struct      FILE        tFILE;
 typedef     struct      tm          tTIME;
+typedef     struct      timespec    tTSPEC;
 /*---(data structures)-----------------*/
-typedef     struct      cDEBUG      tDEBUG;
 typedef     struct      cACCESSOR   tACCESSOR;
 typedef     struct      cMOVE       tMOVE;
 typedef     struct      cSERVO      tSERVO;
@@ -168,59 +169,7 @@ typedef     struct      cGAIT       tGAIT;
 
 
 
-/*===[[ DEBUGGING SETUP ]]====================================================*/
-/* this is my latest standard format, vars, and urgents                       */
-/* v3.0b : added signal handling                                (2014-feb-01) */
-struct cDEBUG
-{
-   /*---(handle)-------------------------*/
-   int         logger;                 /* log file so that we don't close it  */
-   /*---(overall)------------------------*/  /* abcdefghi_kl__opq_stu__x__    */
-   /* f = full urgents turns on all standard urgents                          */
-   /* k = kitchen sink and turns everything, i mean everything on             */
-   /* q = quiet turns all urgents off including the log itself                */
-   char        tops;                   /* t) broad structure and context      */
-   char        summ;                   /* s) statistics and analytical output */
-   /*---(startup/shutdown)---------------*/
-   char        args;                   /* a) command line args and urgents    */
-   char        conf;                   /* c) configuration handling           */
-   char        prog;                   /* p) program setup and teardown       */
-   /*---(file processing)----------------*/
-   char        inpt;                   /* i) text and data file input         */
-   char        outp;                   /* o) text and data file output        */
-   /*---(event handling)-----------------*/
-   char        loop;                   /* l) main program event loop          */
-   char        user;                   /* u) user input and handling          */
-   char        apis;                   /* i) interprocess communication       */
-   char        sign;                   /* x) os signal handling               */
-   char        scrp;                   /* b) scripts and batch operations     */
-   char        hist;                   /* h) history, undo, redo              */
-   /*---(program)------------------------*/
-   char        graf;                   /* g) grahpics, drawing, and display   */
-   char        data;                   /* d) complex data structure handling  */
-   char        envi;                   /* e) environment processing           */
-   /*---(specific)-----------------------*/
-   char        kine;                   /* e) environment processing           */
-   /*---(done)---------------------------*/
-};
-extern tDEBUG      debug;
 
-#define     DEBUG_TOPS          if (debug.tops      == 'y')
-#define     DEBUG_SUMM          if (debug.summ      == 'y')
-#define     DEBUG_ARGS          if (debug.args      == 'y')
-#define     DEBUG_CONF          if (debug.conf      == 'y')
-#define     DEBUG_PROG          if (debug.prog      == 'y')
-#define     DEBUG_INPT          if (debug.inpt      == 'y')
-#define     DEBUG_OUTP          if (debug.outp      == 'y')
-#define     DEBUG_LOOP          if (debug.loop      == 'y')
-#define     DEBUG_USER          if (debug.user      == 'y')
-#define     DEBUG_APIS          if (debug.apis      == 'y')
-#define     DEBUG_SIGN          if (debug.sign      == 'y')
-#define     DEBUG_SCRP          if (debug.scrp      == 'y')
-#define     DEBUG_HIST          if (debug.hist      == 'y')
-#define     DEBUG_GRAF          if (debug.graf      == 'y')
-#define     DEBUG_DATA          if (debug.data      == 'y')
-#define     DEBUG_ENVI          if (debug.envi      == 'y')
 
 
 
@@ -557,10 +506,7 @@ extern    char        flag_view;
 int         main               (int argc, char *argv[]);
 
 /*---(arachne_prog)----------------------*/
-char        PROG_logger        (int argc, char *argv[]);
 char        PROG_init          (void);
-char        PROG_urgsmass      (char a_set, char a_extra);
-char        PROG_urgs          (int argc, char *argv[]);
 char        PROG_args          (int argc, char *argv[]);
 char        PROG_begin         (void);
 char        PROG_event         (void);

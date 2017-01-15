@@ -21,9 +21,9 @@ INCS    = -I/usr/local/include
 #------   (0)-------------- (1)-------------- (2)-------------- (3)-------------- (4)-------------- (5)-------------- (6)-------------- (7)-------------- (8)-------------- (9)-------------- (A)-------------- (B)-------------- (C)-------------- (D)-------------- (E)-------------- (F)--------------
 LINK    = gcc
 LIBDIR  = -L/usr/local/lib
-LIBS    = ${LIBDIR}         -lX11             -lGL              -lGLU             -lyX11            -lyGOD            -lyKINE           -lyVIKEYS         -lyFONT           -lySTR            -lyVAR            -lm
-LIBD    = ${LIBDIR}         -lX11             -lGL              -lGLU             -lyX11            -lyGOD            -lyKINE_debug     -lyVIKEYS         -lyFONT           -lySTR            -lyVAR            -lm               -lyLOG
-LIBU    = ${LIBDIR}         -lX11             -lGL              -lGLU             -lyX11            -lyGOD            -lyKINE_debug     -lyVIKEYS         -lyFONT           -lySTR            -lyVAR            -lm               -lyLOG            -lyUNIT
+LIBS    = ${LIBDIR}         -lX11             -lGL              -lGLU             -lyX11            -lyGOD            -lyKINE           -lyVIKEYS         -lyFONT           -lySTR            -lyVAR            -lm               -lyURG            -lyLOG
+LIBD    = ${LIBDIR}         -lX11             -lGL              -lGLU             -lyX11            -lyGOD            -lyKINE_debug     -lyVIKEYS         -lyFONT           -lySTR_debug      -lyVAR            -lm               -lyURG_debug      -lyLOG
+LIBU    = ${LIBDIR}         -lX11             -lGL              -lGLU             -lyX11            -lyGOD            -lyKINE_debug     -lyVIKEYS         -lyFONT           -lySTR_debug      -lyVAR            -lm               -lyURG_debug      -lyLOG            -lyUNIT
 
 #===(file lists)============================================================================================================================================================================#
 #------   (0)-------------- (1)-------------- (2)-------------- (3)-------------- (4)-------------- (5)-------------- (6)-------------- (7)-------------- (8)-------------- (9)-------------- (A)-------------- (B)-------------- (C)-------------- (D)-------------- (5)--------------
