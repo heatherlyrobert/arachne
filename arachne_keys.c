@@ -139,22 +139,22 @@ MODE_progress      (char a_major, char a_minor)
          my.p_debug = 'y';
          /*> TICK_show ();                                                     <*/
          break;
-         /*> printf ("my.p_width         = %10.3f\n", my.w_width * 1.0);                         <* 
-          *> printf ("full size          = %10.3f\n", my.w_width * 2.0);                         <* 
-          *> printf ("x_half             = %10.3f\n", my.w_width * 1.0);                         <* 
+         /*> printf ("my.p_width         = %10.3f\n", my.w_wide * 1.0);                         <* 
+          *> printf ("full size          = %10.3f\n", my.w_wide * 2.0);                         <* 
+          *> printf ("x_half             = %10.3f\n", my.w_wide * 1.0);                         <* 
           *> printf ("my.p_cursec             = %10.3f\n", my.p_cursec);                                   <* 
           *> printf ("x_inc              = %10.3f\n", 10.0);                                     <* 
           *> printf ("my.p_inc           = %10.3f\n", my.p_inc);                                 <* 
           *> printf ("x_sec              = %10.3f\n", 10.0 / my.p_inc);                          <* 
-          *> printf ("# secs on screen   = %10.3f\n", (my.w_width * 2.0) / (10.0 / my.p_inc));   <* 
+          *> printf ("# secs on screen   = %10.3f\n", (my.w_wide * 2.0) / (10.0 / my.p_inc));   <* 
           *> printf (" * my.p_cursec          = %10.3f\n", my.p_cursec * (10.0 / my.p_inc));               <*/
          /*> /+---(calculate offset)---------------+/                                                 <* 
-          *> x_right     = my.w_width;                                                                <* 
+          *> x_right     = my.w_wide;                                                                <* 
           *> x_cur       = my.p_cursec * (x_inc / my.p_inc) / 2.0f;   /+ texture displayed at 0.5x +/      <* 
           *> x_half      = x_right;                                                                   <* 
           *> /+---(set beginning and end)----------+/                                                 <* 
           *> x_beg       = x_cur - x_half;                                                            <* 
-          *> /+> x_beg       = my.w_width;                                                      <+/   <* 
+          *> /+> x_beg       = my.w_wide;                                                      <+/   <* 
           *> if (x_beg < 0.0)  x_beg = 0.0;                                                           <* 
           *> x_end       = x_beg + (x_half * 2.0f);                                                   <* 
           *> /+---(scale number to texture)--------+/                                                 <* 

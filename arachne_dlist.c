@@ -67,25 +67,25 @@ dlist_ground()
       glColor4f (1.0, 1.0, 0.0, 1.0);
       glTranslatef (    0.00f,   20.00f, -950.00f);
       glRotatef(-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (txf_bg, 150, YF_BASCEN, "n");
+      yFONT_print  (my.font, 150, YF_BASCEN, "n");
    } glPopMatrix();
    glPushMatrix    (); {
       glColor4f (1.0, 1.0, 0.0, 1.0);
       glTranslatef (    0.00f,   20.00f,  950.00f);
       glRotatef(-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (txf_bg, 150, YF_BASCEN, "s");
+      yFONT_print  (my.font, 150, YF_BASCEN, "s");
    } glPopMatrix();
    glPushMatrix    (); {
       glColor4f (1.0, 1.0, 0.0, 1.0);
       glTranslatef (  950.00f,   20.00f,    0.00f);
       glRotatef(-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (txf_bg, 150, YF_BASCEN, "e");
+      yFONT_print  (my.font, 150, YF_BASCEN, "e");
    } glPopMatrix();
    glPushMatrix    (); {
       glColor4f (1.0, 1.0, 0.0, 1.0);
       glTranslatef ( -950.00f,   20.00f,    0.00f);
       glRotatef(-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (txf_bg, 150, YF_BASCEN, "w");
+      yFONT_print  (my.font, 150, YF_BASCEN, "w");
    } glPopMatrix();
    /*---(center)----------------------------*/
    /*> glLineWidth ( 5.0);                                                            <* 

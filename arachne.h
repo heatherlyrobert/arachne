@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8m"
-#define VER_TXT   "moved to yURG processing and constants"
+#define VER_NUM   "0.8o"
+#define VER_TXT   "updated size, location, and font of command window"
 
 
 
@@ -195,23 +195,40 @@ struct cACCESSOR {
    char        cch;
    char        sch;
    char        report;                      /* report to generate             */
-   /*---(window)----------*/
+   /*---(fonts)-----------*/
+   char        face        [LEN_LABEL];
+   char        font;
+   /*---(window sizes)----*/
    char        w_title     [LEN_STR];       /* window title                   */
-   int         w_height;                    /* window heigth                  */
-   int         w_width;                     /* window width                   */
-   char        w_buffer;                    /* current window buffer/area     */
+   int         w_wide;                      /* window width                   */
+   int         w_tall;                      /* window heigth                  */
+   /*---(spider sizes)----*/
+   int         s_wide;                      /* width  of spider window        */
+   int         s_left;                      /* left   of spider window        */
+   int         s_tall;                      /* height of spider window        */
+   int         s_bott;                      /* bottom of spider window        */
+   /*---(progress sizes)--*/
+   int         p_wide;                      /* width  of progress ticker      */
+   int         p_left;                      /* left   of progress ticker      */
+   int         p_tall;                      /* height of progress ticker      */
+   int         p_bott;                      /* bottom of progress ticker      */
+   /*---(command sizes)---*/
+   int         c_wide;                      /* width  of command line         */
+   int         c_left;                      /* left   of command line         */
+   int         c_tall;                      /* height of command line         */
+   int         c_bott;                      /* bottom of command line         */
+   /*---(command title)---*/
+   int         t_wide;                      /* width  of title line           */
+   int         t_left;                      /* left   of title line           */
+   int         t_tall;                      /* height of title line           */
+   int         t_bott;                      /* bottom of title line           */
    /*---(file hanndling)--*/
    char        f_base      [LEN_STR];       /* specific file base name        */
    char        f_suffix    [LEN_STR];       /* file suffix for spreadsheet    */
    char        f_name      [LEN_STR];       /* full file name                 */
-   /*---(spider pane)-----*/
-   int         s_height;
-   int         s_bottom;
    /*---(progress move)---*/
    double      p_waitns;
    /*---(progress pane)---*/
-   int         p_height;
-   int         p_bottom;
    char        p_curpos;                    /* position of current bar (shcle)*/
    double      p_cursec;                    /* current timeline seconds       */
    double      p_endsec;                    /* end second for timeline play   */
@@ -233,8 +250,6 @@ struct cACCESSOR {
    char        p_base;                      /* base unit for display          */
    char        p_debug; 
    /*---(command line)----*/
-   int         c_bottom;                    /* bottom of command window       */
-   int         c_height;                    /* height of command window       */
    char        c_command   [LEN_STR];       /* current text in command mode   */
    /*---(done)------------*/
 };
@@ -247,10 +262,6 @@ extern      tACCESSOR my;
 
 
 
-/*===[[ DEBUGGING ]]======================================*/
-#define   SILENT    0
-#define   CHATTY    1
-#define   DEBUG_L   if (a_debug)
 
 
 #define     FILE_BLANK   "((none))"
@@ -484,12 +495,6 @@ extern    float     my_run;
 extern    float     my_inc;
 extern    float     my_deg;
 
-extern    char   face_bg [30];
-extern    char   face_sm [30];
-extern    char   face_vr [30];
-extern    int    txf_bg;
-extern    int    txf_sm;
-extern    int    txf_vr;
 
 
 extern    char        flag_annotate;

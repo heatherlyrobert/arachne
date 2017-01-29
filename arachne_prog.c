@@ -48,23 +48,27 @@ PROG_init          (void)
    /*---(screen configuration)-----------*/
    my.scrn      = SCRN_NORM;
    my.report    = RPTG_NONE;
-   /*---(command line)-------------------*/
-   DEBUG_TOPS   yLOG_note  ("set command line characteristics");
-   my.c_height  =   15;
-   my.c_bottom  =    0;
-   /*---(progress window)----------------*/
-   DEBUG_TOPS   yLOG_note  ("set progress ticker characteristics");
-   my.p_height  =  125;
-   my.p_bottom  =  my.c_bottom + my.c_height;
-   /*---(spider window)------------------*/
-   DEBUG_TOPS   yLOG_note  ("set spider window characteristics");
-   my.s_height  =  580;
-   my.s_bottom  =  my.p_bottom + my.p_height;
-   /*---(full window)--------------------*/
-   DEBUG_TOPS   yLOG_note  ("update overall window characteristics");
-   my.w_width   =  800;
-   my.w_height  =  my.s_bottom + my.s_height;
-   /*---(other progress settings)--------*/
+   /*---(widths)-------------------------*/
+   DEBUG_TOPS   yLOG_note  ("set window widths");
+   my.s_wide = my.c_wide = my.p_wide =  800;
+   my.t_wide =  25;
+   my.w_wide = my.s_wide + my.t_wide;
+   /*---(lefts)--------------------------*/
+   DEBUG_TOPS   yLOG_note  ("set window left positions");
+   my.t_left =   0;
+   my.s_left = my.c_left = my.p_left = my.t_wide;
+   /*---(talls)--------------------------*/
+   DEBUG_TOPS   yLOG_note  ("set window heights");
+   my.c_tall =  25;  
+   my.p_tall = 125;  
+   my.s_tall = 580;
+   my.w_tall = my.t_tall = my.c_tall + my.p_tall + my.s_tall;
+   /*---(bottoms)------------------------*/
+   DEBUG_TOPS   yLOG_note  ("set window bottom positions");
+   my.c_bott = my.t_bott =   0;  
+   my.p_bott = my.c_tall;
+   my.s_bott = my.p_bott + my.p_tall;
+   /*---(progress ticker)----------------*/
    DEBUG_TOPS   yLOG_note  ("defaul progress ticker values");
    my.p_len     =  0.0;
    my.p_leg     =  0.0;
@@ -72,6 +76,8 @@ PROG_init          (void)
    my.p_endsec  = -1.0;
    my.p_quit    =  '-';
    my.p_dump    =  '-';
+   /*---(fonss)--------------------------*/
+   strlcpy (my.face, "comfortaa"    , LEN_LABEL);
    /*---(setup modes)--------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");
    yVIKEYS_mode_init    ();
@@ -166,12 +172,11 @@ PROG_begin         (void)
 {
    DEBUG_TOPS   yLOG_enter   (__FUNCTION__);
    stat_init    (model_name);
-   /*> if (debug.kine == 'y')  yKINE_debug ('y');                                     <*/
    KINE_begin   ();
    DEBUG_ARGS  yLOG_info   ("title"     , my.w_title);
-   DEBUG_ARGS  yLOG_value  ("width"     , my.w_width);
-   DEBUG_ARGS  yLOG_value  ("height"    , my.w_height);
-   yXINIT_start (my.w_title, my.w_width, my.w_height, YX_FOCUSABLE, YX_FIXED, YX_SILENT);
+   DEBUG_ARGS  yLOG_value  ("width"     , my.w_wide);
+   DEBUG_ARGS  yLOG_value  ("height"    , my.w_tall);
+   yXINIT_start (my.w_title, my.w_wide, my.w_tall, YX_FOCUSABLE, YX_FIXED, YX_SILENT);
    DRAW_begin   ();
    draw_setup   ();
    font_load    ();
@@ -212,19 +217,9 @@ static void      o___FONTS___________________o (void) {;}
 char
 font_load          (void)
 {
-   txf_bg  = yFONT_load(face_bg);
-   if (txf_bg <  0) {
-      fprintf(stderr, "Problem loading %s\n", face_bg);
-      exit(1);
-   }
-   txf_sm  = yFONT_load(face_sm);
-   if (txf_sm <  0) {
-      fprintf(stderr, "Problem loading %s\n", face_sm);
-      exit(1);
-   }
-   txf_sm  = yFONT_load(face_vr);
-   if (txf_vr <  0) {
-      fprintf(stderr, "Problem loading %s\n", face_vr);
+   my.font  = yFONT_load (my.face);
+   if (my.font <  0) {
+      fprintf(stderr, "Problem loading %s\n", my.face);
       exit(1);
    }
    return 0;
@@ -233,9 +228,7 @@ font_load          (void)
 char
 font_delete        (void)
 {
-   yFONT_free(txf_bg);
-   yFONT_free(txf_sm);
-   yFONT_free(txf_vr);
+   yFONT_free(my.font);
    return 0;
 }
 

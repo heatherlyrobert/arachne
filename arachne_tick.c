@@ -801,25 +801,25 @@ TICK_labels        (void)
          glPushMatrix(); {
             glTranslatef ( i + 30.0 , x_pos    -  125.0    ,    60.0  );
             glRotatef  ( 90.0  , 0.0f, 0.0f, 1.0f);
-            yFONT_print  (txf_bg,  40, YF_MIDCEN, x_msg);
+            yFONT_print  (my.font,  40, YF_MIDCEN, x_msg);
          } glPopMatrix();
          if (j >= 6)  strlcpy (x_msg, x_label1, LEN_STR);
          else         strlcpy (x_msg, x_label2, LEN_STR);
          glColor4f    (0.25f, 0.25f, 0.25f, 1.0f);
          glPushMatrix(); {
             glTranslatef ( i +  80.0 , x_pos    -   40.0    ,    60.0  );
-            yFONT_print  (txf_bg,  40, YF_MIDCEN, x_msg);
+            yFONT_print  (my.font,  40, YF_MIDCEN, x_msg);
          } glPopMatrix();
          yVIKEYS_scale_desc (x_msg);
          glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
          glPushMatrix(); {
             glTranslatef ( i + 10.0 , x_pos    -  25.0 ,    60.0  );
-            yFONT_print  (txf_bg,  16, YF_BOTLEF, x_msg);
+            yFONT_print  (my.font,  16, YF_BOTLEF, x_msg);
          } glPopMatrix();
          yVIKEYS_speed_desc (x_msg);
          glPushMatrix(); {
             glTranslatef ( i - 500.0, x_pos    -  25.0 ,    60.0  );
-            yFONT_print  (txf_bg,  16, YF_BOTLEF, x_msg);
+            yFONT_print  (my.font,  16, YF_BOTLEF, x_msg);
          } glPopMatrix();
       }
    }
@@ -836,7 +836,7 @@ TICK_labels        (void)
                x_pos = (j + 1) * x_yinc;
                glPushMatrix(); {
                   glTranslatef ( i , x_pos - x_bar + 25.0 ,    60.0  );
-                  yFONT_print  (txf_bg,  14, YF_TOPLEF, x_msg);
+                  yFONT_print  (my.font,  14, YF_TOPLEF, x_msg);
                } glPopMatrix();
             }
          }
@@ -879,7 +879,7 @@ TICK_globals       (void)
    s_textop    = 0.5 - ((my.p_leg + 0) * y_inc);
    s_texbot    = 0.5 - ((my.p_leg + 1) * y_inc);
    /*---(calc basics)--------------------*/
-   s_texavail  = my.w_width * 2.0;
+   s_texavail  = my.w_wide * 2.0;
    s_texpct    = s_texavail / my.p_texw;
    s_texctr    = s_texpct / 2.0;
    s_start     = s_section * my.p_texw;
@@ -1021,7 +1021,7 @@ TICK_current       (void)
       }
    }
    /*---(current pos)--------------------*/
-   s_cur       = ((s_curp - s_texbeg) / s_texpct) * my.w_width;
+   s_cur       = ((s_curp - s_texbeg) / s_texpct) * my.w_wide;
    /*---(complete)-----------------------*/
    return rc;
 }
@@ -1042,10 +1042,10 @@ TICK_showtex       (float a_height, float a_top, float a_bot)
          glVertex3f   (0.0                   , a_height ,     0.00f);
          /*---(top end)--------*/
          glTexCoord2f (s_texend1             , a_top );
-         glVertex3f   (my.w_width * s_texpct1, a_height ,     0.00f);
+         glVertex3f   (my.w_wide * s_texpct1, a_height ,     0.00f);
          /*---(bottom end)-----*/
          glTexCoord2f (s_texend1             , a_bot );
-         glVertex3f   (my.w_width * s_texpct1, 0.0      ,     0.00f);
+         glVertex3f   (my.w_wide * s_texpct1, 0.0      ,     0.00f);
          /*---(bottom beg)-----*/
          glTexCoord2f (s_texbeg1             , a_bot );
          glVertex3f   (0.0                   , 0.0      ,     0.00f);
@@ -1056,16 +1056,16 @@ TICK_showtex       (float a_height, float a_top, float a_bot)
       glBegin(GL_POLYGON); {
          /*---(top beg)--------*/
          glTexCoord2f (s_texbeg2             , a_top + 0.5 );
-         glVertex3f   (my.w_width * s_texpct1, a_height ,     0.00f);
+         glVertex3f   (my.w_wide * s_texpct1, a_height ,     0.00f);
          /*---(top end)--------*/
          glTexCoord2f (s_texend2             , a_top + 0.5 );
-         glVertex3f   (my.w_width            , a_height ,     0.00f);
+         glVertex3f   (my.w_wide            , a_height ,     0.00f);
          /*---(bottom end)-----*/
          glTexCoord2f (s_texend2             , a_bot + 0.5 );
-         glVertex3f   (my.w_width            , 0.0      ,     0.00f);
+         glVertex3f   (my.w_wide            , 0.0      ,     0.00f);
          /*---(bottom beg)-----*/
          glTexCoord2f (s_texbeg2             , a_bot + 0.5 );
-         glVertex3f   (my.w_width * s_texpct1, 0.0      ,     0.00f);
+         glVertex3f   (my.w_wide * s_texpct1, 0.0      ,     0.00f);
          /*---(done)-----------*/
       } glEnd();
    }
@@ -1089,13 +1089,13 @@ TICK_full          (void)
    /*---(locals)-------------------------*/
    char        rc          = 0;
    /*---(setup view)---------------------*/
-   glViewport      (    0, 0.0        , my.w_width, my.w_height);
+   glViewport      (    0, 0.0        , my.w_wide, my.w_tall);
    glMatrixMode    (GL_PROJECTION);
    glLoadIdentity  ();
-   glOrtho         ( 0.0f, my.w_width, 0.0     , my.w_height,  -500.0,   500.0);
+   glOrtho         ( 0.0f, my.w_wide, 0.0     , my.w_tall,  -500.0,   500.0);
    glMatrixMode    (GL_MODELVIEW);
    /*---(firgure current)----------------*/
-   rc = TICK_showtex    (my.w_height,  0.5,  0.0);
+   rc = TICK_showtex    (my.w_tall,  0.5,  0.0);
    /*---(complete)-----------------------*/
    return rc;
 }
@@ -1106,13 +1106,13 @@ TICK_show          (void)
    /*---(locals)-------------------------*/
    char        rc          = 0;
    /*---(setup view)---------------------*/
-   glViewport      (    0, my.p_bottom, my.w_width, my.p_height);
+   glViewport      (    0, my.p_bott, my.w_wide, my.p_tall);
    glMatrixMode    (GL_PROJECTION);
    glLoadIdentity  ();
-   glOrtho         ( 0.0f, my.w_width, 0.0 , my.p_height,  -500.0,   500.0);
+   glOrtho         ( 0.0f, my.w_wide, 0.0 , my.p_tall,  -500.0,   500.0);
    glMatrixMode    (GL_MODELVIEW);
    /*---(firgure current)----------------*/
-   rc = TICK_showtex    (my.p_height,  s_textop,  s_texbot);
+   rc = TICK_showtex    (my.p_tall,  s_textop,  s_texbot);
    /*---(show debug)---------------------*/
    /*> if (my.p_debug == 'y') {                                                         <* 
     *>    printf ("TICK_show ()  debugging\n");                                         <* 
@@ -1126,7 +1126,7 @@ TICK_show          (void)
     *>    printf ("\n");                                                                <* 
     *>    printf ("   ___vertical___________________\n");                               <* 
     *>    printf ("   my.p_texh        = %6d\n"   , my.p_texh);                         <* 
-    *>    printf ("   my.p_height      = %6d\n"   , my.p_height);                       <* 
+    *>    printf ("   my.p_tall      = %6d\n"   , my.p_tall);                       <* 
     *>    printf ("   max legs         = %6d\n"   , 6);                                 <* 
     *>    printf ("   height per leg   = %10.3f\n", my.p_texh / 6.0);                   <* 
     *>    printf ("   my.p_leg         = %10.3f\n", my.p_leg);                          <* 
@@ -1134,7 +1134,7 @@ TICK_show          (void)
     *>    printf ("   s_texbot         = %10.3f\n", s_texbot);                          <* 
     *>    printf ("\n");                                                                <* 
     *>    printf ("   ___horizontal_________________\n");                               <* 
-    *>    printf ("   my.w_width       = %6d\n"   , my.w_width);                        <* 
+    *>    printf ("   my.w_wide       = %6d\n"   , my.w_wide);                        <* 
     *>    printf ("   my.p_texw        = %6d\n"   , my.p_texw);                         <* 
     *>    printf ("   my.p_inc         = %10.3f\n", my.p_inc);                          <* 
     *>    printf ("   s_texavail       = %10.3f\n", s_texavail);                        <* 
