@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8o"
-#define VER_TXT   "updated size, location, and font of command window"
+#define VER_NUM   "0.8p"
+#define VER_TXT   "add a left-side title bar and adjust other window panes"
 
 
 
@@ -251,6 +251,7 @@ struct cACCESSOR {
    char        p_debug; 
    /*---(command line)----*/
    char        c_command   [LEN_STR];       /* current text in command mode   */
+   char        t_text      [LEN_STR];       /* title text                     */
    /*---(done)------------*/
 };
 extern      tACCESSOR my;
@@ -548,7 +549,8 @@ int        glx_init          (void);
 char      TICK_init          (void);
 char      TICK_draw          (void);
 char      TICK_show          (void);
-char      CMD_show           (void);
+char      DRAW_command       (void);
+char      DRAW_title         (void);
 
 char      DRAW_begin         (void);      /* prepare drawing environment      */
 char      DRAW_reset         (void);      /* set starting point for drawing   */

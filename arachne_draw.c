@@ -94,7 +94,7 @@ char      *eva_accessor     (char   *a_question);
 static void      o___COMMAND_________________o (void) {;}
 
 char
-CMD_show           (void)
+DRAW_command       (void)
 {
    /*---(setup view)---------------------*/
    glViewport      ( my.c_left, my.c_bott, my.c_wide, my.c_tall);
@@ -116,7 +116,7 @@ CMD_show           (void)
    glPushMatrix    (); {
       glTranslatef (    2.0f,    3.0f,    0.0f);
       glColor4f    (1.00f, 1.00f, 1.00f, 1.00f);
-      yFONT_print  (my.font,  12, YF_BOTLEF, my.message);
+      yFONT_print  (my.font,  10, YF_BOTLEF, my.message);
    } glPopMatrix   ();
    /*---(complete)-----------------------*/
    return;
@@ -125,6 +125,31 @@ CMD_show           (void)
 char
 DRAW_title         (void)
 {
+   /*---(setup view)---------------------*/
+   glViewport      ( my.t_left, my.t_bott, my.t_wide, my.t_tall);
+   glMatrixMode    (GL_PROJECTION);
+   glLoadIdentity  ();
+   glOrtho         ( 0.0f, my.t_wide, 0.0f, my.t_tall,  -500.0,   500.0);
+   glMatrixMode    (GL_MODELVIEW);
+   /*---(background)---------------------*/
+   glPushMatrix    (); {
+      glColor4f    (0.60f, 0.60f, 0.00f, 1.0f);
+      glBegin         (GL_POLYGON); {
+         glVertex3f  (0.0f     , my.t_tall,  0.0f);
+         glVertex3f  (my.t_wide, my.t_tall,  0.0f);
+         glVertex3f  (my.t_wide, 0.0f      ,  0.0f);
+         glVertex3f  (0.0f     , 0.0f      ,  0.0f);
+      } glEnd   ();
+   } glPopMatrix   ();
+   /*---(display)------------------------*/
+   glPushMatrix    (); {
+      glTranslatef (my.t_wide + 3,   5.0f,    0.0f);
+      glColor4f    (0.00f, 0.00f, 0.00f, 1.00f);
+      glRotatef    ( 90.0, 0.0f, 0.0f, 1.0f);
+      yFONT_print  (my.font,  16, YF_BOTLEF, my.t_text);
+      glTranslatef (my.t_tall - 10.0,   0.0f,    0.0f);
+      yFONT_print  (my.font,  16, YF_BOTRIG, VER_NUM);
+   } glPopMatrix   ();
 }
 
 
@@ -518,7 +543,8 @@ draw_main          (void)
       /*> view_top    ();                                                                <*/
       view_3d     ();
       rc = TICK_show   ();
-      CMD_show    ();
+      DRAW_command     ();
+      DRAW_title       ();
       /*> view_leg    ();                                                                <*/
    }
    /*---(progress)-----------------------*/
@@ -848,7 +874,7 @@ void
 view_3d()
 {
    /*---(setup view)---------------------*/
-   glViewport      (    0, my.s_bott, my.w_wide, my.s_tall);
+   glViewport      (my.s_left, my.s_bott, my.s_wide, my.s_tall);
    glMatrixMode    (GL_PROJECTION);
    glLoadIdentity  ();
    gluPerspective  (45.0f, (GLfloat) 800 / (GLfloat) 580, 0.01f, 4000.0f);

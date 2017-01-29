@@ -51,7 +51,7 @@ PROG_init          (void)
    /*---(widths)-------------------------*/
    DEBUG_TOPS   yLOG_note  ("set window widths");
    my.s_wide = my.c_wide = my.p_wide =  800;
-   my.t_wide =  25;
+   my.t_wide =  20;
    my.w_wide = my.s_wide + my.t_wide;
    /*---(lefts)--------------------------*/
    DEBUG_TOPS   yLOG_note  ("set window left positions");
@@ -59,7 +59,7 @@ PROG_init          (void)
    my.s_left = my.c_left = my.p_left = my.t_wide;
    /*---(talls)--------------------------*/
    DEBUG_TOPS   yLOG_note  ("set window heights");
-   my.c_tall =  25;  
+   my.c_tall =  20;  
    my.p_tall = 125;  
    my.s_tall = 580;
    my.w_tall = my.t_tall = my.c_tall + my.p_tall + my.s_tall;
@@ -77,7 +77,8 @@ PROG_init          (void)
    my.p_quit    =  '-';
    my.p_dump    =  '-';
    /*---(fonss)--------------------------*/
-   strlcpy (my.face, "comfortaa"    , LEN_LABEL);
+   strlcpy (my.face  , "comfortaa"    , LEN_LABEL);
+   strlcpy (my.t_text, "arachne, spider robot simulation"      , LEN_STR  );
    /*---(setup modes)--------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");
    yVIKEYS_mode_init    ();

@@ -1106,10 +1106,10 @@ TICK_show          (void)
    /*---(locals)-------------------------*/
    char        rc          = 0;
    /*---(setup view)---------------------*/
-   glViewport      (    0, my.p_bott, my.w_wide, my.p_tall);
+   glViewport      (my.p_left, my.p_bott, my.p_wide, my.p_tall);
    glMatrixMode    (GL_PROJECTION);
    glLoadIdentity  ();
-   glOrtho         ( 0.0f, my.w_wide, 0.0 , my.p_tall,  -500.0,   500.0);
+   glOrtho         ( 0.0f, my.p_wide, 0.0 , my.p_tall,  -500.0,   500.0);
    glMatrixMode    (GL_MODELVIEW);
    /*---(firgure current)----------------*/
    rc = TICK_showtex    (my.p_tall,  s_textop,  s_texbot);
