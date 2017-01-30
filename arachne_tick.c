@@ -38,7 +38,7 @@ tCOLOR    s_colors  [MAX_COLORS] = {
    {  "brown"     , "402208", 'y', -50.0,   0.0,   0.0,   0.0  },
    {  "taupe"     , "483c32", 'y',-999.0,   0.0,   0.0,   0.0  },
    {  "steel"     , "342821", '-',   0.0,   0.0,   0.0,   0.0  },
-   {  "grey"      , "1flf1f", '-',   0.0,   0.0,   0.0,   0.0  },
+   {  "dark"      , "1flf1f", '-',   0.0,   0.0,   0.0,   0.0  },
    {  "end-list"  , "000000", 'e',   0.0,   0.0,   0.0,   0.0  },
 };
 static int s_ncolor = 0;
@@ -58,7 +58,7 @@ TICK_legend        (void)
    glOrtho         ( 0.0f, my.a_wide, 0.0f, my.a_tall,  -500.0,   500.0);
    glMatrixMode    (GL_MODELVIEW);
    /*---(background)---------------------*/
-   glColor4f    (0.00f, 0.00f, 0.60f, 1.0f);
+   glColor4f    (0.00f, 0.00f, 0.40f, 1.0f);
    glPushMatrix    (); {
       glBegin         (GL_POLYGON); {
          glVertex3f  (0.0f     , my.a_tall,  0.0f);
@@ -67,32 +67,131 @@ TICK_legend        (void)
          glVertex3f  (0.0f     , 0.0f     ,  0.0f);
       } glEnd   ();
    } glPopMatrix   ();
-   /*---(progress legend)----------------*/
-   glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+   /*---(top part)-----------------------*/
    glPushMatrix    (); {
-      glTranslatef (    5.0f, my.a_tall,    0.0f);
+      glTranslatef (    5.0f, my.a_tall,   10.0f);
+      /*---(header)-------------------------*/
+      glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
       glTranslatef (    0.0f,    -30.0f,    0.0f);
-      yFONT_print  (my.font,  14, YF_BOTLEF, "progress legend");
-      glTranslatef (    0.0f,    -30.0f,    0.0f);
+      yFONT_print  (my.font,  16, YF_BOTLEF, "progress legend");
+      glTranslatef (    0.0f,    -15.0f,    0.0f);
+      /*---(femur)--------------------------*/
+      glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+      glTranslatef (    0.0f,    -15.0f,    0.0f);
       yFONT_print  (my.font,  10, YF_BOTLEF, "femu");
-      glTranslatef (    0.0f,    -15.0f,    0.0f);
+      glPushMatrix    (); {
+         /*---(setup)--------------------------*/
+         glColor4f    (0.50f, 0.00f, 0.00f, 1.0f);
+         glLineWidth  ( 3.0f);
+         glTranslatef (   50.0f,      7.0f,    0.0f);
+         /*---(top line)-----------------------*/
+         glBegin(GL_LINE_STRIP); {
+            glVertex3f  (  0.0,  2.0, 0.0);
+            glVertex3f  (140.0,  2.0, 0.0);
+         } glEnd   ();
+         /*---(bottom line)--------------------*/
+         glBegin(GL_LINE_STRIP); {
+            glVertex3f  (  0.0, -2.0, 0.0);
+            glVertex3f  (140.0, -2.0, 0.0);
+         } glEnd   ();
+      } glPopMatrix   ();
+      /*---(patella)------------------------*/
+      glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+      glTranslatef (    0.0f,    -20.0f,    0.0f);
       yFONT_print  (my.font,  10, YF_BOTLEF, "pate");
-      glTranslatef (    0.0f,    -15.0f,    0.0f);
+      glPushMatrix    (); {
+         /*---(setup)--------------------------*/
+         glColor4f    (0.20f, 0.20f, 0.70f, 1.0f);
+         glLineWidth  ( 3.0f);
+         glTranslatef (   50.0f,      7.0f,    0.0f);
+         /*---(top line)-----------------------*/
+         glBegin(GL_LINE_STRIP); {
+            glVertex3f  (  0.0,  1.0, 0.0);
+            glVertex3f  (140.0,  1.0, 0.0);
+         } glEnd   ();
+         /*---(bottom line)--------------------*/
+         glBegin(GL_LINE_STRIP); {
+            glVertex3f  (  0.0, -1.0, 0.0);
+            glVertex3f  (140.0, -1.0, 0.0);
+         } glEnd   ();
+      } glPopMatrix   ();
+      /*---(tibia)--------------------------*/
+      glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+      glTranslatef (    0.0f,    -20.0f,    0.0f);
       yFONT_print  (my.font,  10, YF_BOTLEF, "tibi");
-      glTranslatef (    0.0f,    -15.0f,    0.0f);
-      yFONT_print  (my.font,  10, YF_BOTLEF, "heat 1");
-      glTranslatef (    0.0f,    -15.0f,    0.0f);
-      yFONT_print  (my.font,  10, YF_BOTLEF, "heat 2");
-      glTranslatef (    0.0f,    -15.0f,    0.0f);
-      yFONT_print  (my.font,  10, YF_BOTLEF, "heat 3");
-      glTranslatef (    0.0f,    -15.0f,    0.0f);
-      yFONT_print  (my.font,  10, YF_BOTLEF, "heat 4");
-      glTranslatef (    0.0f,    -15.0f,    0.0f);
-      yFONT_print  (my.font,  10, YF_BOTLEF, "heat 5");
-      glTranslatef (    0.0f,    -15.0f,    0.0f);
-      yFONT_print  (my.font,  10, YF_BOTLEF, "heat 6");
-      glTranslatef (    0.0f,    -15.0f,    0.0f);
-      yFONT_print  (my.font,  10, YF_BOTLEF, "heat 7");
+      glPushMatrix    (); {
+         /*---(setup)--------------------------*/
+         glColor4f    (0.00f, 0.50f, 0.00f, 1.0f);
+         glLineWidth  ( 2.0f);
+         glTranslatef (   50.0f,      7.0f,    0.0f);
+         /*---(top line)-----------------------*/
+         glBegin(GL_LINE_STRIP); {
+            glVertex3f  (  0.0,  1.0, 0.0);
+            glVertex3f  (140.0,  1.0, 0.0);
+         } glEnd   ();
+         /*---(bottom line)--------------------*/
+         glBegin(GL_LINE_STRIP); {
+            glVertex3f  (  0.0, -1.0, 0.0);
+            glVertex3f  (140.0, -1.0, 0.0);
+         } glEnd   ();
+      } glPopMatrix   ();
+   } glPopMatrix   ();
+   /*---(top part)-----------------------*/
+   glPushMatrix    (); {
+      glTranslatef (    5.0f, 450,    0.0f);
+      glPushMatrix    (); {
+         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "heat map horizontals");
+      } glPopMatrix   ();
+      glTranslatef (   15.0f,    -20.0f,    0.0f);
+      glPushMatrix    (); {
+         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "row 1");
+         glTranslatef (   50.0f,      0.0f,    0.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "touch ground");
+      } glPopMatrix   ();
+      glTranslatef (    0.0f,    -20.0f,    0.0f);
+      glPushMatrix    (); {
+         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "row 2");
+         glTranslatef (   50.0f,      0.0f,    0.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "vs exp x-pos");
+      } glPopMatrix   ();
+      glTranslatef (    0.0f,    -20.0f,    0.0f);
+      glPushMatrix    (); {
+         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "row 3");
+         glTranslatef (   50.0f,      0.0f,    0.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "vs exp y-pos");
+      } glPopMatrix   ();
+      glTranslatef (    0.0f,    -20.0f,    0.0f);
+      glPushMatrix    (); {
+         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "row 4");
+         glTranslatef (   50.0f,      0.0f,    0.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "vs horizontal xz-pos");
+      } glPopMatrix   ();
+      glTranslatef (    0.0f,    -20.0f,    0.0f);
+      glPushMatrix    (); {
+         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "big 5");
+         glTranslatef (   50.0f,      0.0f,    0.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "unknown shit");
+      } glPopMatrix   ();
+      glTranslatef (    0.0f,    -20.0f,    0.0f);
+      glPushMatrix    (); {
+         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "row 6");
+         glTranslatef (   50.0f,      0.0f,    0.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "vs exp y-pos");
+      } glPopMatrix   ();
+      glTranslatef (    0.0f,    -20.0f,    0.0f);
+      glPushMatrix    (); {
+         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "big 7");
+         glTranslatef (   50.0f,      0.0f,    0.0f);
+         yFONT_print  (my.font,  10, YF_BOTLEF, "vs full xzy position");
+      } glPopMatrix   ();
    } glPopMatrix   ();
    glPushMatrix    (); {
       glTranslatef (    5.0f,  290.0,   10.0f);

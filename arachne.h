@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9b"
-#define VER_TXT   "update colors based on seeing them clearly and consecutively"
+#define VER_NUM   "0.9c"
+#define VER_TXT   "complete first clean draft of progress legend"
 
 
 
