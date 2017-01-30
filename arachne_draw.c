@@ -899,9 +899,9 @@ view_3d()
 
    DRAW_reset      ();
    glPushMatrix    (); {
-      glTranslatef (  -60.0f,  -32.0f, -100.0f);
+      glTranslatef ( -(my.s_wide / 16.0),  -32.0f, -100.0f);
       yGOD_orient ();
-      glTranslatef (  120.0f,    0.0f,    0.0f);
+      glTranslatef (  (my.s_wide /  8.0),    0.0f,    0.0f);
       yGOD_locate ();
    } glPopMatrix   ();
    /*---(setup view)---------------------*/

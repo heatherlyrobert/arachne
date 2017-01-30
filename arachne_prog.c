@@ -50,7 +50,7 @@ PROG_init          (void)
    my.report    = RPTG_NONE;
    /*---(widths)-------------------------*/
    DEBUG_TOPS   yLOG_note  ("set window widths");
-   my.s_wide = my.c_wide = my.p_wide = 1000;
+   my.s_wide = my.c_wide = my.p_wide =  900;
    my.t_wide =  20;
    my.w_wide = my.s_wide + my.t_wide;
    /*---(lefts)--------------------------*/

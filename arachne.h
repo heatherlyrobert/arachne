@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8u"
-#define VER_TXT   "change color of version number in title if in debug mode"
+#define VER_NUM   "0.8v"
+#define VER_TXT   "try to make god-ball and god-box placement automatic"
 
 
 
