@@ -200,6 +200,20 @@ DRAW_alternate     (void)
       yFONT_print  (my.font,  12, YF_BOTLEF, "pate");
       glTranslatef (    0.0f,    -30.0f,    0.0f);
       yFONT_print  (my.font,  12, YF_BOTLEF, "tibi");
+      glTranslatef (    0.0f,    -30.0f,    0.0f);
+      yFONT_print  (my.font,  12, YF_BOTLEF, "heat 1");
+      glTranslatef (    0.0f,    -30.0f,    0.0f);
+      yFONT_print  (my.font,  12, YF_BOTLEF, "heat 2");
+      glTranslatef (    0.0f,    -30.0f,    0.0f);
+      yFONT_print  (my.font,  12, YF_BOTLEF, "heat 3");
+      glTranslatef (    0.0f,    -30.0f,    0.0f);
+      yFONT_print  (my.font,  12, YF_BOTLEF, "heat 4");
+      glTranslatef (    0.0f,    -30.0f,    0.0f);
+      yFONT_print  (my.font,  12, YF_BOTLEF, "heat 5");
+      glTranslatef (    0.0f,    -30.0f,    0.0f);
+      yFONT_print  (my.font,  12, YF_BOTLEF, "heat 6");
+      glTranslatef (    0.0f,    -30.0f,    0.0f);
+      yFONT_print  (my.font,  12, YF_BOTLEF, "heat 7");
    } glPopMatrix   ();
    /*---(complete)-----------------------*/
    return 0;
@@ -598,7 +612,8 @@ draw_main          (void)
       rc = TICK_show   ();
       DRAW_command     ();
       DRAW_title       ();
-      DRAW_alternate   ();
+      /*> DRAW_alternate   ();                                                        <*/
+      TICK_legend      ();
       /*> view_leg    ();                                                                <*/
    }
    /*---(progress)-----------------------*/

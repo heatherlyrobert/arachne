@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9a"
-#define VER_TXT   "add alternate panel to right for help, legends, more data"
+#define VER_NUM   "0.9b"
+#define VER_TXT   "update colors based on seeing them clearly and consecutively"
 
 
 
@@ -554,6 +554,7 @@ int        glx_init          (void);
 char      TICK_init          (void);
 char      TICK_draw          (void);
 char      TICK_show          (void);
+char      TICK_legend        (void);
 char      DRAW_command       (void);
 char      DRAW_title         (void);
 

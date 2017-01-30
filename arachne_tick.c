@@ -16,8 +16,9 @@ struct cCOLOR {
    double      blu;
 };
 tCOLOR    s_colors  [MAX_COLORS] = {
-   {  "white"     , "ffffff", '-',   0.0,   0.0,   0.0,   0.0  },
-   {  "light"     , "aaaaaa", '-',   0.0,   0.0,   0.0,   0.0  },
+   {  "pale"      , "d2c2d2", '-',   0.0,   0.0,   0.0,   0.0  },
+   {  "light"     , "bb88bb", '-',   0.0,   0.0,   0.0,   0.0  },
+   {  "mauve"     , "993399", 'y',  50.0,   0.0,   0.0,   0.0  },
    {  "violet"    , "770077", 'y',  15.5,   0.0,   0.0,   0.0  },
    {  "purple"    , "470587", 'y',  10.5,   0.0,   0.0,   0.0  },
    {  "navy"      , "171797", 'y',   7.5,   0.0,   0.0,   0.0  },
@@ -34,14 +35,108 @@ tCOLOR    s_colors  [MAX_COLORS] = {
    {  "red"       , "a51111", 'y',  -7.5,   0.0,   0.0,   0.0  },
    {  "blood"     , "801111", 'y', -10.5,   0.0,   0.0,   0.0  },
    {  "saddle"    , "603310", 'y', -15.5,   0.0,   0.0,   0.0  },
-   {  "brown"     , "402208", 'y',-999.0,   0.0,   0.0,   0.0  },
-   {  "dark"      , "151515", '-',   0.0,   0.0,   0.0,   0.0  },
-   {  "black"     , "000000", '-',   0.0,   0.0,   0.0,   0.0  },
+   {  "brown"     , "402208", 'y', -50.0,   0.0,   0.0,   0.0  },
+   {  "taupe"     , "483c32", 'y',-999.0,   0.0,   0.0,   0.0  },
+   {  "steel"     , "342821", '-',   0.0,   0.0,   0.0,   0.0  },
+   {  "grey"      , "1flf1f", '-',   0.0,   0.0,   0.0,   0.0  },
    {  "end-list"  , "000000", 'e',   0.0,   0.0,   0.0,   0.0  },
 };
 static int s_ncolor = 0;
 
 
+char
+TICK_legend        (void)
+{
+   int  i = 0;
+   char  x_text      [LEN_STR] = "";
+   int  c = 0;
+   double  x_last              = 999.00;
+   /*---(setup view)---------------------*/
+   glViewport      ( my.a_left, my.a_bott, my.a_wide, my.a_tall);
+   glMatrixMode    (GL_PROJECTION);
+   glLoadIdentity  ();
+   glOrtho         ( 0.0f, my.a_wide, 0.0f, my.a_tall,  -500.0,   500.0);
+   glMatrixMode    (GL_MODELVIEW);
+   /*---(background)---------------------*/
+   glColor4f    (0.00f, 0.00f, 0.60f, 1.0f);
+   glPushMatrix    (); {
+      glBegin         (GL_POLYGON); {
+         glVertex3f  (0.0f     , my.a_tall,  0.0f);
+         glVertex3f  (my.a_wide, my.a_tall,  0.0f);
+         glVertex3f  (my.a_wide, 0.0f     ,  0.0f);
+         glVertex3f  (0.0f     , 0.0f     ,  0.0f);
+      } glEnd   ();
+   } glPopMatrix   ();
+   /*---(progress legend)----------------*/
+   glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+   glPushMatrix    (); {
+      glTranslatef (    5.0f, my.a_tall,    0.0f);
+      glTranslatef (    0.0f,    -30.0f,    0.0f);
+      yFONT_print  (my.font,  14, YF_BOTLEF, "progress legend");
+      glTranslatef (    0.0f,    -30.0f,    0.0f);
+      yFONT_print  (my.font,  10, YF_BOTLEF, "femu");
+      glTranslatef (    0.0f,    -15.0f,    0.0f);
+      yFONT_print  (my.font,  10, YF_BOTLEF, "pate");
+      glTranslatef (    0.0f,    -15.0f,    0.0f);
+      yFONT_print  (my.font,  10, YF_BOTLEF, "tibi");
+      glTranslatef (    0.0f,    -15.0f,    0.0f);
+      yFONT_print  (my.font,  10, YF_BOTLEF, "heat 1");
+      glTranslatef (    0.0f,    -15.0f,    0.0f);
+      yFONT_print  (my.font,  10, YF_BOTLEF, "heat 2");
+      glTranslatef (    0.0f,    -15.0f,    0.0f);
+      yFONT_print  (my.font,  10, YF_BOTLEF, "heat 3");
+      glTranslatef (    0.0f,    -15.0f,    0.0f);
+      yFONT_print  (my.font,  10, YF_BOTLEF, "heat 4");
+      glTranslatef (    0.0f,    -15.0f,    0.0f);
+      yFONT_print  (my.font,  10, YF_BOTLEF, "heat 5");
+      glTranslatef (    0.0f,    -15.0f,    0.0f);
+      yFONT_print  (my.font,  10, YF_BOTLEF, "heat 6");
+      glTranslatef (    0.0f,    -15.0f,    0.0f);
+      yFONT_print  (my.font,  10, YF_BOTLEF, "heat 7");
+   } glPopMatrix   ();
+   glPushMatrix    (); {
+      glTranslatef (    5.0f,  290.0,   10.0f);
+      for (i = 0; i < s_ncolor; ++i) {
+         if (s_colors [i].active != 'y')  continue;
+         ++c;
+         glPushMatrix    (); {
+            glTranslatef (    0.0f, -15.0f * c,    0.0f);
+            glColor4f   (s_colors [i].red, s_colors [i].grn, s_colors [i].blu, 1.0f);
+            glBegin         (GL_POLYGON); {
+               glVertex3f  (  0.0f          , 16.0f    ,  0.0f);
+               glVertex3f  (my.a_wide - 10.0, 16.0f    ,  0.0f);
+               glVertex3f  (my.a_wide - 10.0,  1.0f     ,  0.0f);
+               glVertex3f  (  0.0f          ,  1.0f     ,  0.0f);
+            } glEnd   ();
+            glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
+            glTranslatef (    5.0f,   0.0f,    0.0f);
+            sprintf  (x_text, "%-2d", c);
+            yFONT_print  (my.font,  10, YF_BOTLEF, x_text);
+            glTranslatef (   20.0f,      0.0f,    0.0f);
+            yFONT_print  (my.font,  10, YF_BOTLEF, s_colors [i].name);
+            glTranslatef (   55.0f,      0.0f,    0.0f);
+            if (x_last - s_colors [i].min < 10) {
+               sprintf  (x_text, "%3.0lfmm", x_last - s_colors [i].min);
+               yFONT_print  (my.font,  10, YF_BOTLEF, x_text);
+            } else if (x_last - s_colors [i].min < 100) {
+               sprintf  (x_text, "%3.0lfcm", (x_last - s_colors [i].min) / 10.0);
+               yFONT_print  (my.font,  10, YF_BOTLEF, x_text);
+            } else if (x_last - s_colors [i].min < 1000) {
+               sprintf  (x_text, "%3.0lfdm", (x_last - s_colors [i].min) / 100.0);
+               yFONT_print  (my.font,  10, YF_BOTLEF, x_text);
+            }
+            glTranslatef (   50.0f,      0.0f,   20.0f);
+            sprintf  (x_text, ">= %.1lf", s_colors [i].min);
+            yFONT_print  (my.font,  10, YF_BOTLEF, x_text);
+            x_last = s_colors [i].min;
+         } glPopMatrix   ();
+      }
+   } glPopMatrix   ();
+
+
+   /*---(complete)-----------------------*/
+   return 0;
+}
 
 
 /*====================------------------------------------====================*/
