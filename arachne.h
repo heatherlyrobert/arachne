@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8v"
-#define VER_TXT   "try to make god-ball and god-box placement automatic"
+#define VER_NUM   "0.9a"
+#define VER_TXT   "add alternate panel to right for help, legends, more data"
 
 
 
@@ -222,6 +222,11 @@ struct cACCESSOR {
    int         t_left;                      /* left   of title line           */
    int         t_tall;                      /* height of title line           */
    int         t_bott;                      /* bottom of title line           */
+   /*---(alt sizes)-------*/
+   int         a_wide;                      /* width  of alternate window     */
+   int         a_left;                      /* left   of alternate window     */
+   int         a_tall;                      /* height of alternate window     */
+   int         a_bott;                      /* bottom of alternate window     */
    /*---(file hanndling)--*/
    char        f_base      [LEN_STR];       /* specific file base name        */
    char        f_suffix    [LEN_STR];       /* file suffix for spreadsheet    */

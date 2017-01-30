@@ -50,24 +50,27 @@ PROG_init          (void)
    my.report    = RPTG_NONE;
    /*---(widths)-------------------------*/
    DEBUG_TOPS   yLOG_note  ("set window widths");
-   my.s_wide = my.c_wide = my.p_wide =  900;
    my.t_wide =  20;
-   my.w_wide = my.s_wide + my.t_wide;
+   my.s_wide = 800;
+   my.a_wide = 200;
+   my.c_wide = my.p_wide =  my.s_wide + my.a_wide;
+   my.w_wide = my.p_wide + my.t_wide;
    /*---(lefts)--------------------------*/
    DEBUG_TOPS   yLOG_note  ("set window left positions");
    my.t_left =   0;
    my.s_left = my.c_left = my.p_left = my.t_wide;
+   my.a_left = my.p_left + my.s_wide;
    /*---(talls)--------------------------*/
    DEBUG_TOPS   yLOG_note  ("set window heights");
    my.c_tall =  20;  
    my.p_tall = 125;  
-   my.s_tall = 580;
+   my.s_tall = my.a_tall = 580;
    my.w_tall = my.t_tall = my.c_tall + my.p_tall + my.s_tall;
    /*---(bottoms)------------------------*/
    DEBUG_TOPS   yLOG_note  ("set window bottom positions");
    my.c_bott = my.t_bott =   0;  
    my.p_bott = my.c_tall;
-   my.s_bott = my.p_bott + my.p_tall;
+   my.s_bott = my.a_bott = my.p_bott + my.p_tall;
    /*---(progress ticker)----------------*/
    DEBUG_TOPS   yLOG_note  ("defaul progress ticker values");
    my.p_len     =  0.0;

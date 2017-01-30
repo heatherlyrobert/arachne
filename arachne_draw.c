@@ -169,6 +169,42 @@ DRAW_title         (void)
    return 0;
 }
 
+char
+DRAW_alternate     (void)
+{
+   /*---(setup view)---------------------*/
+   glViewport      ( my.a_left, my.a_bott, my.a_wide, my.a_tall);
+   glMatrixMode    (GL_PROJECTION);
+   glLoadIdentity  ();
+   glOrtho         ( 0.0f, my.a_wide, 0.0f, my.a_tall,  -500.0,   500.0);
+   glMatrixMode    (GL_MODELVIEW);
+   /*---(background)---------------------*/
+   glColor4f    (0.00f, 0.00f, 0.60f, 1.0f);
+   glPushMatrix    (); {
+      glBegin         (GL_POLYGON); {
+         glVertex3f  (0.0f     , my.a_tall,  0.0f);
+         glVertex3f  (my.a_wide, my.a_tall,  0.0f);
+         glVertex3f  (my.a_wide, 0.0f     ,  0.0f);
+         glVertex3f  (0.0f     , 0.0f     ,  0.0f);
+      } glEnd   ();
+   } glPopMatrix   ();
+   /*---(progress legend)----------------*/
+   glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+   glPushMatrix    (); {
+      glTranslatef (    5.0f, my.a_tall,    0.0f);
+      glTranslatef (    0.0f,    -30.0f,    0.0f);
+      yFONT_print  (my.font,  12, YF_BOTLEF, "progress legend");
+      glTranslatef (    0.0f,    -30.0f,    0.0f);
+      yFONT_print  (my.font,  12, YF_BOTLEF, "femu");
+      glTranslatef (    0.0f,    -30.0f,    0.0f);
+      yFONT_print  (my.font,  12, YF_BOTLEF, "pate");
+      glTranslatef (    0.0f,    -30.0f,    0.0f);
+      yFONT_print  (my.font,  12, YF_BOTLEF, "tibi");
+   } glPopMatrix   ();
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
 
 
 /*====================------------------------------------====================*/
@@ -562,6 +598,7 @@ draw_main          (void)
       rc = TICK_show   ();
       DRAW_command     ();
       DRAW_title       ();
+      DRAW_alternate   ();
       /*> view_leg    ();                                                                <*/
    }
    /*---(progress)-----------------------*/
@@ -899,9 +936,9 @@ view_3d()
 
    DRAW_reset      ();
    glPushMatrix    (); {
-      glTranslatef ( -(my.s_wide / 16.0),  -32.0f, -100.0f);
+      glTranslatef ( -(my.s_wide / 18.0),  -32.0f, -100.0f);
       yGOD_orient ();
-      glTranslatef (  (my.s_wide /  8.0),    0.0f,    0.0f);
+      glTranslatef (  (my.s_wide /  9.0),    0.0f,    0.0f);
       yGOD_locate ();
    } glPopMatrix   ();
    /*---(setup view)---------------------*/
