@@ -1,0 +1,38 @@
+.TH arachne 0 2010-Aug "linux" "heatherly custom programming manual"
+
+.SH NAME
+.B arachne 
+\- wickedly useful spider robot visualization and simulation
+
+.SH DESCRIPTION (short)
+arachne is a heatherly application built bottom-up to simulate, review,
+test, and validate a frightening array of hexapod/spider robot movements.
+this is a lynch-pin application for my robotics efforts.
+
+.SH DECISION PROCESS
+
+.B situation (s).  
+spider robotics is a magnificently insane proposition.  as nature has proven,
+a spider is infinitely flexible, adaptable, and capable.  for robotics,
+spiders represent an apex challenge.
+
+.B complication (c).  
+given a minimum of 18 degrees-of-freedom for mobility alone, spider robotics
+is a mind-meltingly complex field and graceful results are almost impossible
+for mere mortals.
+
+.B problem statement (p).  
+this is core to my future.  how do i become a true master?  i must to learn
+from all the gifted practitioners while remaining truly independent and learn
+all the frightening details.
+
+.B answer (a).  
+i will build a series of interlocking capabilities, each focused on a specific
+aspect of spider robotics.  each will be built from the ground-up as my own
+code and design.
+
+.B objectives (o).  
+
+
+
+

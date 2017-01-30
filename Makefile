@@ -10,7 +10,18 @@ DEBUG   = ${BASE}_debug
 UNIT    = ${BASE}_unit
 HDIR    = /home/monkey/arachne.spider_visualization
 IDIR    = /usr/local/bin
-MDIR    = /usr/share/man/man1
+#*---(library documentation)----------*#
+MNUM    = 3
+MDIR    = /usr/share/man/man${MNUM}
+MBASE   = ${BASE}.${MNUM}
+#*---(file format)--------------------*#
+FNUM    = 5
+FDIR    = /usr/share/man/man${FNUM}
+FBASE   = ${BASE}.${FNUM}
+#*---(overview)-----------------------*#
+ONUM    = 0
+ODIR    = /usr/share/man/man${ONUM}
+OBASE   = ${BASE}.${ONUM}
 
 #===(compilier variables)===============================================================================================================================================#
 # must have "-x c" on gcc line so stripped files work with alternate extensions
@@ -148,11 +159,22 @@ install            : ${BASE}
 	chown     root:root  ${IDIR}/${DEBUG}
 	chmod     0755       ${IDIR}/${DEBUG}
 	@sha1sum  ${DEBUG}
-	#---(man page)------------------------#
-	rm -f       ${MDIR}/${BASE}.1.bz2
-	cp -f       ${BASE}.1  ${MDIR}/
-	bzip2       ${MDIR}/${BASE}.1
-	chmod 0644  ${MDIR}/${BASE}.1.bz2
+	#---(overview)------------------------#
+	rm -f     ${ODIR}/${OBASE}.bz2
+	cp -f     ${OBASE}    ${ODIR}
+	bzip2     ${ODIR}/${OBASE}
+	chmod     0644  ${ODIR}/${OBASE}.bz2
+	#---(documentation)-------------------#
+	rm -f     ${MDIR}/${MBASE}.bz2
+	cp -f     ${MBASE}    ${MDIR}
+	bzip2     ${MDIR}/${MBASE}
+	chmod     0644  ${MDIR}/${MBASE}.bz2
+	#---(file format)---------------------#
+	rm -f     ${FDIR}/${FBASE}.bz2
+	cp -f     ${FBASE}    ${FDIR}
+	bzip2     ${FDIR}/${FBASE}
+	chmod     0644  ${FDIR}/${FBASE}.bz2
+	#---(done)----------------------------#
 
 remove             :
 	#---(all versions)--------------------#

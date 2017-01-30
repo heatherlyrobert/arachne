@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8q"
-#define VER_TXT   "adjusted widths and fixed spider window display"
+#define VER_NUM   "0.8r"
+#define VER_TXT   "added skeleton manual sections for 0, 1, and 5"
 
 
 
