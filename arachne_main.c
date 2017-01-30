@@ -15,6 +15,8 @@ main (int argc, char *argv[])
    char        the_key[5];
    int         the_bytes;
    char        is_moved = 'n';
+   char        x_draw   = '-';
+   double      x_save   = 0.0;
    /*---(initialize)---------------------*/
    if (rc >= 0)  rc = yURG_logger  (argc, argv);
    if (rc >= 0)  rc = PROG_init    ();
@@ -38,7 +40,9 @@ main (int argc, char *argv[])
    /*> printf("pre-while   : gk[0][YKINE_CORE].cy = %8.1f, fk[0][YKINE_CORE].cy = %8.1f\n", gk[0][YKINE_CORE].cy, fk[0][YKINE_CORE].cy);   <*/
    yVIKEYS_mode_mesg (my.message, "");
    while (1) {
+      x_draw = '-';
       while (XPending(DISP)) {
+         x_draw = 'y';
          /*---(start processing event)---*/
          XNextEvent(DISP, &EVNT);
          ++updates;
@@ -94,6 +98,7 @@ main (int argc, char *argv[])
       /*> printf ("my.p_cursec = %6.1f, my_ppos = %6.1f\n", my.p_cursec, my_ppos);              <*/
       /*---(check boundaries)------------*/
       /*> if (my.p_moving == 'y')  my.p_cursec += my.p_adv;                                <*/
+      x_save  = my.p_cursec;
       yVIKEYS_speed_adv  (&my.p_cursec);
       if (my.p_cursec <  0.0f)   {
          yVIKEYS_speed_stop (&my.p_waitns);
@@ -110,10 +115,10 @@ main (int argc, char *argv[])
          if (my.p_quit == 'y')  break;
       }
       gait.pos = my.p_cursec;
+      if (x_save != my.p_cursec)  x_draw = 'y';
       /*---(check boundaries)------------*/
       stat_masscenter();
-      draw_main();
-      is_moved = 'n';
+      if (x_draw == 'y')  draw_main();
       my_ppos = my.p_cursec;
       /*---(wait)-----------------------------------------*/
       timer.tv_sec  = 0;

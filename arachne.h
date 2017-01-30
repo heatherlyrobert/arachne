@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8s"
-#define VER_TXT   "generalized 6gait logic to handle 12 gait and be more modular"
+#define VER_NUM   "0.8t"
+#define VER_TXT   "suppress screen redraw if nothing moved or changed (faster)"
 
 
 
