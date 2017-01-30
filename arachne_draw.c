@@ -132,24 +132,41 @@ DRAW_title         (void)
    glOrtho         ( 0.0f, my.t_wide, 0.0f, my.t_tall,  -500.0,   500.0);
    glMatrixMode    (GL_MODELVIEW);
    /*---(background)---------------------*/
+   glColor4f    (0.60f, 0.30f, 0.00f, 1.0f);
    glPushMatrix    (); {
-      glColor4f    (0.60f, 0.30f, 0.00f, 1.0f);
       glBegin         (GL_POLYGON); {
-         glVertex3f  (0.0f     , my.t_tall,  0.0f);
-         glVertex3f  (my.t_wide, my.t_tall,  0.0f);
+         glVertex3f  (0.0f     , my.t_tall - 100,  0.0f);
+         glVertex3f  (my.t_wide, my.t_tall - 100,  0.0f);
          glVertex3f  (my.t_wide, 0.0f      ,  0.0f);
          glVertex3f  (0.0f     , 0.0f      ,  0.0f);
       } glEnd   ();
    } glPopMatrix   ();
+   if (yURG_debugmode () == 'y')  glColor4f    (1.00f, 0.00f, 0.00f, 1.0f);
+   else                           glColor4f    (0.60f, 0.30f, 0.00f, 1.0f);
+   glPushMatrix    (); {
+      glBegin         (GL_POLYGON); {
+         glVertex3f  (0.0f     , my.t_tall      ,  0.0f);
+         glVertex3f  (my.t_wide, my.t_tall      ,  0.0f);
+         glVertex3f  (my.t_wide, my.t_tall - 100,  0.0f);
+         glVertex3f  (0.0f     , my.t_tall - 100,  0.0f);
+      } glEnd   ();
+   } glPopMatrix   ();
    /*---(display)------------------------*/
+   glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
    glPushMatrix    (); {
       glTranslatef (my.t_wide + 3,   5.0f,    0.0f);
-      glColor4f    (0.00f, 0.00f, 0.00f, 1.00f);
       glRotatef    ( 90.0, 0.0f, 0.0f, 1.0f);
       yFONT_print  (my.font,  16, YF_BOTLEF, my.t_text);
+   } glPopMatrix   ();
+   if (yURG_debugmode () == 'y')  glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+   else                           glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
+   glPushMatrix    (); {
+      glTranslatef (my.t_wide + 3,   5.0f,    0.0f);
+      glRotatef    ( 90.0, 0.0f, 0.0f, 1.0f);
       glTranslatef (my.t_tall - 10.0,   0.0f,    0.0f);
       yFONT_print  (my.font,  16, YF_BOTRIG, VER_NUM);
    } glPopMatrix   ();
+   return 0;
 }
 
 
