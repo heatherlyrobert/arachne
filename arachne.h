@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8r"
-#define VER_TXT   "added skeleton manual sections for 0, 1, and 5"
+#define VER_NUM   "0.8s"
+#define VER_TXT   "generalized 6gait logic to handle 12 gait and be more modular"
 
 
 
