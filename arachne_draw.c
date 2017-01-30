@@ -133,7 +133,7 @@ DRAW_title         (void)
    glMatrixMode    (GL_MODELVIEW);
    /*---(background)---------------------*/
    glPushMatrix    (); {
-      glColor4f    (0.60f, 0.60f, 0.00f, 1.0f);
+      glColor4f    (0.60f, 0.30f, 0.00f, 1.0f);
       glBegin         (GL_POLYGON); {
          glVertex3f  (0.0f     , my.t_tall,  0.0f);
          glVertex3f  (my.t_wide, my.t_tall,  0.0f);
@@ -877,14 +877,14 @@ view_3d()
    glViewport      (my.s_left, my.s_bott, my.s_wide, my.s_tall);
    glMatrixMode    (GL_PROJECTION);
    glLoadIdentity  ();
-   gluPerspective  (45.0f, (GLfloat) 800 / (GLfloat) 580, 0.01f, 4000.0f);
+   gluPerspective  (45.0f, (GLfloat) my.s_wide / (GLfloat) my.s_tall, 0.01f, 4000.0f);
    glMatrixMode    (GL_MODELVIEW);
 
    DRAW_reset      ();
    glPushMatrix    (); {
-      glTranslatef (  -40.0f,  -32.0f, -100.0f);
+      glTranslatef (  -60.0f,  -32.0f, -100.0f);
       yGOD_orient ();
-      glTranslatef (   80.0f,    0.0f,    0.0f);
+      glTranslatef (  120.0f,    0.0f,    0.0f);
       yGOD_locate ();
    } glPopMatrix   ();
    /*---(setup view)---------------------*/

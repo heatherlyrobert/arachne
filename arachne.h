@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.8p"
-#define VER_TXT   "add a left-side title bar and adjust other window panes"
+#define VER_NUM   "0.8q"
+#define VER_TXT   "adjusted widths and fixed spider window display"
 
 
 

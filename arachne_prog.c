@@ -44,13 +44,13 @@ PROG_init          (void)
    /*---(header)----------------------*/
    DEBUG_TOPS   yLOG_enter (__FUNCTION__);
    /*---(window configuration)-----------*/
-   strlcpy (my.w_title, "arachne_full", LEN_STR);
+   strlcpy (my.w_title, "arachne", LEN_STR);
    /*---(screen configuration)-----------*/
    my.scrn      = SCRN_NORM;
    my.report    = RPTG_NONE;
    /*---(widths)-------------------------*/
    DEBUG_TOPS   yLOG_note  ("set window widths");
-   my.s_wide = my.c_wide = my.p_wide =  800;
+   my.s_wide = my.c_wide = my.p_wide = 1000;
    my.t_wide =  20;
    my.w_wide = my.s_wide + my.t_wide;
    /*---(lefts)--------------------------*/
@@ -78,7 +78,7 @@ PROG_init          (void)
    my.p_dump    =  '-';
    /*---(fonss)--------------------------*/
    strlcpy (my.face  , "comfortaa"    , LEN_LABEL);
-   strlcpy (my.t_text, "arachne, spider robot simulation"      , LEN_STR  );
+   strlcpy (my.t_text, "arachne, spider robot visualization and simulation"       , LEN_STR  );
    /*---(setup modes)--------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");
    yVIKEYS_mode_init    ();
