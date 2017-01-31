@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9e"
-#define VER_TXT   "capturing yKINE return codes for display in progress ticker"
+#define VER_NUM   "0.9f"
+#define VER_TXT   "progress ticker heat map appears accurate now, wow"
 
 
 

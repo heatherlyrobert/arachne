@@ -4,7 +4,7 @@
 
 
 
-#define    MAX_COLORS      25
+#define    MAX_COLORS      50
 typedef   struct cCOLOR  tCOLOR;
 struct cCOLOR {
    char        name        [LEN_LABEL];
@@ -19,28 +19,30 @@ tCOLOR    s_colors  [MAX_COLORS] = {
    {  "shocking"  , "fc0fc0", 'F',   0.0,   0.0,   0.0,   0.0  },
    {  "pale"      , "c2b2c2", 'y', 100.0,   0.0,   0.0,   0.0  },
    {  "orchid"    , "bb88bb", 'y',  60.0,   0.0,   0.0,   0.0  },
-   {  "mauve"     , "993399", 'y',  30.0,   0.0,   0.0,   0.0  },
-   {  "violet"    , "770077", 'y',  15.5,   0.0,   0.0,   0.0  },
-   {  "purple"    , "470587", 'y',  10.5,   0.0,   0.0,   0.0  },
-   {  "navy"      , "171797", 'y',   7.5,   0.0,   0.0,   0.0  },
-   {  "blue"      , "133aac", 'y',   5.5,   0.0,   0.0,   0.0  },
-   {  "teal"      , "127070", 'y',   3.5,   0.0,   0.0,   0.0  },
-   {  "forest"    , "12aa12", 'y',   2.5,   0.0,   0.0,   0.0  },
-   {  "green"     , "2dd700", 'y',   1.5,   0.0,   0.0,   0.0  },
+   {  "mauve"     , "993399", 'y',  40.0,   0.0,   0.0,   0.0  },
+   {  "violet"    , "770077", 'y',  20.0,   0.0,   0.0,   0.0  },
+   {  "purple"    , "470587", 'y',  15.0,   0.0,   0.0,   0.0  },
+   {  "navy"      , "171797", 'y',  10.0,   0.0,   0.0,   0.0  },
+   {  "blue"      , "133aac", 'y',   7.5,   0.0,   0.0,   0.0  },
+   {  "cyan"      , "009090", 'y',   5.5,   0.0,   0.0,   0.0  },
+   {  "teal"      , "227070", 'y',   3.5,   0.0,   0.0,   0.0  },
+   {  "forest"    , "228b22", 'y',   2.5,   0.0,   0.0,   0.0  },
+   {  "green"     , "26bb26", 'y',   1.5,   0.0,   0.0,   0.0  },
    {  "lime"      , "8eeb00", 'y',   0.5,   0.0,   0.0,   0.0  },
    {  "yellow"    , "ffff00", 'y',  -0.5,   0.0,   0.0,   0.0  },
    {  "burnt"     , "f0bb00", 'y',  -1.5,   0.0,   0.0,   0.0  },
    {  "gold"      , "f08800", 'y',  -2.5,   0.0,   0.0,   0.0  },
-   {  "orange"    , "f05500", 'y',  -3.5,   0.0,   0.0,   0.0  },
-   {  "fushia"    , "f02222", 'y',  -5.5,   0.0,   0.0,   0.0  },
-   {  "red"       , "a51111", 'y',  -7.5,   0.0,   0.0,   0.0  },
-   {  "blood"     , "801111", 'y', -10.5,   0.0,   0.0,   0.0  },
-   {  "tan"       , "804415", 'y', -15.5,   0.0,   0.0,   0.0  },
-   {  "saddle"    , "603310", 'y', -30.0,   0.0,   0.0,   0.0  },
-   {  "brown"     , "402208", 'y', -60.0,   0.0,   0.0,   0.0  },
+   {  "orange"    , "f05000", 'y',  -3.5,   0.0,   0.0,   0.0  },
+   {  "scarlet"   , "ff2420", 'y',  -5.5,   0.0,   0.0,   0.0  },
+   {  "red"       , "af1a1a", 'y',  -7.5,   0.0,   0.0,   0.0  },
+   {  "blood"     , "801111", 'y', -10.0,   0.0,   0.0,   0.0  },
+   {  "indian"    , "af4020", 'y', -15.0,   0.0,   0.0,   0.0  },
+   {  "tan"       , "894819", 'y', -20.0,   0.0,   0.0,   0.0  },
+   {  "saddle"    , "603310", 'y', -40.0,   0.0,   0.0,   0.0  },
+   {  "brown"     , "3a1608", 'y', -60.0,   0.0,   0.0,   0.0  },
    {  "taupe"     , "483c32", 'y',-100.0,   0.0,   0.0,   0.0  },
    {  "steel"     , "302420", 'y',-999.0,   0.0,   0.0,   0.0  },
-   {  "black"     , "000000", 'X',-999.0,   0.0,   0.0,   0.0  },
+   {  "dark"      , "101010", 'X',-999.0,   0.0,   0.0,   0.0  },
    {  "end-list"  , "000000", 'e',   0.0,   0.0,   0.0,   0.0  },
 };
 static int s_ncolor = 0;
@@ -156,12 +158,12 @@ TICK_legend        (void)
    c = 0;
    glPushMatrix    (); {
       glColor4f   (1.00f, 1.00f, 1.00f, 1.0f);
-      glTranslatef (    5.0f, 440.0,   10.0f);
+      glTranslatef (    5.0f, 450.0,   10.0f);
       yFONT_print  (my.font,  10, YF_BOTLEF, "heat map horizontals");
       for (i = 0; i < MAX_HEAT; ++i) {
          if (s_heat [i].type [0] == 'e')  break;
          ++c;
-         glTranslatef (    0.0f,    -20.0f,    0.0f);
+         glTranslatef (    0.0f,    -18.0f,    0.0f);
          glPushMatrix    (); {
             sprintf  (x_text, "%-2d", c);
             yFONT_print  (my.font,  10, YF_BOTLEF, x_text);
@@ -175,7 +177,7 @@ TICK_legend        (void)
    /*---(heat map colors)----------------*/
    c = 0;
    glPushMatrix    (); {
-      glTranslatef (    5.0f,  290.0,   10.0f);
+      glTranslatef (    5.0f,  315.0,   10.0f);
       for (i = 0; i < s_ncolor; ++i) {
          if (s_colors [i].active == '-')  continue;
          if (s_colors [i].active == 'e')  break;
@@ -294,6 +296,7 @@ TICK_color      (double a_base, double a_value, char a_special)
    int         i           = 0;
    for (i = 0; i < s_ncolor; ++i) {
       if (strchr ("FX", a_special) != NULL && s_colors [i].active == a_special) {
+         /*> printf ("found special color for %c\n", a_special);                      <*/
          glColor4f   (s_colors [i].red, s_colors [i].grn, s_colors [i].blu, 1.0f);
          break;
       }
@@ -837,7 +840,6 @@ TICK__heat_spot    (char a_type, char a_rc, double a_diff, double a_x, double *a
               break;
    }
    if      (a_rc   <   0 )  TICK_color (x_base, a_diff, 'F');
-   else if (a_type == 't')  TICK_color (x_base, a_diff, '-');
    else                     TICK_color (x_base, a_diff, '-');
    glPushMatrix(); {
       glBegin         (GL_POLYGON); {
@@ -866,7 +868,7 @@ TICK__heat_column    (int a_leg, double a_sec, double a_x, double a_y)
    rc     = yKINE_move_exact (a_sec, a_leg, &x_xdif, &x_zdif, &x_ydif, &x_ypos);
    x_xz   = sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif));
    x_full = sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif) + (x_ydif * x_ydif));
-   printf ("TICK__heat_column, a_leg=%d, a_sec=%8.3lf, rc=%3d, s_lowest=%8.1lf, x_ypos=%8.1lf\n", a_leg, a_sec, rc, s_lowest, x_ypos);
+   if (a_leg == 1 && a_sec < 20.0)  printf ("TICK__heat_column, a_leg=%d, a_sec=%8.3lf, rc=%3d, s_lowest=%8.1lf, x_ypos=%8.1lf\n", a_leg, a_sec, rc, s_lowest, x_ypos);
    s_debug_leg = a_leg;
    s_debug_sec = a_sec;
    TICK__heat_spot    ('t', rc, s_lowest - x_ypos   , a_x, &a_y);
