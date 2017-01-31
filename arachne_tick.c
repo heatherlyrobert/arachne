@@ -289,13 +289,15 @@ static int       s_debug_leg;
 static double    s_debug_sec;
 
 char
-TICK_color      (double a_base, double a_value, char a_show)
+TICK_color      (double a_base, double a_value, char a_special)
 {
-   /*> if (a_show == 'y' && s_debug_leg == 1)  printf ("   TICK_color s_debug_leg=%2d,s_debug_sec=%8.3lf, a_base=%8.3lf, a_value=%8.3lf\n", s_debug_leg, s_debug_sec, a_base, a_value);   <*/
    int         i           = 0;
    for (i = 0; i < s_ncolor; ++i) {
-      /*> if (a_show == 'y' && s_debug_leg == 1)  printf ("      check   i=%2d, active=%c, min=%8.3lf, min*base=%8.3lf\n",   <* 
-       *>       i, s_colors [i].active, s_colors [i].min, s_colors [i].min * a_base);                                        <*/
+      if (strchr ("FX", a_special) != NULL && s_colors [i].active == a_special) {
+         glColor4f   (s_colors [i].red, s_colors [i].grn, s_colors [i].blu, 1.0f);
+         break;
+      }
+      if (a_special != '-')             continue;
       if (s_colors [i].active != 'y' )  continue;
       if (a_value >  s_colors [i].min * a_base) {
          glColor4f   (s_colors [i].red, s_colors [i].grn, s_colors [i].blu, 1.0f);
@@ -756,47 +758,47 @@ TICK_servos        (int a_leg)
    return 0;
 }
 
-char
-TICK_servoheat     (char a_type, float a_base, float a_sec1, float a_sec2, float a_deg1, float a_deg2, float a_unit)
-{
-   /*---(locals)-----------+-----------+-*/
-   float     x_pos1        = 0.0;
-   float     x_pos2        = 0.0;
-   float     y_pos1        = 0.0;
-   float     y_pos2        = 0.0;
-   float     y_inc         = 0.0;
-   float     x_inc         = 0.0;
-   float     z_pos         = 0.0;
-   /*---(prepare points)-----------------*/
-   x_pos1   = (a_sec1 * a_unit) - s_start;
-   x_pos2   = (a_sec2 * a_unit) - s_start;
-   y_pos1   = a_base + a_deg1;
-   y_pos2   = a_base + a_deg2;
-   /*---(prepare adjustments)------------*/
-   switch (a_type) {
-   case 'f' : y_inc = 5; z_pos = 30.0;  break;   /* femur         */
-   case 'p' : y_inc = 2; z_pos = 33.0;  break;   /* patella       */
-   case 't' : y_inc = 0; z_pos = 36.0;  break;   /* tibia         */
-   case 'e' : x_inc = 5; z_pos = 39.0;  break;   /* end point     */
-   case 'c' : x_inc = 0; z_pos = 39.0;  break;   /* current       */
-   }
-   /*---(draw)--------*/
-   if      (x_pos2 <  0.0     )  ;  /* line to early */
-   else if (x_pos1 >  s_cutend)  ;  /* line to late  */
-   else if (x_pos2 <= s_cutmid)
-      TICK_line (x_pos1           , y_pos1         , x_pos2           , y_pos2         , x_inc, y_inc, z_pos);
-   else if (x_pos1 >= s_cutmid)
-      TICK_line (x_pos1 - s_cutmid, y_pos1 + 1500.0, x_pos2 - s_cutmid, y_pos2 + 1500.0, x_inc, y_inc, z_pos);
-   else {
-      TICK_line (x_pos1           , y_pos1         , x_pos2           , y_pos2         , x_inc, y_inc, z_pos);
-      TICK_line (x_pos1 - s_cutmid, y_pos1 + 1500.0, x_pos2 - s_cutmid, y_pos2 + 1500.0, x_inc, y_inc, z_pos);
-   }
-   /*---(complete)-----------------------*/
-   return 0;
-}
+/*> char                                                                                                                   <* 
+ *> TICK_servoheat     (char a_type, float a_base, float a_sec1, float a_sec2, float a_deg1, float a_deg2, float a_unit)   <* 
+ *> {                                                                                                                      <* 
+ *>    /+---(locals)-----------+-----------+-+/                                                                            <* 
+ *>    float     x_pos1        = 0.0;                                                                                      <* 
+ *>    float     x_pos2        = 0.0;                                                                                      <* 
+ *>    float     y_pos1        = 0.0;                                                                                      <* 
+ *>    float     y_pos2        = 0.0;                                                                                      <* 
+ *>    float     y_inc         = 0.0;                                                                                      <* 
+ *>    float     x_inc         = 0.0;                                                                                      <* 
+ *>    float     z_pos         = 0.0;                                                                                      <* 
+ *>    /+---(prepare points)-----------------+/                                                                            <* 
+ *>    x_pos1   = (a_sec1 * a_unit) - s_start;                                                                             <* 
+ *>    x_pos2   = (a_sec2 * a_unit) - s_start;                                                                             <* 
+ *>    y_pos1   = a_base + a_deg1;                                                                                         <* 
+ *>    y_pos2   = a_base + a_deg2;                                                                                         <* 
+ *>    /+---(prepare adjustments)------------+/                                                                            <* 
+ *>    switch (a_type) {                                                                                                   <* 
+ *>    case 'f' : y_inc = 5; z_pos = 30.0;  break;   /+ femur         +/                                                   <* 
+ *>    case 'p' : y_inc = 2; z_pos = 33.0;  break;   /+ patella       +/                                                   <* 
+ *>    case 't' : y_inc = 0; z_pos = 36.0;  break;   /+ tibia         +/                                                   <* 
+ *>    case 'e' : x_inc = 5; z_pos = 39.0;  break;   /+ end point     +/                                                   <* 
+ *>    case 'c' : x_inc = 0; z_pos = 39.0;  break;   /+ current       +/                                                   <* 
+ *>    }                                                                                                                   <* 
+ *>    /+---(draw)--------+/                                                                                               <* 
+ *>    if      (x_pos2 <  0.0     )  ;  /+ line to early +/                                                                <* 
+ *>    else if (x_pos1 >  s_cutend)  ;  /+ line to late  +/                                                                <* 
+ *>    else if (x_pos2 <= s_cutmid)                                                                                        <* 
+ *>       TICK_line (x_pos1           , y_pos1         , x_pos2           , y_pos2         , x_inc, y_inc, z_pos);         <* 
+ *>    else if (x_pos1 >= s_cutmid)                                                                                        <* 
+ *>       TICK_line (x_pos1 - s_cutmid, y_pos1 + 1500.0, x_pos2 - s_cutmid, y_pos2 + 1500.0, x_inc, y_inc, z_pos);         <* 
+ *>    else {                                                                                                              <* 
+ *>       TICK_line (x_pos1           , y_pos1         , x_pos2           , y_pos2         , x_inc, y_inc, z_pos);         <* 
+ *>       TICK_line (x_pos1 - s_cutmid, y_pos1 + 1500.0, x_pos2 - s_cutmid, y_pos2 + 1500.0, x_inc, y_inc, z_pos);         <* 
+ *>    }                                                                                                                   <* 
+ *>    /+---(complete)-----------------------+/                                                                            <* 
+ *>    return 0;                                                                                                           <* 
+ *> }                                                                                                                      <*/
 
-char         /*--> represent tibia placement accuracy ----[ ------ [ ------ ]-*/
-TICK_accline       (char a_type, char a_rc, double a_diff, double a_x, double *a_y)
+static char  /*--> represent tibia placement accuracy ----[ ------ [ ------ ]-*/
+TICK__heat_spot    (char a_type, char a_rc, double a_diff, double a_x, double *a_y)
 {
    double      x_diff      =   1.00;
    double      x_base      =   1.00;
@@ -807,7 +809,6 @@ TICK_accline       (char a_type, char a_rc, double a_diff, double a_x, double *a
    double      x_alpha     =   0.50;
    double      x_z         = 180.00;
    double      x_red, x_grn, x_blu;
-   if (a_rc < 0) return -1;
    switch (a_type) {
    case 't' :  /* touch      (xzy) */
       x_base    *= 1.0;
@@ -835,17 +836,9 @@ TICK_accline       (char a_type, char a_rc, double a_diff, double a_x, double *a
    default  : return -1;
               break;
    }
-   if (a_type == 't')  TICK_color (x_base, a_diff, 'y');
-   else                TICK_color (x_base, a_diff, '-');
-   /*> if      (a_diff >=   x_base * 3.5)   glColor4f    (0.25f, 0.25f, 0.25f, x_alpha);   <* 
-    *> else if (a_diff >=   x_base * 2.5)   glColor4f    (1.00f, 0.00f, 1.00f, x_alpha);   <* 
-    *> else if (a_diff >=   x_base * 1.5)   glColor4f    (0.00f, 0.80f, 0.80f, x_alpha);   <* 
-    *> else if (a_diff >=   x_base * 0.5)   glColor4f    (0.00f, 0.80f, 0.00f, x_alpha);   <* 
-    *> else if (a_diff >=  -x_base * 0.5)   glColor4f    (0.60f, 0.60f, 0.00f, x_alpha);   <* 
-    *> else if (a_diff >=  -x_base * 1.5)   glColor4f    (0.00f, 0.80f, 0.00f, x_alpha);   <* 
-    *> else if (a_diff >=  -x_base * 2.5)   glColor4f    (0.00f, 0.80f, 0.80f, x_alpha);   <* 
-    *> else if (a_diff >=  -x_base * 3.5)   glColor4f    (1.00f, 0.00f, 1.00f, x_alpha);   <* 
-    *> else                                 glColor4f    (1.00f, 0.00f, 0.00f, x_alpha);   <*/
+   if      (a_rc   <   0 )  TICK_color (x_base, a_diff, 'F');
+   else if (a_type == 't')  TICK_color (x_base, a_diff, '-');
+   else                     TICK_color (x_base, a_diff, '-');
    glPushMatrix(); {
       glBegin         (GL_POLYGON); {
          glVertex3f  (a_x + x_xoff          , *a_y           , x_z);
@@ -858,8 +851,8 @@ TICK_accline       (char a_type, char a_rc, double a_diff, double a_x, double *a
    return 0;
 }
 
-char         /*--> represent tibia placement accuracy ----[ ------ [ ------ ]-*/
-TICK_accuracy      (int a_leg, double a_sec, double a_x, double a_y)
+static char  /*--> represent tibia placement accuracy ----[ ------ [ ------ ]-*/
+TICK__heat_column    (int a_leg, double a_sec, double a_x, double a_y)
 {
    /*---(locals)-----------+-----------+-*/
    double    x_xdif        = 0.0;
@@ -873,15 +866,15 @@ TICK_accuracy      (int a_leg, double a_sec, double a_x, double a_y)
    rc     = yKINE_move_exact (a_sec, a_leg, &x_xdif, &x_zdif, &x_ydif, &x_ypos);
    x_xz   = sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif));
    x_full = sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif) + (x_ydif * x_ydif));
-   /*> printf ("TICK_accuracy, a_leg=%d, a_sec=%8.3lf, s_lowest=%8.1lf, x_ypos=%8.1lf\n", a_leg, a_sec, s_lowest, x_ypos);   <*/
+   printf ("TICK__heat_column, a_leg=%d, a_sec=%8.3lf, rc=%3d, s_lowest=%8.1lf, x_ypos=%8.1lf\n", a_leg, a_sec, rc, s_lowest, x_ypos);
    s_debug_leg = a_leg;
    s_debug_sec = a_sec;
-   TICK_accline       ('t', rc, s_lowest - x_ypos   , a_x, &a_y);
-   TICK_accline       ('x', rc, x_xdif              , a_x, &a_y);
-   TICK_accline       ('z', rc, x_zdif              , a_x, &a_y);
-   TICK_accline       ('h', rc, x_xz                , a_x, &a_y);
-   TICK_accline       ('y', rc, x_ydif              , a_x, &a_y);
-   TICK_accline       ('f', rc, x_full              , a_x, &a_y);
+   TICK__heat_spot    ('t', rc, s_lowest - x_ypos   , a_x, &a_y);
+   TICK__heat_spot    ('x', rc, x_xdif              , a_x, &a_y);
+   TICK__heat_spot    ('z', rc, x_zdif              , a_x, &a_y);
+   TICK__heat_spot    ('h', rc, x_xz                , a_x, &a_y);
+   TICK__heat_spot    ('y', rc, x_ydif              , a_x, &a_y);
+   TICK__heat_spot    ('f', rc, x_full              , a_x, &a_y);
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -1046,7 +1039,7 @@ TICK_labels        (void)
                   /*> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <*/
                }
                /*> TICK_height   (i, x_pos);                                          <*/
-               TICK_accuracy (j    , x_sec, i, x_pos - 35.0);
+               if (x_sec >= 0.0)  TICK__heat_column (j    , x_sec, i, x_pos - 35.0);
             } else {
                x_pos = (12 + (6 - j)) * x_yinc;
                x_sec = (((float) (i) / x_xinc) * my.p_multi) + x_secbeg2;
@@ -1055,7 +1048,7 @@ TICK_labels        (void)
                   /*> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <*/
                }
                /*> TICK_height   (i, x_pos);                                          <*/
-               TICK_accuracy (j - 6, x_sec, i, x_pos - 35.0);
+               if (x_sec >= 0.0)  TICK__heat_column (j - 6, x_sec, i, x_pos - 35.0);
             }
          }
       }
