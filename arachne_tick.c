@@ -16,9 +16,10 @@ struct cCOLOR {
    double      blu;
 };
 tCOLOR    s_colors  [MAX_COLORS] = {
-   {  "pale"      , "d2c2d2", '-',   0.0,   0.0,   0.0,   0.0  },
-   {  "light"     , "bb88bb", '-',   0.0,   0.0,   0.0,   0.0  },
-   {  "mauve"     , "993399", 'y',  50.0,   0.0,   0.0,   0.0  },
+   {  "shocking"  , "fc0fc0", 'F',   0.0,   0.0,   0.0,   0.0  },
+   {  "pale"      , "c2b2c2", 'y', 100.0,   0.0,   0.0,   0.0  },
+   {  "orchid"    , "bb88bb", 'y',  60.0,   0.0,   0.0,   0.0  },
+   {  "mauve"     , "993399", 'y',  30.0,   0.0,   0.0,   0.0  },
    {  "violet"    , "770077", 'y',  15.5,   0.0,   0.0,   0.0  },
    {  "purple"    , "470587", 'y',  10.5,   0.0,   0.0,   0.0  },
    {  "navy"      , "171797", 'y',   7.5,   0.0,   0.0,   0.0  },
@@ -34,15 +35,30 @@ tCOLOR    s_colors  [MAX_COLORS] = {
    {  "fushia"    , "f02222", 'y',  -5.5,   0.0,   0.0,   0.0  },
    {  "red"       , "a51111", 'y',  -7.5,   0.0,   0.0,   0.0  },
    {  "blood"     , "801111", 'y', -10.5,   0.0,   0.0,   0.0  },
-   {  "saddle"    , "603310", 'y', -15.5,   0.0,   0.0,   0.0  },
-   {  "brown"     , "402208", 'y', -50.0,   0.0,   0.0,   0.0  },
-   {  "taupe"     , "483c32", 'y',-999.0,   0.0,   0.0,   0.0  },
-   {  "steel"     , "342821", '-',   0.0,   0.0,   0.0,   0.0  },
-   {  "dark"      , "1flf1f", '-',   0.0,   0.0,   0.0,   0.0  },
+   {  "tan"       , "804415", 'y', -15.5,   0.0,   0.0,   0.0  },
+   {  "saddle"    , "603310", 'y', -30.0,   0.0,   0.0,   0.0  },
+   {  "brown"     , "402208", 'y', -60.0,   0.0,   0.0,   0.0  },
+   {  "taupe"     , "483c32", 'y',-100.0,   0.0,   0.0,   0.0  },
+   {  "steel"     , "302420", 'y',-999.0,   0.0,   0.0,   0.0  },
+   {  "black"     , "000000", 'X',-999.0,   0.0,   0.0,   0.0  },
    {  "end-list"  , "000000", 'e',   0.0,   0.0,   0.0,   0.0  },
 };
 static int s_ncolor = 0;
 
+#define     MAX_HEAT      10
+struct {
+   char        type        [LEN_LABEL];
+   char        name        [LEN_LABEL];
+   char        reason      [LEN_STR  ];
+} s_heat [MAX_HEAT] = {
+   {  "-" , "touch" , "y-pos vs ground"     },
+   {  "-" , "x"     , "x-pos vs expected"   },
+   {  "-" , "z"     , "z-pos vs expected"   },
+   {  "-" , "horz"  , "horizontal (xz)"     },
+   {  "-" , "y"     , "y-pos vs expected"   },
+   {  "B" , "full"  , "full vs exp (xzy)"   },
+   {  "e" , "end"   , "end-of-list"         },
+};
 
 char
 TICK_legend        (void)
@@ -136,103 +152,84 @@ TICK_legend        (void)
          } glEnd   ();
       } glPopMatrix   ();
    } glPopMatrix   ();
-   /*---(top part)-----------------------*/
+   /*---(heat line legend)---------------*/
+   c = 0;
    glPushMatrix    (); {
-      glTranslatef (    5.0f, 450,    0.0f);
-      glPushMatrix    (); {
-         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "heat map horizontals");
-      } glPopMatrix   ();
-      glTranslatef (   15.0f,    -20.0f,    0.0f);
-      glPushMatrix    (); {
-         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "row 1");
-         glTranslatef (   50.0f,      0.0f,    0.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "touch ground");
-      } glPopMatrix   ();
-      glTranslatef (    0.0f,    -20.0f,    0.0f);
-      glPushMatrix    (); {
-         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "row 2");
-         glTranslatef (   50.0f,      0.0f,    0.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "vs exp x-pos");
-      } glPopMatrix   ();
-      glTranslatef (    0.0f,    -20.0f,    0.0f);
-      glPushMatrix    (); {
-         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "row 3");
-         glTranslatef (   50.0f,      0.0f,    0.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "vs exp y-pos");
-      } glPopMatrix   ();
-      glTranslatef (    0.0f,    -20.0f,    0.0f);
-      glPushMatrix    (); {
-         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "row 4");
-         glTranslatef (   50.0f,      0.0f,    0.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "vs horizontal xz-pos");
-      } glPopMatrix   ();
-      glTranslatef (    0.0f,    -20.0f,    0.0f);
-      glPushMatrix    (); {
-         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "big 5");
-         glTranslatef (   50.0f,      0.0f,    0.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "unknown shit");
-      } glPopMatrix   ();
-      glTranslatef (    0.0f,    -20.0f,    0.0f);
-      glPushMatrix    (); {
-         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "row 6");
-         glTranslatef (   50.0f,      0.0f,    0.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "vs exp y-pos");
-      } glPopMatrix   ();
-      glTranslatef (    0.0f,    -20.0f,    0.0f);
-      glPushMatrix    (); {
-         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "big 7");
-         glTranslatef (   50.0f,      0.0f,    0.0f);
-         yFONT_print  (my.font,  10, YF_BOTLEF, "vs full xzy position");
-      } glPopMatrix   ();
+      glColor4f   (1.00f, 1.00f, 1.00f, 1.0f);
+      glTranslatef (    5.0f, 440.0,   10.0f);
+      yFONT_print  (my.font,  10, YF_BOTLEF, "heat map horizontals");
+      for (i = 0; i < MAX_HEAT; ++i) {
+         if (s_heat [i].type [0] == 'e')  break;
+         ++c;
+         glTranslatef (    0.0f,    -20.0f,    0.0f);
+         glPushMatrix    (); {
+            sprintf  (x_text, "%-2d", c);
+            yFONT_print  (my.font,  10, YF_BOTLEF, x_text);
+            glTranslatef (   20.0f,      0.0f,    0.0f);
+            yFONT_print  (my.font,  10, YF_BOTLEF, s_heat [i].name);
+            glTranslatef (   50.0f,      0.0f,    0.0f);
+            yFONT_print  (my.font,  10, YF_BOTLEF, s_heat [i].reason);
+         } glPopMatrix   ();
+      }
    } glPopMatrix   ();
+   /*---(heat map colors)----------------*/
+   c = 0;
    glPushMatrix    (); {
       glTranslatef (    5.0f,  290.0,   10.0f);
       for (i = 0; i < s_ncolor; ++i) {
-         if (s_colors [i].active != 'y')  continue;
-         ++c;
+         if (s_colors [i].active == '-')  continue;
+         if (s_colors [i].active == 'e')  break;
          glPushMatrix    (); {
-            glTranslatef (    0.0f, -15.0f * c,    0.0f);
+            glTranslatef (    0.0f, -12.0f * c,    0.0f);
             glColor4f   (s_colors [i].red, s_colors [i].grn, s_colors [i].blu, 1.0f);
             glBegin         (GL_POLYGON); {
-               glVertex3f  (  0.0f          , 16.0f    ,  0.0f);
-               glVertex3f  (my.a_wide - 10.0, 16.0f    ,  0.0f);
+               glVertex3f  (  0.0f          , 13.0f    ,  0.0f);
+               glVertex3f  (my.a_wide - 10.0, 13.0f    ,  0.0f);
                glVertex3f  (my.a_wide - 10.0,  1.0f     ,  0.0f);
                glVertex3f  (  0.0f          ,  1.0f     ,  0.0f);
             } glEnd   ();
             glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
-            glTranslatef (    5.0f,   0.0f,    0.0f);
+            glTranslatef (   10.0f,   0.0f,    0.0f);
             sprintf  (x_text, "%-2d", c);
-            yFONT_print  (my.font,  10, YF_BOTLEF, x_text);
-            glTranslatef (   20.0f,      0.0f,    0.0f);
-            yFONT_print  (my.font,  10, YF_BOTLEF, s_colors [i].name);
-            glTranslatef (   55.0f,      0.0f,    0.0f);
-            if (x_last - s_colors [i].min < 10) {
-               sprintf  (x_text, "%3.0lfmm", x_last - s_colors [i].min);
-               yFONT_print  (my.font,  10, YF_BOTLEF, x_text);
-            } else if (x_last - s_colors [i].min < 100) {
-               sprintf  (x_text, "%3.0lfcm", (x_last - s_colors [i].min) / 10.0);
-               yFONT_print  (my.font,  10, YF_BOTLEF, x_text);
-            } else if (x_last - s_colors [i].min < 1000) {
-               sprintf  (x_text, "%3.0lfdm", (x_last - s_colors [i].min) / 100.0);
-               yFONT_print  (my.font,  10, YF_BOTLEF, x_text);
+            if (s_colors [i].active == 'F') {
+               glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
+               yFONT_print  (my.font,   8, YF_BOTLEF, x_text);
+               glTranslatef (   20.0f,      0.0f,    0.0f);
+               yFONT_print  (my.font,   8, YF_BOTLEF, s_colors [i].name);
+               glTranslatef (   65.0f,      0.0f,    0.0f);
+               yFONT_print  (my.font,   8, YF_BOTLEF, "processing error");
+            } else if (s_colors [i].active == 'X') {
+               glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
+               yFONT_print  (my.font,   8, YF_BOTLEF, x_text);
+               glTranslatef (   20.0f,      0.0f,    0.0f);
+               yFONT_print  (my.font,   8, YF_BOTLEF, s_colors [i].name);
+               glTranslatef (   65.0f,      0.0f,    0.0f);
+               yFONT_print  (my.font,   8, YF_BOTLEF, "availablity error");
+            } else {
+               glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
+               yFONT_print  (my.font,   8, YF_BOTLEF, x_text);
+               glTranslatef (   20.0f,      0.0f,    0.0f);
+               yFONT_print  (my.font,   8, YF_BOTLEF, s_colors [i].name);
+               glTranslatef (   55.0f,      0.0f,    0.0f);
+               if (x_last - s_colors [i].min < 10) {
+                  sprintf  (x_text, "%3.0lfmm", x_last - s_colors [i].min);
+                  yFONT_print  (my.font,   8, YF_BOTLEF, x_text);
+               } else if (x_last - s_colors [i].min < 100) {
+                  sprintf  (x_text, "%3.0lfcm", (x_last - s_colors [i].min) / 10.0);
+                  yFONT_print  (my.font,   8, YF_BOTLEF, x_text);
+               } else if (x_last - s_colors [i].min < 1000) {
+                  sprintf  (x_text, "%3.0lfdm", (x_last - s_colors [i].min) / 100.0);
+                  yFONT_print  (my.font,   8, YF_BOTLEF, x_text);
+               }
+               glTranslatef (   50.0f,      0.0f,   20.0f);
+               sprintf  (x_text, ">= %.1lf", s_colors [i].min);
+               yFONT_print  (my.font,   8, YF_BOTLEF, x_text);
+               x_last = s_colors [i].min;
             }
-            glTranslatef (   50.0f,      0.0f,   20.0f);
-            sprintf  (x_text, ">= %.1lf", s_colors [i].min);
-            yFONT_print  (my.font,  10, YF_BOTLEF, x_text);
-            x_last = s_colors [i].min;
          } glPopMatrix   ();
+         ++c;
       }
    } glPopMatrix   ();
-
-
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -814,21 +811,26 @@ TICK_accline       (char a_type, char a_rc, double a_diff, double a_x, double *a
    switch (a_type) {
    case 't' :  /* touch      (xzy) */
       x_base    *= 1.0;
+      x_height  *= 2.0;
       break;
-   case 'x' : case 'z' : case 'y' :
+   case 'x' : case 'z' :
       x_diff     = -(fabs (a_diff));
       break;
    case 'h' :  /* horizontal (xz)  */
       x_diff     = -(fabs (a_diff));
       x_base    *= 1.0;
       /*> x_base    *= 2.0;                                                           <*/
-      /*> x_height  *= 1.5;                                                           <*/
-      x_yoff    *= 6.0;
+      x_height  *= 3.0;
+      x_yoff    *= 3.0;
+      break;
+   case 'y' :
+      x_diff     = -(fabs (a_diff));
+      x_height  *= 2.0;
       break;
    case 'f' :  /* full       (xzy) */
       x_diff     = -(fabs (a_diff));
-      x_base    *= 3.0;
-      x_height  *= 2.0;
+      x_base    *= 2.0;
+      x_height  *= 3.0;
       break;
    default  : return -1;
               break;
@@ -1043,7 +1045,7 @@ TICK_labels        (void)
                   rc = yKINE_phys_flat   (YKINE_FK, x_sec, &s_lowest, &x_lowcnt);
                   /*> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <*/
                }
-               TICK_height   (i, x_pos);
+               /*> TICK_height   (i, x_pos);                                          <*/
                TICK_accuracy (j    , x_sec, i, x_pos - 35.0);
             } else {
                x_pos = (12 + (6 - j)) * x_yinc;
@@ -1052,7 +1054,7 @@ TICK_labels        (void)
                   yKINE_phys_flat   (YKINE_FK, x_sec, &s_lowest, &x_lowcnt);
                   /*> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <*/
                }
-               TICK_height   (i, x_pos);
+               /*> TICK_height   (i, x_pos);                                          <*/
                TICK_accuracy (j - 6, x_sec, i, x_pos - 35.0);
             }
          }

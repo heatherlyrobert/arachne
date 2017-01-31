@@ -80,8 +80,9 @@ PROG_init          (void)
    my.p_quit    =  '-';
    my.p_dump    =  '-';
    /*---(fonss)--------------------------*/
-   strlcpy (my.face  , "comfortaa"    , LEN_LABEL);
-   strlcpy (my.t_text, "arachne, spider robot visualization and simulation"       , LEN_STR  );
+   strlcpy (my.face      , "comfortaa"    , LEN_LABEL);
+   strlcpy (my.t_text    , "arachne, spider robot visualization and simulation"       , LEN_STR  );
+   strlcpy (my.face_fixed, "courier"    , LEN_LABEL);
    /*---(setup modes)--------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");
    yVIKEYS_mode_init    ();
@@ -226,13 +227,19 @@ font_load          (void)
       fprintf(stderr, "Problem loading %s\n", my.face);
       exit(1);
    }
+   my.font_fixed  = yFONT_load (my.face_fixed);
+   if (my.font_fixed <  0) {
+      fprintf(stderr, "Problem loading %s\n", my.face_fixed);
+      exit(1);
+   }
    return 0;
 }
 
 char
 font_delete        (void)
 {
-   yFONT_free(my.font);
+   yFONT_free (my.font);
+   yFONT_free (my.font_fixed);
    return 0;
 }
 

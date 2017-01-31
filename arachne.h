@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9c"
-#define VER_TXT   "complete first clean draft of progress legend"
+#define VER_NUM   "0.9d"
+#define VER_TXT   "update heat map formatting and labels, refine colors"
 
 
 
@@ -198,6 +198,8 @@ struct cACCESSOR {
    /*---(fonts)-----------*/
    char        face        [LEN_LABEL];
    char        font;
+   char        face_fixed  [LEN_LABEL];
+   char        font_fixed;
    /*---(window sizes)----*/
    char        w_title     [LEN_STR];       /* window title                   */
    int         w_wide;                      /* window width                   */
