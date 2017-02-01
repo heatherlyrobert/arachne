@@ -16,34 +16,54 @@ struct cCOLOR {
    double      blu;
 };
 tCOLOR    s_colors  [MAX_COLORS] = {
-   {  "shocking"  , "fc0fc0", 'F',   0.0,   0.0,   0.0,   0.0  },
+   {  "shocking"  , "fc0fb0", 'F',   0.0,   0.0,   0.0,   0.0  },
    {  "pale"      , "c2b2c2", 'y', 100.0,   0.0,   0.0,   0.0  },
-   {  "orchid"    , "bb88bb", 'y',  60.0,   0.0,   0.0,   0.0  },
+   {  "orchid"    , "bb88bb", 'y',  75.0,   0.0,   0.0,   0.0  },
+   {  "royal"     , "9851a9", 'y',  50.0,   0.0,   0.0,   0.0  },
    {  "mauve"     , "993399", 'y',  40.0,   0.0,   0.0,   0.0  },
+   {  "magenta"   , "990099", 'y',  30.0,   0.0,   0.0,   0.0  },
    {  "violet"    , "770077", 'y',  20.0,   0.0,   0.0,   0.0  },
    {  "purple"    , "470587", 'y',  15.0,   0.0,   0.0,   0.0  },
+   {  "prussian"  , "002567", 'y',   7.5,   0.0,   0.0,   0.0  },
    {  "navy"      , "171797", 'y',  10.0,   0.0,   0.0,   0.0  },
    {  "blue"      , "133aac", 'y',   7.5,   0.0,   0.0,   0.0  },
-   {  "cyan"      , "009090", 'y',   5.5,   0.0,   0.0,   0.0  },
-   {  "teal"      , "227070", 'y',   3.5,   0.0,   0.0,   0.0  },
+   {  "french"    , "0072bb", 'y',   7.5,   0.0,   0.0,   0.0  },
+   {  "cyan"      , "008080", 'y',   5.5,   0.0,   0.0,   0.0  },
+   {  "teal"      , "227060", 'y',   4.5,   0.0,   0.0,   0.0  },
+   {  "dartmouth" , "00693e", 'y',   3.5,   0.0,   0.0,   0.0  },
+   {  "olive"     , "3b6e23", 'y',   1.5,   0.0,   0.0,   0.0  },
    {  "forest"    , "228b22", 'y',   2.5,   0.0,   0.0,   0.0  },
    {  "green"     , "26bb26", 'y',   1.5,   0.0,   0.0,   0.0  },
    {  "lime"      , "8eeb00", 'y',   0.5,   0.0,   0.0,   0.0  },
    {  "yellow"    , "ffff00", 'y',  -0.5,   0.0,   0.0,   0.0  },
-   {  "burnt"     , "f0bb00", 'y',  -1.5,   0.0,   0.0,   0.0  },
-   {  "gold"      , "f08800", 'y',  -2.5,   0.0,   0.0,   0.0  },
-   {  "orange"    , "f05000", 'y',  -3.5,   0.0,   0.0,   0.0  },
+   {  "burnt"     , "ffcc00", 'y',  -1.5,   0.0,   0.0,   0.0  },
+   {  "carrot"    , "ff9f00", 'y',  -2.5,   0.0,   0.0,   0.0  },
+   {  "gold"      , "ff7700", 'y',  -3.5,   0.0,   0.0,   0.0  },
+   {  "orange"    , "f05000", 'y',  -4.5,   0.0,   0.0,   0.0  },
+   {  "cinnabar"  , "cc3300", 'y',  -5.5,   0.0,   0.0,   0.0  },
    {  "scarlet"   , "ff2420", 'y',  -5.5,   0.0,   0.0,   0.0  },
-   {  "red"       , "af1a1a", 'y',  -7.5,   0.0,   0.0,   0.0  },
-   {  "blood"     , "801111", 'y', -10.0,   0.0,   0.0,   0.0  },
-   {  "indian"    , "af4020", 'y', -15.0,   0.0,   0.0,   0.0  },
-   {  "tan"       , "894819", 'y', -20.0,   0.0,   0.0,   0.0  },
-   {  "saddle"    , "603310", 'y', -40.0,   0.0,   0.0,   0.0  },
-   {  "brown"     , "3a1608", 'y', -60.0,   0.0,   0.0,   0.0  },
+   {  "crimson"   , "dc143c", 'y',  -7.5,   0.0,   0.0,   0.0  },
+   {  "rose"      , "c21e36", 'y', -10.0,   0.0,   0.0,   0.0  },
+   {  "red"       , "af1a1a", 'y', -15.0,   0.0,   0.0,   0.0  },
+   {  "carmine"   , "a01018", 'y', -10.0,   0.0,   0.0,   0.0  },
+   {  "blood"     , "8a1100", 'y', -20.0,   0.0,   0.0,   0.0  },
+   {  "burgundy"  , "800010", 'y', -20.0,   0.0,   0.0,   0.0  },
+   {  "redwood"   , "aa3a12", 'y', -30.0,   0.0,   0.0,   0.0  },
+   {  "tan"       , "894819", 'y', -40.0,   0.0,   0.0,   0.0  },
+   {  "saddle"    , "603310", 'y', -50.0,   0.0,   0.0,   0.0  },
+   {  "brown"     , "4a2208", 'y', -75.0,   0.0,   0.0,   0.0  },
    {  "taupe"     , "483c32", 'y',-100.0,   0.0,   0.0,   0.0  },
    {  "steel"     , "302420", 'y',-999.0,   0.0,   0.0,   0.0  },
-   {  "dark"      , "101010", 'X',-999.0,   0.0,   0.0,   0.0  },
+   {  "dark"      , "101010", 'X',   0.0,   0.0,   0.0,   0.0  },
    {  "end-list"  , "000000", 'e',   0.0,   0.0,   0.0,   0.0  },
+
+   {  "celestial" , "4997d0", 'y',   7.5,   0.0,   0.0,   0.0  },
+   {  "magenta"   , "ff0090", 'y',  20.0,   0.0,   0.0,   0.0  },
+   {  "chile"     , "e23d28", 'y', -10.0,   0.0,   0.0,   0.0  },
+   {  "olive"     , "6b8e23", 'y',   1.5,   0.0,   0.0,   0.0  },
+   {  "venetian"  , "c82825", 'y', -15.0,   0.0,   0.0,   0.0  },
+   {  "indian"    , "cd5c5c", 'y', -15.0,   0.0,   0.0,   0.0  },
+   {  "indian"    , "bd3c3c", 'y', -15.0,   0.0,   0.0,   0.0  },
 };
 static int s_ncolor = 0;
 
@@ -92,7 +112,6 @@ TICK_legend        (void)
       glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
       glTranslatef (    0.0f,    -30.0f,    0.0f);
       yFONT_print  (my.font,  16, YF_BOTLEF, "progress legend");
-      glTranslatef (    0.0f,    -15.0f,    0.0f);
       /*---(femur)--------------------------*/
       glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
       glTranslatef (    0.0f,    -15.0f,    0.0f);
@@ -115,7 +134,7 @@ TICK_legend        (void)
       } glPopMatrix   ();
       /*---(patella)------------------------*/
       glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-      glTranslatef (    0.0f,    -20.0f,    0.0f);
+      glTranslatef (    0.0f,    -15.0f,    0.0f);
       yFONT_print  (my.font,  10, YF_BOTLEF, "pate");
       glPushMatrix    (); {
          /*---(setup)--------------------------*/
@@ -135,7 +154,7 @@ TICK_legend        (void)
       } glPopMatrix   ();
       /*---(tibia)--------------------------*/
       glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-      glTranslatef (    0.0f,    -20.0f,    0.0f);
+      glTranslatef (    0.0f,    -15.0f,    0.0f);
       yFONT_print  (my.font,  10, YF_BOTLEF, "tibi");
       glPushMatrix    (); {
          /*---(setup)--------------------------*/
@@ -158,12 +177,12 @@ TICK_legend        (void)
    c = 0;
    glPushMatrix    (); {
       glColor4f   (1.00f, 1.00f, 1.00f, 1.0f);
-      glTranslatef (    5.0f, 450.0,   10.0f);
+      glTranslatef (    5.0f, 485.0,   10.0f);
       yFONT_print  (my.font,  10, YF_BOTLEF, "heat map horizontals");
       for (i = 0; i < MAX_HEAT; ++i) {
          if (s_heat [i].type [0] == 'e')  break;
          ++c;
-         glTranslatef (    0.0f,    -18.0f,    0.0f);
+         glTranslatef (    0.0f,    -15.0f,    0.0f);
          glPushMatrix    (); {
             sprintf  (x_text, "%-2d", c);
             yFONT_print  (my.font,  10, YF_BOTLEF, x_text);
@@ -177,16 +196,16 @@ TICK_legend        (void)
    /*---(heat map colors)----------------*/
    c = 0;
    glPushMatrix    (); {
-      glTranslatef (    5.0f,  315.0,   10.0f);
+      glTranslatef (    5.0f,  380.0,   20.0f);
       for (i = 0; i < s_ncolor; ++i) {
          if (s_colors [i].active == '-')  continue;
          if (s_colors [i].active == 'e')  break;
          glPushMatrix    (); {
-            glTranslatef (    0.0f, -12.0f * c,    0.0f);
+            glTranslatef (    0.0f, -10.0f * c,    0.0f);
             glColor4f   (s_colors [i].red, s_colors [i].grn, s_colors [i].blu, 1.0f);
             glBegin         (GL_POLYGON); {
-               glVertex3f  (  0.0f          , 13.0f    ,  0.0f);
-               glVertex3f  (my.a_wide - 10.0, 13.0f    ,  0.0f);
+               glVertex3f  (  0.0f          , 11.0f    ,  0.0f);
+               glVertex3f  (my.a_wide - 10.0, 11.0f    ,  0.0f);
                glVertex3f  (my.a_wide - 10.0,  1.0f     ,  0.0f);
                glVertex3f  (  0.0f          ,  1.0f     ,  0.0f);
             } glEnd   ();
@@ -195,37 +214,37 @@ TICK_legend        (void)
             sprintf  (x_text, "%-2d", c);
             if (s_colors [i].active == 'F') {
                glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
-               yFONT_print  (my.font,   8, YF_BOTLEF, x_text);
+               yFONT_print  (my.font,   7, YF_BOTLEF, x_text);
                glTranslatef (   20.0f,      0.0f,    0.0f);
-               yFONT_print  (my.font,   8, YF_BOTLEF, s_colors [i].name);
+               yFONT_print  (my.font,   7, YF_BOTLEF, s_colors [i].name);
                glTranslatef (   65.0f,      0.0f,    0.0f);
-               yFONT_print  (my.font,   8, YF_BOTLEF, "processing error");
+               yFONT_print  (my.font,   7, YF_BOTLEF, "processing error");
             } else if (s_colors [i].active == 'X') {
                glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-               yFONT_print  (my.font,   8, YF_BOTLEF, x_text);
+               yFONT_print  (my.font,   7, YF_BOTLEF, x_text);
                glTranslatef (   20.0f,      0.0f,    0.0f);
-               yFONT_print  (my.font,   8, YF_BOTLEF, s_colors [i].name);
+               yFONT_print  (my.font,   7, YF_BOTLEF, s_colors [i].name);
                glTranslatef (   65.0f,      0.0f,    0.0f);
-               yFONT_print  (my.font,   8, YF_BOTLEF, "availablity error");
+               yFONT_print  (my.font,   7, YF_BOTLEF, "availablity error");
             } else {
                glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
-               yFONT_print  (my.font,   8, YF_BOTLEF, x_text);
+               yFONT_print  (my.font,   7, YF_BOTLEF, x_text);
                glTranslatef (   20.0f,      0.0f,    0.0f);
-               yFONT_print  (my.font,   8, YF_BOTLEF, s_colors [i].name);
+               yFONT_print  (my.font,   7, YF_BOTLEF, s_colors [i].name);
                glTranslatef (   55.0f,      0.0f,    0.0f);
                if (x_last - s_colors [i].min < 10) {
                   sprintf  (x_text, "%3.0lfmm", x_last - s_colors [i].min);
-                  yFONT_print  (my.font,   8, YF_BOTLEF, x_text);
+                  yFONT_print  (my.font,   7, YF_BOTLEF, x_text);
                } else if (x_last - s_colors [i].min < 100) {
                   sprintf  (x_text, "%3.0lfcm", (x_last - s_colors [i].min) / 10.0);
-                  yFONT_print  (my.font,   8, YF_BOTLEF, x_text);
+                  yFONT_print  (my.font,   7, YF_BOTLEF, x_text);
                } else if (x_last - s_colors [i].min < 1000) {
                   sprintf  (x_text, "%3.0lfdm", (x_last - s_colors [i].min) / 100.0);
-                  yFONT_print  (my.font,   8, YF_BOTLEF, x_text);
+                  yFONT_print  (my.font,   7, YF_BOTLEF, x_text);
                }
                glTranslatef (   50.0f,      0.0f,   20.0f);
                sprintf  (x_text, ">= %.1lf", s_colors [i].min);
-               yFONT_print  (my.font,   8, YF_BOTLEF, x_text);
+               yFONT_print  (my.font,   7, YF_BOTLEF, x_text);
                x_last = s_colors [i].min;
             }
          } glPopMatrix   ();

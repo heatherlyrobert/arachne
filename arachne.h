@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9g"
-#define VER_TXT   "fixed heatmap to only show for script timeframe, .i.e., 0 to len"
+#define VER_NUM   "0.9h"
+#define VER_TXT   "fixed colors and added a few"
 
 
 
