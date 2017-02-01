@@ -868,7 +868,7 @@ TICK__heat_column    (int a_leg, double a_sec, double a_x, double a_y)
    rc     = yKINE_move_exact (a_sec, a_leg, &x_xdif, &x_zdif, &x_ydif, &x_ypos);
    x_xz   = sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif));
    x_full = sqrt ((x_xdif * x_xdif) + (x_zdif * x_zdif) + (x_ydif * x_ydif));
-   if (a_leg == 1 && a_sec < 20.0)  printf ("TICK__heat_column, a_leg=%d, a_sec=%8.3lf, rc=%3d, s_lowest=%8.1lf, x_ypos=%8.1lf\n", a_leg, a_sec, rc, s_lowest, x_ypos);
+   /*> if (a_leg == 1 && a_sec < 20.0)  printf ("TICK__heat_column, a_leg=%d, a_sec=%8.3lf, rc=%3d, s_lowest=%8.1lf, x_ypos=%8.1lf\n", a_leg, a_sec, rc, s_lowest, x_ypos);   <*/
    s_debug_leg = a_leg;
    s_debug_sec = a_sec;
    TICK__heat_spot    ('t', rc, s_lowest - x_ypos   , a_x, &a_y);
@@ -1041,7 +1041,7 @@ TICK_labels        (void)
                   /*> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <*/
                }
                /*> TICK_height   (i, x_pos);                                          <*/
-               if (x_sec >= 0.0)  TICK__heat_column (j    , x_sec, i, x_pos - 35.0);
+               if (x_sec >= 0.0 && x_sec <= my.p_len)  TICK__heat_column (j    , x_sec, i, x_pos - 35.0);
             } else {
                x_pos = (12 + (6 - j)) * x_yinc;
                x_sec = (((float) (i) / x_xinc) * my.p_multi) + x_secbeg2;
@@ -1050,7 +1050,7 @@ TICK_labels        (void)
                   /*> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <*/
                }
                /*> TICK_height   (i, x_pos);                                          <*/
-               if (x_sec >= 0.0)  TICK__heat_column (j - 6, x_sec, i, x_pos - 35.0);
+               if (x_sec >= 0.0 && x_sec <= my.p_len)  TICK__heat_column (j - 6, x_sec, i, x_pos - 35.0);
             }
          }
       }

@@ -32,7 +32,10 @@ aspect of spider robotics.  each will be built from the ground-up as my own
 code and design.
 
 .B objectives (o).  
-
+   -- fully testing and accurate kinematics using opengl as the benchmark
+   -- expansive spider movement scripting meta-language
+   -- predict servo positioning issues without real-life experimentation
+   -- controlled using completely standard vi-keys (zero mouse/touch)
 
 
 
