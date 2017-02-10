@@ -27,7 +27,7 @@ tCOLOR    s_colors  [MAX_COLORS] = {
    {  "prussian"  , "002567", 'y',   7.5,   0.0,   0.0,   0.0  },
    {  "navy"      , "171797", 'y',  10.0,   0.0,   0.0,   0.0  },
    {  "blue"      , "133aac", 'y',   7.5,   0.0,   0.0,   0.0  },
-   {  "french"    , "0072bb", 'y',   7.5,   0.0,   0.0,   0.0  },
+   {  "french"    , "0572b8", 'y',   7.5,   0.0,   0.0,   0.0  },
    {  "cyan"      , "008080", 'y',   5.5,   0.0,   0.0,   0.0  },
    {  "teal"      , "227060", 'y',   4.5,   0.0,   0.0,   0.0  },
    {  "dartmouth" , "00693e", 'y',   3.5,   0.0,   0.0,   0.0  },
@@ -41,15 +41,15 @@ tCOLOR    s_colors  [MAX_COLORS] = {
    {  "gold"      , "ff7700", 'y',  -3.5,   0.0,   0.0,   0.0  },
    {  "orange"    , "f05000", 'y',  -4.5,   0.0,   0.0,   0.0  },
    {  "cinnabar"  , "cc3300", 'y',  -5.5,   0.0,   0.0,   0.0  },
-   {  "scarlet"   , "ff2420", 'y',  -5.5,   0.0,   0.0,   0.0  },
-   {  "crimson"   , "dc143c", 'y',  -7.5,   0.0,   0.0,   0.0  },
-   {  "rose"      , "c21e36", 'y', -10.0,   0.0,   0.0,   0.0  },
+   {  "scarlet"   , "ff3020", 'y',  -5.5,   0.0,   0.0,   0.0  },
+   {  "crimson"   , "df143c", 'y',  -7.5,   0.0,   0.0,   0.0  },
+   {  "rose"      , "ba1e36", 'y', -10.0,   0.0,   0.0,   0.0  },
    {  "red"       , "af1a1a", 'y', -15.0,   0.0,   0.0,   0.0  },
    {  "carmine"   , "a01018", 'y', -10.0,   0.0,   0.0,   0.0  },
    {  "blood"     , "8a1100", 'y', -20.0,   0.0,   0.0,   0.0  },
-   {  "burgundy"  , "800010", 'y', -20.0,   0.0,   0.0,   0.0  },
-   {  "redwood"   , "aa3a12", 'y', -30.0,   0.0,   0.0,   0.0  },
-   {  "tan"       , "894819", 'y', -40.0,   0.0,   0.0,   0.0  },
+   {  "burgundy"  , "800005", 'y', -20.0,   0.0,   0.0,   0.0  },
+   {  "redwood"   , "992a08", 'y', -30.0,   0.0,   0.0,   0.0  },
+   {  "tan"       , "853819", 'y', -40.0,   0.0,   0.0,   0.0  },
    {  "saddle"    , "603310", 'y', -50.0,   0.0,   0.0,   0.0  },
    {  "brown"     , "4a2208", 'y', -75.0,   0.0,   0.0,   0.0  },
    {  "taupe"     , "483c32", 'y',-100.0,   0.0,   0.0,   0.0  },
@@ -57,6 +57,8 @@ tCOLOR    s_colors  [MAX_COLORS] = {
    {  "dark"      , "101010", 'X',   0.0,   0.0,   0.0,   0.0  },
    {  "end-list"  , "000000", 'e',   0.0,   0.0,   0.0,   0.0  },
 
+   {  "tan"       , "894819", 'y', -40.0,   0.0,   0.0,   0.0  },
+   {  "redwood"   , "aa3a12", 'y', -30.0,   0.0,   0.0,   0.0  },
    {  "celestial" , "4997d0", 'y',   7.5,   0.0,   0.0,   0.0  },
    {  "magenta"   , "ff0090", 'y',  20.0,   0.0,   0.0,   0.0  },
    {  "chile"     , "e23d28", 'y', -10.0,   0.0,   0.0,   0.0  },
@@ -89,6 +91,7 @@ TICK_legend        (void)
    char  x_text      [LEN_STR] = "";
    int  c = 0;
    double  x_last              = 999.00;
+   float       x_min       = 0.0;
    /*---(setup view)---------------------*/
    glViewport      ( my.a_left, my.a_bott, my.a_wide, my.a_tall);
    glMatrixMode    (GL_PROJECTION);
@@ -177,7 +180,7 @@ TICK_legend        (void)
    c = 0;
    glPushMatrix    (); {
       glColor4f   (1.00f, 1.00f, 1.00f, 1.0f);
-      glTranslatef (    5.0f, 485.0,   10.0f);
+      glTranslatef (    5.0f, 460.0,   10.0f);
       yFONT_print  (my.font,  10, YF_BOTLEF, "heat map horizontals");
       for (i = 0; i < MAX_HEAT; ++i) {
          if (s_heat [i].type [0] == 'e')  break;
@@ -196,57 +199,45 @@ TICK_legend        (void)
    /*---(heat map colors)----------------*/
    c = 0;
    glPushMatrix    (); {
-      glTranslatef (    5.0f,  380.0,   20.0f);
-      for (i = 0; i < s_ncolor; ++i) {
-         if (s_colors [i].active == '-')  continue;
-         if (s_colors [i].active == 'e')  break;
+      glTranslatef (    5.0f,  330.0,   20.0f);
+      for (i = s_ncolor - 1; i >= 0; --i) {
          glPushMatrix    (); {
-            glTranslatef (    0.0f, -10.0f * c,    0.0f);
-            glColor4f   (s_colors [i].red, s_colors [i].grn, s_colors [i].blu, 1.0f);
+            glTranslatef (    0.0f,  -9.0f * c,    0.0f);
+            yCOLOR_num2color (i, 1.0);
             glBegin         (GL_POLYGON); {
-               glVertex3f  (  0.0f          , 11.0f    ,  0.0f);
-               glVertex3f  (my.a_wide - 10.0, 11.0f    ,  0.0f);
+               glVertex3f  (  0.0f          , 10.0f    ,  0.0f);
+               glVertex3f  (my.a_wide - 10.0, 10.0f    ,  0.0f);
                glVertex3f  (my.a_wide - 10.0,  1.0f     ,  0.0f);
                glVertex3f  (  0.0f          ,  1.0f     ,  0.0f);
             } glEnd   ();
             glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
             glTranslatef (   10.0f,   0.0f,    0.0f);
             sprintf  (x_text, "%-2d", c);
-            if (s_colors [i].active == 'F') {
+            x_min = yCOLOR_num2cutoff (i);
                glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
-               yFONT_print  (my.font,   7, YF_BOTLEF, x_text);
+               yFONT_print  (my.font,   6, YF_BOTLEF, x_text);
                glTranslatef (   20.0f,      0.0f,    0.0f);
-               yFONT_print  (my.font,   7, YF_BOTLEF, s_colors [i].name);
-               glTranslatef (   65.0f,      0.0f,    0.0f);
-               yFONT_print  (my.font,   7, YF_BOTLEF, "processing error");
-            } else if (s_colors [i].active == 'X') {
-               glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-               yFONT_print  (my.font,   7, YF_BOTLEF, x_text);
-               glTranslatef (   20.0f,      0.0f,    0.0f);
-               yFONT_print  (my.font,   7, YF_BOTLEF, s_colors [i].name);
-               glTranslatef (   65.0f,      0.0f,    0.0f);
-               yFONT_print  (my.font,   7, YF_BOTLEF, "availablity error");
-            } else {
-               glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
-               yFONT_print  (my.font,   7, YF_BOTLEF, x_text);
-               glTranslatef (   20.0f,      0.0f,    0.0f);
-               yFONT_print  (my.font,   7, YF_BOTLEF, s_colors [i].name);
+               yFONT_print  (my.font,   6, YF_BOTLEF, yCOLOR_num2name (i));
                glTranslatef (   55.0f,      0.0f,    0.0f);
-               if (x_last - s_colors [i].min < 10) {
-                  sprintf  (x_text, "%3.0lfmm", x_last - s_colors [i].min);
-                  yFONT_print  (my.font,   7, YF_BOTLEF, x_text);
-               } else if (x_last - s_colors [i].min < 100) {
-                  sprintf  (x_text, "%3.0lfcm", (x_last - s_colors [i].min) / 10.0);
-                  yFONT_print  (my.font,   7, YF_BOTLEF, x_text);
-               } else if (x_last - s_colors [i].min < 1000) {
-                  sprintf  (x_text, "%3.0lfdm", (x_last - s_colors [i].min) / 100.0);
-                  yFONT_print  (my.font,   7, YF_BOTLEF, x_text);
+               if (x_last - x_min < 10) {
+                  sprintf  (x_text, "%3.0lfmm", x_last - x_min);
+                  yFONT_print  (my.font,   6, YF_BOTLEF, x_text);
+               } else if (x_last - x_min < 100) {
+                  sprintf  (x_text, "%3.0lfcm", (x_last - x_min) / 10.0);
+                  yFONT_print  (my.font,   6, YF_BOTLEF, x_text);
+               } else if (x_last - x_min < 1000) {
+                  sprintf  (x_text, "%3.0lfdm", (x_last - x_min) / 100.0);
+                  yFONT_print  (my.font,   6, YF_BOTLEF, x_text);
                }
                glTranslatef (   50.0f,      0.0f,   20.0f);
-               sprintf  (x_text, ">= %.1lf", s_colors [i].min);
-               yFONT_print  (my.font,   7, YF_BOTLEF, x_text);
-               x_last = s_colors [i].min;
-            }
+               if (x_min >= 0.0)  sprintf  (x_text, "<= ");
+               else               sprintf  (x_text, "<  ");
+               yFONT_print  (my.font,   6, YF_BOTLEF, x_text);
+               glTranslatef (   15.0f,      0.0f,   20.0f);
+               sprintf  (x_text, "%.1lf", x_min);
+               yFONT_print  (my.font,   6, YF_BOTLEF, x_text);
+               x_last = x_min;
+            /*> }                                                                     <*/
          } glPopMatrix   ();
          ++c;
       }
@@ -309,25 +300,25 @@ unhexify           (char a_one, char a_two)
 static int       s_debug_leg;
 static double    s_debug_sec;
 
-char
-TICK_color      (double a_base, double a_value, char a_special)
-{
-   int         i           = 0;
-   for (i = 0; i < s_ncolor; ++i) {
-      if (strchr ("FX", a_special) != NULL && s_colors [i].active == a_special) {
-         /*> printf ("found special color for %c\n", a_special);                      <*/
-         glColor4f   (s_colors [i].red, s_colors [i].grn, s_colors [i].blu, 1.0f);
-         break;
-      }
-      if (a_special != '-')             continue;
-      if (s_colors [i].active != 'y' )  continue;
-      if (a_value >  s_colors [i].min * a_base) {
-         glColor4f   (s_colors [i].red, s_colors [i].grn, s_colors [i].blu, 1.0f);
-         break;
-      }
-   }
-   return 0;
-}
+/*> char                                                                                        <* 
+ *> TICK_color      (double a_base, double a_value, char a_special)                             <* 
+ *> {                                                                                           <* 
+ *>    int         i           = 0;                                                             <* 
+ *>    for (i = 0; i < s_ncolor; ++i) {                                                         <* 
+ *>       if (strchr ("FX", a_special) != NULL && s_colors [i].active == a_special) {           <* 
+ *>          /+> printf ("found special color for %c\n", a_special);                      <+/   <* 
+ *>          glColor4f   (s_colors [i].red, s_colors [i].grn, s_colors [i].blu, 1.0f);          <* 
+ *>          break;                                                                             <* 
+ *>       }                                                                                     <* 
+ *>       if (a_special != '-')             continue;                                           <* 
+ *>       if (s_colors [i].active != 'y' )  continue;                                           <* 
+ *>       if (a_value >  s_colors [i].min * a_base) {                                           <* 
+ *>          glColor4f   (s_colors [i].red, s_colors [i].grn, s_colors [i].blu, 1.0f);          <* 
+ *>          break;                                                                             <* 
+ *>       }                                                                                     <* 
+ *>    }                                                                                        <* 
+ *>    return 0;                                                                                <* 
+ *> }                                                                                           <*/
 
 char         /*--> set values for progress ticker --------[ ------ [ ------ ]-*/
 TICK_init          (void)
@@ -380,17 +371,19 @@ TICK_init          (void)
    DEBUG_GRAF   yLOG_note    ("unbind texture");
    glBindFramebufferEXT         (GL_FRAMEBUFFER_EXT, 0);
    /*---(update colors)------------------*/
-   s_ncolor = 0;
-   for (i = 0; i < MAX_COLORS; ++i) {
-      if (s_colors [i].active == 'e' )  break;
-      s_colors [i].red = unhexify (s_colors [i].hex [0], s_colors [i].hex [1]);
-      s_colors [i].grn = unhexify (s_colors [i].hex [2], s_colors [i].hex [3]);
-      s_colors [i].blu = unhexify (s_colors [i].hex [4], s_colors [i].hex [5]);
-      /*> printf ("%-2d %-10s  %-10s  %5.3lf  %5.3lf  %5.3lf\n", i,                   <* 
-       *>       s_colors [i].name, s_colors [i].hex ,                                 <* 
-       *>       s_colors [i].red , s_colors [i].grn , s_colors [i].blu);              <*/
-      ++s_ncolor;
-   }
+   s_ncolor = yCOLOR_init     (YCOLOR_REDMAU);
+   yCOLOR_scale    (YCOLOR_PARABOLIC,  0.0,  30.0);
+   /*> s_ncolor = 0;                                                                            <* 
+    *> for (i = 0; i < MAX_COLORS; ++i) {                                                       <* 
+    *>    if (s_colors [i].active == 'e' )  break;                                              <* 
+    *>    s_colors [i].red = unhexify (s_colors [i].hex [0], s_colors [i].hex [1]);             <* 
+    *>    s_colors [i].grn = unhexify (s_colors [i].hex [2], s_colors [i].hex [3]);             <* 
+    *>    s_colors [i].blu = unhexify (s_colors [i].hex [4], s_colors [i].hex [5]);             <* 
+    *>    /+> printf ("%-2d %-10s  %-10s  %5.3lf  %5.3lf  %5.3lf\n", i,                   <*    <* 
+    *>     *>       s_colors [i].name, s_colors [i].hex ,                                 <*    <* 
+    *>     *>       s_colors [i].red , s_colors [i].grn , s_colors [i].blu);              <+/   <* 
+    *>    ++s_ncolor;                                                                           <* 
+    *> }                                                                                        <*/
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -858,8 +851,20 @@ TICK__heat_spot    (char a_type, char a_rc, double a_diff, double a_x, double *a
    default  : return -1;
               break;
    }
-   if      (a_rc   <   0 )  TICK_color (x_base, a_diff, 'F');
-   else                     TICK_color (x_base, a_diff, '-');
+   /*> if      (a_rc   <   0 )  TICK_color (x_base, a_diff, 'F');                     <* 
+    *> else                     TICK_color (x_base, a_diff, '-');                     <*/
+   glColor4f (1.0, 1.0, 1.0, 1.0);
+   glPushMatrix(); {
+      glBegin         (GL_POLYGON); {
+         glVertex3f  (a_x + x_xoff          , *a_y           , x_z);
+         glVertex3f  (a_x + x_xoff + x_width, *a_y           , x_z);
+         glVertex3f  (a_x + x_xoff + x_width, *a_y - x_height, x_z);
+         glVertex3f  (a_x + x_xoff          , *a_y - x_height, x_z);
+      } glEnd   ();
+   } glPopMatrix();
+
+   if      (a_rc   <   0 )  yCOLOR_val2error  (0.9);
+   else                     yCOLOR_val2color  (x_base * a_diff, 0.9);
    glPushMatrix(); {
       glBegin         (GL_POLYGON); {
          glVertex3f  (a_x + x_xoff          , *a_y           , x_z);

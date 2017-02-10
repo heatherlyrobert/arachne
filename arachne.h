@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9h"
-#define VER_TXT   "fixed colors and added a few"
+#define VER_NUM   "0.9i"
+#define VER_TXT   "moved color handling to yCOLOR"
 
 
 
@@ -119,6 +119,7 @@
 #include    <yKINE.h>        /* CUSTOM  heatherly kinematics                  */
 #include    <yVIKEYS.h>      /* CUSTOM  heatherly vi_keys standard            */
 #include    <yFONT.h>        /* CUSTOM  heatherly texture-mapped fonts        */
+#include    <yCOLOR.h>       /* CUSTOM  heatherly opengl color handling       */
 #include    <ySTR.h>         /* CUSTOM  heatherly string handling             */
 #include    <yLOG.h>         /* CUSTOM  heatherly program logging             */
 
