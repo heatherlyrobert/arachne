@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9i"
-#define VER_TXT   "moved color handling to yCOLOR"
+#define VER_NUM   "0.9j"
+#define VER_TXT   "put arrow back on top"
 
 
 

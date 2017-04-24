@@ -92,6 +92,8 @@ TICK_legend        (void)
    int  c = 0;
    double  x_last              = 999.00;
    float       x_min       = 0.0;
+   int         x_tall      = 12.0;
+   int         x_point     =  7;
    /*---(setup view)---------------------*/
    glViewport      ( my.a_left, my.a_bott, my.a_wide, my.a_tall);
    glMatrixMode    (GL_PROJECTION);
@@ -117,7 +119,7 @@ TICK_legend        (void)
       yFONT_print  (my.font,  16, YF_BOTLEF, "progress legend");
       /*---(femur)--------------------------*/
       glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-      glTranslatef (    0.0f,    -15.0f,    0.0f);
+      glTranslatef (    0.0f,    -25.0f,    0.0f);
       yFONT_print  (my.font,  10, YF_BOTLEF, "femu");
       glPushMatrix    (); {
          /*---(setup)--------------------------*/
@@ -185,7 +187,7 @@ TICK_legend        (void)
       for (i = 0; i < MAX_HEAT; ++i) {
          if (s_heat [i].type [0] == 'e')  break;
          ++c;
-         glTranslatef (    0.0f,    -15.0f,    0.0f);
+         glTranslatef (    0.0f,    -20.0f,    0.0f);
          glPushMatrix    (); {
             sprintf  (x_text, "%-2d", c);
             yFONT_print  (my.font,  10, YF_BOTLEF, x_text);
@@ -199,43 +201,44 @@ TICK_legend        (void)
    /*---(heat map colors)----------------*/
    c = 0;
    glPushMatrix    (); {
-      glTranslatef (    5.0f,  330.0,   20.0f);
+      /*> glTranslatef (    5.0f,  330.0,   20.0f);                                   <*/
+      glTranslatef (    5.0f, x_tall * (s_ncolor - 1) + 5,   20.0f);
       for (i = s_ncolor - 1; i >= 0; --i) {
          glPushMatrix    (); {
-            glTranslatef (    0.0f,  -9.0f * c,    0.0f);
+            glTranslatef (    0.0f,  -(x_tall * c),    0.0f);
             yCOLOR_num2color (i, 1.0);
             glBegin         (GL_POLYGON); {
-               glVertex3f  (  0.0f          , 10.0f    ,  0.0f);
-               glVertex3f  (my.a_wide - 10.0, 10.0f    ,  0.0f);
-               glVertex3f  (my.a_wide - 10.0,  1.0f     ,  0.0f);
-               glVertex3f  (  0.0f          ,  1.0f     ,  0.0f);
+               glVertex3f  (  0.0f          , x_tall + 1,  0.0f);
+               glVertex3f  (my.a_wide - 10.0, x_tall + 1,  0.0f);
+               glVertex3f  (my.a_wide - 10.0, 1.0f      ,  0.0f);
+               glVertex3f  (  0.0f          , 1.0f      ,  0.0f);
             } glEnd   ();
             glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
-            glTranslatef (   10.0f,   0.0f,    0.0f);
+            glTranslatef (   10.0f,   1.0f,    0.0f);
             sprintf  (x_text, "%-2d", c);
             x_min = yCOLOR_num2cutoff (i);
                glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
-               yFONT_print  (my.font,   6, YF_BOTLEF, x_text);
+               yFONT_print  (my.font, x_point, YF_BOTLEF, x_text);
                glTranslatef (   20.0f,      0.0f,    0.0f);
-               yFONT_print  (my.font,   6, YF_BOTLEF, yCOLOR_num2name (i));
-               glTranslatef (   55.0f,      0.0f,    0.0f);
+               yFONT_print  (my.font, x_point, YF_BOTLEF, yCOLOR_num2name (i));
+               glTranslatef (   60.0f,      0.0f,    0.0f);
                if (x_last - x_min < 10) {
                   sprintf  (x_text, "%3.0lfmm", x_last - x_min);
-                  yFONT_print  (my.font,   6, YF_BOTLEF, x_text);
+                  yFONT_print  (my.font, x_point, YF_BOTLEF, x_text);
                } else if (x_last - x_min < 100) {
                   sprintf  (x_text, "%3.0lfcm", (x_last - x_min) / 10.0);
-                  yFONT_print  (my.font,   6, YF_BOTLEF, x_text);
+                  yFONT_print  (my.font, x_point, YF_BOTLEF, x_text);
                } else if (x_last - x_min < 1000) {
                   sprintf  (x_text, "%3.0lfdm", (x_last - x_min) / 100.0);
-                  yFONT_print  (my.font,   6, YF_BOTLEF, x_text);
+                  yFONT_print  (my.font, x_point, YF_BOTLEF, x_text);
                }
-               glTranslatef (   50.0f,      0.0f,   20.0f);
+               glTranslatef (   45.0f,      0.0f,   20.0f);
                if (x_min >= 0.0)  sprintf  (x_text, "<= ");
                else               sprintf  (x_text, "<  ");
-               yFONT_print  (my.font,   6, YF_BOTLEF, x_text);
+               yFONT_print  (my.font, x_point, YF_BOTLEF, x_text);
                glTranslatef (   15.0f,      0.0f,   20.0f);
                sprintf  (x_text, "%.1lf", x_min);
-               yFONT_print  (my.font,   6, YF_BOTLEF, x_text);
+               yFONT_print  (my.font, x_point, YF_BOTLEF, x_text);
                x_last = x_min;
             /*> }                                                                     <*/
          } glPopMatrix   ();
@@ -282,43 +285,9 @@ static float       s_texpct2   =   0.0;
 
 static double      s_lowest    =   0.0;
 
-double
-unhexify           (char a_one, char a_two)
-{
-   int    value = 0;
-   switch (a_one) {
-   case '0' ... '9' :   value = (a_one - '0') * 16;          break;
-   case 'a' ... 'f' :   value = (a_one - 'a' + 10) * 16;     break;
-   }
-   switch (a_two) {
-   case '0' ... '9' :   value += (a_two - '0');              break;
-   case 'a' ... 'f' :   value += (a_two - 'a' + 10);         break;
-   }
-   return (double) value / 255.0 ;
-}
-
 static int       s_debug_leg;
 static double    s_debug_sec;
 
-/*> char                                                                                        <* 
- *> TICK_color      (double a_base, double a_value, char a_special)                             <* 
- *> {                                                                                           <* 
- *>    int         i           = 0;                                                             <* 
- *>    for (i = 0; i < s_ncolor; ++i) {                                                         <* 
- *>       if (strchr ("FX", a_special) != NULL && s_colors [i].active == a_special) {           <* 
- *>          /+> printf ("found special color for %c\n", a_special);                      <+/   <* 
- *>          glColor4f   (s_colors [i].red, s_colors [i].grn, s_colors [i].blu, 1.0f);          <* 
- *>          break;                                                                             <* 
- *>       }                                                                                     <* 
- *>       if (a_special != '-')             continue;                                           <* 
- *>       if (s_colors [i].active != 'y' )  continue;                                           <* 
- *>       if (a_value >  s_colors [i].min * a_base) {                                           <* 
- *>          glColor4f   (s_colors [i].red, s_colors [i].grn, s_colors [i].blu, 1.0f);          <* 
- *>          break;                                                                             <* 
- *>       }                                                                                     <* 
- *>    }                                                                                        <* 
- *>    return 0;                                                                                <* 
- *> }                                                                                           <*/
 
 char         /*--> set values for progress ticker --------[ ------ [ ------ ]-*/
 TICK_init          (void)
@@ -371,19 +340,8 @@ TICK_init          (void)
    DEBUG_GRAF   yLOG_note    ("unbind texture");
    glBindFramebufferEXT         (GL_FRAMEBUFFER_EXT, 0);
    /*---(update colors)------------------*/
-   s_ncolor = yCOLOR_init     (YCOLOR_REDMAU);
+   s_ncolor = yCOLOR_init     (YCOLOR_BROMAU2);
    yCOLOR_scale    (YCOLOR_PARABOLIC,  0.0,  30.0);
-   /*> s_ncolor = 0;                                                                            <* 
-    *> for (i = 0; i < MAX_COLORS; ++i) {                                                       <* 
-    *>    if (s_colors [i].active == 'e' )  break;                                              <* 
-    *>    s_colors [i].red = unhexify (s_colors [i].hex [0], s_colors [i].hex [1]);             <* 
-    *>    s_colors [i].grn = unhexify (s_colors [i].hex [2], s_colors [i].hex [3]);             <* 
-    *>    s_colors [i].blu = unhexify (s_colors [i].hex [4], s_colors [i].hex [5]);             <* 
-    *>    /+> printf ("%-2d %-10s  %-10s  %5.3lf  %5.3lf  %5.3lf\n", i,                   <*    <* 
-    *>     *>       s_colors [i].name, s_colors [i].hex ,                                 <*    <* 
-    *>     *>       s_colors [i].red , s_colors [i].grn , s_colors [i].blu);              <+/   <* 
-    *>    ++s_ncolor;                                                                           <* 
-    *> }                                                                                        <*/
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -851,20 +809,8 @@ TICK__heat_spot    (char a_type, char a_rc, double a_diff, double a_x, double *a
    default  : return -1;
               break;
    }
-   /*> if      (a_rc   <   0 )  TICK_color (x_base, a_diff, 'F');                     <* 
-    *> else                     TICK_color (x_base, a_diff, '-');                     <*/
-   glColor4f (1.0, 1.0, 1.0, 1.0);
-   glPushMatrix(); {
-      glBegin         (GL_POLYGON); {
-         glVertex3f  (a_x + x_xoff          , *a_y           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, *a_y           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, *a_y - x_height, x_z);
-         glVertex3f  (a_x + x_xoff          , *a_y - x_height, x_z);
-      } glEnd   ();
-   } glPopMatrix();
-
-   if      (a_rc   <   0 )  yCOLOR_val2error  (0.9);
-   else                     yCOLOR_val2color  (x_base * a_diff, 0.9);
+   if      (a_rc   <   0 )  yCOLOR_val2error  (0.8);
+   else                     yCOLOR_val2color  (x_base * a_diff, 0.8);
    glPushMatrix(); {
       glBegin         (GL_POLYGON); {
          glVertex3f  (a_x + x_xoff          , *a_y           , x_z);

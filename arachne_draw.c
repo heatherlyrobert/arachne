@@ -701,7 +701,7 @@ draw_spider        (void)
    glPushMatrix (); {
       /*> draw_masscenter ();                                                         <*/
       glTranslatef    (center.bx,      0.0  , center.bz);
-      /*> draw_arrow      ();                                                         <*/
+      draw_arrow      ();
       /*> if (flag_annotate == 'y')  draw__center ();                                 <*/
       glCallList      (dl_body);
       yKINE_move_curall ( my.p_cursec);
