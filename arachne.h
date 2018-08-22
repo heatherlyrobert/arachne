@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9j"
-#define VER_TXT   "put arrow back on top"
+#define VER_NUM   "0.9k"
+#define VER_TXT   "basic god view; 3d view is back, but a little strange"
 
 
 
@@ -197,9 +197,9 @@ struct cACCESSOR {
    char        sch;
    char        report;                      /* report to generate             */
    /*---(fonts)-----------*/
-   char        face        [LEN_LABEL];
-   char        font;
+   char        face_pretty [LEN_LABEL];
    char        face_fixed  [LEN_LABEL];
+   char        font;
    char        font_fixed;
    /*---(window sizes)----*/
    char        w_title     [LEN_STR];       /* window title                   */
@@ -523,7 +523,7 @@ int         main               (int argc, char *argv[]);
 char        PROG_init          (void);
 char        PROG_args          (int argc, char *argv[]);
 char        PROG_begin         (void);
-char        PROG_event         (void);
+char        PROG_final         (void);
 char        PROG_end           (void);
 
 /*> char       *unit_accessor      (char *a_question, void *a_thing);                 <*/
@@ -558,9 +558,10 @@ char      TICK_init          (void);
 char      TICK_draw          (void);
 char      TICK_show          (void);
 char      TICK_legend        (void);
-char      DRAW_command       (void);
-char      DRAW_title         (void);
+/*> char      DRAW_command       (void);                                              <*/
+/*> char      DRAW_title         (void);                                              <*/
 
+char      DRAW_init               (void);
 char      DRAW_begin         (void);      /* prepare drawing environment      */
 char      DRAW_reset         (void);      /* set starting point for drawing   */
 char      DRAW_end           (void);      /* teardown drawing environment     */
@@ -569,6 +570,7 @@ char      DRAW_end           (void);      /* teardown drawing environment     */
 char      draw_setup         (void);
 char      draw_prep          (void);
 char      draw_main          (void);
+void      draw_spider        (void);
 
 char      draw_leg           (int  a_num, tSEG  a_curr[], char a_loc);
 char      draw_body          (tSEG *a_curr);
@@ -586,8 +588,8 @@ void       draw_3d_locate    (void);
 void       position_draw     (int);
 char       view_setup        (char *a_title, char *a_desc);
 void       view_3d           (void);
-void       view_top          (void);
-void       view_side         (void);
+/*> void       view_top          (void);                                              <*/
+/*> void       view_side         (void);                                              <*/
 
 char       view_gait         (void);
 char       view_touch        (void);

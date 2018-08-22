@@ -7,7 +7,6 @@
 
 char   flag_view  = 0;
 
-void draw_spider();
 
 
 
@@ -93,81 +92,81 @@ char      *eva_accessor     (char   *a_question);
 /*====================------------------------------------====================*/
 static void      o___COMMAND_________________o (void) {;}
 
-char
-DRAW_command       (void)
-{
-   /*---(setup view)---------------------*/
-   glViewport      ( my.c_left, my.c_bott, my.c_wide, my.c_tall);
-   glMatrixMode    (GL_PROJECTION);
-   glLoadIdentity  ();
-   glOrtho         ( 0.0f, my.c_wide, 0.0f, my.c_tall,  -500.0,   500.0);
-   glMatrixMode    (GL_MODELVIEW);
-   /*---(background)---------------------*/
-   glPushMatrix    (); {
-      glColor4f    (0.00f, 0.00f, 0.15f, 1.0f);
-      glBegin         (GL_POLYGON); {
-         glVertex3f  (0.0f     , my.c_tall,  0.0f);
-         glVertex3f  (my.w_wide, my.c_tall,  0.0f);
-         glVertex3f  (my.w_wide, 0.0f      ,  0.0f);
-         glVertex3f  (0.0f     , 0.0f      ,  0.0f);
-      } glEnd   ();
-   } glPopMatrix   ();
-   /*---(text)---------------------------*/
-   glPushMatrix    (); {
-      glTranslatef (    2.0f,    2.0f,    0.0f);
-      glColor4f    (1.00f, 1.00f, 1.00f, 1.00f);
-      yFONT_print  (my.font_fixed,  12, YF_BOTLEF, my.message);
-   } glPopMatrix   ();
-   /*---(complete)-----------------------*/
-   return;
-}
+/*> char                                                                              <* 
+ *> DRAW_command       (void)                                                         <* 
+ *> {                                                                                 <* 
+ *>    /+---(setup view)---------------------+/                                       <* 
+ *>    glViewport      ( my.c_left, my.c_bott, my.c_wide, my.c_tall);                 <* 
+ *>    glMatrixMode    (GL_PROJECTION);                                               <* 
+ *>    glLoadIdentity  ();                                                            <* 
+ *>    glOrtho         ( 0.0f, my.c_wide, 0.0f, my.c_tall,  -500.0,   500.0);         <* 
+ *>    glMatrixMode    (GL_MODELVIEW);                                                <* 
+ *>    /+---(background)---------------------+/                                       <* 
+ *>    glPushMatrix    (); {                                                          <* 
+ *>       glColor4f    (0.00f, 0.00f, 0.15f, 1.0f);                                   <* 
+ *>       glBegin         (GL_POLYGON); {                                             <* 
+ *>          glVertex3f  (0.0f     , my.c_tall,  0.0f);                               <* 
+ *>          glVertex3f  (my.w_wide, my.c_tall,  0.0f);                               <* 
+ *>          glVertex3f  (my.w_wide, 0.0f      ,  0.0f);                              <* 
+ *>          glVertex3f  (0.0f     , 0.0f      ,  0.0f);                              <* 
+ *>       } glEnd   ();                                                               <* 
+ *>    } glPopMatrix   ();                                                            <* 
+ *>    /+---(text)---------------------------+/                                       <* 
+ *>    glPushMatrix    (); {                                                          <* 
+ *>       glTranslatef (    2.0f,    2.0f,    0.0f);                                  <* 
+ *>       glColor4f    (1.00f, 1.00f, 1.00f, 1.00f);                                  <* 
+ *>       yFONT_print  (my.font_fixed,  12, YF_BOTLEF, my.message);                   <* 
+ *>    } glPopMatrix   ();                                                            <* 
+ *>    /+---(complete)-----------------------+/                                       <* 
+ *>    return;                                                                        <* 
+ *> }                                                                                 <*/
 
-char
-DRAW_title         (void)
-{
-   /*---(setup view)---------------------*/
-   glViewport      ( my.t_left, my.t_bott, my.t_wide, my.t_tall);
-   glMatrixMode    (GL_PROJECTION);
-   glLoadIdentity  ();
-   glOrtho         ( 0.0f, my.t_wide, 0.0f, my.t_tall,  -500.0,   500.0);
-   glMatrixMode    (GL_MODELVIEW);
-   /*---(background)---------------------*/
-   glColor4f    (0.60f, 0.30f, 0.00f, 1.0f);
-   glPushMatrix    (); {
-      glBegin         (GL_POLYGON); {
-         glVertex3f  (0.0f     , my.t_tall - 100,  0.0f);
-         glVertex3f  (my.t_wide, my.t_tall - 100,  0.0f);
-         glVertex3f  (my.t_wide, 0.0f      ,  0.0f);
-         glVertex3f  (0.0f     , 0.0f      ,  0.0f);
-      } glEnd   ();
-   } glPopMatrix   ();
-   if (yURG_debugmode () == 'y')  glColor4f    (1.00f, 0.00f, 0.00f, 1.0f);
-   else                           glColor4f    (0.60f, 0.30f, 0.00f, 1.0f);
-   glPushMatrix    (); {
-      glBegin         (GL_POLYGON); {
-         glVertex3f  (0.0f     , my.t_tall      ,  0.0f);
-         glVertex3f  (my.t_wide, my.t_tall      ,  0.0f);
-         glVertex3f  (my.t_wide, my.t_tall - 100,  0.0f);
-         glVertex3f  (0.0f     , my.t_tall - 100,  0.0f);
-      } glEnd   ();
-   } glPopMatrix   ();
-   /*---(display)------------------------*/
-   glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
-   glPushMatrix    (); {
-      glTranslatef (my.t_wide + 3,   5.0f,    0.0f);
-      glRotatef    ( 90.0, 0.0f, 0.0f, 1.0f);
-      yFONT_print  (my.font,  16, YF_BOTLEF, my.t_text);
-   } glPopMatrix   ();
-   if (yURG_debugmode () == 'y')  glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-   else                           glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
-   glPushMatrix    (); {
-      glTranslatef (my.t_wide + 3,   5.0f,    0.0f);
-      glRotatef    ( 90.0, 0.0f, 0.0f, 1.0f);
-      glTranslatef (my.t_tall - 10.0,   0.0f,    0.0f);
-      yFONT_print  (my.font,  16, YF_BOTRIG, VER_NUM);
-   } glPopMatrix   ();
-   return 0;
-}
+/*> char                                                                              <* 
+ *> DRAW_title         (void)                                                         <* 
+ *> {                                                                                 <* 
+ *>    /+---(setup view)---------------------+/                                       <* 
+ *>    glViewport      ( my.t_left, my.t_bott, my.t_wide, my.t_tall);                 <* 
+ *>    glMatrixMode    (GL_PROJECTION);                                               <* 
+ *>    glLoadIdentity  ();                                                            <* 
+ *>    glOrtho         ( 0.0f, my.t_wide, 0.0f, my.t_tall,  -500.0,   500.0);         <* 
+ *>    glMatrixMode    (GL_MODELVIEW);                                                <* 
+ *>    /+---(background)---------------------+/                                       <* 
+ *>    glColor4f    (0.60f, 0.30f, 0.00f, 1.0f);                                      <* 
+ *>    glPushMatrix    (); {                                                          <* 
+ *>       glBegin         (GL_POLYGON); {                                             <* 
+ *>          glVertex3f  (0.0f     , my.t_tall - 100,  0.0f);                         <* 
+ *>          glVertex3f  (my.t_wide, my.t_tall - 100,  0.0f);                         <* 
+ *>          glVertex3f  (my.t_wide, 0.0f      ,  0.0f);                              <* 
+ *>          glVertex3f  (0.0f     , 0.0f      ,  0.0f);                              <* 
+ *>       } glEnd   ();                                                               <* 
+ *>    } glPopMatrix   ();                                                            <* 
+ *>    if (yURG_debugmode () == 'y')  glColor4f    (1.00f, 0.00f, 0.00f, 1.0f);       <* 
+ *>    else                           glColor4f    (0.60f, 0.30f, 0.00f, 1.0f);       <* 
+ *>    glPushMatrix    (); {                                                          <* 
+ *>       glBegin         (GL_POLYGON); {                                             <* 
+ *>          glVertex3f  (0.0f     , my.t_tall      ,  0.0f);                         <* 
+ *>          glVertex3f  (my.t_wide, my.t_tall      ,  0.0f);                         <* 
+ *>          glVertex3f  (my.t_wide, my.t_tall - 100,  0.0f);                         <* 
+ *>          glVertex3f  (0.0f     , my.t_tall - 100,  0.0f);                         <* 
+ *>       } glEnd   ();                                                               <* 
+ *>    } glPopMatrix   ();                                                            <* 
+ *>    /+---(display)------------------------+/                                       <* 
+ *>    glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);                                      <* 
+ *>    glPushMatrix    (); {                                                          <* 
+ *>       glTranslatef (my.t_wide + 3,   5.0f,    0.0f);                              <* 
+ *>       glRotatef    ( 90.0, 0.0f, 0.0f, 1.0f);                                     <* 
+ *>       yFONT_print  (my.font,  16, YF_BOTLEF, my.t_text);                          <* 
+ *>    } glPopMatrix   ();                                                            <* 
+ *>    if (yURG_debugmode () == 'y')  glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);       <* 
+ *>    else                           glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);       <* 
+ *>    glPushMatrix    (); {                                                          <* 
+ *>       glTranslatef (my.t_wide + 3,   5.0f,    0.0f);                              <* 
+ *>       glRotatef    ( 90.0, 0.0f, 0.0f, 1.0f);                                     <* 
+ *>       glTranslatef (my.t_tall - 10.0,   0.0f,    0.0f);                           <* 
+ *>       yFONT_print  (my.font,  16, YF_BOTRIG, VER_NUM);                            <* 
+ *>    } glPopMatrix   ();                                                            <* 
+ *>    return 0;                                                                      <* 
+ *> }                                                                                 <*/
 
 char
 DRAW_alternate     (void)
@@ -357,56 +356,56 @@ draw_leg_NEW       (int a_leg, float a_body, float a_coxa, float a_femu, float a
    glPushMatrix (); {
       /*---(thorax)----------------------*/
       glTranslatef (a_body,  0.0,  0.0f);
-      draw_locate_NEW (a_leg, YKINE_THOR, a_coxa);
+      /*> draw_locate_NEW (a_leg, YKINE_THOR, a_coxa);                                <*/
       if (a_leg == my.p_leg) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-      glPushMatrix (); {
-         /*---(label)-------*/
-         snprintf (x_msg, 10, "#%d/%s", a_leg, legs_name [a_leg]);
-         glTranslatef(    0.0  ,   -15.0 ,     0.0  );
-         yFONT_print (my.font, 12, YF_TOPLEF, x_msg);
-         /*---(desc)--------*/
-         snprintf (x_msg, 25, "%s", legs_long [a_leg]);
-         glTranslatef(    0.0  ,   -18.0 ,     0.0  );
-         yFONT_print (my.font,  5, YF_TOPLEF, x_msg);
-         /*---(prep)--------*/
-         glTranslatef(   20.0  ,     0.0 ,     0.0  );
-         /*---(coxa)--------*/
-         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
-         yFONT_print (my.font,  5, YF_TOPRIG, "coxa");
-         snprintf (x_msg, 25, ": %+.1f", a_coxa);
-         yFONT_print (my.font,  5, YF_TOPLEF, x_msg);
-         /*---(femu)--------*/
-         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
-         yFONT_print (my.font,  5, YF_TOPRIG, "femur");
-         snprintf (x_msg, 25, ": %+.1f", a_femu);
-         yFONT_print (my.font,  5, YF_TOPLEF, x_msg);
-         /*---(pate)--------*/
-         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
-         yFONT_print (my.font,  5, YF_TOPRIG, "patella");
-         snprintf (x_msg, 25, ": %+.1f", a_pate);
-         yFONT_print (my.font,  5, YF_TOPLEF, x_msg);
-         /*---(tibi)--------*/
-         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
-         yFONT_print (my.font,  5, YF_TOPRIG, "tibia");
-         snprintf (x_msg, 25, ": %+.1f", a_tibi);
-         yFONT_print (my.font,  5, YF_TOPLEF, x_msg);
-         /*---(done)--------*/
-      } glPopMatrix ();
+      /*> glPushMatrix (); {                                                          <* 
+       *>    /+---(label)-------+/                                                    <* 
+       *>    snprintf (x_msg, 10, "#%d/%s", a_leg, legs_name [a_leg]);                <* 
+       *>    glTranslatef(    0.0  ,   -15.0 ,     0.0  );                            <* 
+       *>    yFONT_print (my.font, 12, YF_TOPLEF, x_msg);                             <* 
+       *>    /+---(desc)--------+/                                                    <* 
+       *>    snprintf (x_msg, 25, "%s", legs_long [a_leg]);                           <* 
+       *>    glTranslatef(    0.0  ,   -18.0 ,     0.0  );                            <* 
+       *>    yFONT_print (my.font,  5, YF_TOPLEF, x_msg);                             <* 
+       *>    /+---(prep)--------+/                                                    <* 
+       *>    glTranslatef(   20.0  ,     0.0 ,     0.0  );                            <* 
+       *>    /+---(coxa)--------+/                                                    <* 
+       *>    glTranslatef(    0.0  ,    -8.0 ,     0.0  );                            <* 
+       *>    yFONT_print (my.font,  5, YF_TOPRIG, "coxa");                            <* 
+       *>    snprintf (x_msg, 25, ": %+.1f", a_coxa);                                 <* 
+       *>    yFONT_print (my.font,  5, YF_TOPLEF, x_msg);                             <* 
+       *>    /+---(femu)--------+/                                                    <* 
+       *>    glTranslatef(    0.0  ,    -8.0 ,     0.0  );                            <* 
+       *>    yFONT_print (my.font,  5, YF_TOPRIG, "femur");                           <* 
+       *>    snprintf (x_msg, 25, ": %+.1f", a_femu);                                 <* 
+       *>    yFONT_print (my.font,  5, YF_TOPLEF, x_msg);                             <* 
+       *>    /+---(pate)--------+/                                                    <* 
+       *>    glTranslatef(    0.0  ,    -8.0 ,     0.0  );                            <* 
+       *>    yFONT_print (my.font,  5, YF_TOPRIG, "patella");                         <* 
+       *>    snprintf (x_msg, 25, ": %+.1f", a_pate);                                 <* 
+       *>    yFONT_print (my.font,  5, YF_TOPLEF, x_msg);                             <* 
+       *>    /+---(tibi)--------+/                                                    <* 
+       *>    glTranslatef(    0.0  ,    -8.0 ,     0.0  );                            <* 
+       *>    yFONT_print (my.font,  5, YF_TOPRIG, "tibia");                           <* 
+       *>    snprintf (x_msg, 25, ": %+.1f", a_tibi);                                 <* 
+       *>    yFONT_print (my.font,  5, YF_TOPLEF, x_msg);                             <* 
+       *>    /+---(done)--------+/                                                    <* 
+       *> } glPopMatrix ();                                                           <*/
       /*---(coxa)------------------------*/
       glCallList (dl_coxa);
-      draw_locate_NEW (a_leg, YKINE_COXA, a_coxa);
+      /*> draw_locate_NEW (a_leg, YKINE_COXA, a_coxa);                                <*/
       /*---(femur)--------------------------*/
       glRotatef  ( a_femu, 0.0f, 1.0f, 0.0f);
       glCallList (dl_femur);
-      draw_locate_NEW (a_leg, YKINE_FEMU, a_femu);
+      /*> draw_locate_NEW (a_leg, YKINE_FEMU, a_femu);                                <*/
       /*---(patella)------------------------*/
       glRotatef  (-a_pate, 0.0f, 0.0f, 1.0f);
       glCallList (dl_patella);
-      draw_locate_NEW (a_leg, YKINE_PATE, a_pate);
+      /*> draw_locate_NEW (a_leg, YKINE_PATE, a_pate);                                <*/
       /*---(tibia)--------------------------*/
       glRotatef  (-a_tibi, 0.0f, 0.0f, 1.0f);
       glCallList (dl_tibia);
-      draw_locate_NEW (a_leg, YKINE_TIBI, a_tibi);
+      /*> draw_locate_NEW (a_leg, YKINE_TIBI, a_tibi);                                <*/
    } glPopMatrix ();
    /*---(complete)-----------------------*/
    return 0;
@@ -492,33 +491,100 @@ draw_leg           (int a_num, tSEG a_curr[], char a_loc)
 /*====================------------------------------------====================*/
 static void      o___ENVIRON_________________o (void) {;}
 
+char
+DRAW_testgrid           (void)
+{
+   int         x           =    0;
+   int         y           =    0;
+   char        t           [LEN_LABEL] = "";
+   /*---(upper bar)----------------------*/
+   for (y = -300; y <= 300; y += 30) {
+      glColor4f    (0.00f, 0.00f, 0.00f, 1.00f);
+      /*> glTranslatef ( -300.00f,   0.00f,    0.00f);                          <*/
+      for (x = -300; x <= 300; x += 30) {
+         /*> glBegin      (GL_POINTS); {                                               <* 
+          *>    /+> glVertex3f  (x, y, -300);                                    <+/   <* 
+          *>    /+> glVertex3f  (x, y,    0);                                    <+/   <* 
+          *>    glVertex3f  (x, y,  300);                                              <* 
+          *> } glEnd   ();                                                             <*/
+         glPushMatrix (); {
+            glTranslatef(       x,       y,    300);
+            snprintf (t, 30, "%dx, %dy", x, y);
+            yFONT_print (my.font,   3, YF_MIDCEN, t);
+         } glPopMatrix ();
+      }
+   }
+   return 0;
+}
+
+
+char
+DRAW_primary            (void)
+{
+   draw_spider     ();
+   DRAW_testgrid   ();
+   /*> yGOD_view       ();                                                            <*/
+   /*> yGOD_view       ();                                                            <*/
+   /*> glCallList      (dl_spider);                                                   <*/
+   view_3d     ();
+   return 0;
+}
+
+char
+DRAW_init               (void)
+{
+   /*---(locals)-----------+-----+-----+-*/
+   char        rc          =    0;
+   int         x_wide, x_tall;
+   /*---(header)-------------------------*/
+   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
+
+
+   /*---(window)-------------------------*/
+   yVIKEYS_view_config   ("arachne, hexapod visualization and simulation", VER_NUM, YVIKEYS_OPENGL, 800, 580, 0);
+   yVIKEYS_view_setup    (YVIKEYS_MAIN     , YVIKEYS_DEPTH, YVIKEYS_MIDCEN, -400, 400, 290, -290, -1000, 1000, YCOLOR_BAS    , DRAW_primary);
+   yVIKEYS_cmds_direct   (":progress show");
+   yVIKEYS_cmds_direct   (":buffer show");
+   yVIKEYS_cmds_direct   (":details show");
+
+
+   /*---(colors)-------------------------*/
+   yVIKEYS_cmds_direct   (":palette 190 rcomp pale earthy");
+   yVIKEYS_view_colors   (YCOLOR_POS, YCOLOR_BAS, YCOLOR_NEG, YCOLOR_POS);
+
+
+   /*---(complete)-----------------------*/
+   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
 char       /* ---- : establish rational drawing settings ---------------------*/
 DRAW_begin         (void)
 {
-   /*---(color)--------------------------*/
-   glClearColor    (0.1f, 0.1f, 0.1f, 1.0f);
-   glClearDepth    (1.0f);
-   /*---(textures)-----------------------*/
-   glEnable        (GL_TEXTURE_2D);    /* NEW */
-   /*---(blending)-----------------------*/
-   glShadeModel    (GL_SMOOTH);
-   glEnable        (GL_DEPTH_TEST);
-   glEnable        (GL_ALPHA_TEST);
-   glAlphaFunc     (GL_GEQUAL, 0.0125);
-   glEnable        (GL_BLEND);
-   glBlendFunc     (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-   glDepthFunc     (GL_LEQUAL);
-   /*---(anti-aliasing)------------------*/
-   glHint          (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-   /*---(special polygon antialiasing)----------*/
-   glEnable        (GL_POLYGON_SMOOTH);
-   glPolygonMode   (GL_FRONT_AND_BACK, GL_FILL);
-   glHint          (GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-   /*---(simple defaulting)--------------*/
-   glLineWidth     (0.50f);
-   /*---(process immediately)------------*/
-   glFlush       ();
-   /*---(complete)-----------------------*/
+   /*> /+---(color)--------------------------+/                                       <* 
+    *> glClearColor    (0.1f, 0.1f, 0.1f, 1.0f);                                      <* 
+    *> glClearDepth    (1.0f);                                                        <* 
+    *> /+---(textures)-----------------------+/                                       <* 
+    *> glEnable        (GL_TEXTURE_2D);    /+ NEW +/                                  <* 
+    *> /+---(blending)-----------------------+/                                       <* 
+    *> glShadeModel    (GL_SMOOTH);                                                   <* 
+    *> glEnable        (GL_DEPTH_TEST);                                               <* 
+    *> glEnable        (GL_ALPHA_TEST);                                               <* 
+    *> glAlphaFunc     (GL_GEQUAL, 0.0125);                                           <* 
+    *> glEnable        (GL_BLEND);                                                    <* 
+    *> glBlendFunc     (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);                        <* 
+    *> glDepthFunc     (GL_LEQUAL);                                                   <* 
+    *> /+---(anti-aliasing)------------------+/                                       <* 
+    *> glHint          (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);                   <* 
+    *> /+---(special polygon antialiasing)----------+/                                <* 
+    *> glEnable        (GL_POLYGON_SMOOTH);                                           <* 
+    *> glPolygonMode   (GL_FRONT_AND_BACK, GL_FILL);                                  <* 
+    *> glHint          (GL_POLYGON_SMOOTH_HINT, GL_NICEST);                           <* 
+    *> /+---(simple defaulting)--------------+/                                       <* 
+    *> glLineWidth     (0.50f);                                                       <* 
+    *> /+---(process immediately)------------+/                                       <* 
+    *> glFlush       ();                                                              <* 
+    *> /+---(complete)-----------------------+/                                       <*/
    return 0;
 }
 
@@ -599,7 +665,7 @@ draw_main          (void)
    char        rc          = 0;
    /*---(prepare)------------------------*/
    draw_spider ();
-   glClear         (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   /*> glClear         (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                   <*/
    /*---(normal)-------------------------*/
    if (my.scrn == SCRN_NORM) {
       /*> if      (flag_view == 1) view_hildebrand ();                                   <* 
@@ -610,8 +676,8 @@ draw_main          (void)
       /*> view_top    ();                                                                <*/
       view_3d     ();
       rc = TICK_show   ();
-      DRAW_command     ();
-      DRAW_title       ();
+      /*> DRAW_command     ();                                                        <*/
+      /*> DRAW_title       ();                                                        <*/
       /*> DRAW_alternate   ();                                                        <*/
       TICK_legend      ();
       /*> view_leg    ();                                                                <*/
@@ -701,9 +767,9 @@ draw_spider        (void)
    glPushMatrix (); {
       /*> draw_masscenter ();                                                         <*/
       glTranslatef    (center.bx,      0.0  , center.bz);
-      draw_arrow      ();
+      /*> draw_arrow      ();                                                         <*/
       /*> if (flag_annotate == 'y')  draw__center ();                                 <*/
-      glCallList      (dl_body);
+      /*> glCallList      (dl_body);                                                  <*/
       yKINE_move_curall ( my.p_cursec);
       for (x_leg = 0; x_leg < 6; ++x_leg) {
          glPushMatrix (); {
@@ -720,49 +786,32 @@ draw_spider        (void)
             rc = yKINE_servo_deg  (x_leg, YKINE_FEMU, &x_femu);
             rc = yKINE_servo_deg  (x_leg, YKINE_PATE, &x_pate);
             rc = yKINE_servo_deg  (x_leg, YKINE_TIBI, &x_tibi);
-            /*> if (g_servos [  x_servo].curr != NULL)  my.s_femu = x_femu = g_servos [x_servo].deg;   <* 
-             *> if (g_servos [++x_servo].curr != NULL)  my.s_pate = x_pate = g_servos [x_servo].deg;   <* 
-             *> if (g_servos [++x_servo].curr != NULL)  my.s_tibi = x_tibi = g_servos [x_servo].deg;   <*/
             /*---(draw)------------------*/
             draw_leg_NEW   (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
             /*---(calc in yKINE)---------*/
-            yKINE_forward  (x_leg, x_femu, x_pate, x_tibi);
-            KINE_write     (x_leg);
+            /*> yKINE_forward  (x_leg, x_femu, x_pate, x_tibi);                       <*/
+            /*> KINE_write     (x_leg);                                               <*/
             /*---(done)------------------*/
          } glPopMatrix ();
-         glPushMatrix (); {
-            /*---(figure move line)------*/
-            x_debug = '-';
-            /*> if (strcmp (g_servos [x_servo].label, "RR.tibi") == 0) x_debug = 'y';   <*/
-            /*> if (x_debug == 'y') {                                                 <*/
-            /*> if (x_debug == 'y')  printf ("name = %s\n", g_servos [x_servo].label);          <* 
-             *> if (x_debug == 'y')  printf ("curr = %p\n", g_servos [x_servo].curr);           <* 
-             *> if (x_debug == 'y')  printf ("prev = %p\n", g_servos [x_servo].curr->s_prev);   <*/
-            rc = yKINE_servo_line (x_leg, YKINE_TIBI, &x_xpos1, &x_zpos1, &x_ypos1, &x_xpos2, &x_zpos2, &x_ypos2);
-            /*> if (g_servos [x_servo].curr->s_prev != NULL) {                                                        <* 
-             *>    x_xpos1 = g_servos [x_servo].curr->s_prev->x_pos;                                                  <* 
-             *>    x_zpos1 = g_servos [x_servo].curr->s_prev->z_pos;                                                  <* 
-             *>    x_ypos1 = g_servos [x_servo].curr->s_prev->y_pos;                                                  <* 
-             *>    if (x_debug == 'y')  printf ("   pos1  %8.1lfx, %8.1lfz, %8.1lfy\n", x_xpos1, x_zpos1, x_ypos1);   <* 
-             *>    x_xpos2 = g_servos [x_servo].curr->x_pos;                                                          <* 
-             *>    x_zpos2 = g_servos [x_servo].curr->z_pos;                                                          <* 
-             *>    x_ypos2 = g_servos [x_servo].curr->y_pos;                                                          <* 
-             *>    if (x_debug == 'y')  printf ("   pos2  %8.1lfx, %8.1lfz, %8.1lfy\n", x_xpos2, x_zpos2, x_ypos2);   <*/
-            if (rc >= 0) {
-               glLineWidth  ( 2.00f);
-               glColor4f    (1.0f, 0.0f, 0.0f, 1.0f);
-               glBegin      (GL_LINES); {
-                  glVertex3f  (x_xpos1, x_ypos1, x_zpos1);
-                  glVertex3f  (x_xpos2, x_ypos2, x_zpos2);
-               } glEnd   ();
-               glColor4f    (1.0f, 0.0f, 1.0f, 1.0f);
-               glBegin      (GL_POINTS); {
-                  glVertex3f  (x_xpos1, x_ypos1, x_zpos1);
-                  glVertex3f  (x_xpos2, x_ypos2, x_zpos2);
-               } glEnd   ();
-            }
-            /*> }                                                                     <*/
-         } glPopMatrix ();
+         /*> glPushMatrix (); {                                                                                          <* 
+          *>    /+---(figure move line)------+/                                                                          <* 
+          *>    x_debug = '-';                                                                                           <* 
+          *>    rc = yKINE_servo_line (x_leg, YKINE_TIBI, &x_xpos1, &x_zpos1, &x_ypos1, &x_xpos2, &x_zpos2, &x_ypos2);   <* 
+          *>    if (rc >= 0) {                                                                                           <* 
+          *>       glLineWidth  ( 2.00f);                                                                                <* 
+          *>       glColor4f    (1.0f, 0.0f, 0.0f, 1.0f);                                                                <* 
+          *>       glBegin      (GL_LINES); {                                                                            <* 
+          *>          glVertex3f  (x_xpos1, x_ypos1, x_zpos1);                                                           <* 
+          *>          glVertex3f  (x_xpos2, x_ypos2, x_zpos2);                                                           <* 
+          *>       } glEnd   ();                                                                                         <* 
+          *>       glColor4f    (1.0f, 0.0f, 1.0f, 1.0f);                                                                <* 
+          *>       glBegin      (GL_POINTS); {                                                                           <* 
+          *>          glVertex3f  (x_xpos1, x_ypos1, x_zpos1);                                                           <* 
+          *>          glVertex3f  (x_xpos2, x_ypos2, x_zpos2);                                                           <* 
+          *>       } glEnd   ();                                                                                         <* 
+          *>    }                                                                                                        <* 
+          *> } glPopMatrix ();                                                                                           <*/
+         /*> break;                                                                   <*/
       }
       /*> draw_contact    ();                                                         <*/
    } glPopMatrix ();
@@ -943,11 +992,11 @@ void
 view_3d()
 {
    /*---(setup view)---------------------*/
-   glViewport      (my.s_left, my.s_bott, my.s_wide, my.s_tall);
-   glMatrixMode    (GL_PROJECTION);
-   glLoadIdentity  ();
-   gluPerspective  (45.0f, (GLfloat) my.s_wide / (GLfloat) my.s_tall, 0.01f, 4000.0f);
-   glMatrixMode    (GL_MODELVIEW);
+   /*> glViewport      (my.s_left, my.s_bott, my.s_wide, my.s_tall);                         <* 
+    *> glMatrixMode    (GL_PROJECTION);                                                      <* 
+    *> glLoadIdentity  ();                                                                   <* 
+    *> gluPerspective  (45.0f, (GLfloat) my.s_wide / (GLfloat) my.s_tall, 0.01f, 4000.0f);   <* 
+    *> glMatrixMode    (GL_MODELVIEW);                                                       <*/
 
    DRAW_reset      ();
    glPushMatrix    (); {
@@ -968,7 +1017,7 @@ view_3d()
       /*> glTranslatef    (    0.0  , -center.by,     0.0  );                         <*/
       /*> yGOD_locate ();                                                             <*/
       /*> glLineWidth ( 0.50f);                                                       <*/
-      /*> glCallList      (dl_ground);                                                <*/
+      /*> glCallList      (dl_ground);                                       <*/
       /*> glTranslatef    (center.bx,      0.0  , center.bz);                         <*/
       /*> glTranslatef    (      0.0,  center.by,       0.0);                         <*/
       /*---(body)---------------------------*/
@@ -978,214 +1027,214 @@ view_3d()
    return;
 }
 
-char view_top_curve     (int a_leg, int a_joint, float a_radius, float a_max, float a_z) {
-   /*---(locals)-------*-----------------*/
-   float     j         = 0;
-   float     r, x, z;
-   int       d;
-   float     xmin      = 0.0;
-   float     xmax      = 0.0;
-   float     xcur      = 0.0;
-   char      msg [200];
-   float     xpos      = 0.0;
-   /*---(set min/max)--------------------*/
-   switch (a_joint) {
-   case YKINE_FEMU : xmin = - (M_PI /  2);
-                     xmax = + (M_PI /  2);
-                     xcur = - gk[a_leg][a_joint].d * DEG2RAD;
-                     xpos = 0.0;
-                     break;
-   case YKINE_PATE : xmin = - (M_PI /  2);
-                     xmax = + (M_PI /  4);
-                     xcur = - gk[a_leg][a_joint].d * DEG2RAD;
-                     xpos = 1.0;
-                     break;
-   case YKINE_TIBI : xmin = + (M_PI / 36);
-                     xmax = + (M_PI * 0.75);
-                     xcur = - gk[a_leg][a_joint].d * DEG2RAD;
-                     xpos = 2.0;
-                     break;
-   }
-   glLineWidth(5.00f);
-   /*---(draw range curve)---------------*/
-   glBegin(GL_LINE_STRIP);
-   for (j = xmin; j <= xmax; j += M_PI / 36) {
-      x   = a_radius * cos(j);
-      z   = a_radius * sin(j);
-      glVertex3f( x,  a_z, z);
-   }
-   glEnd();
-   /*---(draw current angle)-------------*/
-   r   = xcur;
-   glBegin(GL_LINES);
-   x   = a_radius * cos(r);
-   z   = a_radius * sin(r);
-   glVertex3f( x, a_z, z);
-   x   = a_max    * cos(r);
-   z   = a_max    * sin(r);
-   glVertex3f( x, a_z, z);
-   glEnd();
-   /*---(label)--------------------------*/
-   glPushMatrix    (); {
-      glTranslatef (  350, a_z, - 400.0 + (xpos * 50.0));
-      glRotatef(-90.0, 1.0f, 0.0f, 0.0f);
-      snprintf     (msg,   100, "%6.3f", xcur);
-      yFONT_print  (my.font,   32, YF_TOPLEF, msg);
-      glTranslatef (    0.0, -700.0, 0.0);
-      snprintf     (msg,   100, "%6.1f", xcur * RAD2DEG);
-      yFONT_print  (my.font,   32, YF_TOPLEF, msg);
-   } glPopMatrix    ();
-   /*---(complete)-----------------------*/
-   return 0;
-}
+/*> char view_top_curve     (int a_leg, int a_joint, float a_radius, float a_max, float a_z) {   <* 
+ *>    /+---(locals)-------*-----------------+/                                                  <* 
+ *>    float     j         = 0;                                                                  <* 
+ *>    float     r, x, z;                                                                        <* 
+ *>    int       d;                                                                              <* 
+ *>    float     xmin      = 0.0;                                                                <* 
+ *>    float     xmax      = 0.0;                                                                <* 
+ *>    float     xcur      = 0.0;                                                                <* 
+ *>    char      msg [200];                                                                      <* 
+ *>    float     xpos      = 0.0;                                                                <* 
+ *>    /+---(set min/max)--------------------+/                                                  <* 
+ *>    switch (a_joint) {                                                                        <* 
+ *>    case YKINE_FEMU : xmin = - (M_PI /  2);                                                   <* 
+ *>                      xmax = + (M_PI /  2);                                                   <* 
+ *>                      xcur = - gk[a_leg][a_joint].d * DEG2RAD;                                <* 
+ *>                      xpos = 0.0;                                                             <* 
+ *>                      break;                                                                  <* 
+ *>    case YKINE_PATE : xmin = - (M_PI /  2);                                                   <* 
+ *>                      xmax = + (M_PI /  4);                                                   <* 
+ *>                      xcur = - gk[a_leg][a_joint].d * DEG2RAD;                                <* 
+ *>                      xpos = 1.0;                                                             <* 
+ *>                      break;                                                                  <* 
+ *>    case YKINE_TIBI : xmin = + (M_PI / 36);                                                   <* 
+ *>                      xmax = + (M_PI * 0.75);                                                 <* 
+ *>                      xcur = - gk[a_leg][a_joint].d * DEG2RAD;                                <* 
+ *>                      xpos = 2.0;                                                             <* 
+ *>                      break;                                                                  <* 
+ *>    }                                                                                         <* 
+ *>    glLineWidth(5.00f);                                                                       <* 
+ *>    /+---(draw range curve)---------------+/                                                  <* 
+ *>    glBegin(GL_LINE_STRIP);                                                                   <* 
+ *>    for (j = xmin; j <= xmax; j += M_PI / 36) {                                               <* 
+ *>       x   = a_radius * cos(j);                                                               <* 
+ *>       z   = a_radius * sin(j);                                                               <* 
+ *>       glVertex3f( x,  a_z, z);                                                               <* 
+ *>    }                                                                                         <* 
+ *>    glEnd();                                                                                  <* 
+ *>    /+---(draw current angle)-------------+/                                                  <* 
+ *>    r   = xcur;                                                                               <* 
+ *>    glBegin(GL_LINES);                                                                        <* 
+ *>    x   = a_radius * cos(r);                                                                  <* 
+ *>    z   = a_radius * sin(r);                                                                  <* 
+ *>    glVertex3f( x, a_z, z);                                                                   <* 
+ *>    x   = a_max    * cos(r);                                                                  <* 
+ *>    z   = a_max    * sin(r);                                                                  <* 
+ *>    glVertex3f( x, a_z, z);                                                                   <* 
+ *>    glEnd();                                                                                  <* 
+ *>    /+---(label)--------------------------+/                                                  <* 
+ *>    glPushMatrix    (); {                                                                     <* 
+ *>       glTranslatef (  350, a_z, - 400.0 + (xpos * 50.0));                                    <* 
+ *>       glRotatef(-90.0, 1.0f, 0.0f, 0.0f);                                                    <* 
+ *>       snprintf     (msg,   100, "%6.3f", xcur);                                              <* 
+ *>       yFONT_print  (my.font,   32, YF_TOPLEF, msg);                                          <* 
+ *>       glTranslatef (    0.0, -700.0, 0.0);                                                   <* 
+ *>       snprintf     (msg,   100, "%6.1f", xcur * RAD2DEG);                                    <* 
+ *>       yFONT_print  (my.font,   32, YF_TOPLEF, msg);                                          <* 
+ *>    } glPopMatrix    ();                                                                      <* 
+ *>    /+---(complete)-----------------------+/                                                  <* 
+ *>    return 0;                                                                                 <* 
+ *> }                                                                                            <*/
 
-void view_top() {
-   /*---(locals)-------*-----------------*/
-   int       i         = my_curr;
-   float     j         = 0;
-   float     r, x, z;
-   int       d;
-   /*===[[ SETUP VIEW ]]==================================*/
-   glViewport      (700, 468, 300, 300);
-   glMatrixMode    (GL_PROJECTION);
-   glLoadIdentity  ();
-   glOrtho         (-500.0, 500.0 , -500.0, 500.0,-500.0,  500.0);
-   glMatrixMode    (GL_MODELVIEW);
-   DRAW_reset      ();
-   /*---(setup specifics)----------------*/
-   glPushMatrix    ();
-   glRotatef( 90.0, 1.0f, 0.0f, 0.0f);
-   draw_arrow();
-   glCallList(dl_spider);
-   /*---(draw curves)--------------------*/
-   glColor3f(1.0f, 0.0f, 0.0f);
-   view_top_curve (my_curr, YKINE_FEMU, 370.0, 450.0,  10.0);
-   glColor3f(0.0f, 0.5f, 1.0f);
-   view_top_curve (my_curr, YKINE_PATE, 390.0, 450.0,   0.0);
-   glColor3f(1.0f, 0.5f, 0.0f);
-   view_top_curve (my_curr, YKINE_TIBI, 410.0, 450.0, -10.0);
-   /*===[[ PATELLA ]]=====================================*/
-   /*> glBegin(GL_LINE_STRIP);                                                                         <* 
-    *> for (j = ik[i][YKINE_COXA].v - (M_PI_2); j <= ik[i][YKINE_COXA].v + (M_PI / 4); j += M_PI / 36) {           <* *>    x   = 390.0f * cos(j);                                                                       <* *>    z   = 390.0f * sin(j);                                                                       <* *>    glVertex3f( x, 0.0, z);                                                                      <* *> }                                                                                               <* *> glEnd();                                                                                        <* *> glBegin(GL_LINES);                                                                              <* *> r   = -ik[i][YKINE_PATE].v;                                                                           <* *> x   = 390.0f * cos(r);                                                                          <* *> z   = 390.0f * sin(r);
-    <* *> glVertex3f( x,  0, z);                                                                          <* *> x   = 450.0f * cos(r);                                                                          <* *> z   = 450.0f * sin(r);                                                                          <* *> glVertex3f( x,  0, z);                                                                          <* *> glEnd();                                                                                        <* *> /+===[[ TIBIA ]]=======================================+/                                       <* *> glColor3f(0.0f, 0.0f, 1.0f);                                                                    <* *> glBegin(GL_LINE_STRIP);                                                                         <* *> for (j = -ik[i][YKINE_PATE].v + (M_PI / 36); j <= -ik[i][YKINE_PATE].v + (0.75 * M_PI); j += M_PI / 36) {   <* *>    x   = 410.0f * cos(j);
-    <* *>    z   = 410.0f * sin(j);                                                                       <* *>    glVertex3f( x,  -9.0, z);                                                                    <* *> }                                                                                               <* *> glEnd();                                                                                        <* *> glBegin(GL_LINES);                                                                              <* *> r   = -ik[i][YKINE_TIBI].v;                                                                           <* *> x   = 410.0f * cos(r);                                                                          <* *> z   = 410.0f * sin(r);                                                                          <* *> glVertex3f( x,  -9.0, z);                                                                       <* *> x   = 450.0f * cos(r);
-    <* *> z   = 450.0f * sin(r);                                                                          <* *> glVertex3f( x,  -9.0, z);                                                                       <* *> glVertex3f(15.0, -10.0,  5.0);                                                                  <* *> glVertex3f(17.0, -10.0,  5.0);                                                                  <* *> glEnd();                                                                                        <*/
-   /*---(tarsus to origin line)-----------------*/
-   glLineWidth( 1.50f);
-   glEnable(GL_LINE_STIPPLE);
-   glLineStipple(1, 0xAAAA);
-   glBegin(GL_LINES);
-   glColor3f(1.0f, 1.0f, 0.0f);
-   glVertex3f( 0.00f, 0.00f, 0.00f);
-   glVertex3f( fk[i][YKINE_TARS].cx, fk[i][YKINE_TARS].cy, fk[i][YKINE_TARS].cz);
-   glEnd();
-   /*===[[ DRAW AXIS ]]==================================*/
-   glEnable(GL_LINE_STIPPLE);
-   glLineWidth(0.50f);
-   /*---(positive X :: blue   course dashed)-------------*/
-   glLineStipple(2, 0x0F0F);
-   glColor3f(1.0f, 0.0f, 1.0f);
-   glBegin(GL_LINES);
-   glVertex3f( 250.00f, -30.00f,   0.00f);
-   glVertex3f( 500.00f, -30.00f,   0.00f);
-   glEnd();
-   /*---(negative X :: blue   fine dotted)---------------*/
-   glLineStipple(2, 0xAAAA);
-   glColor3f(1.0f, 0.0f, 1.0f);
-   glBegin(GL_LINES);
-   glVertex3f(-250.00f, -30.00f,   0.00f);
-   glVertex3f(-500.00f, -30.00f,   0.00f);
-   glEnd();
-   /*---(positive Z :: cyan   course dashed)-------------*/
-   glLineStipple(2, 0x0F0F);
-   glColor3f(0.0f, 1.0f, 1.0f);
-   glBegin(GL_LINES);
-   glColor3f(0.0f, 1.0f, 1.0f);
-   glVertex3f(   0.00f, -30.00f, 250.00f);
-   glVertex3f(   0.00f, -30.00f, 500.00f);
-   glEnd();
-   /*---(negative Z :: cyan   fine dotted)---------------*/
-   glLineStipple(2, 0xAAAA);
-   glColor3f(0.0f, 1.0f, 1.0f);
-   glBegin(GL_LINES);
-   glVertex3f(   0.00f, -30.00f,-250.00f);
-   glVertex3f(   0.00f, -30.00f,-500.00f);
-   glEnd();
-   glDisable(GL_LINE_STIPPLE);
-   /*===[[ DRAW RADIANS ]]================================*/
-   glColor3f(0.0f, 0.0f, 1.0f);
-   for (d = 0; d < 365; d += 5) {
-      glLineWidth(0.50f);
-      if (d % 15 == 0) glLineWidth(2.50f);
-      glBegin(GL_LINES);
-      r   = d * DEG2RAD;
-      x   = 370.0f * cos(r);
-      z   = 370.0f * sin(r);
-      glVertex3f( x,-20.00f, z);
-      if (d % 15 == 0) {
-         x   = 430.0f * cos(r);
-         z   = 430.0f * sin(r);
-      } else {
-         x   = 410.0f * cos(r);
-         z   = 410.0f * sin(r);
-      }
-      glVertex3f( x,-20.00f, z);
-      glEnd();
-      if ((d + 45) % 90 == 0) {
-         glLineWidth(2.50f);
-         for (i = 0; i < (d + 45)/90; ++i) {
-            glBegin(GL_LINES);
-            r = (d + (i * 2)) * ((2 * M_PI) / 360);
-            x   = 14.0f * cos(r);
-            z   = 14.0f * sin(r);
-            glVertex3f(x,  0.0f, z);
-            x   = 15.0f * cos(r);
-            z   = 15.0f * sin(r);
-            glVertex3f(x,  0.0f, z);
-            glEnd();
-         } glLineWidth(0.50f);
-      }
-   }
-   /*> x   = 12.0f * cos(ik[i][6].h);                                                 <* 
-    *> z   = 12.0f * sin(ik[i][6].h);                                                 <* *> glVertex3f( x,  -9.0, z);                                                      <* *> x   = 13.0f * cos(ik[i][6].h);                                                 <* *> z   = 13.0f * sin(ik[i][6].h);                                                 <* *> glVertex3f( x,  -9.0, z);                                                      <* *> glVertex3f(15.0, -10.0, -3.0);                                                 <* *> glVertex3f(17.0, -10.0, -3.0);                                                 <* *> glEnd();                                                                       <*/
-   /*---(done)----------------------------------*/
-   glPopMatrix();
-   return;
-}
+/*> void view_top() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       <* 
+ *>    /+---(locals)-------*-----------------+/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <* 
+ *>    int       i         = my_curr;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       <* 
+ *>    float     j         = 0;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <* 
+ *>    float     r, x, z;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   <* 
+ *>    int       d;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+ *>    /+===[[ SETUP VIEW ]]==================================+/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <* 
+ *>    glViewport      (700, 468, 300, 300);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <* 
+ *>    glMatrixMode    (GL_PROJECTION);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     <* 
+ *>    glLoadIdentity  ();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <* 
+ *>    glOrtho         (-500.0, 500.0 , -500.0, 500.0,-500.0,  500.0);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <* 
+ *>    glMatrixMode    (GL_MODELVIEW);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <* 
+ *>    DRAW_reset      ();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <* 
+ *>    /+---(setup specifics)----------------+/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <* 
+ *>    glPushMatrix    ();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <* 
+ *>    glRotatef( 90.0, 1.0f, 0.0f, 0.0f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <* 
+ *>    draw_arrow();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <* 
+ *>    glCallList(dl_spider);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               <* 
+ *>    /+---(draw curves)--------------------+/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <* 
+ *>    glColor3f(1.0f, 0.0f, 0.0f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+ *>    view_top_curve (my_curr, YKINE_FEMU, 370.0, 450.0,  10.0);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           <* 
+ *>    glColor3f(0.0f, 0.5f, 1.0f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+ *>    view_top_curve (my_curr, YKINE_PATE, 390.0, 450.0,   0.0);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           <* 
+ *>    glColor3f(1.0f, 0.5f, 0.0f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+ *>    view_top_curve (my_curr, YKINE_TIBI, 410.0, 450.0, -10.0);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           <* 
+ *>    /+===[[ PATELLA ]]=====================================+/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <* 
+ *>    /+> glBegin(GL_LINE_STRIP);                                                                         <*                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               <* 
+ *>     *> for (j = ik[i][YKINE_COXA].v - (M_PI_2); j <= ik[i][YKINE_COXA].v + (M_PI / 4); j += M_PI / 36) {           <* *>    x   = 390.0f * cos(j);                                                                       <* *>    z   = 390.0f * sin(j);                                                                       <* *>    glVertex3f( x, 0.0, z);                                                                      <* *> }                                                                                               <* *> glEnd();                                                                                        <* *> glBegin(GL_LINES);                                                                              <* *> r   = -ik[i][YKINE_PATE].v;                                                                           <* *> x   = 390.0f * cos(r);                                                                          <* *> z   = 390.0f * sin(r);   <* 
+ *>     <* *> glVertex3f( x,  0, z);                                                                          <* *> x   = 450.0f * cos(r);                                                                          <* *> z   = 450.0f * sin(r);                                                                          <* *> glVertex3f( x,  0, z);                                                                          <* *> glEnd();                                                                                        <* *> /+===[[ TIBIA ]]=======================================+/                                       <* *> glColor3f(0.0f, 0.0f, 1.0f);                                                                    <* *> glBegin(GL_LINE_STRIP);                                                                         <* *> for (j = -ik[i][YKINE_PATE].v + (M_PI / 36); j <= -ik[i][YKINE_PATE].v + (0.75 * M_PI); j += M_PI / 36) {   <* *>    x   = 410.0f * cos(j);   <* 
+ *>     <* *>    z   = 410.0f * sin(j);                                                                       <* *>    glVertex3f( x,  -9.0, z);                                                                    <* *> }                                                                                               <* *> glEnd();                                                                                        <* *> glBegin(GL_LINES);                                                                              <* *> r   = -ik[i][YKINE_TIBI].v;                                                                           <* *> x   = 410.0f * cos(r);                                                                          <* *> z   = 410.0f * sin(r);                                                                          <* *> glVertex3f( x,  -9.0, z);                                                                       <* *> x   = 450.0f * cos(r);            <* 
+ *>     <* *> z   = 450.0f * sin(r);                                                                          <* *> glVertex3f( x,  -9.0, z);                                                                       <* *> glVertex3f(15.0, -10.0,  5.0);                                                                  <* *> glVertex3f(17.0, -10.0,  5.0);                                                                  <* *> glEnd();                                                                                        <+/                                                                                                                                                                                                                                                                                                                                                                                                                                                                   <* 
+ *>    /+---(tarsus to origin line)-----------------+/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <* 
+ *>    glLineWidth( 1.50f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <* 
+ *>    glEnable(GL_LINE_STIPPLE);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           <* 
+ *>    glLineStipple(1, 0xAAAA);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <* 
+ *>    glBegin(GL_LINES);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   <* 
+ *>    glColor3f(1.0f, 1.0f, 0.0f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+ *>    glVertex3f( 0.00f, 0.00f, 0.00f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <* 
+ *>    glVertex3f( fk[i][YKINE_TARS].cx, fk[i][YKINE_TARS].cy, fk[i][YKINE_TARS].cz);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       <* 
+ *>    glEnd();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <* 
+ *>    /+===[[ DRAW AXIS ]]==================================+/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <* 
+ *>    glEnable(GL_LINE_STIPPLE);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           <* 
+ *>    glLineWidth(0.50f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <* 
+ *>    /+---(positive X :: blue   course dashed)-------------+/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <* 
+ *>    glLineStipple(2, 0x0F0F);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <* 
+ *>    glColor3f(1.0f, 0.0f, 1.0f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+ *>    glBegin(GL_LINES);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   <* 
+ *>    glVertex3f( 250.00f, -30.00f,   0.00f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <* 
+ *>    glVertex3f( 500.00f, -30.00f,   0.00f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <* 
+ *>    glEnd();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <* 
+ *>    /+---(negative X :: blue   fine dotted)---------------+/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <* 
+ *>    glLineStipple(2, 0xAAAA);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <* 
+ *>    glColor3f(1.0f, 0.0f, 1.0f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+ *>    glBegin(GL_LINES);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   <* 
+ *>    glVertex3f(-250.00f, -30.00f,   0.00f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <* 
+ *>    glVertex3f(-500.00f, -30.00f,   0.00f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <* 
+ *>    glEnd();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <* 
+ *>    /+---(positive Z :: cyan   course dashed)-------------+/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <* 
+ *>    glLineStipple(2, 0x0F0F);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <* 
+ *>    glColor3f(0.0f, 1.0f, 1.0f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+ *>    glBegin(GL_LINES);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   <* 
+ *>    glColor3f(0.0f, 1.0f, 1.0f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+ *>    glVertex3f(   0.00f, -30.00f, 250.00f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <* 
+ *>    glVertex3f(   0.00f, -30.00f, 500.00f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <* 
+ *>    glEnd();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <* 
+ *>    /+---(negative Z :: cyan   fine dotted)---------------+/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <* 
+ *>    glLineStipple(2, 0xAAAA);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <* 
+ *>    glColor3f(0.0f, 1.0f, 1.0f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+ *>    glBegin(GL_LINES);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   <* 
+ *>    glVertex3f(   0.00f, -30.00f,-250.00f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <* 
+ *>    glVertex3f(   0.00f, -30.00f,-500.00f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <* 
+*>    glEnd();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <* 
+*>    glDisable(GL_LINE_STIPPLE);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <* 
+*>    /+===[[ DRAW RADIANS ]]================================+/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <* 
+*>    glColor3f(0.0f, 0.0f, 1.0f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+*>    for (d = 0; d < 365; d += 5) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       <* 
+   *>       glLineWidth(0.50f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               <* 
+      *>       if (d % 15 == 0) glLineWidth(2.50f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <* 
+      *>       glBegin(GL_LINES);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <* 
+      *>       r   = d * DEG2RAD;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <* 
+      *>       x   = 370.0f * cos(r);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <* 
+      *>       z   = 370.0f * sin(r);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <* 
+      *>       glVertex3f( x,-20.00f, z);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <* 
+      *>       if (d % 15 == 0) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <* 
+         *>          x   = 430.0f * cos(r);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+            *>          z   = 430.0f * sin(r);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+            *>       } else {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <* 
+               *>          x   = 410.0f * cos(r);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+                  *>          z   = 410.0f * sin(r);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+                  *>       }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <* 
+                  *>       glVertex3f( x,-20.00f, z);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <* 
+                  *>       glEnd();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <* 
+                  *>       if ((d + 45) % 90 == 0) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <* 
+                     *>          glLineWidth(2.50f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <* 
+                        *>          for (i = 0; i < (d + 45)/90; ++i) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <* 
+                           *>             glBegin(GL_LINES);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <* 
+                              *>             r = (d + (i * 2)) * ((2 * M_PI) / 360);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     <* 
+                              *>             x   = 14.0f * cos(r);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       <* 
+                              *>             z   = 14.0f * sin(r);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       <* 
+                              *>             glVertex3f(x,  0.0f, z);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <* 
+                              *>             x   = 15.0f * cos(r);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       <* 
+                              *>             z   = 15.0f * sin(r);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       <* 
+                              *>             glVertex3f(x,  0.0f, z);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <* 
+                              *>             glEnd();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <* 
+                              *>          } glLineWidth(0.50f);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <* 
+                              *>       }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <* 
+                              *>    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <* 
+                              *>    /+> x   = 12.0f * cos(ik[i][6].h);                                                 <*                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <* 
+                              *>     *> z   = 12.0f * sin(ik[i][6].h);                                                 <* *> glVertex3f( x,  -9.0, z);                                                      <* *> x   = 13.0f * cos(ik[i][6].h);                                                 <* *> z   = 13.0f * sin(ik[i][6].h);                                                 <* *> glVertex3f( x,  -9.0, z);                                                      <* *> glVertex3f(15.0, -10.0, -3.0);                                                 <* *> glVertex3f(17.0, -10.0, -3.0);                                                 <* *> glEnd();                                                                       <+/                                                                                                                                                                                                                                                                                            <* 
+                              *>    /+---(done)----------------------------------+/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <* 
+                              *>    glPopMatrix();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       <* 
+                              *>    return;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <* 
+                              *> }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       <*/
 
-void view_side() {
-   int      i = my_curr;
-   float    j = 0;
-   float    r, x, z;
-   int      d;
-   /*===[[ SETUP VIEW ]]==================================*/
-   glViewport      (  0,   0, 700, 160);
-   glMatrixMode    (GL_PROJECTION);
-   glLoadIdentity  ();
-   glOrtho         (-500.0, 500.0 ,  -50.0, 150.0,-500.0,  500.0);
-   glMatrixMode    (GL_MODELVIEW);
-   glPolygonMode   (GL_FRONT_AND_BACK, GL_FILL);
-   DRAW_reset      ();
-   glPushMatrix    ();
-   glTranslatef( 0.0,  center.by, 0);
-   /*> glRotatef(- my_yaw  , 0.0f, 1.0f, 0.0f);                                       <* 
-    *> glRotatef(- my_pitch, 1.0f, 0.0f, 0.0f);                                       <* *> glRotatef(- my_roll , 0.0f, 0.0f, 1.0f);                                       <*/
-   /*> glCallList      (dl_spider);                                                   <*/
-   glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
-   /*> glTranslatef( 0.0,  50.0,  100.0);                                             <*/
-   /*> yFONT_print (my.font,  20, YF_TOPLEF, "testing");                               <*/
-   glPopMatrix();
-   return;
-}
+                              /*> void view_side() {                                                                                                                                                               <* 
+                               *>    int      i = my_curr;                                                                                                                                                         <* 
+                               *>    float    j = 0;                                                                                                                                                               <* 
+                               *>    float    r, x, z;                                                                                                                                                             <* 
+                               *>    int      d;                                                                                                                                                                   <* 
+                               *>    /+===[[ SETUP VIEW ]]==================================+/                                                                                                                     <* 
+                               *>    glViewport      (  0,   0, 700, 160);                                                                                                                                         <* 
+                               *>    glMatrixMode    (GL_PROJECTION);                                                                                                                                              <* 
+                               *>    glLoadIdentity  ();                                                                                                                                                           <* 
+                               *>    glOrtho         (-500.0, 500.0 ,  -50.0, 150.0,-500.0,  500.0);                                                                                                               <* 
+                               *>    glMatrixMode    (GL_MODELVIEW);                                                                                                                                               <* 
+                               *>    glPolygonMode   (GL_FRONT_AND_BACK, GL_FILL);                                                                                                                                 <* 
+                               *>    DRAW_reset      ();                                                                                                                                                           <* 
+                               *>    glPushMatrix    ();                                                                                                                                                           <* 
+                               *>    glTranslatef( 0.0,  center.by, 0);                                                                                                                                            <* 
+                               *>    /+> glRotatef(- my_yaw  , 0.0f, 1.0f, 0.0f);                                       <*                                                                                         <* 
+                               *>     *> glRotatef(- my_pitch, 1.0f, 0.0f, 0.0f);                                       <* *> glRotatef(- my_roll , 0.0f, 0.0f, 1.0f);                                       <+/   <* 
+                               *>    /+> glCallList      (dl_spider);                                                   <+/                                                                                        <* 
+                               *>    glColor4f (1.0f, 1.0f, 1.0f, 1.0f);                                                                                                                                           <* 
+                               *>    /+> glTranslatef( 0.0,  50.0,  100.0);                                             <+/                                                                                        <* 
+                               *>    /+> yFONT_print (my.font,  20, YF_TOPLEF, "testing");                               <+/                                                                                       <* 
+                               *>    glPopMatrix();                                                                                                                                                                <* 
+                               *>    return;                                                                                                                                                                       <* 
+                               *> }                                                                                                                                                                                <*/
 
 
 
-/*====================------------------------------------====================*/
-/*===----                       gait visualization                     ----===*/
-/*====================------------------------------------====================*/
-static void      o___GAIT_VIS________________o (void) {;}
+                              /*====================------------------------------------====================*/
+                              /*===----                       gait visualization                     ----===*/
+                              /*====================------------------------------------====================*/
+                              static void      o___GAIT_VIS________________o (void) {;}
 
-int       beg, end;
+                              int       beg, end;
 
 char       /* ---- : visualize number of legs touching -----------------------*/
 view_setup         (char *a_title, char *a_desc)

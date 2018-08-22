@@ -80,20 +80,21 @@ PROG_init          (void)
    my.p_quit    =  '-';
    my.p_dump    =  '-';
    /*---(fonss)--------------------------*/
-   strlcpy (my.face      , "comfortaa"    , LEN_LABEL);
-   strlcpy (my.t_text    , "arachne, spider robot visualization and simulation"       , LEN_STR  );
-   strlcpy (my.face_fixed, "courier"    , LEN_LABEL);
-   /*---(setup modes)--------------------*/
+   strlcpy (my.face_pretty, "comfortaa"    , LEN_LABEL);
+   strlcpy (my.face_fixed , "hack"         , LEN_LABEL);
+   /*> strlcpy (my.t_text     , "arachne, spider robot visualization and simulation"       , LEN_STR  );   <*/
+   /*---(setup yVIKEYS)------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");
-   yVIKEYS_mode_init    ();
-   yVIKEYS_mode_enter   (MODE_GOD);
+   yVIKEYS_init  ();
+   /*> yVIKEYS_mode_init    ();                                                       <* 
+    *> yVIKEYS_mode_enter   (MODE_GOD);                                               <*/
    /*---(time)---------------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare scales");
-   yVIKEYS_scale_set    ("d-", &my.p_inc);
+   /*> yVIKEYS_scale_set    ("d-", &my.p_inc);                                        <*/
    /*---(speed)--------------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare speeds");
-   yVIKEYS_speed_set    ("+1.00x", &my.p_waitns);
-   yVIKEYS_speed_stop   (&my.p_waitns);
+   /*> yVIKEYS_speed_set    ("+1.00x", &my.p_waitns);                                 <*/
+   /*> yVIKEYS_speed_stop   (&my.p_waitns);                                           <*/
    /*---(complete)-----------------------*/
    DEBUG_TOPS   yLOG_exit  (__FUNCTION__);
    return 0;
@@ -121,36 +122,36 @@ PROG_args          (int argc, char *argv[])
       if (a[0] == '@')  continue;
       DEBUG_ARGS  yLOG_info    ("cli arg", a);
       ++x_args;
-      if      (strcmp(a, "--play"       ) == 0)  yVIKEYS_speed_play   (&my.p_waitns);
-      else if (strcmp(a, "--pause"      ) == 0)  yVIKEYS_speed_stop   (&my.p_waitns);
-      else if (strcmp(a, "--quit"       ) == 0)  my.p_quit = 'y';
-      else if (strcmp(a, "--RR"         ) == 0)  my.p_leg  = 0.0;
-      else if (strcmp(a, "--RM"         ) == 0)  my.p_leg  = 1.0;
-      else if (strcmp(a, "--RF"         ) == 0)  my.p_leg  = 2.0;
-      else if (strcmp(a, "--LF"         ) == 0)  my.p_leg  = 3.0;
-      else if (strcmp(a, "--LM"         ) == 0)  my.p_leg  = 4.0;
-      else if (strcmp(a, "--LR"         ) == 0)  my.p_leg  = 5.0;
-      else if (strcmp(a, "--dump"       ) == 0)  my.p_dump = 'c';
-      else if (strcmp(a, "--dumpall"    ) == 0)  my.p_dump = 'a';
-      else if (strcmp(a, "--moves_rpt"  ) == 0)  my.report = RPTG_MOVES;
-      else if (strcmp(a, "--begsec"     ) == 0) {
-         if (i + 1 <  argc)  my.p_cursec = atof (argv[++i]);
-      }
-      else if (strcmp(a, "--endsec"     ) == 0) {
-         if (i + 1 <  argc)  my.p_endsec = atof (argv[++i]);
-      }
-      else if (strcmp(a, "--scale"      ) == 0) {
-         if (i + 1 <  argc) {
-            yVIKEYS_scale_set    (argv[++i], &my.p_inc);
-         }
-      }
-      else if (strcmp(a, "--progress"   ) == 0) {
-         yVIKEYS_mode_enter  (MODE_PROGRESS);
-      }
-      else if (a[0] != '-'                     ) {
-         DEBUG_ARGS  yLOG_note   ("found a file name");
-         strncpy (my.f_base , a        , LEN_STR);
-      }
+      /*> if      (strcmp(a, "--play"       ) == 0)  yVIKEYS_speed_play   (&my.p_waitns);       <* 
+       *> else if (strcmp(a, "--pause"      ) == 0)  yVIKEYS_speed_stop   (&my.p_waitns);       <* 
+       *> else if (strcmp(a, "--quit"       ) == 0)  my.p_quit = 'y';                           <* 
+       *> else if (strcmp(a, "--RR"         ) == 0)  my.p_leg  = 0.0;                           <* 
+       *> else if (strcmp(a, "--RM"         ) == 0)  my.p_leg  = 1.0;                           <* 
+       *> else if (strcmp(a, "--RF"         ) == 0)  my.p_leg  = 2.0;                           <* 
+       *> else if (strcmp(a, "--LF"         ) == 0)  my.p_leg  = 3.0;                           <* 
+       *> else if (strcmp(a, "--LM"         ) == 0)  my.p_leg  = 4.0;                           <* 
+       *> else if (strcmp(a, "--LR"         ) == 0)  my.p_leg  = 5.0;                           <* 
+       *> else if (strcmp(a, "--dump"       ) == 0)  my.p_dump = 'c';                           <* 
+       *> else if (strcmp(a, "--dumpall"    ) == 0)  my.p_dump = 'a';                           <* 
+       *> else if (strcmp(a, "--moves_rpt"  ) == 0)  my.report = RPTG_MOVES;                    <* 
+       *> else if (strcmp(a, "--begsec"     ) == 0) {                                           <* 
+       *>    if (i + 1 <  argc)  my.p_cursec = atof (argv[++i]);                                <* 
+       *> }                                                                                     <* 
+       *> else if (strcmp(a, "--endsec"     ) == 0) {                                           <* 
+       *>    if (i + 1 <  argc)  my.p_endsec = atof (argv[++i]);                                <* 
+       *> }                                                                                     <* 
+       *> else if (strcmp(a, "--scale"      ) == 0) {                                           <* 
+       *>    if (i + 1 <  argc) {                                                               <* 
+       *>       yVIKEYS_scale_set    (argv[++i], &my.p_inc);                                    <* 
+       *>    }                                                                                  <* 
+       *> }                                                                                     <* 
+       *> else if (strcmp(a, "--progress"   ) == 0) {                                           <* 
+       *>    /+> yVIKEYS_mode_enter  (MODE_PROGRESS);                                     <+/   <* 
+       *> }                                                                                     <* 
+       *> else if (a[0] != '-'                     ) {                                          <* 
+       *>    DEBUG_ARGS  yLOG_note   ("found a file name");                                     <* 
+       *>    strncpy (my.f_base , a        , LEN_STR);                                          <* 
+       *> }                                                                                     <*/
    }
    DEBUG_ARGS  yLOG_value  ("entries"   , x_total);
    DEBUG_ARGS  yLOG_value  ("arguments" , x_args);
@@ -181,21 +182,23 @@ PROG_begin         (void)
    DEBUG_ARGS  yLOG_info   ("title"     , my.w_title);
    DEBUG_ARGS  yLOG_value  ("width"     , my.w_wide);
    DEBUG_ARGS  yLOG_value  ("height"    , my.w_tall);
-   yXINIT_start (my.w_title, my.w_wide, my.w_tall, YX_FOCUSABLE, YX_FIXED, YX_SILENT);
-   DRAW_begin   ();
-   draw_setup   ();
-   font_load    ();
-   dlist_begin  ();
-   yGOD_start();
-   gait.dmax   = 100;
-   /*> stat_masscenter();                                                             <*/
+   /*> yXINIT_start (my.w_title, my.w_wide, my.w_tall, YX_FOCUSABLE, YX_FIXED, YX_SILENT);   <*/
    DEBUG_TOPS   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
 char       /*----: process the xwindows event stream -------------------------*/
-prog_event         (void)
+PROG_final         (void)
 {
+   DEBUG_TOPS   yLOG_enter   (__FUNCTION__);
+   DRAW_init    ();
+   draw_setup   ();
+   font_load    ();
+   dlist_begin  ();
+   yGOD_start   ();
+   gait.dmax   = 100;
+   /*> stat_masscenter();                                                             <*/
+   DEBUG_TOPS   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -207,7 +210,7 @@ PROG_end           (void)
    font_delete ();
    dlist_end   ();
    DRAW_end    ();
-   yXINIT_end  ();
+   /*> yXINIT_end  ();                                                                <*/
    DEBUG_PROG   yLOG_exit    (__FUNCTION__);
    DEBUG_TOPS   yLOG_end     ();
    return 0;
@@ -222,14 +225,14 @@ static void      o___FONTS___________________o (void) {;}
 char
 font_load          (void)
 {
-   my.font  = yFONT_load (my.face);
-   if (my.font <  0) {
-      fprintf(stderr, "Problem loading %s\n", my.face);
-      exit(1);
-   }
    my.font_fixed  = yFONT_load (my.face_fixed);
    if (my.font_fixed <  0) {
       fprintf(stderr, "Problem loading %s\n", my.face_fixed);
+      exit(1);
+   }
+   my.font  = yFONT_load (my.face_pretty);
+   if (my.font <  0) {
+      fprintf(stderr, "Problem loading %s\n", my.face_pretty);
       exit(1);
    }
    return 0;

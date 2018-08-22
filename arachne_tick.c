@@ -473,9 +473,9 @@ TICK_back_NEWISH   (void)
    /*---(top and bottom limits)----------*/
    for (i = 0; i < 6; ++i) {
       x_ypos = (i + 1) * x_yinc;
-      if (yVIKEYS_mode_curr () == MODE_PROGRESS && (5 - i == my.p_leg || 11 - i == my.p_leg))
-         glColor4f    (0.25f, 0.00f, 0.00f, 1.0f);
-      else
+      /*> if (yVIKEYS_mode_curr () == MODE_PROGRESS && (5 - i == my.p_leg || 11 - i == my.p_leg))   <* 
+       *>    glColor4f    (0.25f, 0.00f, 0.00f, 1.0f);                                              <* 
+       *> else                                                                                      <*/
          glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
       glBegin         (GL_POLYGON); {
          glVertex3f  (x_beg, x_ypos             ,   10.0);
@@ -553,9 +553,9 @@ TICK_back          (void)
    /*---(top and bottom limits)----------*/
    for (i = 0; i < 12; ++i) {
       x_ypos = (i + 1) * x_yinc;
-      if (yVIKEYS_mode_curr () == MODE_PROGRESS && (5 - i == my.p_leg || 11 - i == my.p_leg))
-         glColor4f    (0.25f, 0.00f, 0.00f, 1.0f);
-      else
+      /*> if (yVIKEYS_mode_curr () == MODE_PROGRESS && (5 - i == my.p_leg || 11 - i == my.p_leg))   <* 
+       *>    glColor4f    (0.25f, 0.00f, 0.00f, 1.0f);                                              <* 
+       *> else                                                                                      <*/
          glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);
       glBegin         (GL_POLYGON); {
          glVertex3f  (x_beg, x_ypos             ,   10.0);
