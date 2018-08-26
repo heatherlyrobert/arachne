@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9k"
-#define VER_TXT   "basic god view; 3d view is back, but a little strange"
+#define VER_NUM   "0.9l"
+#define VER_TXT   "opengl coordinate capture/labeling is clean and right now"
 
 
 
@@ -120,6 +120,7 @@
 #include    <yVIKEYS.h>      /* CUSTOM  heatherly vi_keys standard            */
 #include    <yFONT.h>        /* CUSTOM  heatherly texture-mapped fonts        */
 #include    <yCOLOR.h>       /* CUSTOM  heatherly opengl color handling       */
+#include    <yGLTEX.h>       /* CUSTOM  heatherly texture handling            */
 #include    <ySTR.h>         /* CUSTOM  heatherly string handling             */
 #include    <yLOG.h>         /* CUSTOM  heatherly program logging             */
 
@@ -199,8 +200,8 @@ struct cACCESSOR {
    /*---(fonts)-----------*/
    char        face_pretty [LEN_LABEL];
    char        face_fixed  [LEN_LABEL];
-   char        font;
-   char        font_fixed;
+   char        fixed;
+   char        pretty;
    /*---(window sizes)----*/
    char        w_title     [LEN_STR];       /* window title                   */
    int         w_wide;                      /* window width                   */
@@ -566,6 +567,7 @@ char      DRAW_begin         (void);      /* prepare drawing environment      */
 char      DRAW_reset         (void);      /* set starting point for drawing   */
 char      DRAW_end           (void);      /* teardown drawing environment     */
 
+char      DRAW_primary            (void);
 
 char      draw_setup         (void);
 char      draw_prep          (void);

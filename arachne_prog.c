@@ -90,11 +90,11 @@ PROG_init          (void)
     *> yVIKEYS_mode_enter   (MODE_GOD);                                               <*/
    /*---(time)---------------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare scales");
-   /*> yVIKEYS_scale_set    ("d-", &my.p_inc);                                        <*/
+   yVIKEYS_scale_set    ("d-", &my.p_inc);
    /*---(speed)--------------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare speeds");
-   /*> yVIKEYS_speed_set    ("+1.00x", &my.p_waitns);                                 <*/
-   /*> yVIKEYS_speed_stop   (&my.p_waitns);                                           <*/
+   yVIKEYS_speed_set    ("+1.00x", &my.p_waitns);
+   yVIKEYS_speed_stop   (&my.p_waitns);
    /*---(complete)-----------------------*/
    DEBUG_TOPS   yLOG_exit  (__FUNCTION__);
    return 0;
@@ -191,6 +191,23 @@ char       /*----: process the xwindows event stream -------------------------*/
 PROG_final         (void)
 {
    DEBUG_TOPS   yLOG_enter   (__FUNCTION__);
+   /*---(window and panels)--------------*/
+   yVIKEYS_view_config   ("arachne, hexapod visualization and simulation", VER_NUM, YVIKEYS_OPENGL, 800, 580, 0);
+   yVIKEYS_view_setup    (YVIKEYS_MAIN     , YVIKEYS_DEPTH, YVIKEYS_MIDCEN, -400, 400, 290, -290, -1000, 1000, YCOLOR_BAS    , DRAW_primary);
+   yVIKEYS_view_simple   (YVIKEYS_PROGRESS , YCOLOR_BAS    , TICK_show   );
+   yVIKEYS_cmds_direct   (":xaxis    disable");
+   yVIKEYS_cmds_direct   (":yaxis    disable");
+   yVIKEYS_cmds_direct   (":ribbon   disable");
+   yVIKEYS_cmds_direct   (":nav      disable");
+   yVIKEYS_cmds_direct   (":alt      disable");
+   yVIKEYS_cmds_direct   (":formula  disable");
+   yVIKEYS_cmds_direct   (":layout   work");
+   yVIKEYS_cmds_direct   (":progress show");
+   yVIKEYS_cmds_direct   (":buffer   show");
+   /*---(colors)-------------------------*/
+   yVIKEYS_cmds_direct   (":palette 190 rcomp pale earthy");
+   yVIKEYS_view_colors   (YCOLOR_POS, YCOLOR_BAS, YCOLOR_NEG, YCOLOR_POS);
+
    DRAW_init    ();
    draw_setup   ();
    font_load    ();
@@ -225,13 +242,13 @@ static void      o___FONTS___________________o (void) {;}
 char
 font_load          (void)
 {
-   my.font_fixed  = yFONT_load (my.face_fixed);
-   if (my.font_fixed <  0) {
+   my.fixed  = yFONT_load (my.face_fixed);
+   if (my.fixed <  0) {
       fprintf(stderr, "Problem loading %s\n", my.face_fixed);
       exit(1);
    }
-   my.font  = yFONT_load (my.face_pretty);
-   if (my.font <  0) {
+   my.pretty  = yFONT_load (my.face_pretty);
+   if (my.pretty <  0) {
       fprintf(stderr, "Problem loading %s\n", my.face_pretty);
       exit(1);
    }
@@ -241,8 +258,8 @@ font_load          (void)
 char
 font_delete        (void)
 {
-   yFONT_free (my.font);
-   yFONT_free (my.font_fixed);
+   yFONT_free (my.fixed);
+   yFONT_free (my.pretty);
    return 0;
 }
 

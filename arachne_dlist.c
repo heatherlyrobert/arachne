@@ -67,25 +67,25 @@ dlist_ground()
       glColor4f (1.0, 1.0, 0.0, 1.0);
       glTranslatef (    0.00f,   20.00f, -950.00f);
       glRotatef(-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (my.font, 150, YF_BASCEN, "n");
+      yFONT_print  (my.fixed, 150, YF_BASCEN, "n");
    } glPopMatrix();
    glPushMatrix    (); {
       glColor4f (1.0, 1.0, 0.0, 1.0);
       glTranslatef (    0.00f,   20.00f,  950.00f);
       glRotatef(-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (my.font, 150, YF_BASCEN, "s");
+      yFONT_print  (my.fixed, 150, YF_BASCEN, "s");
    } glPopMatrix();
    glPushMatrix    (); {
       glColor4f (1.0, 1.0, 0.0, 1.0);
       glTranslatef (  950.00f,   20.00f,    0.00f);
       glRotatef(-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (my.font, 150, YF_BASCEN, "e");
+      yFONT_print  (my.fixed, 150, YF_BASCEN, "e");
    } glPopMatrix();
    glPushMatrix    (); {
       glColor4f (1.0, 1.0, 0.0, 1.0);
       glTranslatef ( -950.00f,   20.00f,    0.00f);
       glRotatef(-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (my.font, 150, YF_BASCEN, "w");
+      yFONT_print  (my.fixed, 150, YF_BASCEN, "w");
    } glPopMatrix();
    /*---(center)----------------------------*/
    /*> glLineWidth ( 5.0);                                                            <* 
@@ -672,7 +672,7 @@ dlist_coxa      ()
       /*---(begin)-----------------------------*/
       for(y = -12.00; y <=  8.00; y += 20.00) {
          /*---(segment)----------------------------*/
-         glColor4f    (0.3f, 0.3f, 0.3f, 0.5f);
+         glColor4f    (0.0f, 0.5f, 0.5f, 0.5f);
          glBegin(GL_POLYGON); {     /*->> size is 1" wide by 13/8" out (1.62")      */
             glVertex3f( 0.00f * 25, y,  0.00f);
             glVertex3f( 0.00f * 25, y,  0.50f * 25);
@@ -682,7 +682,7 @@ dlist_coxa      ()
             glVertex3f( 1.37f * 25, y, -0.50f * 25);
             glVertex3f( 0.00f * 25, y, -0.50f * 25);
          } glEnd();
-         glColor4f    (0.3f, 0.3f, 0.3f, 1.0f);
+         glColor4f    (0.0f, 0.5f, 0.5f, 1.0f);
          glLineWidth  (2.0);
          glBegin    (GL_LINE_STRIP); {
             glVertex3f( 0.00f * 25, y,  0.00f);
@@ -701,18 +701,6 @@ dlist_coxa      ()
       glRotatef     ( 90.00f, 1.00f, 0.00f,  0.00f);
       dlist__joint  (segs_min [YKINE_TIBI], segs_max [YKINE_TIBI]);
       glRotatef     (-90.00f, 1.00f, 0.00f,  0.00f);
-      /*> int d;                                                                         <* 
-       *> float r, x, z;                                                                 <* 
-       *> glBegin(GL_QUAD_STRIP);                                                        <* 
-       *> glColor3f(1.0f, 1.0f, 0.0f);                                                   <* 
-       *> for (d = 0; d < 365; d += 45) {                                                <* 
-       *>    r = d * ((2 * M_PI) / 360);                                                 <* 
-       *>    x   = 0.10 * 25 * cos(r);                                                   <* 
-       *>    z   = 0.10 * 25 * sin(r);                                                   <* 
-       *>    glVertex3f( x,   8.00f, z);                                                 <* 
-       *>    glVertex3f( x, -42.00f, z);                                                 <* 
-       *> }                                                                              <* 
-       *> glEnd();                                                                       <*/
       /*---(end)-------------------------------*/
    } glEndList();
    return 0;

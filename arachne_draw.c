@@ -6,6 +6,7 @@
 
 
 char   flag_view  = 0;
+char   label_view = '-';
 
 
 
@@ -115,7 +116,7 @@ static void      o___COMMAND_________________o (void) {;}
  *>    glPushMatrix    (); {                                                          <* 
  *>       glTranslatef (    2.0f,    2.0f,    0.0f);                                  <* 
  *>       glColor4f    (1.00f, 1.00f, 1.00f, 1.00f);                                  <* 
- *>       yFONT_print  (my.font_fixed,  12, YF_BOTLEF, my.message);                   <* 
+ *>       yFONT_print  (my.fixed_fixed,  12, YF_BOTLEF, my.message);                   <* 
  *>    } glPopMatrix   ();                                                            <* 
  *>    /+---(complete)-----------------------+/                                       <* 
  *>    return;                                                                        <* 
@@ -155,7 +156,7 @@ static void      o___COMMAND_________________o (void) {;}
  *>    glPushMatrix    (); {                                                          <* 
  *>       glTranslatef (my.t_wide + 3,   5.0f,    0.0f);                              <* 
  *>       glRotatef    ( 90.0, 0.0f, 0.0f, 1.0f);                                     <* 
- *>       yFONT_print  (my.font,  16, YF_BOTLEF, my.t_text);                          <* 
+ *>       yFONT_print  (my.fixed,  16, YF_BOTLEF, my.t_text);                          <* 
  *>    } glPopMatrix   ();                                                            <* 
  *>    if (yURG_debugmode () == 'y')  glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);       <* 
  *>    else                           glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);       <* 
@@ -163,7 +164,7 @@ static void      o___COMMAND_________________o (void) {;}
  *>       glTranslatef (my.t_wide + 3,   5.0f,    0.0f);                              <* 
  *>       glRotatef    ( 90.0, 0.0f, 0.0f, 1.0f);                                     <* 
  *>       glTranslatef (my.t_tall - 10.0,   0.0f,    0.0f);                           <* 
- *>       yFONT_print  (my.font,  16, YF_BOTRIG, VER_NUM);                            <* 
+ *>       yFONT_print  (my.fixed,  16, YF_BOTRIG, VER_NUM);                            <* 
  *>    } glPopMatrix   ();                                                            <* 
  *>    return 0;                                                                      <* 
  *> }                                                                                 <*/
@@ -192,27 +193,27 @@ DRAW_alternate     (void)
    glPushMatrix    (); {
       glTranslatef (    5.0f, my.a_tall,    0.0f);
       glTranslatef (    0.0f,    -30.0f,    0.0f);
-      yFONT_print  (my.font,  12, YF_BOTLEF, "progress legend");
+      yFONT_print  (my.fixed,  12, YF_BOTLEF, "progress legend");
       glTranslatef (    0.0f,    -30.0f,    0.0f);
-      yFONT_print  (my.font,  12, YF_BOTLEF, "femu");
+      yFONT_print  (my.fixed,  12, YF_BOTLEF, "femu");
       glTranslatef (    0.0f,    -30.0f,    0.0f);
-      yFONT_print  (my.font,  12, YF_BOTLEF, "pate");
+      yFONT_print  (my.fixed,  12, YF_BOTLEF, "pate");
       glTranslatef (    0.0f,    -30.0f,    0.0f);
-      yFONT_print  (my.font,  12, YF_BOTLEF, "tibi");
+      yFONT_print  (my.fixed,  12, YF_BOTLEF, "tibi");
       glTranslatef (    0.0f,    -30.0f,    0.0f);
-      yFONT_print  (my.font,  12, YF_BOTLEF, "heat 1");
+      yFONT_print  (my.fixed,  12, YF_BOTLEF, "heat 1");
       glTranslatef (    0.0f,    -30.0f,    0.0f);
-      yFONT_print  (my.font,  12, YF_BOTLEF, "heat 2");
+      yFONT_print  (my.fixed,  12, YF_BOTLEF, "heat 2");
       glTranslatef (    0.0f,    -30.0f,    0.0f);
-      yFONT_print  (my.font,  12, YF_BOTLEF, "heat 3");
+      yFONT_print  (my.fixed,  12, YF_BOTLEF, "heat 3");
       glTranslatef (    0.0f,    -30.0f,    0.0f);
-      yFONT_print  (my.font,  12, YF_BOTLEF, "heat 4");
+      yFONT_print  (my.fixed,  12, YF_BOTLEF, "heat 4");
       glTranslatef (    0.0f,    -30.0f,    0.0f);
-      yFONT_print  (my.font,  12, YF_BOTLEF, "heat 5");
+      yFONT_print  (my.fixed,  12, YF_BOTLEF, "heat 5");
       glTranslatef (    0.0f,    -30.0f,    0.0f);
-      yFONT_print  (my.font,  12, YF_BOTLEF, "heat 6");
+      yFONT_print  (my.fixed,  12, YF_BOTLEF, "heat 6");
       glTranslatef (    0.0f,    -30.0f,    0.0f);
-      yFONT_print  (my.font,  12, YF_BOTLEF, "heat 7");
+      yFONT_print  (my.fixed,  12, YF_BOTLEF, "heat 7");
    } glPopMatrix   ();
    /*---(complete)-----------------------*/
    return 0;
@@ -240,61 +241,36 @@ draw_locate_NEW    (int a_leg, int a_seg, float a_deg)
 {
    /*---(locals)-------------------------*/
    char      x_msg [100];
+   double    d, l;
    double    x, y, z;
    /*---(current)------------------------*/
-   glGetDoublev(GL_MODELVIEW_MATRIX,  s_loc);
-   s_xpos     = s_loc[12];
-   s_zpos     = s_loc[14];
-   s_ypos     = s_loc[13];
-   x          = s_xpos - s_xpos_p;
-   z          = s_zpos - s_zpos_p;
-   y          = s_ypos - s_ypos_p;
-   s_len      = sqrt ((x * x) + (z * z) + (y * y));
+   yKINE_endpoint (a_leg, a_seg, YKINE_GK, &d, &l, &x, &z, &y);
    /*---(draw)---------------------------*/
    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
    glPushMatrix (); {
-      /*---(label)-------*/
-      glTranslatef(    0.0  ,    45.0 ,     0.0  );
-      yFONT_print (my.font,  3, YF_TOPLEF, segs_long [a_seg]);
       /*---(x_pos)-------*/
-      glTranslatef(    0.0  ,    -5.0 ,     0.0  );
-      snprintf (x_msg, 20, "x = %.1lf", s_xpos);
-      yFONT_print (my.font,  3, YF_TOPLEF, x_msg);
+      glTranslatef(  -20.0  ,    40.0 ,     0.0  );
+      snprintf (x_msg, 20, "%6.1lfx", x);
+      yFONT_print (my.fixed,  3, YF_TOPLEF, x_msg);
       /*---(z_pos)-------*/
       glTranslatef(    0.0  ,    -5.0 ,     0.0  );
-      snprintf (x_msg, 20, "z = %.1lf", s_zpos);
-      yFONT_print (my.font,  3, YF_TOPLEF, x_msg);
+      snprintf (x_msg, 20, "%6.1lfz", z);
+      yFONT_print (my.fixed,  3, YF_TOPLEF, x_msg);
       /*---(y_pos)-------*/
       glTranslatef(    0.0  ,    -5.0 ,     0.0  );
-      snprintf (x_msg, 20, "y = %.1lf", s_ypos);
-      yFONT_print (my.font,  3, YF_TOPLEF, x_msg);
+      snprintf (x_msg, 20, "%6.1lfy", y);
+      yFONT_print (my.fixed,  3, YF_TOPLEF, x_msg);
       /*---(len)---------*/
       glTranslatef(    0.0  ,    -5.0 ,     0.0  );
-      snprintf (x_msg, 20, "l = %.1lf", s_len);
-      yFONT_print (my.font,  3, YF_TOPLEF, x_msg);
+      snprintf (x_msg, 20, "%6.1lfl", l);
+      yFONT_print (my.fixed,  3, YF_TOPLEF, x_msg);
+      /*---(label)-------*/
+      glTranslatef(   18.0  ,     6.0 ,     0.0  );
+      glRotatef  ( 90.0, 0.0f, 0.0f, 1.0f);
+      yFONT_print (my.fixed,  3, YF_TOPCEN, segs_long [a_seg]);
       /*---(done)--------*/
    } glPopMatrix ();
-   /*---(save)---------------------------*/
-   s_xpos_p   = s_xpos;
-   s_zpos_p   = s_zpos;
-   s_ypos_p   = s_ypos;
-   /*---(save to yKINE)------------------*/
-   yKINE_opengl   (a_leg, a_seg, a_deg, s_xpos, s_zpos, s_ypos, s_len);
-   if (a_seg == YKINE_COXA)
-      yKINE_opengl   (a_leg, YKINE_TROC, a_deg, s_xpos, s_zpos, s_ypos, 0.0);
-   if (a_seg == YKINE_TIBI) {
-      yKINE_opengl   (a_leg, YKINE_META,   0.0, s_xpos, s_zpos, s_ypos, 0.0);
-      yKINE_opengl   (a_leg, YKINE_TARS,   0.0, s_xpos, s_zpos, s_ypos, 0.0);
-      yKINE_opengl   (a_leg, YKINE_FOOT,   0.0, s_xpos, s_zpos, s_ypos, 0.0);
-      yKINE_inverse  (a_leg, s_xpos, s_zpos, s_ypos);
-   }
    /*---(complete)-----------------------*/
-   return 0;
-}
-
-char
-TEST_seg           (void)
-{
    return 0;
 }
 
@@ -358,54 +334,54 @@ draw_leg_NEW       (int a_leg, float a_body, float a_coxa, float a_femu, float a
       glTranslatef (a_body,  0.0,  0.0f);
       /*> draw_locate_NEW (a_leg, YKINE_THOR, a_coxa);                                <*/
       if (a_leg == my.p_leg) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-      /*> glPushMatrix (); {                                                          <* 
-       *>    /+---(label)-------+/                                                    <* 
-       *>    snprintf (x_msg, 10, "#%d/%s", a_leg, legs_name [a_leg]);                <* 
-       *>    glTranslatef(    0.0  ,   -15.0 ,     0.0  );                            <* 
-       *>    yFONT_print (my.font, 12, YF_TOPLEF, x_msg);                             <* 
-       *>    /+---(desc)--------+/                                                    <* 
-       *>    snprintf (x_msg, 25, "%s", legs_long [a_leg]);                           <* 
-       *>    glTranslatef(    0.0  ,   -18.0 ,     0.0  );                            <* 
-       *>    yFONT_print (my.font,  5, YF_TOPLEF, x_msg);                             <* 
-       *>    /+---(prep)--------+/                                                    <* 
-       *>    glTranslatef(   20.0  ,     0.0 ,     0.0  );                            <* 
-       *>    /+---(coxa)--------+/                                                    <* 
-       *>    glTranslatef(    0.0  ,    -8.0 ,     0.0  );                            <* 
-       *>    yFONT_print (my.font,  5, YF_TOPRIG, "coxa");                            <* 
-       *>    snprintf (x_msg, 25, ": %+.1f", a_coxa);                                 <* 
-       *>    yFONT_print (my.font,  5, YF_TOPLEF, x_msg);                             <* 
-       *>    /+---(femu)--------+/                                                    <* 
-       *>    glTranslatef(    0.0  ,    -8.0 ,     0.0  );                            <* 
-       *>    yFONT_print (my.font,  5, YF_TOPRIG, "femur");                           <* 
-       *>    snprintf (x_msg, 25, ": %+.1f", a_femu);                                 <* 
-       *>    yFONT_print (my.font,  5, YF_TOPLEF, x_msg);                             <* 
-       *>    /+---(pate)--------+/                                                    <* 
-       *>    glTranslatef(    0.0  ,    -8.0 ,     0.0  );                            <* 
-       *>    yFONT_print (my.font,  5, YF_TOPRIG, "patella");                         <* 
-       *>    snprintf (x_msg, 25, ": %+.1f", a_pate);                                 <* 
-       *>    yFONT_print (my.font,  5, YF_TOPLEF, x_msg);                             <* 
-       *>    /+---(tibi)--------+/                                                    <* 
-       *>    glTranslatef(    0.0  ,    -8.0 ,     0.0  );                            <* 
-       *>    yFONT_print (my.font,  5, YF_TOPRIG, "tibia");                           <* 
-       *>    snprintf (x_msg, 25, ": %+.1f", a_tibi);                                 <* 
-       *>    yFONT_print (my.font,  5, YF_TOPLEF, x_msg);                             <* 
-       *>    /+---(done)--------+/                                                    <* 
-       *> } glPopMatrix ();                                                           <*/
+      glPushMatrix (); {
+         /*---(label)-------*/
+         snprintf (x_msg, 10, "#%d/%s", a_leg, legs_name [a_leg]);
+         glTranslatef(    0.0  ,   -15.0 ,     0.0  );
+         yFONT_print (my.fixed, 12, YF_TOPLEF, x_msg);
+         /*---(desc)--------*/
+         snprintf (x_msg, 25, "%s", legs_long [a_leg]);
+         glTranslatef(    0.0  ,   -18.0 ,     0.0  );
+         yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
+         /*---(prep)--------*/
+         glTranslatef(   20.0  ,     0.0 ,     0.0  );
+         /*---(coxa)--------*/
+         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
+         yFONT_print (my.fixed,  5, YF_TOPRIG, "coxa");
+         snprintf (x_msg, 25, ": %+.1f", a_coxa);
+         yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
+         /*---(femu)--------*/
+         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
+         yFONT_print (my.fixed,  5, YF_TOPRIG, "femur");
+         snprintf (x_msg, 25, ": %+.1f", a_femu);
+         yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
+         /*---(pate)--------*/
+         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
+         yFONT_print (my.fixed,  5, YF_TOPRIG, "patella");
+         snprintf (x_msg, 25, ": %+.1f", a_pate);
+         yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
+         /*---(tibi)--------*/
+         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
+         yFONT_print (my.fixed,  5, YF_TOPRIG, "tibia");
+         snprintf (x_msg, 25, ": %+.1f", a_tibi);
+         yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
+         /*---(done)--------*/
+      } glPopMatrix ();
       /*---(coxa)------------------------*/
       glCallList (dl_coxa);
-      /*> draw_locate_NEW (a_leg, YKINE_COXA, a_coxa);                                <*/
+      draw_locate_NEW (a_leg, YKINE_COXA, a_coxa);
       /*---(femur)--------------------------*/
       glRotatef  ( a_femu, 0.0f, 1.0f, 0.0f);
       glCallList (dl_femur);
-      /*> draw_locate_NEW (a_leg, YKINE_FEMU, a_femu);                                <*/
+      draw_locate_NEW (a_leg, YKINE_FEMU, a_femu);
       /*---(patella)------------------------*/
       glRotatef  (-a_pate, 0.0f, 0.0f, 1.0f);
       glCallList (dl_patella);
-      /*> draw_locate_NEW (a_leg, YKINE_PATE, a_pate);                                <*/
+      draw_locate_NEW (a_leg, YKINE_PATE, a_pate);
       /*---(tibia)--------------------------*/
       glRotatef  (-a_tibi, 0.0f, 0.0f, 1.0f);
       glCallList (dl_tibia);
-      /*> draw_locate_NEW (a_leg, YKINE_TIBI, a_tibi);                                <*/
+      draw_locate_NEW (a_leg, YKINE_TIBI, a_tibi);
    } glPopMatrix ();
    /*---(complete)-----------------------*/
    return 0;
@@ -432,10 +408,10 @@ draw_leg           (int a_num, tSEG a_curr[], char a_loc)
       glPushMatrix (); {
          snprintf (msg, 10, "#%d/%s", a_num, legs_name [a_num]);
          glTranslatef(    0.0  ,   -15.0 ,     0.0  );
-         yFONT_print (my.font, 12, YF_TOPLEF, msg);
+         yFONT_print (my.fixed, 12, YF_TOPLEF, msg);
          snprintf (msg, 25, "%s", legs_long[a_num]);
          glTranslatef(    0.0  ,   -18.0 ,     0.0  );
-         yFONT_print (my.font,  5, YF_TOPLEF, msg);
+         yFONT_print (my.fixed,  5, YF_TOPLEF, msg);
       } glPopMatrix ();
       /*---(coxa)------------------------*/
       d = a_curr[YKINE_COXA].d;
@@ -463,9 +439,9 @@ draw_leg           (int a_num, tSEG a_curr[], char a_loc)
       /*> glPushMatrix (); {                                                          <* 
        *>    snprintf (msg, 10, "%d", a_num);                                         <* 
        *>    glTranslatef(    0.0  ,    43.0 ,    10.0  );                            <* 
-       *>    yFONT_print (my.font, 18, YF_TOPLEF, msg);                                <* 
+       *>    yFONT_print (my.fixed, 18, YF_TOPLEF, msg);                                <* 
        *>    glTranslatef(    0.0  ,     0.0 ,   -20.0  );                            <* 
-       *>    yFONT_print (my.font, 18, YF_TOPLEF, msg);                                <* 
+       *>    yFONT_print (my.fixed, 18, YF_TOPLEF, msg);                                <* 
        *> } glPopMatrix ();                                                           <*/
       glCallList(dl_tibia);
       if (a_loc == 'y') draw_locate (&a_curr[YKINE_TIBI], &a_curr[YKINE_PATE], &a_curr[YKINE_CORE]);
@@ -476,9 +452,9 @@ draw_leg           (int a_num, tSEG a_curr[], char a_loc)
    /*> glPushMatrix (); {                                                             <* 
     *>    snprintf (msg, 10, "%d", a_num);                                            <* 
     *>    glTranslatef(    0.0  ,    43.0 ,    10.0  );                               <* 
-    *>    yFONT_print (my.font, 18, YF_TOPLEF, msg);                                   <* 
+    *>    yFONT_print (my.fixed, 18, YF_TOPLEF, msg);                                   <* 
     *>    glTranslatef(    0.0  ,     0.0 ,   -20.0  );                               <* 
-    *>    yFONT_print (my.font, 18, YF_TOPLEF, msg);                                   <* 
+    *>    yFONT_print (my.fixed, 18, YF_TOPLEF, msg);                                   <* 
     *> } glPopMatrix ();                                                              <*/
    /*---(complete)-----------------------*/
    return 0;
@@ -491,42 +467,199 @@ draw_leg           (int a_num, tSEG a_curr[], char a_loc)
 /*====================------------------------------------====================*/
 static void      o___ENVIRON_________________o (void) {;}
 
-char
-DRAW_testgrid           (void)
+char       /*----: determine the current opengl position ---------------------*/
+DRAW_wire_locate        (int a_leg, int a_seg, float a_deg)
 {
-   int         x           =    0;
-   int         y           =    0;
-   char        t           [LEN_LABEL] = "";
-   /*---(upper bar)----------------------*/
-   for (y = -300; y <= 300; y += 30) {
-      glColor4f    (0.00f, 0.00f, 0.00f, 1.00f);
-      /*> glTranslatef ( -300.00f,   0.00f,    0.00f);                          <*/
-      for (x = -300; x <= 300; x += 30) {
-         /*> glBegin      (GL_POINTS); {                                               <* 
-          *>    /+> glVertex3f  (x, y, -300);                                    <+/   <* 
-          *>    /+> glVertex3f  (x, y,    0);                                    <+/   <* 
-          *>    glVertex3f  (x, y,  300);                                              <* 
-          *> } glEnd   ();                                                             <*/
-         glPushMatrix (); {
-            glTranslatef(       x,       y,    300);
-            snprintf (t, 30, "%dx, %dy", x, y);
-            yFONT_print (my.font,   3, YF_MIDCEN, t);
-         } glPopMatrix ();
-      }
+   /*---(locals)-------------------------*/
+   char      x_msg [100];
+   double    x, y, z;
+   /*---(current)------------------------*/
+   glGetDoublev(GL_MODELVIEW_MATRIX,  s_loc);
+   s_xpos     = s_loc [12];
+   s_zpos     = s_loc [14];
+   s_ypos     = s_loc [13];
+   x          = s_xpos - s_xpos_p;
+   z          = s_zpos - s_zpos_p;
+   y          = s_ypos - s_ypos_p;
+   s_len      = sqrt ((x * x) + (z * z) + (y * y));
+   /*---(save)---------------------------*/
+   s_xpos_p   = s_xpos;
+   s_zpos_p   = s_zpos;
+   s_ypos_p   = s_ypos;
+   /*---(save to yKINE)------------------*/
+   yKINE_opengl   (a_leg, a_seg, a_deg, s_xpos, s_zpos, s_ypos, s_len);
+   if (a_seg == YKINE_COXA)
+      yKINE_opengl   (a_leg, YKINE_TROC, a_deg, s_xpos, s_zpos, s_ypos, 0.0);
+   if (a_seg == YKINE_TIBI) {
+      yKINE_opengl   (a_leg, YKINE_META,   0.0, s_xpos, s_zpos, s_ypos, 0.0);
+      yKINE_opengl   (a_leg, YKINE_TARS,   0.0, s_xpos, s_zpos, s_ypos, 0.0);
+      yKINE_opengl   (a_leg, YKINE_FOOT,   0.0, s_xpos, s_zpos, s_ypos, 0.0);
+      yKINE_inverse  (a_leg, s_xpos, s_zpos, s_ypos);
    }
+   /*---(complete)-----------------------*/
    return 0;
 }
 
+void
+DRAW_wire_leg      (int a_leg, float a_body, float a_coxa, float a_femu, float a_pate, float a_tibi)
+{
+   /*---(begin)--------------------------*/
+   glPushMatrix (); {
+      /*---(thorax)----------------------*/
+      glTranslatef (a_body,  0.0,  0.0f);
+      /*---(coxa)------------------------*/
+      glTranslatef (segs_len [YKINE_COXA], 0.00f,  0.00f);
+      DRAW_wire_locate (a_leg, YKINE_COXA, a_coxa);
+      /*---(femur)-----------------------*/
+      glRotatef    (a_femu , 0.0f, 1.0f, 0.0f);
+      glTranslatef (segs_len [YKINE_FEMU], 0.00f,  0.00f);
+      DRAW_wire_locate (a_leg, YKINE_FEMU, a_femu);
+      /*---(patella)---------------------*/
+      glRotatef    (-a_pate, 0.0f, 0.0f, 1.0f);
+      glTranslatef (segs_len [YKINE_PATE], 0.00f,  0.00f);
+      DRAW_wire_locate (a_leg, YKINE_PATE, a_pate);
+      /*---(tibia)-----------------------*/
+      glRotatef    (-a_tibi, 0.0f, 0.0f, 1.0f);
+      glTranslatef (segs_len [YKINE_TIBI], 0.00f,  0.00f);
+      DRAW_wire_locate (a_leg, YKINE_TIBI, a_tibi);
+      /*---(done)------------------------*/
+   } glPopMatrix ();
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
+void
+DRAW_wire_body     (void)
+{
+   /*---(locals)-----------+-----+-----+-*/
+   char        rc          = 0;
+   int         x_leg       =    0;
+   double      x_coxa      =  0.0;
+   double      x_femu      =  0.0;
+   double      x_pate      =  0.0;
+   double      x_tibi      =  0.0;
+   /*---(prepare)------------------------*/
+   center.by = 98.0;
+   /*---(body)---------------------------*/
+   glPushMatrix (); {
+      yKINE_move_curall ( my.p_cursec);
+      for (x_leg = 0; x_leg < 6; ++x_leg) {
+         glPushMatrix (); {
+            /*---(prepare)---------------*/
+            glRotatef  ( legs_deg [x_leg], 0.0f, 1.0f, 0.0f);
+            /*---(check servos)----------*/
+            x_coxa  = legs_deg [x_leg];
+            rc = yKINE_servo_deg  (x_leg, YKINE_FEMU, &x_femu);
+            rc = yKINE_servo_deg  (x_leg, YKINE_PATE, &x_pate);
+            rc = yKINE_servo_deg  (x_leg, YKINE_TIBI, &x_tibi);
+            /*---(draw)------------------*/
+            DRAW_wire_leg  (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
+            /*---(done)------------------*/
+         } glPopMatrix ();
+      }
+   } glPopMatrix   ();
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
+void
+DRAW_spider        (void)
+{
+   /*---(locals)-----------+-----------+-*/
+   int         i           = 0;
+   int         x_leg       = 0;
+   int         x_servo     = 0;
+   double      x_coxa      = 0.0;
+   double      x_femu      = 0.0;
+   double      x_pate      = 0.0;
+   double      x_tibi      = 0.0;
+   double      x_xpos1     = 0.0;
+   double      x_zpos1     = 0.0;
+   double      x_ypos1     = 0.0;
+   double      x_xpos2     = 0.0;
+   double      x_zpos2     = 0.0;
+   double      x_ypos2     = 0.0;
+   char        x_debug     = '-';
+   char        rc          = 0;
+
+   DRAW_wire_body  ();
+   DRAW_reset      ();
+   glPushMatrix    (); {
+      glTranslatef ( -(my.s_wide / 18.0),  -32.0f, -100.0f);
+      yGOD_orient ();
+      glTranslatef (  (my.s_wide /  9.0),    0.0f,    0.0f);
+      yGOD_locate ();
+   } glPopMatrix   ();
+
+
+   /*---(begin)--------------------------*/
+   center.by = 98.0;
+   glPushMatrix (); {
+      yGOD_view ();
+      glTranslatef    (    0.0  , -center.by,     0.0  );
+      glCallList      (dl_ground);
+      glTranslatef    (    0.0  , +center.by,     0.0  );
+      /*> draw_masscenter ();                                                         <*/
+      glTranslatef    (center.bx,      0.0  , center.bz);
+      /*> draw_arrow      ();                                                         <*/
+      /*> if (flag_annotate == 'y')  draw__center ();                                 <*/
+      glCallList      (dl_body);
+      yKINE_move_curall ( my.p_cursec);
+      for (x_leg = 0; x_leg < 6; ++x_leg) {
+         glPushMatrix (); {
+            /*---(prepare)---------------*/
+            glColor3f(1.0f, 1.0f, 1.0f);
+            glRotatef( legs_deg [x_leg], 0.0f, 1.0f, 0.0f);
+            /*---(default values)--------*/
+            x_coxa  = legs_deg [x_leg];
+            /*> x_femu  =  0.0;                                                       <*/
+            /*> x_pate  =  0.0;                                                       <*/
+            /*> x_tibi  = 90.0;                                                       <*/
+            /*---(check servos)----------*/
+            x_servo = x_leg * 3;
+            rc = yKINE_servo_deg  (x_leg, YKINE_FEMU, &x_femu);
+            rc = yKINE_servo_deg  (x_leg, YKINE_PATE, &x_pate);
+            rc = yKINE_servo_deg  (x_leg, YKINE_TIBI, &x_tibi);
+            /*---(draw)------------------*/
+            draw_leg_NEW   (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
+            /*---(calc in yKINE)---------*/
+            /*> yKINE_forward  (x_leg, x_femu, x_pate, x_tibi);                       <*/
+            /*> KINE_write     (x_leg);                                               <*/
+            /*---(done)------------------*/
+         } glPopMatrix ();
+         /*> glPushMatrix (); {                                                                                          <* 
+          *>    /+---(figure move line)------+/                                                                          <* 
+          *>    x_debug = '-';                                                                                           <* 
+          *>    rc = yKINE_servo_line (x_leg, YKINE_TIBI, &x_xpos1, &x_zpos1, &x_ypos1, &x_xpos2, &x_zpos2, &x_ypos2);   <* 
+          *>    if (rc >= 0) {                                                                                           <* 
+          *>       glLineWidth  ( 2.00f);                                                                                <* 
+          *>       glColor4f    (1.0f, 0.0f, 0.0f, 1.0f);                                                                <* 
+          *>       glBegin      (GL_LINES); {                                                                            <* 
+          *>          glVertex3f  (x_xpos1, x_ypos1, x_zpos1);                                                           <* 
+          *>          glVertex3f  (x_xpos2, x_ypos2, x_zpos2);                                                           <* 
+          *>       } glEnd   ();                                                                                         <* 
+          *>       glColor4f    (1.0f, 0.0f, 1.0f, 1.0f);                                                                <* 
+          *>       glBegin      (GL_POINTS); {                                                                           <* 
+          *>          glVertex3f  (x_xpos1, x_ypos1, x_zpos1);                                                           <* 
+          *>          glVertex3f  (x_xpos2, x_ypos2, x_zpos2);                                                           <* 
+          *>       } glEnd   ();                                                                                         <* 
+          *>    }                                                                                                        <* 
+          *> } glPopMatrix ();                                                                                           <*/
+         /*> break;                                                                   <*/
+      }
+      /*> draw_contact    ();                                                         <*/
+   } glPopMatrix ();
+}
 
 char
 DRAW_primary            (void)
 {
-   draw_spider     ();
-   DRAW_testgrid   ();
+   /*> draw_spider     ();                                                            <*/
    /*> yGOD_view       ();                                                            <*/
    /*> yGOD_view       ();                                                            <*/
    /*> glCallList      (dl_spider);                                                   <*/
-   view_3d     ();
+   DRAW_spider    ();
+   /*> view_3d     ();                                                                <*/
    return 0;
 }
 
@@ -540,17 +673,6 @@ DRAW_init               (void)
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
 
 
-   /*---(window)-------------------------*/
-   yVIKEYS_view_config   ("arachne, hexapod visualization and simulation", VER_NUM, YVIKEYS_OPENGL, 800, 580, 0);
-   yVIKEYS_view_setup    (YVIKEYS_MAIN     , YVIKEYS_DEPTH, YVIKEYS_MIDCEN, -400, 400, 290, -290, -1000, 1000, YCOLOR_BAS    , DRAW_primary);
-   yVIKEYS_cmds_direct   (":progress show");
-   yVIKEYS_cmds_direct   (":buffer show");
-   yVIKEYS_cmds_direct   (":details show");
-
-
-   /*---(colors)-------------------------*/
-   yVIKEYS_cmds_direct   (":palette 190 rcomp pale earthy");
-   yVIKEYS_view_colors   (YCOLOR_POS, YCOLOR_BAS, YCOLOR_NEG, YCOLOR_POS);
 
 
    /*---(complete)-----------------------*/
@@ -658,86 +780,87 @@ draw_setup ()
    return 0;
 }
 
-char       /* ---- : driver for main drawing cycle ---------------------------*/
-draw_main          (void)
-{
-   /*---(locals)-------*-----------------*/
-   char        rc          = 0;
-   /*---(prepare)------------------------*/
-   draw_spider ();
-   /*> glClear         (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                   <*/
-   /*---(normal)-------------------------*/
-   if (my.scrn == SCRN_NORM) {
-      /*> if      (flag_view == 1) view_hildebrand ();                                   <* 
-       *> else if (flag_view == 2) view_waves  ();                                       <* 
-       *> else if (flag_view == 3) view_torque ();                                       <* 
-       *> else if (flag_view == 4) view_step   ();                                       <* 
-       *> else                     view_gait   ();                                       <*/
-      /*> view_top    ();                                                                <*/
-      view_3d     ();
-      rc = TICK_show   ();
-      /*> DRAW_command     ();                                                        <*/
-      /*> DRAW_title       ();                                                        <*/
-      /*> DRAW_alternate   ();                                                        <*/
-      TICK_legend      ();
-      /*> view_leg    ();                                                                <*/
-   }
-   /*---(progress)-----------------------*/
-   else if (SCRN_PROG) {
-      rc = TICK_full   ();
-   }
-   /*---(send for processing)------------*/
-   glXSwapBuffers(DISP, BASE);
-   glFlush();
-   /*---(complete)-----------------------*/
-   return rc;
-}
+/*> char       /+ ---- : driver for main drawing cycle ---------------------------+/               <* 
+ *> draw_main          (void)                                                                      <* 
+ *> {                                                                                              <* 
+ *>    /+---(locals)-------*-----------------+/                                                    <* 
+ *>    char        rc          = 0;                                                                <* 
+ *>    /+---(prepare)------------------------+/                                                    <* 
+ *>    draw_spider ();                                                                             <* 
+ *>    /+> glClear         (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                   <+/      <* 
+ *>    /+---(normal)-------------------------+/                                                    <* 
+ *>    if (my.scrn == SCRN_NORM) {                                                                 <* 
+ *>       /+> if      (flag_view == 1) view_hildebrand ();                                   <*    <* 
+ *>        *> else if (flag_view == 2) view_waves  ();                                       <*    <* 
+ *>        *> else if (flag_view == 3) view_torque ();                                       <*    <* 
+ *>        *> else if (flag_view == 4) view_step   ();                                       <*    <* 
+ *>        *> else                     view_gait   ();                                       <+/   <* 
+ *>       /+> view_top    ();                                                                <+/   <* 
+ *>       view_3d     ();                                                                          <* 
+ *>       rc = TICK_show   ();                                                                     <* 
+ *>       /+> DRAW_command     ();                                                        <+/      <* 
+ *>       /+> DRAW_title       ();                                                        <+/      <* 
+ *>       /+> DRAW_alternate   ();                                                        <+/      <* 
+ *>       TICK_legend      ();                                                                     <* 
+ *>       /+> view_leg    ();                                                                <+/   <* 
+ *>    }                                                                                           <* 
+ *>    /+---(progress)-----------------------+/                                                    <* 
+ *>    else if (SCRN_PROG) {                                                                       <* 
+ *>       rc = TICK_full   ();                                                                     <* 
+ *>    }                                                                                           <* 
+ *>    /+---(send for processing)------------+/                                                    <* 
+ *>    glXSwapBuffers(DISP, BASE);                                                                 <* 
+ *>    glFlush();                                                                                  <* 
+ *>    /+---(complete)-----------------------+/                                                    <* 
+ *>    return rc;                                                                                  <* 
+ *> }                                                                                              <*/
 
-char       /* ---- : display key body information ----------------------------*/
-draw__center       (void)
-{
-   /*---(locals)-------*-----------------*/
-   char      msg [200] = "";
-   /*---(prepare)------------------------*/
-   glLineWidth ( 0.50f);
-   glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-   /*---(upper bar)----------------------*/
-   glColor4f(1.00f, 0.00f, 0.00f, 0.10f);
-   glPushMatrix (); {
-      glTranslatef( -70.00f,  75.00f,  -2.00f);
-      glBegin (GL_POLYGON);
-      glVertex3f (    0.00f,    0.00f,    0.00f);
-      glVertex3f (  140.00f,    0.00f,    0.00f);
-      glVertex3f (  140.00f,  -50.00f,    0.00f);
-      glVertex3f (    0.00f,  -50.00f,    0.00f);
-      glEnd   ();
-   } glPopMatrix ();
-   /*---(upper bar)----------------------*/
-   glColor4f(1.00f, 0.00f, 0.00f, 1.00f);
-   glPushMatrix (); {
-      glTranslatef( -70.00f,  75.00f,   0.00f);
-      glLineWidth (2.00f);
-      glBegin (GL_LINES);
-      glVertex3f (    0.00f,    0.00f,    0.00f);
-      glVertex3f (  140.00f,    0.00f,    0.00f);
-      glEnd   ();
-      glLineWidth (0.50f);
-   } glPopMatrix ();
-   /*---(position)-----------------------*/
-   glPushMatrix (); {
-      glTranslatef( -65.00f,  70.00f,   0.00f);
-      snprintf (msg, 30, "cen x  = %7.2f", center.bx);
-      yFONT_print (my.font,   5, YF_TOPLEF, msg);
-      glTranslatef(  0.00f, -9.00f,   0.00f);
-      snprintf (msg, 30, "cen z  = %7.2f", center.bz);
-      yFONT_print (my.font,   5, YF_TOPLEF, msg);
-      glTranslatef(  0.00f, -9.00f,   0.00f);
-      snprintf (msg, 30, "cen y  = %7.2f", center.by);
-      yFONT_print (my.font,   5, YF_TOPLEF, msg);
-   } glPopMatrix ();
-   /*---(complete)-----------------------*/
-   return 0;
-}
+/*> char       /+ ---- : display key body information ----------------------------+/   <* 
+ *> draw__center       (void)                                                          <* 
+ *> {                                                                                  <* 
+ *>    /+---(locals)-------*-----------------+/                                        <* 
+ *>    char      msg [200] = "";                                                       <* 
+ *>    /+---(prepare)------------------------+/                                        <* 
+ *>    glLineWidth ( 0.50f);                                                           <* 
+ *>    glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);                                     <* 
+ *>    /+---(upper bar)----------------------+/                                        <* 
+ *>    glColor4f(1.00f, 0.00f, 0.00f, 0.10f);                                          <* 
+ *>    glPushMatrix (); {                                                              <* 
+ *>       glTranslatef( -70.00f,  75.00f,  -2.00f);                                    <* 
+ *>       glBegin (GL_POLYGON);                                                        <* 
+ *>       glVertex3f (    0.00f,    0.00f,    0.00f);                                  <* 
+ *>       glVertex3f (  140.00f,    0.00f,    0.00f);                                  <* 
+ *>       glVertex3f (  140.00f,  -50.00f,    0.00f);                                  <* 
+ *>       glVertex3f (    0.00f,  -50.00f,    0.00f);                                  <* 
+ *>       glEnd   ();                                                                  <* 
+ *>    } glPopMatrix ();                                                               <* 
+ *>    /+---(upper bar)----------------------+/                                        <* 
+ *>    glColor4f(1.00f, 0.00f, 0.00f, 1.00f);                                          <* 
+ *>    glPushMatrix (); {                                                              <* 
+ *>       glTranslatef( -70.00f,  75.00f,   0.00f);                                    <* 
+ *>       glLineWidth (2.00f);                                                         <* 
+ *>       glBegin (GL_LINES);                                                          <* 
+ *>       glVertex3f (    0.00f,    0.00f,    0.00f);                                  <* 
+ *>       glVertex3f (  140.00f,    0.00f,    0.00f);                                  <* 
+ *>       glEnd   ();                                                                  <* 
+ *>       glLineWidth (0.50f);                                                         <* 
+ *>    } glPopMatrix ();                                                               <* 
+ *>    /+---(position)-----------------------+/                                        <* 
+ *>    glPushMatrix (); {                                                              <* 
+ *>       glTranslatef( -65.00f,  70.00f,   0.00f);                                    <* 
+ *>       snprintf (msg, 30, "cen x  = %7.2f", center.bx);                             <* 
+ *>       yFONT_print (my.fixed,   5, YF_TOPLEF, msg);                                  <* 
+ *>       glTranslatef(  0.00f, -9.00f,   0.00f);                                      <* 
+ *>       snprintf (msg, 30, "cen z  = %7.2f", center.bz);                             <* 
+ *>       yFONT_print (my.fixed,   5, YF_TOPLEF, msg);                                  <* 
+ *>       glTranslatef(  0.00f, -9.00f,   0.00f);                                      <* 
+ *>       snprintf (msg, 30, "cen y  = %7.2f", center.by);                             <* 
+ *>       yFONT_print (my.fixed,   5, YF_TOPLEF, msg);                                  <* 
+ *>    } glPopMatrix ();                                                               <* 
+ *>    /+---(complete)-----------------------+/                                        <* 
+ *>    return 0;                                                                       <* 
+ *> }                                                                                  <*/
+
 
 void
 draw_spider        (void)
@@ -771,7 +894,8 @@ draw_spider        (void)
       /*> if (flag_annotate == 'y')  draw__center ();                                 <*/
       /*> glCallList      (dl_body);                                                  <*/
       yKINE_move_curall ( my.p_cursec);
-      for (x_leg = 0; x_leg < 6; ++x_leg) {
+      /*> for (x_leg = 0; x_leg < 6; ++x_leg) {                                       <*/
+      for (x_leg = 3; x_leg < 4; ++x_leg) {
          glPushMatrix (); {
             /*---(prepare)---------------*/
             glColor3f(1.0f, 1.0f, 1.0f);
@@ -868,9 +992,9 @@ view_progress      (void)
       glColor4f    (1.0f, 1.0f, 1.0f, 1.0f);
       for (i = 0; i < 10; ++i) {
          snprintf     (x_msg, 100, "%d", i);
-         yFONT_print  (my.font,   1, YF_MIDCEN, x_msg);
+         yFONT_print  (my.fixed,   1, YF_MIDCEN, x_msg);
          glTranslatef (   0.0f,  -4.0,    0.0);
-         yFONT_print  (my.font,   1, YF_MIDCEN, x_msg);
+         yFONT_print  (my.fixed,   1, YF_MIDCEN, x_msg);
          glTranslatef (   6.0f,   4.0,    0.0);
       }
    } glPopMatrix();
@@ -895,20 +1019,20 @@ view_progress      (void)
    glPushMatrix(); {
       glColor4f    (1.0f, 0.5f, 0.0f, 1.0f);
       glTranslatef ( -30.0f, -20.0, -100.0);
-      yFONT_print  (my.font,   1, YF_MIDLEF, "+100");
+      yFONT_print  (my.fixed,   1, YF_MIDLEF, "+100");
       glTranslatef (  60.0f,   0.0,    0.0);
-      yFONT_print  (my.font,   1, YF_MIDRIG, "+100");
+      yFONT_print  (my.fixed,   1, YF_MIDRIG, "+100");
       glTranslatef ( -60.0f, -20.0,    0.0);
-      yFONT_print  (my.font,   1, YF_MIDLEF, "-100");
+      yFONT_print  (my.fixed,   1, YF_MIDLEF, "-100");
       glTranslatef (  60.0f,   0.0,    0.0);
-      yFONT_print  (my.font,   1, YF_MIDRIG, "-100");
+      yFONT_print  (my.fixed,   1, YF_MIDRIG, "-100");
    } glPopMatrix();
    /*---(show scale notation)------------*/
    /*> glPushMatrix(); {                                                                                                               <* 
     *>    glColor4f    (1.0f, 0.5f, 0.0f, 1.0f);                                                                                       <* 
     *>    glTranslatef ( -20.0f, -40.0, -100.0);                                                                                       <* 
     *>    snprintf     (x_msg, 100, "%s.%-6s.%s", g_scale [my.p_scale].code, g_scale [my.p_scale].label, g_scale [my.p_scale].desc);   <* 
-    *>    yFONT_print  (my.font,   1, YF_MIDLEF, x_msg);                                                                                <* 
+    *>    yFONT_print  (my.fixed,   1, YF_MIDLEF, x_msg);                                                                                <* 
     *> } glPopMatrix();                                                                                                                <*/
 
    /*---(show leg angle curves)----------*/
@@ -962,28 +1086,28 @@ view_progress      (void)
    glPushMatrix(); {
       glTranslatef( -28.0f, -39.0, -100.0);
       snprintf (x_msg, 50, "%03d", 0);
-      yFONT_print (my.font,   2, YF_BOTLEF, x_msg);
+      yFONT_print (my.fixed,   2, YF_BOTLEF, x_msg);
    } glPopMatrix();
    glPushMatrix(); {
       glTranslatef ( -45.0f,  40.0 , -100.0);
       glRotatef    (  90.0 ,   0.0f,    0.0f,   1.0f);
       snprintf (x_msg, 100, "%s, %s", model_desc, model_name);
-      yFONT_print  (my.font,   2, YF_BOTRIG, x_msg);
+      yFONT_print  (my.fixed,   2, YF_BOTRIG, x_msg);
    } glPopMatrix();
    /*> glPushMatrix(); {                                                              <* 
     *>    glTranslatef ( -53.0f,  38.5 , -100.0);                                     <* 
-    *>    yFONT_print  (my.font,   2, YF_BOTLEF, model_desc);                          <* 
+    *>    yFONT_print  (my.fixed,   2, YF_BOTLEF, model_desc);                          <* 
     *> } glPopMatrix();                                                               <*/
    glPushMatrix(); {
       glTranslatef(  28.0f, -39.0, -100.0);
       snprintf (x_msg, 50, "%03d", MAX_POS);
-      yFONT_print (my.font,   2, YF_BOTRIG, x_msg);
+      yFONT_print (my.fixed,   2, YF_BOTRIG, x_msg);
    } glPopMatrix();
    glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
    glPushMatrix(); {
       glTranslatef(   0.0f, -39.0, -100.0);
       snprintf (x_msg, 50, "%03d", (int) my.p_cursec);
-      yFONT_print (my.font,   2, YF_BOTCEN, x_msg);
+      yFONT_print (my.fixed,   2, YF_BOTCEN, x_msg);
    } glPopMatrix();
    return 0;
 }
@@ -1006,23 +1130,23 @@ view_3d()
       yGOD_locate ();
    } glPopMatrix   ();
    /*---(setup view)---------------------*/
-   glPushMatrix    (); {
-      /*> yGOD_orient_xzy (  40, -100,  -33);                                         <* 
-       *> yGOD_locate_xzy ( -40, -100,  -33);                                         <*/
-      /*> yGOD_orient ();                                                             <* 
-       *> yGOD_locate ();                                                             <*/
-      /*> view_progress   ();                                                         <*/
-      glLineWidth ( 0.50f);
-      yGOD_view       ();
-      /*> glTranslatef    (    0.0  , -center.by,     0.0  );                         <*/
-      /*> yGOD_locate ();                                                             <*/
-      /*> glLineWidth ( 0.50f);                                                       <*/
-      /*> glCallList      (dl_ground);                                       <*/
-      /*> glTranslatef    (center.bx,      0.0  , center.bz);                         <*/
-      /*> glTranslatef    (      0.0,  center.by,       0.0);                         <*/
-      /*---(body)---------------------------*/
-      glCallList      (dl_spider);
-   } glPopMatrix   ();
+   /*> glPushMatrix    (); {                                                                    <* 
+    *>    /+> yGOD_orient_xzy (  40, -100,  -33);                                         <*    <* 
+    *>     *> yGOD_locate_xzy ( -40, -100,  -33);                                         <+/   <* 
+    *>    /+> yGOD_orient ();                                                             <*    <* 
+    *>     *> yGOD_locate ();                                                             <+/   <* 
+    *>    /+> view_progress   ();                                                         <+/   <* 
+    *>    glLineWidth ( 0.50f);                                                                 <* 
+    *>    yGOD_view       ();                                                                   <* 
+    *>    /+> glTranslatef    (    0.0  , -center.by,     0.0  );                         <+/   <* 
+    *>    /+> yGOD_locate ();                                                             <+/   <* 
+    *>    /+> glLineWidth ( 0.50f);                                                       <+/   <* 
+    *>    /+> glCallList      (dl_ground);                                       <+/            <* 
+    *>    /+> glTranslatef    (center.bx,      0.0  , center.bz);                         <+/   <* 
+    *>    /+> glTranslatef    (      0.0,  center.by,       0.0);                         <+/   <* 
+    *>    /+---(body)---------------------------+/                                              <* 
+    *>    glCallList      (dl_spider);                                                          <* 
+    *> } glPopMatrix   ();                                                                      <*/
    /*---(complete)-----------------------*/
    return;
 }
@@ -1079,10 +1203,10 @@ view_3d()
  *>       glTranslatef (  350, a_z, - 400.0 + (xpos * 50.0));                                    <* 
  *>       glRotatef(-90.0, 1.0f, 0.0f, 0.0f);                                                    <* 
  *>       snprintf     (msg,   100, "%6.3f", xcur);                                              <* 
- *>       yFONT_print  (my.font,   32, YF_TOPLEF, msg);                                          <* 
+ *>       yFONT_print  (my.fixed,   32, YF_TOPLEF, msg);                                          <* 
  *>       glTranslatef (    0.0, -700.0, 0.0);                                                   <* 
  *>       snprintf     (msg,   100, "%6.1f", xcur * RAD2DEG);                                    <* 
- *>       yFONT_print  (my.font,   32, YF_TOPLEF, msg);                                          <* 
+ *>       yFONT_print  (my.fixed,   32, YF_TOPLEF, msg);                                          <* 
  *>    } glPopMatrix    ();                                                                      <* 
  *>    /+---(complete)-----------------------+/                                                  <* 
  *>    return 0;                                                                                 <* 
@@ -1222,7 +1346,7 @@ view_3d()
                                *>    /+> glCallList      (dl_spider);                                                   <+/                                                                                        <* 
                                *>    glColor4f (1.0f, 1.0f, 1.0f, 1.0f);                                                                                                                                           <* 
                                *>    /+> glTranslatef( 0.0,  50.0,  100.0);                                             <+/                                                                                        <* 
-                               *>    /+> yFONT_print (my.font,  20, YF_TOPLEF, "testing");                               <+/                                                                                       <* 
+                               *>    /+> yFONT_print (my.fixed,  20, YF_TOPLEF, "testing");                               <+/                                                                                       <* 
                                *>    glPopMatrix();                                                                                                                                                                <* 
                                *>    return;                                                                                                                                                                       <* 
                                *> }                                                                                                                                                                                <*/
@@ -1253,13 +1377,13 @@ view_setup         (char *a_title, char *a_desc)
       glTranslatef (-495.00, 75.00, 0.00f);
       glRotatef    ( 90.0, 0.0f, 0.0f, 1.0f);
       glColor4f    (0.5f, 0.0f, 1.0f, 1.0f);
-      yFONT_print  (my.font,  18, YF_TOPCEN, a_title);
+      yFONT_print  (my.fixed,  18, YF_TOPCEN, a_title);
    } glPopMatrix   ();
    /*---(explanation)--------------------*/
    glPushMatrix    (); {
       glTranslatef (-415.00, 155.00, 0.00f);
       glColor4f    (1.0f, 1.0f, 1.0f, 1.0f);
-      yFONT_print  (my.font,  12, YF_BOTLEF, a_desc);
+      yFONT_print  (my.fixed,  12, YF_BOTLEF, a_desc);
    } glPopMatrix   ();
    /*---(range)--------------------------*/
    beg  =   1;
@@ -1347,7 +1471,7 @@ view_gait          (void)
          /*---(left title)---------------*/
          glTranslatef ( -455.00f, 135.00f - (i * 25.0),    0.00f);
          snprintf     (msg,  50, "#%d", i);
-         yFONT_print  (my.font,  12, YF_TOPLEF, msg);
+         yFONT_print  (my.fixed,  12, YF_TOPLEF, msg);
          /*---(baseline)-----------------*/
          glTranslatef (   30.00f, -10.00f,    0.00f);
          glEnable     (GL_LINE_STIPPLE);
@@ -1370,7 +1494,7 @@ view_gait          (void)
          glEnd        ();
          /*---(right title)--------------*/
          glTranslatef (  903.00f,  10.00f,    0.00f);
-         yFONT_print  (my.font,  12, YF_TOPLEF, msg);
+         yFONT_print  (my.fixed,  12, YF_TOPLEF, msg);
       } glPopMatrix();
    }
    view_touch ();
@@ -1396,7 +1520,7 @@ view_hildebrand    (void)
       glPushMatrix    (); {
          glTranslatef ( -455.00f, 135.00f - (i * 25.0),    0.00f);
          snprintf     (msg,  50, "#%d", i);
-         yFONT_print  (my.font,  12, YF_TOPLEF, msg);
+         yFONT_print  (my.fixed,  12, YF_TOPLEF, msg);
          glTranslatef (   30.00f, -10.00f,    0.00f);
          on   = 0;
          save = beg;
@@ -1446,7 +1570,7 @@ view_step          (void)
       glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
       glTranslatef ( 0.00, 35.00, 0.00f);
       snprintf     (msg,  50, "%s", gait.name);
-      yFONT_print  (my.font,  18, YF_BOTCEN, msg);
+      yFONT_print  (my.fixed,  18, YF_BOTCEN, msg);
    } glPopMatrix();
    /*---(show points)--------------------*/
    glPushMatrix    (); {
@@ -1528,42 +1652,42 @@ view_step          (void)
          case 1  :
             glColor4f    (1.0f, 0.0f, 0.0f, 0.8f);
             glTranslatef (   0.00, -10.00, 0.00);
-            yFONT_print  (my.font,  12, YF_TOPCEN, "fore");
+            yFONT_print  (my.fixed,  12, YF_TOPCEN, "fore");
             break;
          case 2  :
             glColor4f    (0.5f, 0.5f, 0.5f, 0.8f);
             glTranslatef (   0.00, -10.00, 0.00);
-            yFONT_print  (my.font,  12, YF_TOPCEN, "mark");
+            yFONT_print  (my.fixed,  12, YF_TOPCEN, "mark");
             break;
          case 3  :
             glColor4f    (0.7f, 0.3f, 0.0f, 0.8f);
             glTranslatef (   0.00, -10.00, 0.00);
-            yFONT_print  (my.font,  12, YF_TOPCEN, "back");
+            yFONT_print  (my.fixed,  12, YF_TOPCEN, "back");
             break;
          case 4  :
             glColor4f    (0.3f, 0.7f, 0.0f, 0.8f);
             glTranslatef ( -20.00,   0.00, 0.00);
-            yFONT_print  (my.font,  12, YF_MIDRIG, "kick");
+            yFONT_print  (my.fixed,  12, YF_MIDRIG, "kick");
             break;
          case 5  :
             glColor4f    (0.0f, 0.7f, 0.3f, 0.8f);
             glTranslatef ( -20.00,   0.00, 0.00);
-            yFONT_print  (my.font,  12, YF_MIDRIG, "accel");
+            yFONT_print  (my.fixed,  12, YF_MIDRIG, "accel");
             break;
          case 6  :
             glColor4f    (0.0f, 0.5f, 0.7f, 0.8f);
             glTranslatef (   0.00,  10.00, 0.00);
-            yFONT_print  (my.font,  12, YF_BOTCEN, "return");
+            yFONT_print  (my.fixed,  12, YF_BOTCEN, "return");
             break;
          case 7  :
             glColor4f (0.1f, 0.1f, 1.0f, 0.8f);
             glTranslatef (  20.00,   0.00, 0.00);
-            yFONT_print  (my.font,  12, YF_MIDLEF, "decel");
+            yFONT_print  (my.fixed,  12, YF_MIDLEF, "decel");
             break;
          case 8  :
             glColor4f (0.3f, 0.0f, 0.7f, 0.8f);
             glTranslatef (  20.00,   0.00, 0.00);
-            yFONT_print  (my.font,  12, YF_MIDLEF, "load");
+            yFONT_print  (my.fixed,  12, YF_MIDLEF, "load");
             break;
          default : glColor4f (0.5f, 0.5f, 0.5f, 0.8f); break;
          }
@@ -1577,7 +1701,7 @@ view_step          (void)
       glTranslatef ( 0.00, 65.00, 0.00f);
       glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
       snprintf     (msg,  50, "duty ratio = %6.2f%%", gait.duty);
-      yFONT_print  (my.font,  12, YF_BOTCEN, msg);
+      yFONT_print  (my.fixed,  12, YF_BOTCEN, msg);
    } glPopMatrix();
    return 0;
 }
