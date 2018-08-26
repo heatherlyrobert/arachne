@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9l"
-#define VER_TXT   "opengl coordinate capture/labeling is clean and right now"
+#define VER_NUM   "0.9m"
+#define VER_TXT   "cleaned up leg labeling"
 
 
 

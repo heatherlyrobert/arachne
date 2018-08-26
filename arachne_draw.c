@@ -348,22 +348,22 @@ draw_leg_NEW       (int a_leg, float a_body, float a_coxa, float a_femu, float a
          /*---(coxa)--------*/
          glTranslatef(    0.0  ,    -8.0 ,     0.0  );
          yFONT_print (my.fixed,  5, YF_TOPRIG, "coxa");
-         snprintf (x_msg, 25, ": %+.1f", a_coxa);
+         snprintf (x_msg, 25, " %5.1f", a_coxa);
          yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
          /*---(femu)--------*/
          glTranslatef(    0.0  ,    -8.0 ,     0.0  );
-         yFONT_print (my.fixed,  5, YF_TOPRIG, "femur");
-         snprintf (x_msg, 25, ": %+.1f", a_femu);
+         yFONT_print (my.fixed,  5, YF_TOPRIG, "femu");
+         snprintf (x_msg, 25, " %5.1f", a_femu);
          yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
          /*---(pate)--------*/
          glTranslatef(    0.0  ,    -8.0 ,     0.0  );
-         yFONT_print (my.fixed,  5, YF_TOPRIG, "patella");
-         snprintf (x_msg, 25, ": %+.1f", a_pate);
+         yFONT_print (my.fixed,  5, YF_TOPRIG, "pate");
+         snprintf (x_msg, 25, " %5.1f", a_pate);
          yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
          /*---(tibi)--------*/
          glTranslatef(    0.0  ,    -8.0 ,     0.0  );
-         yFONT_print (my.fixed,  5, YF_TOPRIG, "tibia");
-         snprintf (x_msg, 25, ": %+.1f", a_tibi);
+         yFONT_print (my.fixed,  5, YF_TOPRIG, "tibi");
+         snprintf (x_msg, 25, " %5.1f", a_tibi);
          yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
          /*---(done)--------*/
       } glPopMatrix ();
