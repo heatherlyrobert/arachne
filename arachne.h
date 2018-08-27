@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9m"
-#define VER_TXT   "cleaned up leg labeling"
+#define VER_NUM   "0.9n"
+#define VER_TXT   "ticker is showing reasonably and can save full image"
 
 
 

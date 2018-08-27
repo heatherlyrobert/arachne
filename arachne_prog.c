@@ -38,6 +38,7 @@ PROG_init          (void)
    DEBUG_TOPS   yLOG_info     ("yKINE"   , yKINE_version   ());
    DEBUG_TOPS   yLOG_info     ("yX11"    , yX11_version    ());
    DEBUG_TOPS   yLOG_info     ("yFONT"   , yFONT_version   ());
+   DEBUG_TOPS   yLOG_info     ("yGLTEX"  , yGLTEX_version  ());
    DEBUG_TOPS   yLOG_info     ("yVIKEYS" , yVIKEYS_version ());
    DEBUG_TOPS   yLOG_info     ("ySTR"    , ySTR_version    ());
    DEBUG_TOPS   yLOG_info     ("yLOG"    , yLOG_version    ());
@@ -63,8 +64,8 @@ PROG_init          (void)
    /*---(talls)--------------------------*/
    DEBUG_TOPS   yLOG_note  ("set window heights");
    my.c_tall =  20;  
-   my.p_tall = 125;  
-   my.s_tall = my.a_tall = 580;
+   my.p_tall = 100;  
+   my.s_tall = my.a_tall = 500;
    my.w_tall = my.t_tall = my.c_tall + my.p_tall + my.s_tall;
    /*---(bottoms)------------------------*/
    DEBUG_TOPS   yLOG_note  ("set window bottom positions");
@@ -192,9 +193,9 @@ PROG_final         (void)
 {
    DEBUG_TOPS   yLOG_enter   (__FUNCTION__);
    /*---(window and panels)--------------*/
-   yVIKEYS_view_config   ("arachne, hexapod visualization and simulation", VER_NUM, YVIKEYS_OPENGL, 800, 580, 0);
-   yVIKEYS_view_setup    (YVIKEYS_MAIN     , YVIKEYS_DEPTH, YVIKEYS_MIDCEN, -400, 400, 290, -290, -1000, 1000, YCOLOR_BAS    , DRAW_primary);
-   yVIKEYS_view_simple   (YVIKEYS_PROGRESS , YCOLOR_BAS    , TICK_show   );
+   yVIKEYS_view_config   ("arachne, hexapod visualization and simulation", VER_NUM, YVIKEYS_OPENGL, 800, 500, 0);
+   yVIKEYS_view_setup    (YVIKEYS_MAIN     , YVIKEYS_DEPTH, YVIKEYS_MIDCEN, -400, 400, 250, -250, -1000, 1000, YCOLOR_BAS    , DRAW_primary);
+   yVIKEYS_view_simple   (YVIKEYS_PROGRESS , YCOLOR_BAS   , TICK_show   );
    yVIKEYS_cmds_direct   (":xaxis    disable");
    yVIKEYS_cmds_direct   (":yaxis    disable");
    yVIKEYS_cmds_direct   (":ribbon   disable");

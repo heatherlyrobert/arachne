@@ -48,7 +48,7 @@ dlist_ground()
    int      deg;
    float    rad;
    /*---(draw)--------------------------------------------*/
-   glColor3f(0.2f, 0.2f, 0.2f);
+   glColor4f (0.2f, 0.2f, 0.2f, 0.3f);
    for (z_pos = -1000; z_pos < 1000; z_pos += 50) {
       glBegin(GL_QUAD_STRIP);
       for (x_pos = -1000; x_pos < 1000; x_pos += 50) {
