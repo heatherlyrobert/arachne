@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9o"
-#define VER_TXT   "ticker is using position lock correctly now"
+#define VER_NUM   "0.9p"
+#define VER_TXT   "ticker displays percent of total lines to show position"
 
 
 
@@ -243,7 +243,7 @@ struct cACCESSOR {
 
    double      p_endsec;                    /* end second for timeline play   */
    char        p_quit;                      /* quit after initial playing     */
-   double      p_leg;                       /* leg currently viewed           */
+   int         p_leg;                       /* leg currently viewed           */
    int         p_texw;                      /* texture full width             */
    int         p_texh;                      /* texture full height            */
    int         p_top;                       /* topmost y of progress bar      */
@@ -558,6 +558,7 @@ char      TICK_init          (void);
 char      TICK_draw          (void);
 char      TICK_show          (void);
 char      TICK_legend        (void);
+char      TICK_png                (void);
 /*> char      DRAW_command       (void);                                              <*/
 /*> char      DRAW_title         (void);                                              <*/
 

@@ -74,6 +74,7 @@ TICK_init          (void)
    DEBUG_GRAF   yLOG_value   ("init"      , rc);
    rc = yGLTEX_new  (&my.p_tex, &my.p_fbo, &my.p_depth, my.p_texw, my.p_texh);
    DEBUG_GRAF   yLOG_value   ("new"       , rc);
+   yVIKEYS_cmds_add ('c', "p_snap"      , ""    , ""     , TICK_png             , "save png image of full ticker/progress"                      );
    /*---(update colors)------------------*/
    /*> s_ncolor = yCOLOR_init     (YCOLOR_BROMAU2);                                   <* 
     *> yCOLOR_scale    (YCOLOR_PARABOLIC,  0.0,  30.0);                               <*/
@@ -131,6 +132,11 @@ TICK_back_vert     (void)
    float     x_top         =  0.0;
    float     x_beg         =  0.0;
    float     x_end         = my.p_texw;
+   char      x_msg         [100];
+   float     x_large       =  0.0;
+   int       x_small       =    0;
+   float     x_section     =  0.0;
+   float     x_pct         =  0.0;
    /*---(prepare)------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    /*---(vertical bars)------------------*/
@@ -138,6 +144,7 @@ TICK_back_vert     (void)
    yVIKEYS_view_color (YCOLOR_NEG_MUT, 1.00);
    glLineWidth (2.0);
    for (x = x_beg; x <= x_end; x += x_xinc) {
+      /*---(10.0x bars)------------------*/
       if (x % (x_xinc * 100) == 0) {
          glBegin         (GL_POLYGON); {
             glVertex3f  (x - x_xinc / 3.0,   my.p_texh,     0.0);
@@ -145,15 +152,49 @@ TICK_back_vert     (void)
             glVertex3f  (x + x_xinc / 3.0,   0.0      ,     0.0);
             glVertex3f  (x - x_xinc / 3.0,   0.0      ,     0.0);
          } glEnd   ();
-      } else if (x % (x_xinc *  10) == 0) {
+         x_small = 0;
+         ++x_large;
+         for (j = 0; j < 12; ++j) {
+            x_top = (j + 1) * x_yinc;
+            x_bot = (j    ) * x_yinc;
+            if (j <  6)  x_section = s_section;
+            else         x_section = s_section + 1;
+            x_pct = ((((x_section * 4) + x_large) * my.p_scale * 10.0) / my.p_len) * 100;
+            if (x_pct > 100.0)  x_pct = 100.0;
+            if (x_pct <   0.0)  x_pct =   0.0;
+            /*> sprintf (x_msg, "%d", ((s_section * 4) + x_large) * my.p_scale * 10);   <*/
+            /*> sprintf (x_msg, "%.0f", ((x_section * 4) + x_large));                 <*/
+            /*> sprintf (x_msg, "%.0f", ((x_section * 4) + x_large) * my.p_scale * 10.0);   <*/
+            sprintf (x_msg, "%3.0f%%", x_pct);
+            /*> yVIKEYS_view_color (YCOLOR_BAS_ACC, 1.00);                            <*/
+            glPushMatrix(); {
+               glTranslatef (x + 990.0, x_bot +  50.0    ,    60.0  );
+               yFONT_print  (my.fixed,  18, YF_TOPRIG, x_msg);
+            } glPopMatrix();
+         }
+      }
+      /*---(1.00x bars)------------------*/
+      else if (x % (x_xinc *  10) == 0) {
          glBegin         (GL_POLYGON); {
             glVertex3f  (x - 1     ,   my.p_texh,     0.0);
             glVertex3f  (x + 1     ,   my.p_texh,     0.0);
             glVertex3f  (x + 1     ,   0.0      ,     0.0);
             glVertex3f  (x - 1     ,   0.0      ,     0.0);
          } glEnd   ();
-      } else if (x % (x_xinc *   5) == 0) {
-         /*---(top and bottom limits)----------*/
+         ++x_small;
+         for (j = 0; j < 12; ++j) {
+            x_top = (j + 1) * x_yinc;
+            x_bot = (j    ) * x_yinc;
+            sprintf (x_msg, "%d", x_small);
+            /*> yVIKEYS_view_color (YCOLOR_BAS_ACC, 1.00);                            <*/
+            glPushMatrix(); {
+               glTranslatef (x + 10.0, x_bot +  12.0    ,    60.0  );
+               yFONT_print  (my.fixed,  15, YF_BOTLEF, x_msg);
+            } glPopMatrix();
+         }
+      }
+      /*---(0.50x bars)------------------*/
+      else if (x % (x_xinc *   5) == 0) {
          for (j = 0; j < 12; ++j) {
             x_top = (j + 1) * x_yinc;
             x_bot = (j    ) * x_yinc;
@@ -164,8 +205,9 @@ TICK_back_vert     (void)
                glVertex3f  (x, x_bot + 20,     0.0);
             } glEnd   ();
          }
-      } else {
-         /*---(top and bottom limits)----------*/
+      }
+      /*---(0.10x bars)------------------*/
+      else {
          for (j = 0; j < 12; ++j) {
             x_top = (j + 1) * x_yinc;
             x_bot = (j    ) * x_yinc;
@@ -216,6 +258,7 @@ TICK_back_horz     (void)
          glVertex3f  (x_beg, x_ypos - 120       ,   10.0);
       } glEnd   ();
    }
+   return 0;
 }
 
 char         /*--> draw texture background ---------------[ ------ [ ------ ]-*/
@@ -369,7 +412,7 @@ char         /*--> draw texture labels -------------------[ ------ [ ------ ]-*/
 TICK_servos        (int a_leg)
 {
    /*---(locals)-----------+-----------+-*/
-   int       x_xinc        = 100.0;
+   int       x_xinc        = 10.0;
    int       x_yinc        =  0.0;
    float     x_bot         =  0.0;
    float     x_top         = my.p_texh;
@@ -604,8 +647,7 @@ TICK_sectext       (int a_section)
       /*> printf ("d = %5d,      ,      , %5d, %5d\n", d, d, x_rem);                  <*/
       if      (a >  0)  sprintf (s_sectext, "%c%c%c%c", a + 'a', b + 'a', c + 'a', d + 'a');
       else if (b >  0)  sprintf (s_sectext, "%c%c%c"  , b + 'a', c + 'a', d + 'a');
-      else if (c >  0)  sprintf (s_sectext, "%c%c"    , c + 'a', d + 'a');
-      else              sprintf (s_sectext, "%c"      , d + 'a');
+      else              sprintf (s_sectext, "%c%c"    , c + 'a', d + 'a');
    }
    /*> printf (">   %s\n", s_sectext);                                                <*/
    /*---(complete)-----------------------*/
@@ -679,22 +721,22 @@ TICK_labels_newer  (void)
       for (j = 0; j < 12; ++j) {
          /*---(leg)----------------------*/
          x_pos = my.p_texh - (j * x_yinc);
-         sprintf (x_msg, "%d/%s", j % 6, legs_name [j % 6]);
+         sprintf (x_msg, " %d  %s", j % 6, legs_name [j % 6]);
          yVIKEYS_view_color (YCOLOR_BAS_ACC, 1.00);
          glPushMatrix(); {
-            glTranslatef ( i + 30.0 , x_pos    -  115.0    ,    60.0  );
+            glTranslatef ( i + 500.0 , x_pos    -  115.0    ,    60.0  );
             glRotatef  ( 90.0  , 0.0f, 0.0f, 1.0f);
             yFONT_print  (my.fixed,  25, YF_MIDCEN, x_msg);
          } glPopMatrix();
          /*---(hint)---------------------*/
-         /*> yVIKEYS_view_color (YCOLOR_BAS_MUT, 1.00);                               <* 
-          *> if (j >= 6)  strlcpy (x_msg, x_label1, LEN_STR);                         <* 
-          *> else         strlcpy (x_msg, x_label2, LEN_STR);                         <* 
-          *> glColor4f    (0.25f, 0.25f, 0.25f, 1.0f);                                <* 
-          *> glPushMatrix(); {                                                        <* 
-          *>    glTranslatef ( i +  80.0 , x_pos    -   40.0    ,    60.0  );         <* 
-          *>    yFONT_print  (my.fixed,  20, YF_MIDCEN, x_msg);                       <* 
-          *> } glPopMatrix();                                                         <*/
+         yVIKEYS_view_color (YCOLOR_BAS_MUT, 1.00);
+         if (j >= 6)  strlcpy (x_msg, x_label1, LEN_STR);
+         else         strlcpy (x_msg, x_label2, LEN_STR);
+         glColor4f    (0.25f, 0.25f, 0.25f, 1.0f);
+         glPushMatrix(); {
+            glTranslatef ( i +  10.0 , x_pos    -  150.0    ,    60.0  );
+            yFONT_print  (my.fixed,  18, YF_TOPLEF, x_msg);
+         } glPopMatrix();
          /*---(scale)--------------------*/
          yVIKEYS_scale_desc (x_msg);
          yVIKEYS_view_color (YCOLOR_BAS_ACC, 1.00);
@@ -899,6 +941,13 @@ TICK_draw          (void)
    yGLTEX_draw_end   (my.p_tex);
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
+char
+TICK_png                (void)
+{
+   yGLTEX_tex2png    ("ticker.png", my.p_texw, my.p_texh);
    return 0;
 }
 
@@ -1162,7 +1211,7 @@ TICK_show          (void)
     *>    /+---(done)-----------+/                                                    <* 
     *> } glEnd();                                                                     <*/
    /*---(firgure current)----------------*/
-   rc = yVIKEYS_prog_cur (&my.p_pos, &my.p_cur, &my.p_scale, &my.p_inc);
+   rc = yVIKEYS_prog_cur (&my.p_pos, &my.p_cur, &my.p_scale, &my.p_inc, &my.p_leg);
    if (yVIKEYS_prog_redraw ())  rc = TICK_draw ();
    rc = TICK_showtex     (my.p_tall,  s_textop,  s_texbot);
    /*---(show debug)---------------------*/
