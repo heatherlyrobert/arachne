@@ -4,288 +4,45 @@
 
 
 
-/*> #define    MAX_COLORS      50                                                     <* 
- *> typedef   struct cCOLOR  tCOLOR;                                                  <* 
- *> struct cCOLOR {                                                                   <* 
- *>    char        name        [LEN_LABEL];                                           <* 
- *>    char        hex         [LEN_LABEL];                                           <* 
- *>    char        active;                                                            <* 
- *>    double      min;                                                               <* 
- *>    double      red;                                                               <* 
- *>    double      grn;                                                               <* 
- *>    double      blu;                                                               <* 
- *> };                                                                                <* 
- *> tCOLOR    s_colors  [MAX_COLORS] = {                                              <* 
- *>    {  "shocking"  , "fc0fb0", 'F',   0.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "pale"      , "c2b2c2", 'y', 100.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "orchid"    , "bb88bb", 'y',  75.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "royal"     , "9851a9", 'y',  50.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "mauve"     , "993399", 'y',  40.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "magenta"   , "990099", 'y',  30.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "violet"    , "770077", 'y',  20.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "purple"    , "470587", 'y',  15.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "prussian"  , "002567", 'y',   7.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "navy"      , "171797", 'y',  10.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "blue"      , "133aac", 'y',   7.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "french"    , "0572b8", 'y',   7.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "cyan"      , "008080", 'y',   5.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "teal"      , "227060", 'y',   4.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "dartmouth" , "00693e", 'y',   3.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "olive"     , "3b6e23", 'y',   1.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "forest"    , "228b22", 'y',   2.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "green"     , "26bb26", 'y',   1.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "lime"      , "8eeb00", 'y',   0.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "yellow"    , "ffff00", 'y',  -0.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "burnt"     , "ffcc00", 'y',  -1.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "carrot"    , "ff9f00", 'y',  -2.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "gold"      , "ff7700", 'y',  -3.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "orange"    , "f05000", 'y',  -4.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "cinnabar"  , "cc3300", 'y',  -5.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "scarlet"   , "ff3020", 'y',  -5.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "crimson"   , "df143c", 'y',  -7.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "rose"      , "ba1e36", 'y', -10.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "red"       , "af1a1a", 'y', -15.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "carmine"   , "a01018", 'y', -10.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "blood"     , "8a1100", 'y', -20.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "burgundy"  , "800005", 'y', -20.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "redwood"   , "992a08", 'y', -30.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "tan"       , "853819", 'y', -40.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "saddle"    , "603310", 'y', -50.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "brown"     , "4a2208", 'y', -75.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "taupe"     , "483c32", 'y',-100.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "steel"     , "302420", 'y',-999.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "dark"      , "101010", 'X',   0.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "end-list"  , "000000", 'e',   0.0,   0.0,   0.0,   0.0  },                 <* 
- *>                                                                                   <* 
- *>    {  "tan"       , "894819", 'y', -40.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "redwood"   , "aa3a12", 'y', -30.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "celestial" , "4997d0", 'y',   7.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "magenta"   , "ff0090", 'y',  20.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "chile"     , "e23d28", 'y', -10.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "olive"     , "6b8e23", 'y',   1.5,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "venetian"  , "c82825", 'y', -15.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "indian"    , "cd5c5c", 'y', -15.0,   0.0,   0.0,   0.0  },                 <* 
- *>    {  "indian"    , "bd3c3c", 'y', -15.0,   0.0,   0.0,   0.0  },                 <* 
- *> };                                                                                <* 
- *> static int s_ncolor = 0;                                                          <*/
-
-/*> #define     MAX_HEAT      10                                                      <* 
- *> struct {                                                                          <* 
- *>    char        type        [LEN_LABEL];                                           <* 
- *>    char        name        [LEN_LABEL];                                           <* 
- *>    char        reason      [LEN_STR  ];                                           <* 
- *> } s_heat [MAX_HEAT] = {                                                           <* 
- *>    {  "-" , "touch" , "y-pos vs ground"     },                                    <* 
- *>    {  "-" , "x"     , "x-pos vs expected"   },                                    <* 
- *>    {  "-" , "z"     , "z-pos vs expected"   },                                    <* 
- *>    {  "-" , "horz"  , "horizontal (xz)"     },                                    <* 
- *>    {  "-" , "y"     , "y-pos vs expected"   },                                    <* 
- *>    {  "B" , "full"  , "full vs exp (xzy)"   },                                    <* 
- *>    {  "e" , "end"   , "end-of-list"         },                                    <* 
- *> };                                                                                <*/
-
-/*> char                                                                                        <* 
- *> TICK_legend        (void)                                                                   <* 
- *> {                                                                                           <* 
- *>    int  i = 0;                                                                              <* 
- *>    char  x_text      [LEN_STR] = "";                                                        <* 
- *>    int  c = 0;                                                                              <* 
- *>    double  x_last              = 999.00;                                                    <* 
- *>    float       x_min       = 0.0;                                                           <* 
- *>    int         x_tall      = 12.0;                                                          <* 
- *>    int         x_point     =  7;                                                            <* 
- *>    /+---(setup view)---------------------+/                                                 <* 
- *>    glViewport      ( my.a_left, my.a_bott, my.a_wide, my.a_tall);                           <* 
- *>    glMatrixMode    (GL_PROJECTION);                                                         <* 
- *>    glLoadIdentity  ();                                                                      <* 
- *>    glOrtho         ( 0.0f, my.a_wide, 0.0f, my.a_tall,  -500.0,   500.0);                   <* 
- *>    glMatrixMode    (GL_MODELVIEW);                                                          <* 
- *>    /+---(background)---------------------+/                                                 <* 
- *>    glColor4f    (0.00f, 0.00f, 0.40f, 1.0f);                                                <* 
- *>    glPushMatrix    (); {                                                                    <* 
- *>       glBegin         (GL_POLYGON); {                                                       <* 
- *>          glVertex3f  (0.0f     , my.a_tall,  0.0f);                                         <* 
- *>          glVertex3f  (my.a_wide, my.a_tall,  0.0f);                                         <* 
- *>          glVertex3f  (my.a_wide, 0.0f     ,  0.0f);                                         <* 
- *>          glVertex3f  (0.0f     , 0.0f     ,  0.0f);                                         <* 
- *>       } glEnd   ();                                                                         <* 
- *>    } glPopMatrix   ();                                                                      <* 
- *>    /+---(top part)-----------------------+/                                                 <* 
- *>    glPushMatrix    (); {                                                                    <* 
- *>       glTranslatef (    5.0f, my.a_tall,   10.0f);                                          <* 
- *>       /+---(header)-------------------------+/                                              <* 
- *>       glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);                                             <* 
- *>       glTranslatef (    0.0f,    -30.0f,    0.0f);                                          <* 
- *>       yFONT_print  (my.fixed,  16, YF_BOTLEF, "progress legend");                           <* 
- *>       /+---(femur)--------------------------+/                                              <* 
- *>       glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);                                             <* 
- *>       glTranslatef (    0.0f,    -25.0f,    0.0f);                                          <* 
- *>       yFONT_print  (my.fixed,  10, YF_BOTLEF, "femu");                                      <* 
- *>       glPushMatrix    (); {                                                                 <* 
- *>          /+---(setup)--------------------------+/                                           <* 
- *>          glColor4f    (0.50f, 0.00f, 0.00f, 1.0f);                                          <* 
- *>          glLineWidth  ( 3.0f);                                                              <* 
- *>          glTranslatef (   50.0f,      7.0f,    0.0f);                                       <* 
- *>          /+---(top line)-----------------------+/                                           <* 
- *>          glBegin(GL_LINE_STRIP); {                                                          <* 
- *>             glVertex3f  (  0.0,  2.0, 0.0);                                                 <* 
- *>             glVertex3f  (140.0,  2.0, 0.0);                                                 <* 
- *>          } glEnd   ();                                                                      <* 
- *>          /+---(bottom line)--------------------+/                                           <* 
- *>          glBegin(GL_LINE_STRIP); {                                                          <* 
- *>             glVertex3f  (  0.0, -2.0, 0.0);                                                 <* 
- *>             glVertex3f  (140.0, -2.0, 0.0);                                                 <* 
- *>          } glEnd   ();                                                                      <* 
- *>       } glPopMatrix   ();                                                                   <* 
- *>       /+---(patella)------------------------+/                                              <* 
- *>       glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);                                             <* 
- *>       glTranslatef (    0.0f,    -15.0f,    0.0f);                                          <* 
- *>       yFONT_print  (my.fixed,  10, YF_BOTLEF, "pate");                                      <* 
- *>       glPushMatrix    (); {                                                                 <* 
- *>          /+---(setup)--------------------------+/                                           <* 
- *>          glColor4f    (0.20f, 0.20f, 0.70f, 1.0f);                                          <* 
- *>          glLineWidth  ( 3.0f);                                                              <* 
- *>          glTranslatef (   50.0f,      7.0f,    0.0f);                                       <* 
- *>          /+---(top line)-----------------------+/                                           <* 
- *>          glBegin(GL_LINE_STRIP); {                                                          <* 
- *>             glVertex3f  (  0.0,  1.0, 0.0);                                                 <* 
- *>             glVertex3f  (140.0,  1.0, 0.0);                                                 <* 
- *>          } glEnd   ();                                                                      <* 
- *>          /+---(bottom line)--------------------+/                                           <* 
- *>          glBegin(GL_LINE_STRIP); {                                                          <* 
- *>             glVertex3f  (  0.0, -1.0, 0.0);                                                 <* 
- *>             glVertex3f  (140.0, -1.0, 0.0);                                                 <* 
-*>          } glEnd   ();                                                                      <* 
-*>       } glPopMatrix   ();                                                                   <* 
-*>       /+---(tibia)--------------------------+/                                              <* 
-*>       glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);                                             <* 
-*>       glTranslatef (    0.0f,    -15.0f,    0.0f);                                          <* 
-*>       yFONT_print  (my.fixed,  10, YF_BOTLEF, "tibi");                                      <* 
-*>       glPushMatrix    (); {                                                                 <* 
-   *>          /+---(setup)--------------------------+/                                           <* 
-      *>          glColor4f    (0.00f, 0.50f, 0.00f, 1.0f);                                          <* 
-      *>          glLineWidth  ( 2.0f);                                                              <* 
-      *>          glTranslatef (   50.0f,      7.0f,    0.0f);                                       <* 
-      *>          /+---(top line)-----------------------+/                                           <* 
-      *>          glBegin(GL_LINE_STRIP); {                                                          <* 
-         *>             glVertex3f  (  0.0,  1.0, 0.0);                                                 <* 
-            *>             glVertex3f  (140.0,  1.0, 0.0);                                                 <* 
-            *>          } glEnd   ();                                                                      <* 
-            *>          /+---(bottom line)--------------------+/                                           <* 
-            *>          glBegin(GL_LINE_STRIP); {                                                          <* 
-               *>             glVertex3f  (  0.0, -1.0, 0.0);                                                 <* 
-                  *>             glVertex3f  (140.0, -1.0, 0.0);                                                 <* 
-                  *>          } glEnd   ();                                                                      <* 
-                  *>       } glPopMatrix   ();                                                                   <* 
-                  *>    } glPopMatrix   ();                                                                      <* 
-                  *>    /+---(heat line legend)---------------+/                                                 <* 
-                  *>    c = 0;                                                                                   <* 
-                  *>    glPushMatrix    (); {                                                                    <* 
-                     *>       glColor4f   (1.00f, 1.00f, 1.00f, 1.0f);                                              <* 
-                        *>       glTranslatef (    5.0f, 460.0,   10.0f);                                              <* 
-                        *>       yFONT_print  (my.fixed,  10, YF_BOTLEF, "heat map horizontals");                      <* 
-                        *>       for (i = 0; i < MAX_HEAT; ++i) {                                                      <* 
-                           *>          if (s_heat [i].type [0] == 'e')  break;                                            <* 
-                              *>          ++c;                                                                               <* 
-                              *>          glTranslatef (    0.0f,    -20.0f,    0.0f);                                       <* 
-                              *>          glPushMatrix    (); {                                                              <* 
-                                 *>             sprintf  (x_text, "%-2d", c);                                                   <* 
-                                    *>             yFONT_print  (my.fixed,  10, YF_BOTLEF, x_text);                                <* 
-                                    *>             glTranslatef (   20.0f,      0.0f,    0.0f);                                    <* 
-                                    *>             yFONT_print  (my.fixed,  10, YF_BOTLEF, s_heat [i].name);                       <* 
-                                    *>             glTranslatef (   50.0f,      0.0f,    0.0f);                                    <* 
-                                    *>             yFONT_print  (my.fixed,  10, YF_BOTLEF, s_heat [i].reason);                     <* 
-                                    *>          } glPopMatrix   ();                                                                <* 
-                                    *>       }                                                                                     <* 
-                                    *>    } glPopMatrix   ();                                                                      <* 
-                                    *>    /+---(heat map colors)----------------+/                                                 <* 
-                                    *>    c = 0;                                                                                   <* 
-                                    *>    glPushMatrix    (); {                                                                    <* 
-                                       *>       /+> glTranslatef (    5.0f,  330.0,   20.0f);                                   <+/   <* 
-                                          *>       glTranslatef (    5.0f, x_tall * (s_ncolor - 1) + 5,   20.0f);                        <* 
-                                          *>       for (i = s_ncolor - 1; i >= 0; --i) {                                                 <* 
-                                             *>          glPushMatrix    (); {                                                              <* 
-                                                *>             glTranslatef (    0.0f,  -(x_tall * c),    0.0f);                               <* 
-                                                   *>             yCOLOR_num2color (i, 1.0);                                                      <* 
-                                                   *>             glBegin         (GL_POLYGON); {                                                 <* 
-                                                      *>                glVertex3f  (  0.0f          , x_tall + 1,  0.0f);                           <* 
-                                                         *>                glVertex3f  (my.a_wide - 10.0, x_tall + 1,  0.0f);                           <* 
-                                                         *>                glVertex3f  (my.a_wide - 10.0, 1.0f      ,  0.0f);                           <* 
-                                                         *>                glVertex3f  (  0.0f          , 1.0f      ,  0.0f);                           <* 
-                                                         *>             } glEnd   ();                                                                   <* 
-                                                         *>             glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);                                       <* 
-                                                         *>             glTranslatef (   10.0f,   1.0f,    0.0f);                                       <* 
-                                                         *>             sprintf  (x_text, "%-2d", c);                                                   <* 
-                                                         *>             x_min = yCOLOR_num2cutoff (i);                                                  <* 
-                                                         *>             glColor4f    (0.00f, 0.00f, 0.00f, 1.0f);                                       <* 
-                                                         *>             yFONT_print  (my.fixed, x_point, YF_BOTLEF, x_text);                            <* 
-                                                         *>             glTranslatef (   20.0f,      0.0f,    0.0f);                                    <* 
-                                                         *>             yFONT_print  (my.fixed, x_point, YF_BOTLEF, yCOLOR_num2name (i));               <* 
-                                                         *>             glTranslatef (   60.0f,      0.0f,    0.0f);                                    <* 
-                                                         *>             if (x_last - x_min < 10) {                                                      <* 
-                                                            *>                sprintf  (x_text, "%3.0lfmm", x_last - x_min);                               <* 
-                                                               *>                yFONT_print  (my.fixed, x_point, YF_BOTLEF, x_text);                         <* 
-                                                               *>             } else if (x_last - x_min < 100) {                                              <* 
-                                                                  *>                sprintf  (x_text, "%3.0lfcm", (x_last - x_min) / 10.0);                      <* 
-                                                                     *>                yFONT_print  (my.fixed, x_point, YF_BOTLEF, x_text);                         <* 
-                                                                     *>             } else if (x_last - x_min < 1000) {                                             <* 
-                                                                        *>                sprintf  (x_text, "%3.0lfdm", (x_last - x_min) / 100.0);                     <* 
-                                                                           *>                yFONT_print  (my.fixed, x_point, YF_BOTLEF, x_text);                         <* 
-                                                                           *>             }                                                                               <* 
-                                                                           *>             glTranslatef (   45.0f,      0.0f,   20.0f);                                    <* 
-                                                                           *>             if (x_min >= 0.0)  sprintf  (x_text, "<= ");                                    <* 
-                                                                           *>             else               sprintf  (x_text, "<  ");                                    <* 
-                                                                           *>             yFONT_print  (my.fixed, x_point, YF_BOTLEF, x_text);                            <* 
-                                                                           *>             glTranslatef (   15.0f,      0.0f,   20.0f);                                    <* 
-                                                                           *>             sprintf  (x_text, "%.1lf", x_min);                                              <* 
-                                                                           *>             yFONT_print  (my.fixed, x_point, YF_BOTLEF, x_text);                            <* 
-                                                                           *>             x_last = x_min;                                                                 <* 
-                                                                           *>          } glPopMatrix   ();                                                                <* 
-                                                                           *>          ++c;                                                                               <* 
-                                                                           *>       }                                                                                     <* 
-                                                                           *>    } glPopMatrix   ();                                                                      <* 
-                                                                           *>    /+---(complete)-----------------------+/                                                 <* 
-                                                                           *>    return 0;                                                                                <* 
-                                                                           *> }                                                                                           <*/
 
 
-                                                                           /*====================------------------------------------====================*/
-                                                                           /*===----                       progress ticker                        ----===*/
-                                                                           /*====================------------------------------------====================*/
-                                                                           static void      o___PROGRESS________________o (void) {;}
+/*====================------------------------------------====================*/
+/*===----                       progress ticker                        ----===*/
+/*====================------------------------------------====================*/
+static void      o___PROGRESS________________o (void) {;}
 
-                                                                           /*---(single leg vars)----------------*/
-                                                                           static float       s_textop    =   0.0;    /* single leg top percent in texture   */
-                                                                           static float       s_texbot    =   0.0;    /* single leg bot percent in texture   */
-                                                                           static float       s_texavail  =   0.0;         /* texture length available       */
-                                                                           static float       s_texpct    =   0.0;         /* texture width percent avail    */
-                                                                           static float       s_texctr    =   0.0;         /* texture width avail center     */
-                                                                           static float       s_tsec      =   0.0;         /* texture length of a second     */
-                                                                           static float       s_tnsec     =   0.0;         /* texture number of secs shown   */
-                                                                           static float       s_tsecp     =   0.0;         /* width pct of a texture sec     */
-                                                                           static float       s_plenp     =   0.0;         /* total length in texture pct    */
-                                                                           static float       s_texbeg    =   0.0;
-                                                                           static float       s_texend    =   0.0;
-                                                                           static float       s_curp      =   0.0;         /* cur pos in texture pct         */
-                                                                           static float       s_cur       =   0.0;
+/*---(single leg vars)----------------*/
+static float       s_textop    =   0.0;    /* single leg top percent in texture   */
+static float       s_texbot    =   0.0;    /* single leg bot percent in texture   */
+static float       s_texavail  =   0.0;         /* texture length available       */
+static float       s_texpct    =   0.0;         /* texture width percent avail    */
+static float       s_texctr    =   0.0;         /* texture width avail center     */
+static float       s_tsec      =   0.0;         /* texture length of a second     */
+/*> static float       s_tnsec     =   0.0;         /+ texture number of secs shown   +/   <*/
+/*> static float       s_tsecp     =   0.0;         /+ width pct of a texture sec     +/   <*/
+static float       s_plenp     =   0.0;         /* total length in texture pct    */
+static float       s_texbeg    =   0.0;
+static float       s_texend    =   0.0;
+static float       s_curp      =   0.0;         /* cur pos in texture pct         */
+static float       s_cur       =   0.0;
 
-                                                                           static float       s_start     =   0.0;
-                                                                           static float       s_cutmid    =   0.0;
-                                                                           static float       s_cutend    =   0.0;
+static float       s_start     =   0.0;
+static float       s_cutmid    =   0.0;
+static float       s_cutend    =   0.0;
 
-                                                                           static int         s_section   =     0;         /* section of script          */
-                                                                           static char        s_sectext   [5];             /* section of script          */
-                                                                           static float       s_texbeg1   =   0.0;
-                                                                           static float       s_texend1   =   0.0;
-                                                                           static float       s_texpct1   =   0.0;
-                                                                           static float       s_texbeg2   =   0.0;
-                                                                           static float       s_texend2   =   0.0;
-                                                                           static float       s_texpct2   =   0.0;
+static int         s_section   =     0;         /* section of script          */
+static char        s_sectext   [5];             /* section of script          */
+static float       s_texbeg1   =   0.0;
+static float       s_texend1   =   0.0;
+static float       s_texpct1   =   0.0;
+static float       s_texbeg2   =   0.0;
+static float       s_texend2   =   0.0;
+static float       s_texpct2   =   0.0;
 
-                                                                           static double      s_lowest    =   0.0;
+static double      s_lowest    =   0.0;
 
-                                                                           static int       s_debug_leg;
-                                                                           static double    s_debug_sec;
+static int       s_debug_leg;
+static double    s_debug_sec;
 
 
 char         /*--> set values for progress ticker --------[ ------ [ ------ ]-*/
@@ -302,7 +59,7 @@ TICK_init          (void)
    my.p_texh      = 2400;   /* 200 for one row  (200 * 12)  */
    my.p_top       =  115;   /* tibia can go to 130 */
    my.p_bot       =  -85;   /* femur can go to -85 */
-   my.p_curpos    =  'c';   /* put current bar in middle if possible          */
+   my.p_pos       =  'c';   /* put current bar in middle if possible          */
    /*---(handles)------------------------*/
    DEBUG_GRAF   yLOG_note    ("initializing handles (tex, fbo, depth)");
    my.p_tex       =    0;
@@ -366,31 +123,59 @@ char         /*--> draw texture background ---------------[ ------ [ ------ ]-*/
 TICK_back_vert     (void)
 {
    /*---(locals)-----------+-----------+-*/
-   int       i;                             /* loop iterator                  */
+   int       x;                             /* loop iterator                  */
+   int       j;                             /* loop iterator                  */
    int       x_xinc        = 10.0;
+   int       x_yinc        =  0.0;
    float     x_bot         =  0.0;
-   float     x_top         = my.p_texh;
+   float     x_top         =  0.0;
    float     x_beg         =  0.0;
    float     x_end         = my.p_texw;
    /*---(prepare)------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    /*---(vertical bars)------------------*/
-   for (i = x_beg; i < x_end; i += x_xinc * 10) {
-      yVIKEYS_view_color (YCOLOR_NEG_MUT, 1.00);
-      if (i % (x_xinc * 100) == 0) {
+   x_yinc = my.p_texh / 12.0;
+   yVIKEYS_view_color (YCOLOR_NEG_MUT, 1.00);
+   glLineWidth (2.0);
+   for (x = x_beg; x <= x_end; x += x_xinc) {
+      if (x % (x_xinc * 100) == 0) {
          glBegin         (GL_POLYGON); {
-            glVertex3f  (i         ,   x_top,     0.0);
-            glVertex3f  (i + x_xinc,   x_top,     0.0);
-            glVertex3f  (i + x_xinc,   x_bot,     0.0);
-            glVertex3f  (i         ,   x_bot,     0.0);
+            glVertex3f  (x - x_xinc / 3.0,   my.p_texh,     0.0);
+            glVertex3f  (x + x_xinc / 3.0,   my.p_texh,     0.0);
+            glVertex3f  (x + x_xinc / 3.0,   0.0      ,     0.0);
+            glVertex3f  (x - x_xinc / 3.0,   0.0      ,     0.0);
          } glEnd   ();
+      } else if (x % (x_xinc *  10) == 0) {
+         glBegin         (GL_POLYGON); {
+            glVertex3f  (x - 1     ,   my.p_texh,     0.0);
+            glVertex3f  (x + 1     ,   my.p_texh,     0.0);
+            glVertex3f  (x + 1     ,   0.0      ,     0.0);
+            glVertex3f  (x - 1     ,   0.0      ,     0.0);
+         } glEnd   ();
+      } else if (x % (x_xinc *   5) == 0) {
+         /*---(top and bottom limits)----------*/
+         for (j = 0; j < 12; ++j) {
+            x_top = (j + 1) * x_yinc;
+            x_bot = (j    ) * x_yinc;
+            glBegin         (GL_LINES); {
+               glVertex3f  (x, x_top     ,     0.0);
+               glVertex3f  (x, x_top - 50,     0.0);
+               glVertex3f  (x, x_bot     ,     0.0);
+               glVertex3f  (x, x_bot + 20,     0.0);
+            } glEnd   ();
+         }
       } else {
-         glBegin         (GL_POLYGON); {
-            glVertex3f  (i + 4     ,   x_top,     0.0);
-            glVertex3f  (i + 6     ,   x_top,     0.0);
-            glVertex3f  (i + 6     ,   x_bot,     0.0);
-            glVertex3f  (i + 4     ,   x_bot,     0.0);
-         } glEnd   ();
+         /*---(top and bottom limits)----------*/
+         for (j = 0; j < 12; ++j) {
+            x_top = (j + 1) * x_yinc;
+            x_bot = (j    ) * x_yinc;
+            glBegin         (GL_LINES); {
+               glVertex3f  (x, x_top     ,     0.0);
+               glVertex3f  (x, x_top - 40,     0.0);
+               glVertex3f  (x, x_bot     ,     0.0);
+               glVertex3f  (x, x_bot + 10,     0.0);
+            } glEnd   ();
+         }
       }
    }
    /*---(complete)-----------------------*/
@@ -430,14 +215,6 @@ TICK_back_horz     (void)
          glVertex3f  (x_end, x_ypos - 120       ,   10.0);
          glVertex3f  (x_beg, x_ypos - 120       ,   10.0);
       } glEnd   ();
-      /*> if (i < 6)  sprintf (x_msg, "%d/%s", i, legs_name [i]);                     <* 
-       *> else        sprintf (x_msg, "%d/%s", i - 6, legs_name [i - 6]);             <* 
-       *> yVIKEYS_view_color (YCOLOR_BAS_ACC, 1.00);                                  <* 
-       *> glPushMatrix(); {                                                           <* 
-       *>    glTranslatef (x_beg + 20, x_ypos - 100,  20.0);                          <* 
-       *>    glRotatef  ( 90.0  , 0.0f, 0.0f, 1.0f);                                  <* 
-       *>    yFONT_print  (my.fixed,  10, YF_MIDCEN, x_msg);                          <* 
-       *> } glPopMatrix();                                                            <*/
    }
 }
 
@@ -527,20 +304,20 @@ char
 TICK_line          (float a_x1, float a_y1, float a_x2, float a_y2, float a_xinc, float a_yinc, float a_z)
 {
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   glBegin(GL_LINE_STRIP); {
-      glVertex3f  (a_x1 - 0.0, a_y1 + 0.0, a_z);
-      glVertex3f  (a_x2 - 0.0, a_y2 + 0.0, a_z);
-   } glEnd   ();
+   /*> glBegin(GL_LINE_STRIP); {                                                      <* 
+    *>    glVertex3f  (a_x1 - 0.0, a_y1 + 0.0, a_z);                                  <* 
+    *>    glVertex3f  (a_x2 - 0.0, a_y2 + 0.0, a_z);                                  <* 
+    *> } glEnd   ();                                                                  <*/
    /*---(top line)-----------------------*/
-   /*> glBegin(GL_LINE_STRIP); {                                                      <* 
-    *>    glVertex3f  (a_x1 - a_xinc, a_y1 + a_yinc, a_z);                            <* 
-    *>    glVertex3f  (a_x2 - a_xinc, a_y2 + a_yinc, a_z);                            <* 
-    *> } glEnd   ();                                                                  <*/
+   glBegin(GL_LINE_STRIP); {
+      glVertex3f  (a_x1 - a_xinc, a_y1 + a_yinc, a_z);
+      glVertex3f  (a_x2 - a_xinc, a_y2 + a_yinc, a_z);
+   } glEnd   ();
    /*---(bottom line)--------------------*/
-   /*> glBegin(GL_LINE_STRIP); {                                                      <* 
-    *>    glVertex3f  (a_x1 + a_xinc, a_y1 - a_yinc, a_z);                            <* 
-    *>    glVertex3f  (a_x2 + a_xinc, a_y2 - a_yinc, a_z);                            <* 
-    *> } glEnd   ();                                                                  <*/
+   glBegin(GL_LINE_STRIP); {
+      glVertex3f  (a_x1 + a_xinc, a_y1 - a_yinc, a_z);
+      glVertex3f  (a_x2 + a_xinc, a_y2 - a_yinc, a_z);
+   } glEnd   ();
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -566,7 +343,7 @@ TICK_servoline     (char a_type, float a_base, float a_sec1, float a_sec2, float
    y_pos2   = a_base + a_deg2;
    /*---(prepare adjustments)------------*/
    switch (a_type) {
-   case 'f' : y_inc = 5; z_pos = 230.0;  break;   /* femur         */
+   case 'f' : y_inc = 4; z_pos = 230.0;  break;   /* femur         */
    case 'p' : y_inc = 2; z_pos = 233.0;  break;   /* patella       */
    case 't' : y_inc = 1; z_pos = 236.0;  break;   /* tibia         */
    case 'e' : x_inc = 5; z_pos = 239.0;  break;   /* end point     */
@@ -592,7 +369,7 @@ char         /*--> draw texture labels -------------------[ ------ [ ------ ]-*/
 TICK_servos        (int a_leg)
 {
    /*---(locals)-----------+-----------+-*/
-   int       x_xinc        = 10.0;
+   int       x_xinc        = 100.0;
    int       x_yinc        =  0.0;
    float     x_bot         =  0.0;
    float     x_top         = my.p_texh;
@@ -650,7 +427,7 @@ TICK_servos        (int a_leg)
    } glPopMatrix();
    /*---(tibia)--------------------------*/
    glColor4f    (0.60f, 0.60f, 0.00f, 1.0f);
-   glLineWidth  ( 7.0f);
+   glLineWidth  ( 4.0f);
    glPushMatrix(); {
       rc = yKINE_move_first ((a_leg * 3) + 2, &x_sec1, &x_deg1);
       while (rc >= 0) {
@@ -877,9 +654,9 @@ TICK_labels_newer  (void)
    float     x_pos         =  0.0;
    char      x_msg         [100];
    char      x_part        [100];
-   int       x_labelper    =    0;
-   int       x_secbeg1     =    0;
-   int       x_secbeg2     =    0;
+   /*> int       x_labelper    =    0;                                                <*/
+   /*> int       x_secbeg1     =    0;                                                <*/
+   /*> int       x_secbeg2     =    0;                                                <*/
    char      x_label1      [10];
    char      x_label2      [10];
    double    x_sec         = 0.0;
@@ -888,12 +665,12 @@ TICK_labels_newer  (void)
    char      rc            = 0;
    /*---(prepare)------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   yVIKEYS_scale_base (&my.p_multi, &my.p_base);
+   /*> yVIKEYS_scale_base (&my.p_multi, &my.p_base);                                  <*/
    x_yinc      = x_top / 12.0;
-   x_labelper  = (my.p_texw / 10.0) * my.p_multi;
+   /*> x_labelper  = (my.p_texw / 10.0) * my.p_multi;                                 <*/
    /*> printf ("%8d  %8.3lf\n", my.p_texw, my.p_multi);                               <*/
-   x_secbeg1   = x_labelper * s_section;
-   x_secbeg2   = x_secbeg1 + x_labelper;
+   /*> x_secbeg1   = x_labelper * s_section;                                          <*/
+   /*> x_secbeg2   = x_secbeg1 + x_labelper;                                          <*/
    strlcpy (x_label1, TICK_sectext (s_section    ), 10);
    strlcpy (x_label2, TICK_sectext (s_section + 1), 10);
    /*> printf ("%8d  %8d  %8d\n", x_labelper, x_secbeg1, x_secbeg2);                  <*/
@@ -937,119 +714,119 @@ TICK_labels_newer  (void)
    return 0;
 }
 
-char         /*--> draw texture labels -------------------[ ------ [ ------ ]-*/
-TICK_labels        (void)
-{
-   /*---(locals)-----------+-----------+-*/
-   int       i;                             /* loop iterator                  */
-   int       j;                             /* loop iterator                  */
-   float     x_xinc        = 10.0;
-   float     x_yinc        =  0.0;
-   float     x_bot         =  0.0;
-   float     x_top         = my.p_texh;
-   float     x_beg         =  0.0;
-   float     x_end         = my.p_texw;
-   float     x_bar         =  0.0;
-   float     x_pos         =  0.0;
-   char      x_msg         [100];
-   char      x_part        [100];
-   int       x_labelper    =    0;
-   int       x_secbeg1     =    0;
-   int       x_secbeg2     =    0;
-   char      x_label1      [10];
-   char      x_label2      [10];
-   double    x_sec         = 0.0;
-   double    x_lowest      = 0.0;
-   int       x_lowcnt      = 0;
-   char      rc            = 0;
-   /*---(prepare)------------------------*/
-   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   yVIKEYS_scale_base (&my.p_multi, &my.p_base);
-   x_yinc      = x_top / 12.0;
-   x_bar       = my.p_top - my.p_bot;
-   x_labelper  = (my.p_texw / 10.0) * my.p_multi;
-   /*> printf ("%8d  %8.3lf\n", my.p_texw, my.p_multi);                               <*/
-   x_secbeg1   = x_labelper * s_section;
-   x_secbeg2   = x_secbeg1 + x_labelper;
-   strlcpy (x_label1, TICK_sectext (s_section    ), 10);
-   strlcpy (x_label2, TICK_sectext (s_section + 1), 10);
-   /*> printf ("%8d  %8d  %8d\n", x_labelper, x_secbeg1, x_secbeg2);                  <*/
-   /*---(leg labels)---------------------*/
-   for (i = x_beg; i < x_end; i += x_xinc * 100) {
-      for (j = 0; j < 12; ++j) {
-         x_pos = my.p_texh - (j * x_yinc);
-         sprintf (x_msg, "%d/%s", j % 6, legs_name [j % 6]);
-         glColor4f    (0.50f, 0.50f, 0.50f, 1.0f);
-         glPushMatrix(); {
-            glTranslatef ( i + 30.0 , x_pos    -  125.0    ,    60.0  );
-            glRotatef  ( 90.0  , 0.0f, 0.0f, 1.0f);
-            yFONT_print  (my.fixed,  40, YF_MIDCEN, x_msg);
-         } glPopMatrix();
-         if (j >= 6)  strlcpy (x_msg, x_label1, LEN_STR);
-         else         strlcpy (x_msg, x_label2, LEN_STR);
-         glColor4f    (0.25f, 0.25f, 0.25f, 1.0f);
-         glPushMatrix(); {
-            glTranslatef ( i +  80.0 , x_pos    -   40.0    ,    60.0  );
-            yFONT_print  (my.fixed,  40, YF_MIDCEN, x_msg);
-         } glPopMatrix();
-         yVIKEYS_scale_desc (x_msg);
-         glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-         glPushMatrix(); {
-            glTranslatef ( i + 10.0 , x_pos    -  25.0 ,    60.0  );
-            yFONT_print  (my.fixed,  16, YF_BOTLEF, x_msg);
-         } glPopMatrix();
-         yVIKEYS_speed_desc (x_msg);
-         glPushMatrix(); {
-            glTranslatef ( i - 500.0, x_pos    -  25.0 ,    60.0  );
-            yFONT_print  (my.fixed,  16, YF_BOTLEF, x_msg);
-         } glPopMatrix();
-      }
-   }
-   /*---(scale labels)-------------------*/
-   glPushMatrix(); {
-      glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-      for (i = 0; i < my.p_texw; i += x_xinc) {
-         /*---(labels)-------------------*/
-         if (i % (int) (x_xinc * 10) == 0) {
-            for (j = 0; j < 12; ++j) {
-               glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);
-               if (j < 6)  snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_xinc) * my.p_multi) + x_secbeg1, my.p_base);
-               else        snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_xinc) * my.p_multi) + x_secbeg2, my.p_base);
-               x_pos = (j + 1) * x_yinc;
-               glPushMatrix(); {
-                  glTranslatef ( i , x_pos - x_bar + 25.0 ,    60.0  );
-                  yFONT_print  (my.fixed,  14, YF_TOPLEF, x_msg);
-               } glPopMatrix();
-            }
-         }
-         /*---(accuracy heatmap)---------*/
-         for (j = 0; j < 12; ++j) {
-            if (j < 6) {
-               x_pos = (6 - j) * x_yinc;
-               x_sec = (((float) (i) / x_xinc) * my.p_multi) + x_secbeg1;
-               if (j == 0) {
-                  rc = yKINE_phys_flat   (YKINE_FK, x_sec, &s_lowest, &x_lowcnt);
-                  /*> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <*/
-               }
-               /*> TICK_height   (i, x_pos);                                          <*/
-               if (x_sec >= 0.0 && x_sec <= my.p_len)  TICK__heat_column (j    , x_sec, i, x_pos - 35.0);
-            } else {
-               x_pos = (12 + (6 - j)) * x_yinc;
-               x_sec = (((float) (i) / x_xinc) * my.p_multi) + x_secbeg2;
-               if (j == 6) {
-                  yKINE_phys_flat   (YKINE_FK, x_sec, &s_lowest, &x_lowcnt);
-                  /*> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <*/
-               }
-               /*> TICK_height   (i, x_pos);                                          <*/
-               if (x_sec >= 0.0 && x_sec <= my.p_len)  TICK__heat_column (j - 6, x_sec, i, x_pos - 35.0);
-            }
-         }
-      }
-   } glPopMatrix();
-   /*---(complete)-----------------------*/
-   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
-   return 0;
-}
+/*> char         /+--> draw texture labels -------------------[ ------ [ ------ ]-+/                                                       <* 
+ *> TICK_labels        (void)                                                                                                              <* 
+ *> {                                                                                                                                      <* 
+ *>    /+---(locals)-----------+-----------+-+/                                                                                            <* 
+ *>    int       i;                             /+ loop iterator                  +/                                                       <* 
+ *>    int       j;                             /+ loop iterator                  +/                                                       <* 
+ *>    float     x_xinc        = 10.0;                                                                                                     <* 
+ *>    float     x_yinc        =  0.0;                                                                                                     <* 
+ *>    float     x_bot         =  0.0;                                                                                                     <* 
+ *>    float     x_top         = my.p_texh;                                                                                                <* 
+ *>    float     x_beg         =  0.0;                                                                                                     <* 
+ *>    float     x_end         = my.p_texw;                                                                                                <* 
+ *>    float     x_bar         =  0.0;                                                                                                     <* 
+ *>    float     x_pos         =  0.0;                                                                                                     <* 
+ *>    char      x_msg         [100];                                                                                                      <* 
+ *>    char      x_part        [100];                                                                                                      <* 
+ *>    int       x_labelper    =    0;                                                                                                     <* 
+ *>    int       x_secbeg1     =    0;                                                                                                     <* 
+ *>    int       x_secbeg2     =    0;                                                                                                     <* 
+ *>    char      x_label1      [10];                                                                                                       <* 
+ *>    char      x_label2      [10];                                                                                                       <* 
+ *>    double    x_sec         = 0.0;                                                                                                      <* 
+ *>    double    x_lowest      = 0.0;                                                                                                      <* 
+ *>    int       x_lowcnt      = 0;                                                                                                        <* 
+ *>    char      rc            = 0;                                                                                                        <* 
+ *>    /+---(prepare)------------------------+/                                                                                            <* 
+ *>    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);                                                                                           <* 
+ *>    yVIKEYS_scale_base (&my.p_multi, &my.p_base);                                                                                       <* 
+ *>    x_yinc      = x_top / 12.0;                                                                                                         <* 
+ *>    x_bar       = my.p_top - my.p_bot;                                                                                                  <* 
+ *>    x_labelper  = (my.p_texw / 10.0) * my.p_multi;                                                                                      <* 
+ *>    /+> printf ("%8d  %8.3lf\n", my.p_texw, my.p_multi);                               <+/                                              <* 
+ *>    x_secbeg1   = x_labelper * s_section;                                                                                               <* 
+ *>    x_secbeg2   = x_secbeg1 + x_labelper;                                                                                               <* 
+ *>    strlcpy (x_label1, TICK_sectext (s_section    ), 10);                                                                               <* 
+ *>    strlcpy (x_label2, TICK_sectext (s_section + 1), 10);                                                                               <* 
+ *>    /+> printf ("%8d  %8d  %8d\n", x_labelper, x_secbeg1, x_secbeg2);                  <+/                                              <* 
+ *>    /+---(leg labels)---------------------+/                                                                                            <* 
+ *>    for (i = x_beg; i < x_end; i += x_xinc * 100) {                                                                                     <* 
+ *>       for (j = 0; j < 12; ++j) {                                                                                                       <* 
+ *>          x_pos = my.p_texh - (j * x_yinc);                                                                                             <* 
+ *>          sprintf (x_msg, "%d/%s", j % 6, legs_name [j % 6]);                                                                           <* 
+ *>          glColor4f    (0.50f, 0.50f, 0.50f, 1.0f);                                                                                     <* 
+ *>          glPushMatrix(); {                                                                                                             <* 
+ *>             glTranslatef ( i + 30.0 , x_pos    -  125.0    ,    60.0  );                                                               <* 
+ *>             glRotatef  ( 90.0  , 0.0f, 0.0f, 1.0f);                                                                                    <* 
+ *>             yFONT_print  (my.fixed,  40, YF_MIDCEN, x_msg);                                                                            <* 
+ *>          } glPopMatrix();                                                                                                              <* 
+ *>          if (j >= 6)  strlcpy (x_msg, x_label1, LEN_STR);                                                                              <* 
+ *>          else         strlcpy (x_msg, x_label2, LEN_STR);                                                                              <* 
+ *>          glColor4f    (0.25f, 0.25f, 0.25f, 1.0f);                                                                                     <* 
+ *>          glPushMatrix(); {                                                                                                             <* 
+ *>             glTranslatef ( i +  80.0 , x_pos    -   40.0    ,    60.0  );                                                              <* 
+ *>             yFONT_print  (my.fixed,  40, YF_MIDCEN, x_msg);                                                                            <* 
+ *>          } glPopMatrix();                                                                                                              <* 
+ *>          yVIKEYS_scale_desc (x_msg);                                                                                                   <* 
+ *>          glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);                                                                                     <* 
+ *>          glPushMatrix(); {                                                                                                             <* 
+ *>             glTranslatef ( i + 10.0 , x_pos    -  25.0 ,    60.0  );                                                                   <* 
+ *>             yFONT_print  (my.fixed,  16, YF_BOTLEF, x_msg);                                                                            <* 
+ *>          } glPopMatrix();                                                                                                              <* 
+ *>          yVIKEYS_speed_desc (x_msg);                                                                                                   <* 
+ *>          glPushMatrix(); {                                                                                                             <* 
+ *>             glTranslatef ( i - 500.0, x_pos    -  25.0 ,    60.0  );                                                                   <* 
+ *>             yFONT_print  (my.fixed,  16, YF_BOTLEF, x_msg);                                                                            <* 
+ *>          } glPopMatrix();                                                                                                              <* 
+ *>       }                                                                                                                                <* 
+ *>    }                                                                                                                                   <* 
+ *>    /+---(scale labels)-------------------+/                                                                                            <* 
+ *>    glPushMatrix(); {                                                                                                                   <* 
+ *>       glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);                                                                                        <* 
+*>       for (i = 0; i < my.p_texw; i += x_xinc) {                                                                                        <* 
+   *>          /+---(labels)-------------------+/                                                                                            <* 
+      *>          if (i % (int) (x_xinc * 10) == 0) {                                                                                           <* 
+         *>             for (j = 0; j < 12; ++j) {                                                                                                 <* 
+            *>                glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);                                                                               <* 
+               *>                if (j < 6)  snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_xinc) * my.p_multi) + x_secbeg1, my.p_base);               <* 
+               *>                else        snprintf     (x_msg, 50, "%d%c"  , (int) ((i / x_xinc) * my.p_multi) + x_secbeg2, my.p_base);               <* 
+               *>                x_pos = (j + 1) * x_yinc;                                                                                               <* 
+               *>                glPushMatrix(); {                                                                                                       <* 
+                  *>                   glTranslatef ( i , x_pos - x_bar + 25.0 ,    60.0  );                                                                <* 
+                     *>                   yFONT_print  (my.fixed,  14, YF_TOPLEF, x_msg);                                                                      <* 
+                     *>                } glPopMatrix();                                                                                                        <* 
+                     *>             }                                                                                                                          <* 
+                     *>          }                                                                                                                             <* 
+                     *>          /+---(accuracy heatmap)---------+/                                                                                            <* 
+                     *>          for (j = 0; j < 12; ++j) {                                                                                                    <* 
+                        *>             if (j < 6) {                                                                                                               <* 
+                           *>                x_pos = (6 - j) * x_yinc;                                                                                               <* 
+                              *>                x_sec = (((float) (i) / x_xinc) * my.p_multi) + x_secbeg1;                                                              <* 
+                              *>                if (j == 0) {                                                                                                           <* 
+                                 *>                   rc = yKINE_phys_flat   (YKINE_FK, x_sec, &s_lowest, &x_lowcnt);                                                      <* 
+                                    *>                   /+> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <+/   <* 
+                                    *>                }                                                                                                                       <* 
+                                    *>                /+> TICK_height   (i, x_pos);                                          <+/                                              <* 
+                                    *>                if (x_sec >= 0.0 && x_sec <= my.p_len)  TICK__heat_column (j    , x_sec, i, x_pos - 35.0);                              <* 
+                                    *>             } else {                                                                                                                   <* 
+                                       *>                x_pos = (12 + (6 - j)) * x_yinc;                                                                                        <* 
+                                          *>                x_sec = (((float) (i) / x_xinc) * my.p_multi) + x_secbeg2;                                                              <* 
+                                          *>                if (j == 6) {                                                                                                           <* 
+                                             *>                   yKINE_phys_flat   (YKINE_FK, x_sec, &s_lowest, &x_lowcnt);                                                           <* 
+                                                *>                   /+> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <+/   <* 
+                                                *>                }                                                                                                                       <* 
+                                                *>                /+> TICK_height   (i, x_pos);                                          <+/                                              <* 
+                                                *>                if (x_sec >= 0.0 && x_sec <= my.p_len)  TICK__heat_column (j - 6, x_sec, i, x_pos - 35.0);                              <* 
+                                                *>             }                                                                                                                          <* 
+                                                *>          }                                                                                                                             <* 
+                                                *>       }                                                                                                                                <* 
+                                                *>    } glPopMatrix();                                                                                                                    <* 
+                                                *>    /+---(complete)-----------------------+/                                                                                            <* 
+                                                *>    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);                                                                                           <* 
+                                                *>    return 0;                                                                                                                           <* 
+                                                *> }                                                                                                                                      <*/
 
 char
 TICK_globals       (void)
@@ -1058,12 +835,13 @@ TICK_globals       (void)
    float       x_inc       =    10.0;
    float       y_inc       =     0.0;
    /*---(set single leg vars)------------*/
+   yVIKEYS_view_coords   (YVIKEYS_PROGRESS, NULL, &my.p_wide, NULL, &my.p_tall);
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    y_inc       = 1.0 / 12.0;
    s_textop    = 0.5 - ((my.p_leg + 0) * y_inc);
    s_texbot    = 0.5 - ((my.p_leg + 1) * y_inc);
    /*---(calc basics)--------------------*/
-   s_texavail  = my.w_wide * 2.0;
+   s_texavail  = my.p_wide * 2.0;
    s_texpct    = s_texavail / my.p_texw;
    s_texctr    = s_texpct / 2.0;
    s_start     = s_section * my.p_texw;
@@ -1071,8 +849,8 @@ TICK_globals       (void)
    s_cutend    = my.p_texw * 2;
    /*---(seconds)------------------------*/
    s_tsec      = x_inc / my.p_inc;
-   s_tnsec     = s_texavail / s_tsec;
-   s_tsecp     = s_texpct / s_tnsec;
+   /*> s_tnsec     = s_texavail / s_tsec;                                             <*/
+   /*> s_tsecp     = s_texpct / s_tnsec;                                              <*/
    s_plenp     = ((my.p_len * s_tsec) - s_start) / my.p_texw;
    if (s_plenp > 2.0)  s_plenp = 2.0;
    if (s_plenp < 0.0)  s_plenp = 0.0;
@@ -1117,7 +895,7 @@ TICK_draw          (void)
    TICK_back_horz    ();
    TICK_labels_newer ();
    for (i = 0; i <= 5; ++i) TICK_servos  (i);
-   yGLTEX_tex2png    ("ticker.png", my.p_texw, my.p_texh);
+   /*> yGLTEX_tex2png    ("ticker.png", my.p_texw, my.p_texh);                        <*/
    yGLTEX_draw_end   (my.p_tex);
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
@@ -1131,17 +909,17 @@ TICK_current       (void)
    char        rc          = 0;
    int         x_save      = s_section;
    /*---(current pos)--------------------*/
-   s_curp      = ((my.p_cursec * s_tsec) - s_start) / my.p_texw;
+   s_curp      = ((my.p_cur * s_tsec) - s_start) / my.p_texw;
    while (s_curp  > 1.60) {
       ++s_section;
       TICK_globals ();
-      s_curp      = ((my.p_cursec * s_tsec) - s_start) / my.p_texw;
+      s_curp      = ((my.p_cur * s_tsec) - s_start) / my.p_texw;
       ++rc;
    }
    while (s_curp  < 0.40) {
       --s_section;
       TICK_globals ();
-      s_curp      = ((my.p_cursec * s_tsec) - s_start) / my.p_texw;
+      s_curp      = ((my.p_cur * s_tsec) - s_start) / my.p_texw;
       ++rc;
    }
    if (s_section != x_save)  TICK_draw ();
@@ -1152,7 +930,7 @@ TICK_current       (void)
    }
    /*---(script is bigger than screen)---*/
    else {
-      switch (my.p_curpos) {
+      switch (my.p_pos) {
       case '0' :
          s_texbeg  = s_curp - (s_texpct * 0.00);
          s_texend  = s_texbeg  + s_texpct;
@@ -1232,7 +1010,7 @@ TICK_current       (void)
       }
    }
    /*---(current pos)--------------------*/
-   s_cur       = ((s_curp - s_texbeg) / s_texpct) * my.w_wide;
+   s_cur       = ((s_curp - s_texbeg) / s_texpct) * my.p_wide;
    /*---(complete)-----------------------*/
    return rc;
 }
@@ -1258,10 +1036,10 @@ TICK_showtex       (float a_height, float a_top, float a_bot)
          glVertex3f   (0.0                   , a_height ,     0.00f);
          /*---(top end)--------*/
          glTexCoord2f (s_texend1             , a_top );
-         glVertex3f   (my.w_wide * s_texpct1, a_height ,     0.00f);
+         glVertex3f   (my.p_wide * s_texpct1, a_height ,     0.00f);
          /*---(bottom end)-----*/
          glTexCoord2f (s_texend1             , a_bot );
-         glVertex3f   (my.w_wide * s_texpct1, 0.0      ,     0.00f);
+         glVertex3f   (my.p_wide * s_texpct1, 0.0      ,     0.00f);
          /*---(bottom beg)-----*/
          glTexCoord2f (s_texbeg1             , a_bot );
          glVertex3f   (0.0                   , 0.0      ,     0.00f);
@@ -1272,29 +1050,29 @@ TICK_showtex       (float a_height, float a_top, float a_bot)
       glBegin(GL_POLYGON); {
          /*---(top beg)--------*/
          glTexCoord2f (s_texbeg2             , a_top + 0.5 );
-         glVertex3f   (my.w_wide * s_texpct1, a_height ,     0.00f);
+         glVertex3f   (my.p_wide * s_texpct1, a_height ,     0.00f);
          /*---(top end)--------*/
          glTexCoord2f (s_texend2             , a_top + 0.5 );
-         glVertex3f   (my.w_wide            , a_height ,     0.00f);
+         glVertex3f   (my.p_wide            , a_height ,     0.00f);
          /*---(bottom end)-----*/
          glTexCoord2f (s_texend2             , a_bot + 0.5 );
-         glVertex3f   (my.w_wide            , 0.0      ,     0.00f);
+         glVertex3f   (my.p_wide            , 0.0      ,     0.00f);
          /*---(bottom beg)-----*/
          glTexCoord2f (s_texbeg2             , a_bot + 0.5 );
-         glVertex3f   (my.w_wide * s_texpct1, 0.0      ,     0.00f);
+         glVertex3f   (my.p_wide * s_texpct1, 0.0      ,     0.00f);
          /*---(done)-----------*/
       } glEnd();
    }
    glBindTexture   (GL_TEXTURE_2D, 0);
    /*---(draw current)-------------------*/
-   /*> glColor4f    (0.00f, 0.00f, 1.00f, 1.0f);                                      <* 
-    *> glLineWidth  (10.0f);                                                          <* 
-    *> glPushMatrix(); {                                                              <* 
-    *>    glBegin(GL_LINE_STRIP); {                                                   <* 
-    *>       glVertex3f  (s_cur, a_height - 12.5,   70.0);                            <* 
-    *>       glVertex3f  (s_cur, 12.5           ,   70.0);                            <* 
-    *>    } glEnd   ();                                                               <* 
-    *> } glPopMatrix();                                                               <*/
+   glColor4f    (0.00f, 0.00f, 1.00f, 1.0f);
+   glLineWidth  ( 5.0f);
+   glPushMatrix(); {
+      glBegin(GL_LINE_STRIP); {
+         glVertex3f  (s_cur, a_height - 15.0,   70.0);
+         glVertex3f  (s_cur, 0.0            ,   70.0);
+      } glEnd   ();
+   } glPopMatrix();
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return rc;
@@ -1306,10 +1084,10 @@ TICK_showtex       (float a_height, float a_top, float a_bot)
  *>    /+---(locals)-------------------------+/                                        <* 
  *>    char        rc          = 0;                                                    <* 
  *>    /+---(setup view)---------------------+/                                        <* 
- *>    glViewport      (    0, 0.0        , my.w_wide, my.w_tall);                     <* 
+ *>    glViewport      (    0, 0.0        , my.p_wide, my.w_tall);                     <* 
  *>    glMatrixMode    (GL_PROJECTION);                                                <* 
  *>    glLoadIdentity  ();                                                             <* 
- *>    glOrtho         ( 0.0f, my.w_wide, 0.0     , my.w_tall,  -500.0,   500.0);      <* 
+ *>    glOrtho         ( 0.0f, my.p_wide, 0.0     , my.w_tall,  -500.0,   500.0);      <* 
  *>    glMatrixMode    (GL_MODELVIEW);                                                 <* 
  *>    /+---(firgure current)----------------+/                                        <* 
  *>    rc = TICK_showtex    (my.w_tall,  0.5,  0.0);                                   <* 
@@ -1366,7 +1144,7 @@ TICK_show          (void)
    /*> int a_top =   1.0;                                                             <* 
     *> int a_bot =   0.0;                                                             <* 
     *> int a_height = 200.0;                                                          <* 
-    *> my.w_wide    = 800.0;                                                          <* 
+    *> my.p_wide    = 800.0;                                                          <* 
     *> s_texpct1    = 100.0;                                                          <* 
     *> glBegin(GL_POLYGON); {                                                         <* 
     *>    /+---(top beg)--------+/                                                    <* 
@@ -1374,25 +1152,28 @@ TICK_show          (void)
     *>    glVertex3f   (0.0                   , a_height ,     0.00f);                <* 
     *>    /+---(top end)--------+/                                                    <* 
     *>    glTexCoord2f (s_texend1             , a_top );                              <* 
-    *>    glVertex3f   (my.w_wide * s_texpct1, a_height ,     0.00f);                 <* 
+    *>    glVertex3f   (my.p_wide * s_texpct1, a_height ,     0.00f);                 <* 
     *>    /+---(bottom end)-----+/                                                    <* 
     *>    glTexCoord2f (s_texend1             , a_bot );                              <* 
-    *>    glVertex3f   (my.w_wide * s_texpct1, 0.0      ,     0.00f);                 <* 
+    *>    glVertex3f   (my.p_wide * s_texpct1, 0.0      ,     0.00f);                 <* 
     *>    /+---(bottom beg)-----+/                                                    <* 
     *>    glTexCoord2f (s_texbeg1             , a_bot );                              <* 
     *>    glVertex3f   (0.0                   , 0.0      ,     0.00f);                <* 
     *>    /+---(done)-----------+/                                                    <* 
     *> } glEnd();                                                                     <*/
    /*---(firgure current)----------------*/
-   rc = TICK_showtex    (my.p_tall,  s_textop,  s_texbot);
+   rc = yVIKEYS_prog_cur (&my.p_pos, &my.p_cur, &my.p_scale, &my.p_inc);
+   if (yVIKEYS_prog_redraw ())  rc = TICK_draw ();
+   rc = TICK_showtex     (my.p_tall,  s_textop,  s_texbot);
    /*---(show debug)---------------------*/
    if (my.p_debug == 'y') {
       printf ("TICK_show ()  debugging\n");
       printf ("\n");
       printf ("   ___script_____________________\n");
       printf ("   my.p_len         = %10.3f\n", my.p_len);
+      printf ("   my.p_pos         = %c\n"    , my.p_pos);
       printf ("   my.p_inc         = %10.3f\n", my.p_inc);
-      printf ("   my.p_cursec      = %10.3f\n", my.p_cursec);
+      printf ("   my.p_cur         = %10.3f\n", my.p_cur);
       printf ("   s_curp           = %10.3f\n", s_curp);
       printf ("   s_cur            = %10.3f\n", s_cur);
       printf ("\n");
@@ -1406,7 +1187,7 @@ TICK_show          (void)
       printf ("   s_texbot         = %10.3f\n", s_texbot);
       printf ("\n");
       printf ("   ___horizontal_________________\n");
-      printf ("   my.w_wide       = %6d\n"   , my.w_wide);
+      printf ("   my.p_wide       = %6d\n"   , my.p_wide);
       printf ("   my.p_texw        = %6d\n"   , my.p_texw);
       printf ("   my.p_inc         = %10.3f\n", my.p_inc);
       printf ("   s_texavail       = %10.3f\n", s_texavail);
@@ -1414,11 +1195,11 @@ TICK_show          (void)
       printf ("   s_texctr         = %10.3f\n", s_texctr);
       printf ("\n");
       printf ("   s_tsec           = %10.3f\n", s_tsec);
-      printf ("   s_tnsec          = %10.3f\n", s_tnsec);
-      printf ("   s_tsecp          = %10.3f\n", s_tsecp);
+      /*> printf ("   s_tnsec          = %10.3f\n", s_tnsec);                         <*/
+      /*> printf ("   s_tsecp          = %10.3f\n", s_tsecp);                         <*/
       printf ("   s_plenp          = %10.3f\n", s_plenp);
       printf ("\n");
-      printf ("   s_maxlabel       = %10.3f\n", (my.p_texw / 10.0) * my.p_multi);
+      /*> printf ("   s_maxlabel       = %10.3f\n", (my.p_texw / 10.0) * my.p_multi);   <*/
       printf ("   s_texbeg1        = %10.3f\n", s_texbeg1);
       printf ("   s_texend1        = %10.3f\n", s_texend1);
       printf ("   s_texpct1        = %10.3f\n", s_texpct1);

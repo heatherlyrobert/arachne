@@ -76,7 +76,7 @@ PROG_init          (void)
    DEBUG_TOPS   yLOG_note  ("defaul progress ticker values");
    my.p_len     =  0.0;
    my.p_leg     =  0.0;
-   my.p_cursec  =  0.0;
+   my.p_cur     =  0.0;
    my.p_endsec  = -1.0;
    my.p_quit    =  '-';
    my.p_dump    =  '-';
@@ -89,13 +89,6 @@ PROG_init          (void)
    yVIKEYS_init  ();
    /*> yVIKEYS_mode_init    ();                                                       <* 
     *> yVIKEYS_mode_enter   (MODE_GOD);                                               <*/
-   /*---(time)---------------------------*/
-   DEBUG_TOPS   yLOG_note  ("prepare scales");
-   yVIKEYS_scale_set    ("d-", &my.p_inc);
-   /*---(speed)--------------------------*/
-   DEBUG_TOPS   yLOG_note  ("prepare speeds");
-   yVIKEYS_speed_set    ("+1.00x", &my.p_waitns);
-   yVIKEYS_speed_stop   (&my.p_waitns);
    /*---(complete)-----------------------*/
    DEBUG_TOPS   yLOG_exit  (__FUNCTION__);
    return 0;
@@ -123,8 +116,8 @@ PROG_args          (int argc, char *argv[])
       if (a[0] == '@')  continue;
       DEBUG_ARGS  yLOG_info    ("cli arg", a);
       ++x_args;
-      /*> if      (strcmp(a, "--play"       ) == 0)  yVIKEYS_speed_play   (&my.p_waitns);       <* 
-       *> else if (strcmp(a, "--pause"      ) == 0)  yVIKEYS_speed_stop   (&my.p_waitns);       <* 
+      /*> if      (strcmp(a, "--play"       ) == 0)  yVIKEYS_speed_play   ();       <* 
+       *> else if (strcmp(a, "--pause"      ) == 0)  yVIKEYS_speed_stop   ();       <* 
        *> else if (strcmp(a, "--quit"       ) == 0)  my.p_quit = 'y';                           <* 
        *> else if (strcmp(a, "--RR"         ) == 0)  my.p_leg  = 0.0;                           <* 
        *> else if (strcmp(a, "--RM"         ) == 0)  my.p_leg  = 1.0;                           <* 
@@ -136,15 +129,10 @@ PROG_args          (int argc, char *argv[])
        *> else if (strcmp(a, "--dumpall"    ) == 0)  my.p_dump = 'a';                           <* 
        *> else if (strcmp(a, "--moves_rpt"  ) == 0)  my.report = RPTG_MOVES;                    <* 
        *> else if (strcmp(a, "--begsec"     ) == 0) {                                           <* 
-       *>    if (i + 1 <  argc)  my.p_cursec = atof (argv[++i]);                                <* 
+       *>    if (i + 1 <  argc)  my.p_cur = atof (argv[++i]);                                <* 
        *> }                                                                                     <* 
        *> else if (strcmp(a, "--endsec"     ) == 0) {                                           <* 
        *>    if (i + 1 <  argc)  my.p_endsec = atof (argv[++i]);                                <* 
-       *> }                                                                                     <* 
-       *> else if (strcmp(a, "--scale"      ) == 0) {                                           <* 
-       *>    if (i + 1 <  argc) {                                                               <* 
-       *>       yVIKEYS_scale_set    (argv[++i], &my.p_inc);                                    <* 
-       *>    }                                                                                  <* 
        *> }                                                                                     <* 
        *> else if (strcmp(a, "--progress"   ) == 0) {                                           <* 
        *>    /+> yVIKEYS_mode_enter  (MODE_PROGRESS);                                     <+/   <* 
@@ -206,7 +194,7 @@ PROG_final         (void)
    yVIKEYS_cmds_direct   (":progress show");
    yVIKEYS_cmds_direct   (":buffer   show");
    /*---(colors)-------------------------*/
-   yVIKEYS_cmds_direct   (":palette 190 rcomp pale earthy");
+   yVIKEYS_cmds_direct   (":palette 100 rcomp pale earthy");
    yVIKEYS_view_colors   (YCOLOR_POS, YCOLOR_BAS, YCOLOR_NEG, YCOLOR_POS);
 
    DRAW_init    ();

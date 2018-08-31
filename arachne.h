@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9n"
-#define VER_TXT   "ticker is showing reasonably and can save full image"
+#define VER_NUM   "0.9o"
+#define VER_TXT   "ticker is using position lock correctly now"
 
 
 
@@ -235,11 +235,12 @@ struct cACCESSOR {
    char        f_base      [LEN_STR];       /* specific file base name        */
    char        f_suffix    [LEN_STR];       /* file suffix for spreadsheet    */
    char        f_name      [LEN_STR];       /* full file name                 */
-   /*---(progress move)---*/
-   double      p_waitns;
    /*---(progress pane)---*/
-   char        p_curpos;                    /* position of current bar (shcle)*/
-   double      p_cursec;                    /* current timeline seconds       */
+   char        p_pos;                       /* position of current bar (shcle)*/
+   double      p_cur;                       /* current timeline seconds       */
+   double      p_scale;                     /* scale of progress bar          */
+   double      p_len;                       /* length of script               */
+
    double      p_endsec;                    /* end second for timeline play   */
    char        p_quit;                      /* quit after initial playing     */
    double      p_leg;                       /* leg currently viewed           */
@@ -247,7 +248,6 @@ struct cACCESSOR {
    int         p_texh;                      /* texture full height            */
    int         p_top;                       /* topmost y of progress bar      */
    int         p_bot;                       /* bottommost y of progress bar   */
-   double      p_len;                       /* length of script               */
    char        p_dump;                      /* dump none, curr, or all        */
    /*---(progress handles)*/
    uint        p_tex;                       /* texture for image              */
@@ -256,7 +256,6 @@ struct cACCESSOR {
    /*---(progress working)*/
    double      p_inc;                       /* increment for h,l              */
    double      p_multi;                     /* label multiple                 */
-   char        p_base;                      /* base unit for display          */
    char        p_debug; 
    /*---(command line)----*/
    char        c_command   [LEN_STR];       /* current text in command mode   */

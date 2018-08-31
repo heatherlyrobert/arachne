@@ -194,7 +194,7 @@ KINE_line          (int a_line, char a_meth, int a_leg)
    double      x_ypos      = 0.0;
    switch (a_meth) {
    case  YKINE_GK :
-      fprintf (f_dump, "%-8d  %8.4f  %d/%s  ", a_line,  my.p_cursec, a_leg, legs_name [a_leg]);
+      fprintf (f_dump, "%-8d  %8.4f  %d/%s  ", a_line,  my.p_cur, a_leg, legs_name [a_leg]);
       strlcpy (x_type, "gk", LEN_LABEL);
       break;
    case  YKINE_FK :
@@ -361,9 +361,9 @@ KINE_write         (int a_leg)
    /*---(defense)------------------------*/
    if (my.p_dump   == '-')                          return 0;
    if (my.p_dump   == 'c' && a_leg != my.p_leg)     return 0;
-   if (my.p_cursec <= s_secs [a_leg])               return 0;
+   if (my.p_cur <= s_secs [a_leg])               return 0;
    /*---(update)-------------------------*/
-   s_secs [a_leg] = my.p_cursec;
+   s_secs [a_leg] = my.p_cur;
    /*---(breaks)-------------------------*/
    if (x_lines % 10 == 0)   KINE_header  ();
    /*---(next)---------------------------*/
@@ -443,7 +443,7 @@ KINE_unitcond      (void)
    /*---(prepare common vars)------------*/
    strlcpy  (x_leg, legs_name [(int) my.p_leg], LEN_LABEL);
    /*---(prepare for testing)------------*/
-   fprintf (f_cond, "   COND       v21  automated opengl test for yKINE (sec = %8.3lf)             ----------------------------------------------------------------------------------------------------  ----------  ---------------------------------------------------------------------- \n", my.p_cursec);
+   fprintf (f_cond, "   COND       v21  automated opengl test for yKINE (sec = %8.3lf)             ----------------------------------------------------------------------------------------------------  ----------  ---------------------------------------------------------------------- \n", my.p_cur);
    fprintf (f_cond, "     exec     v21  CLEAR FOR FORWARD KINEMATICS         yKINE__wipe           YKINE_%s       , YKINE_FK                                                                             i_equal     0                                                                      \n", x_leg);
    /*---(forward kinematics)-------------*/
    KINE_unitseg  (x_leg, YKINE_THOR, YKINE_FK);

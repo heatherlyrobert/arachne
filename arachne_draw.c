@@ -542,7 +542,7 @@ DRAW_wire_body     (void)
    center.by = 98.0;
    /*---(body)---------------------------*/
    glPushMatrix (); {
-      yKINE_move_curall ( my.p_cursec);
+      yKINE_move_curall ( my.p_cur);
       for (x_leg = 0; x_leg < 6; ++x_leg) {
          glPushMatrix (); {
             /*---(prepare)---------------*/
@@ -604,7 +604,7 @@ DRAW_spider        (void)
       /*> draw_arrow      ();                                                         <*/
       /*> if (flag_annotate == 'y')  draw__center ();                                 <*/
       glCallList      (dl_body);
-      yKINE_move_curall ( my.p_cursec);
+      yKINE_move_curall ( my.p_cur);
       for (x_leg = 0; x_leg < 6; ++x_leg) {
          glPushMatrix (); {
             /*---(prepare)---------------*/
@@ -893,7 +893,7 @@ draw_spider        (void)
       /*> draw_arrow      ();                                                         <*/
       /*> if (flag_annotate == 'y')  draw__center ();                                 <*/
       /*> glCallList      (dl_body);                                                  <*/
-      yKINE_move_curall ( my.p_cursec);
+      yKINE_move_curall ( my.p_cur);
       /*> for (x_leg = 0; x_leg < 6; ++x_leg) {                                       <*/
       for (x_leg = 3; x_leg < 4; ++x_leg) {
          glPushMatrix (); {
@@ -1106,7 +1106,7 @@ view_progress      (void)
    glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
    glPushMatrix(); {
       glTranslatef(   0.0f, -39.0, -100.0);
-      snprintf (x_msg, 50, "%03d", (int) my.p_cursec);
+      snprintf (x_msg, 50, "%03d", (int) my.p_cur);
       yFONT_print (my.fixed,   2, YF_BOTCEN, x_msg);
    } glPopMatrix();
    return 0;
@@ -2642,14 +2642,14 @@ draw_contact       (void)
    glPolygonMode   (GL_FRONT_AND_BACK, GL_FILL);
    glBegin         (GL_POLYGON);
    for (i = 0; i < LEGS; ++i) {
-      if (gait.tleg[(int) my.p_cursec][i] != 1) continue;
+      if (gait.tleg[(int) my.p_cur][i] != 1) continue;
       glVertex3f      ( gk [i][YKINE_TIBI].cx - center.bx, -center.by , gk [i][YKINE_TIBI].cz - center.bz);
    }
    glEnd           ();
    /*---(touches)------------------------*/
    glLineWidth ( 5.0);
    for (i = 0; i < LEGS; ++i) {
-      switch (gait.tleg[(int) my.p_cursec][i]) {
+      switch (gait.tleg[(int) my.p_cur][i]) {
       case  0  : 
          glColor4f       (0.2f, 0.2f, 0.2f, 1.0f);
          break;
@@ -2660,7 +2660,7 @@ draw_contact       (void)
          glColor4f       (1.0f, 0.0f, 0.5f, 1.0f);
          break;
       }
-      if (gait.tleg[(int) my.p_cursec][i] != 0) {
+      if (gait.tleg[(int) my.p_cur][i] != 0) {
          glBegin   (GL_LINE_STRIP);
          for (deg = 0; deg < 365; deg +=  5) {
             rad = deg * DEG2RAD;
