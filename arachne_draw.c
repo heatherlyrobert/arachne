@@ -371,15 +371,16 @@ draw_leg_NEW       (int a_leg, float a_body, float a_coxa, float a_femu, float a
       glCallList (dl_coxa);
       draw_locate_NEW (a_leg, YKINE_COXA, a_coxa);
       /*---(femur)--------------------------*/
-      glRotatef  ( a_femu, 0.0f, 1.0f, 0.0f);
+      glRotatef  (a_femu, 0.0f, 1.0f, 0.0f);
       glCallList (dl_femur);
       draw_locate_NEW (a_leg, YKINE_FEMU, a_femu);
       /*---(patella)------------------------*/
-      glRotatef  (-a_pate, 0.0f, 0.0f, 1.0f);
+      glRotatef  (a_pate, 0.0f, 0.0f, 1.0f);
       glCallList (dl_patella);
       draw_locate_NEW (a_leg, YKINE_PATE, a_pate);
       /*---(tibia)--------------------------*/
-      glRotatef  (-a_tibi, 0.0f, 0.0f, 1.0f);
+      glRotatef  (-90.0 , 0.0f, 0.0f, 1.0f);
+      glRotatef  (a_tibi, 0.0f, 0.0f, 1.0f);
       glCallList (dl_tibia);
       draw_locate_NEW (a_leg, YKINE_TIBI, a_tibi);
    } glPopMatrix ();
@@ -515,11 +516,12 @@ DRAW_wire_leg      (int a_leg, float a_body, float a_coxa, float a_femu, float a
       glTranslatef (segs_len [YKINE_FEMU], 0.00f,  0.00f);
       DRAW_wire_locate (a_leg, YKINE_FEMU, a_femu);
       /*---(patella)---------------------*/
-      glRotatef    (-a_pate, 0.0f, 0.0f, 1.0f);
+      glRotatef    (a_pate, 0.0f, 0.0f, 1.0f);
       glTranslatef (segs_len [YKINE_PATE], 0.00f,  0.00f);
       DRAW_wire_locate (a_leg, YKINE_PATE, a_pate);
       /*---(tibia)-----------------------*/
-      glRotatef    (-a_tibi, 0.0f, 0.0f, 1.0f);
+      glRotatef    (-90.0 , 0.0f, 0.0f, 1.0f);
+      glRotatef    (a_tibi, 0.0f, 0.0f, 1.0f);
       glTranslatef (segs_len [YKINE_TIBI], 0.00f,  0.00f);
       DRAW_wire_locate (a_leg, YKINE_TIBI, a_tibi);
       /*---(done)------------------------*/

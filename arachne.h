@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9p"
-#define VER_TXT   "ticker displays percent of total lines to show position"
+#define VER_NUM   "0.9q"
+#define VER_TXT   "adapted drawing new leg degree ranges and orientations"
 
 
 
