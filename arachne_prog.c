@@ -196,6 +196,7 @@ PROG_final         (void)
    /*---(colors)-------------------------*/
    yVIKEYS_cmds_direct   (":palette 100 rcomp pale earthy");
    yVIKEYS_view_colors   (YCOLOR_POS, YCOLOR_BAS, YCOLOR_NEG, YCOLOR_POS);
+   yVIKEYS_cmds_add ('a', "p_cond"      , ""    , ""     , KINE_unitcond        , "write out a unit testing condition for yKINE"    );
 
    DRAW_init    ();
    draw_setup   ();

@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9q"
-#define VER_TXT   "adapted drawing new leg degree ranges and orientations"
+#define VER_NUM   "0.9r"
+#define VER_TXT   "feeds working unit testing steps to yKINE"
 
 
 
@@ -251,8 +251,8 @@ struct cACCESSOR {
    char        p_dump;                      /* dump none, curr, or all        */
    /*---(progress handles)*/
    uint        p_tex;                       /* texture for image              */
-   uint        p_fbo;                       /* framebuffer                    */
-   uint        p_depth;                     /* depth buffer                   */
+   /*> uint        p_fbo;                       /+ framebuffer                    +/   <*/
+   /*> uint        p_depth;                     /+ depth buffer                   +/   <*/
    /*---(progress working)*/
    double      p_inc;                       /* increment for h,l              */
    double      p_multi;                     /* label multiple                 */
@@ -554,11 +554,13 @@ int        glx_init          (void);
 
 /*---(arachne_draw)----------------------*/
 
-char      TICK_init          (void);
-char      TICK_draw          (void);
-char      TICK_show          (void);
-char      TICK_legend        (void);
-char      TICK_png                (void);
+char      TICK_init               (void);
+char      TICK_draw               (void);
+char      TICK_draw_one           (int a_panel);
+char      TICK_draw_all           (void);
+char      TICK_show               (void);
+char      TICK_legend             (void);
+char      TICK_snap               (void);
 /*> char      DRAW_command       (void);                                              <*/
 /*> char      DRAW_title         (void);                                              <*/
 
@@ -574,7 +576,6 @@ char      draw_prep          (void);
 char      draw_main          (void);
 void      draw_spider        (void);
 
-char      draw_leg           (int  a_num, tSEG  a_curr[], char a_loc);
 char      draw_body          (tSEG *a_curr);
 void      view_leg           (void);
 

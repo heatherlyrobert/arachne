@@ -29,12 +29,13 @@ main (int argc, char *argv[])
       exit (-1);
    }
    /*---(arachne specific)---------------*/
-   yKINE_script  (&my.p_len);
+   yKINE_script    (&my.p_len);
+   yKINE_moves_rpt ();
    yVIKEYS_prog_script (0.0, my.p_len, 6);
    /*> if (my.report == RPTG_MOVES)  yKINE_moves_rpt ();                              <*/
    printf ("script length %8.3lf\n", my.p_len);
    TICK_init     ();
-   TICK_draw     ();
+   /*> TICK_draw     ();                                                              <*/
    /*---(main loop)----------------------*/
    rc = yVIKEYS_main  ("10ms", "100ms", NULL);
    PROG_end();

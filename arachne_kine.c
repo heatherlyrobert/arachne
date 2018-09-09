@@ -95,21 +95,21 @@ KINE_begin         (void)
    fprintf (f_cond, "\n");
    fprintf (f_cond, "\n");
    fprintf (f_cond, "\n");
-   fprintf (f_cond, "#23456789012  123  123456789-123456789-123456789-12345  123456789-123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-  123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789- \n");
-   fprintf (f_cond, "#==(verb)===  ver  ===========(description)===========  =====(function)=====  ============================================(arguments)=============================================  ==(test)==  ==========================(results)=================================== \n");
-   fprintf (f_cond, "PREP          v21  include the prototype headers                               \n");
-   fprintf (f_cond, "   incl       v21  include public header                yKINE.h              \n");
-   fprintf (f_cond, "   incl       v21  include private header               yKINE_priv.h         \n");
+   fprintf (f_cond, "#23456789012  123  123456789-123456789-123456789-12345  123456789-123456789-123456  123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-  123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-  -  123456789-123456789- \n");
+   fprintf (f_cond, "#==(verb)===  ver  ===========(description)===========  =====(function)===========  ============================================(arguments)=============================================  ==(test)==  ==========================(results)=================================================================  t  ========(var)======= \n");
+   fprintf (f_cond, "PREP          v21  include the prototype headers                                     \n");
+   fprintf (f_cond, "   incl       v21  include public header                yKINE.h                    \n");
+   fprintf (f_cond, "   incl       v21  include private header               yKINE_priv.h               \n");
    fprintf (f_cond, "\n");
    fprintf (f_cond, "\n");
    fprintf (f_cond, "\n");
-   fprintf (f_cond, "#23456789012  123  123456789-123456789-123456789-12345  123456789-123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-  123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789- \n");
-   fprintf (f_cond, "#==(verb)===  ver  ===========(description)===========  =====(function)=====  ============================================(arguments)=============================================  ==(test)==  ==========================(results)=================================== \n");
-   fprintf (f_cond, "SCRP          v21  debug arachne bombs                                                                                                                                                ----------  ---------------------------------------------------------------------- \n");
+   fprintf (f_cond, "#23456789012  123  123456789-123456789-123456789-12345  123456789-123456789-123456  123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-  123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-  -  123456789-123456789- \n");
+   fprintf (f_cond, "#==(verb)===  ver  ===========(description)===========  =====(function)===========  ============================================(arguments)=============================================  ==(test)==  ==========================(results)=================================================================  t  ========(var)======= \n");
+   fprintf (f_cond, "SCRP          v21  debug arachne bombs                                                - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n");
    fprintf (f_cond, "\n");
-   fprintf (f_cond, "   COND       v21  initialize the global data                                   ----------------------------------------------------------------------------------------------------  ----------  ---------------------------------------------------------------------- \n");
-   fprintf (f_cond, "     set      v21  start testing                        yKINE__testloud                                                                                                             i_equal     0                                                                      \n");
-   fprintf (f_cond, "     exec     v21  run init                             yKINE_init            '0'                                                                                                   i_equal     0                                                                      \n");
+   fprintf (f_cond, "   COND       v21  initialize global data                                             - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n");
+   fprintf (f_cond, "     set      v21  start testing                        yKINE__unit_quiet                                                                                                                 i_equal     0                                                                                                    \n");
+   fprintf (f_cond, "     exec     v21  run init                             yKINE_init                  '0'                                                                                                   i_equal     0                                                                                                    \n");
    fprintf (f_cond, "\n");
    return 0;
 }
@@ -416,23 +416,23 @@ KINE_unitseg       (char *a_leg, int a_seg, int a_meth)
    yKINE_angle     (my.p_leg, a_seg, YKINE_GK, &d, &l, &v, &h);       
    yKINE_endpoint  (my.p_leg, a_seg, YKINE_GK, &d, &l, &x, &z, &y);
    if (a_seg <= YKINE_TROC || (a_seg >= YKINE_META && a_seg <= YKINE_FOOT)) {
-      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__%s           YKINE_%s                                                                                              i_equal     0                                                                      \n" , x_meth, a_leg, x_full, x_seg, a_leg);
+      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__%s                 YKINE_%s                                                                                              i_equal     0                                                                                                    \n" , x_meth, a_leg, x_full, x_seg, a_leg);
    } else if (a_seg <= YKINE_TIBI && a_meth == YKINE_FK) {
-      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__%s           YKINE_%s       , %8.3lf       , YKINE_%s                                                            i_equal     0                                                                      \n"   , x_meth, a_leg, x_full, x_seg, a_leg, d, x_meth);
+      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__%s                 YKINE_%s       , %8.3lf       , YKINE_%s                                                            i_equal     0                                                                                                    \n"   , x_meth, a_leg, x_full, x_seg, a_leg, d, x_meth);
    } else if (a_seg <= YKINE_TIBI && a_meth == YKINE_IK) {
-      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__IK_%s        YKINE_%s                                                                                              i_equal     0                                                                      \n"   , x_meth, a_leg, x_full, x_seg, a_leg);
+      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__IK_%s              YKINE_%s                                                                                              i_equal     0                                                                                                    \n"   , x_meth, a_leg, x_full, x_seg, a_leg);
    } else if (a_seg >  YKINE_TIBI && a_meth == YKINE_FK) {
-      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__%s           YKINE_%s       , YKINE_%s                                                                             i_equal     0                                                                      \n"   , x_meth, a_leg, x_full, x_seg, a_leg, x_meth);
+      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__%s                 YKINE_%s       , YKINE_%s                                                                             i_equal     0                                                                                                    \n"   , x_meth, a_leg, x_full, x_seg, a_leg, x_meth);
    } else if (a_seg == YKINE_LOWR && a_meth == YKINE_IK) {
-      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__%s           YKINE_%s       , YKINE_%s                                                                             i_equal     0                                                                      \n"   , x_meth, a_leg, x_full, x_seg, a_leg, x_meth);
+      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__%s                 YKINE_%s       , YKINE_%s                                                                             i_equal     0                                                                                                    \n"   , x_meth, a_leg, x_full, x_seg, a_leg, x_meth);
    } else if (a_seg == YKINE_TARG && a_meth == YKINE_IK) {
-      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__IK_%s        YKINE_%s       , %8.3lf       , %8.3lf       , %8.3lf                                           i_equal     0                                                                      \n"   , x_meth, a_leg, x_full, x_seg, a_leg, x, z, y);
+      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__IK_%s              YKINE_%s       , %8.3lf       , %8.3lf       , %8.3lf                                           i_equal     0                                                                                                    \n"   , x_meth, a_leg, x_full, x_seg, a_leg, x, z, y);
    }
-   fprintf (f_cond, "     get      v21  -- verify %s angles                  yKINE__getter         \"%s_seg_angle\" , YKINE_%s       , YKINE_%s                                                          u_round/%d   %s-%s.%s ang :%8.0lfd,%8.2lfv,%8.2lfh                          \n" , x_meth, x_meth, a_leg, x_segupper, x_forgive, x_meth, a_leg, x_seg, d, v, h);
+   fprintf (f_cond, "     get      v21  -- verify %s angles                  yKINE__getter               \"%s_seg_angle\" , YKINE_%s       , YKINE_%s                                                          u_round/%d   %s-%s.%s ang :%8.0lfd,%8.2lfv,%8.2lfh                                                        \n" , x_meth, x_meth, a_leg, x_segupper, x_forgive, x_meth, a_leg, x_seg, d, v, h);
    yKINE_segment   (my.p_leg, a_seg, YKINE_GK, &d, &l, &x, &z, &y);
-   fprintf (f_cond, "     get      v21  -- verify %s segment                 yKINE__getter         \"%s_seg_size\"  , YKINE_%s       , YKINE_%s                                                          u_round/%d   %s-%s.%s siz :%8.0lfm,%8.0lfx,%8.0lfz,%8.0lfy                \n"   , x_meth, x_meth, a_leg, x_segupper, x_forgive, x_meth, a_leg, x_seg, l, x, z, y);
+   fprintf (f_cond, "     get      v21  -- verify %s segment                 yKINE__getter               \"%s_seg_size\"  , YKINE_%s       , YKINE_%s                                                          u_round/%d   %s-%s.%s siz :%8.0lfm,%8.0lfx,%8.0lfz,%8.0lfy                                              \n"   , x_meth, x_meth, a_leg, x_segupper, x_forgive, x_meth, a_leg, x_seg, l, x, z, y);
    yKINE_endpoint  (my.p_leg, a_seg, YKINE_GK, &d, &l, &x, &z, &y);
-   fprintf (f_cond, "     get      v21  -- verify %s endpoint                yKINE__getter         \"%s_seg_end\"   , YKINE_%s       , YKINE_%s                                                          u_round/%d   %s-%s.%s end :%8.0lfm,%8.0lfx,%8.0lfz,%8.0lfy                \n"   , x_meth, x_meth, a_leg, x_segupper, x_forgive, x_meth, a_leg, x_seg, l, x, z, y);
+   fprintf (f_cond, "     get      v21  -- verify %s endpoint                yKINE__getter               \"%s_seg_end\"   , YKINE_%s       , YKINE_%s                                                          u_round/%d   %s-%s.%s end :%8.0lfm,%8.0lfx,%8.0lfz,%8.0lfy                                              \n"   , x_meth, x_meth, a_leg, x_segupper, x_forgive, x_meth, a_leg, x_seg, l, x, z, y);
    return 0;
 }
 
@@ -443,9 +443,11 @@ KINE_unitcond      (void)
    /*---(prepare common vars)------------*/
    strlcpy  (x_leg, legs_name [(int) my.p_leg], LEN_LABEL);
    /*---(prepare for testing)------------*/
-   fprintf (f_cond, "   COND       v21  automated opengl test for yKINE (sec = %8.3lf)             ----------------------------------------------------------------------------------------------------  ----------  ---------------------------------------------------------------------- \n", my.p_cur);
-   fprintf (f_cond, "     exec     v21  CLEAR FOR FORWARD KINEMATICS         yKINE__wipe           YKINE_%s       , YKINE_FK                                                                             i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "   GROUP      v21  automated test from arachne                                        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n", my.p_cur);
+   fprintf (f_cond, "\n");
+   fprintf (f_cond, "   COND       v21  forward kinematics (FK)                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n", x_leg);
    /*---(forward kinematics)-------------*/
+   fprintf (f_cond, "     exec     v21  wipe all calculated values           yKINE__wipe                 YKINE_%s       , YKINE_FK                                                                             i_equal     0                                                                      \n", x_leg);
    KINE_unitseg  (x_leg, YKINE_THOR, YKINE_FK);
    KINE_unitseg  (x_leg, YKINE_COXA, YKINE_FK);
    KINE_unitseg  (x_leg, YKINE_TROC, YKINE_FK);
@@ -458,7 +460,9 @@ KINE_unitcond      (void)
    KINE_unitseg  (x_leg, YKINE_TARS, YKINE_FK);
    KINE_unitseg  (x_leg, YKINE_FOOT, YKINE_FK);
    /*---(inverse kinematics)-------------*/
-   fprintf (f_cond, "     exec     v21  CLEAR FOR INVERSE KINEMATICS         yKINE__wipe           YKINE_%s       , YKINE_IK                                                                             i_equal     0                                                                      \n", x_leg);
+   fprintf (f_cond, "\n");
+   fprintf (f_cond, "   COND       v21  inverse kinematics (IK)                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n", x_leg);
+   fprintf (f_cond, "     exec     v21  wipe all calculated values           yKINE__wipe                 YKINE_%s       , YKINE_FK                                                                             i_equal     0                                                                      \n", x_leg);
    KINE_unitseg  (x_leg, YKINE_TARG, YKINE_IK);
    KINE_unitseg  (x_leg, YKINE_THOR, YKINE_IK);
    KINE_unitseg  (x_leg, YKINE_COXA, YKINE_IK);
