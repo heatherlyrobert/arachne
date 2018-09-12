@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9r"
-#define VER_TXT   "feeds working unit testing steps to yKINE"
+#define VER_NUM   "0.9s"
+#define VER_TXT   "add panel and index to progress display to aid debugging"
 
 
 

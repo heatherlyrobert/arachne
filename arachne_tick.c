@@ -337,20 +337,20 @@ TICK_back_label         (void)
          /*---(line)---------------------*/
          sprintf (x_msg, "%s", s_line_info [x_ref].name);
          glPushMatrix(); {
-            glTranslatef (x_pos + 500.0, x_top -  2.0,    60.0);
-            yFONT_print  (my.fixed,  18, YF_TOPCEN, x_msg);
+            glTranslatef (x_pos + 500.0, x_top -  14.0,    60.0);
+            yFONT_print  (my.fixed,  18, YF_MIDCEN, x_msg);
          } glPopMatrix();
          /*---(scale)--------------------*/
          yVIKEYS_scale_brief (x_msg);
          glPushMatrix(); {
-            glTranslatef (x_pos +  15.0, x_top - 6.0,    60.0  );
-            yFONT_print  (my.fixed,  14, YF_TOPLEF, x_msg);
+            glTranslatef (x_pos +  15.0, x_top -  14.0,    60.0  );
+            yFONT_print  (my.fixed,  14, YF_MIDLEF, x_msg);
          } glPopMatrix();
          /*---(speed)--------------------*/
          yVIKEYS_speed_brief (x_msg);
          glPushMatrix(); {
-            glTranslatef (x_pos + 985.0, x_top - 6.0,    60.0  );
-            yFONT_print  (my.fixed,  14, YF_TOPRIG, x_msg);
+            glTranslatef (x_pos + 985.0, x_top -  14.0,    60.0  );
+            yFONT_print  (my.fixed,  14, YF_MIDRIG, x_msg);
          } glPopMatrix();
       }
    }
@@ -396,8 +396,52 @@ TICK_back_draw          (void)
    return 0;
 }
 
+char         /*--> draw texture labels -------------------[ ------ [ ------ ]-*/
+TICK_back_copy_label    (int a_index, int a_panel)
+{
+   /*---(locals)-----------+-----------+-*/
+   int       x_line        =    0;
+   float     x_top         =  0.0;
+   float     x_bot         =  0.0;
+   int       x_pos         =    0;
+   int       x_ref         =    0;
+   char      x_msg         [100];
+   /*---(prepare)------------------------*/
+   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
+   /*---(vertical lines)-----------------*/
+   yVIKEYS_view_color (YCOLOR_BAS_ACC, 1.00);
+   DEBUG_GRAF   yLOG_value   ("s_nline"   , s_nline);
+   for (x_line = 0; x_line < s_nline; ++x_line) {
+      DEBUG_GRAF   yLOG_value   ("x_line"    , x_line);
+      x_top = (s_nline - x_line    ) * s_yinc;
+      x_bot = (s_nline - x_line - 1) * s_yinc;
+      x_ref = TICK_line_find (x_line);
+      DEBUG_GRAF   yLOG_info    ("name"      , s_line_info [x_ref].name);
+      /*---(horizontal move)-------------*/
+      for (x_pos = 0; x_pos <= s_wide; x_pos += s_xinc * 100) {
+         DEBUG_GRAF   yLOG_value   ("x_pos"     , x_pos);
+         /*---(index)--------------------*/
+         sprintf (x_msg, "%d", a_index);
+         glPushMatrix(); {
+            glTranslatef (x_pos + 250.0, x_top - 14.0,    60.0);
+            yFONT_print  (my.fixed,  16, YF_MIDCEN, x_msg);
+         } glPopMatrix();
+         /*---(panel)--------------------*/
+         sprintf (x_msg, "%d", a_panel);
+         glPushMatrix(); {
+            glTranslatef (x_pos + 750.0, x_top - 14.0,    60.0);
+            yFONT_print  (my.fixed,  16, YF_MIDCEN, x_msg);
+         } glPopMatrix();
+         /*---(done)---------------------*/
+      }
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
 char         /*--> draw texture background ---------------[ ------ [ ------ ]-*/
-TICK_back_copy          (void)
+TICK_back_copy          (int a_index, int a_panel)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        rc          =    0;          /* generic return code            */
@@ -421,6 +465,7 @@ TICK_back_copy          (void)
       /*---(done)-----------*/
    } glEnd();
    glBindTexture   (GL_TEXTURE_2D, 0);
+   TICK_back_copy_label (a_index, a_panel);
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -1143,7 +1188,7 @@ TICK_draw_one      (int a_panel)
    DEBUG_GRAF   yLOG_value   ("s_tall"    , s_tall);
    /*---(draw)------------------------*/
    yGLTEX_draw_start (s_fbo [a_panel], YGLTEX_BOTLEF, s_wide, s_tall, 1.0);
-   TICK_back_copy    ();
+   TICK_back_copy    (a_panel, 15);
    /*> for (i = 0; i < s_nline; ++i) {                                                <* 
     *>    x_ref = TICK_line_find (i);                                                 <* 
     *>    switch (s_line_info [x_ref].content) {                                      <* 
