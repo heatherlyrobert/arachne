@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9s"
-#define VER_TXT   "add panel and index to progress display to aid debugging"
+#define VER_NUM   "0.9t"
+#define VER_TXT   "progress bar displays and anchors work"
 
 
 
@@ -243,6 +243,7 @@ struct cACCESSOR {
 
    double      p_endsec;                    /* end second for timeline play   */
    char        p_quit;                      /* quit after initial playing     */
+   int         p_line;                      /* progress line being viewed     */
    int         p_leg;                       /* leg currently viewed           */
    int         p_texw;                      /* texture full width             */
    int         p_texh;                      /* texture full height            */

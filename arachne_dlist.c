@@ -710,6 +710,7 @@ static int   /* ---- : create a saved shape for the body -----------------------
 dlist_body         (void)
 {
    /*---(begin)-----------------------------*/
+   float      x_radius    = 0.0;
    int      deg;
    float    rad;
    float     nx, nz;
@@ -719,6 +720,7 @@ dlist_body         (void)
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
       /*> glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);                                  <*/
       /*---(draw)--------------------------------------------*/
+      x_radius = segs_len [YKINE_THOR];
       glColor4f    (0.5f, 0.0f, 0.0f, 0.5f);
       glPushMatrix  (); {
          glBegin(GL_POLYGON); {     /*->> size is 1" wide by 13/8" out (1.62")      */
@@ -726,8 +728,47 @@ dlist_body         (void)
             for (deg = 0; deg < 365; deg +=  5) {
                /*---(calc)------------------------*/
                rad = deg * DEG2RAD;
-               nx  = segs_len [YKINE_THOR] * cos(rad);
-               nz  = segs_len [YKINE_THOR] * sin(rad);
+               nx  = x_radius * cos(rad);
+               nz  = x_radius * sin(rad);
+               /*---(color)-----------------------*/
+               if (deg % 10 == 0) glColor4f (0.0f, 1.0f, 0.0f, 0.5f);
+               else               glColor4f (0.0f, 0.5f, 0.0f, 0.5f);
+               /*---(draw)------------------------*/
+               if (deg != 0) {
+                  glBegin       (GL_POLYGON); {
+                     glVertex3f( px,   8.00f,  pz);
+                     glVertex3f( px, -12.00f,  pz);
+                     glVertex3f( nx, -12.00f,  nz);
+                     glVertex3f( nx,   8.00f,  nz);
+                  } glEnd         ();
+                  glColor4f (0.0f, 0.2f, 0.0f, 0.5f);
+                  glLineWidth  (2.0);
+                  glBegin    (GL_LINE_STRIP); {
+                     glVertex3f( px,   8.00f,  pz);
+                     glVertex3f( px, -12.00f,  pz);
+                     glVertex3f( nx, -12.00f,  nz);
+                     glVertex3f( nx,   8.00f,  nz);
+                     glVertex3f( px,   8.00f,  pz);
+                  } glEnd         ();
+               }
+               /*---(prepare)---------------------*/
+               px = nx;
+               pz = nz;
+               /*---(done)------------------------*/
+               /*> glVertex3f( nx,   8.00f, nz);                                      <* 
+                *> glVertex3f( nx, -12.00f, nz);                                      <*/
+            }
+         } glEnd();
+      } glPopMatrix   ();
+      x_radius -= 20.0;
+      glPushMatrix  (); {
+         glBegin(GL_POLYGON); {     /*->> size is 1" wide by 13/8" out (1.62")      */
+            glColor3f(1.0f, 1.0f, 0.0f);
+            for (deg = 0; deg < 365; deg +=  5) {
+               /*---(calc)------------------------*/
+               rad = deg * DEG2RAD;
+               nx  = x_radius * cos(rad);
+               nz  = x_radius * sin(rad);
                /*---(color)-----------------------*/
                if (deg % 10 == 0) glColor4f (0.0f, 1.0f, 0.0f, 0.5f);
                else               glColor4f (0.0f, 0.5f, 0.0f, 0.5f);

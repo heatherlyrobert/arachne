@@ -24,8 +24,10 @@
 
 #CHANGE PITCH
 
+fk_pure       -a-  AA             0.000      0.00      0.00      0.00  -                    
+
 #fk_pure       -a-  AA.full        0.000      5.00    -10.00     15.00  -                    
-fk_pure       -a-  AA             0.000     45.00     30.00    -25.00  -                    
+fk_pure       -a-  AA             2.000     45.00     30.00    -25.00  -                    
 
 #ze_pure       -a-  AA             1.000      0.00      0.00      0.00  -                    
 #or_pure       -a-  --.center      1.000      0.00      0.00      0.00  -                    

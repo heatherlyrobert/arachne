@@ -15,13 +15,14 @@ static int         s_yinc      =    200;        /* vertical size of line      */
 static int         s_tall      =      0;        /* texture panel height       */
 static int         s_nline     =      0;        /* number of lines            */
 /*---(handles)------------------------*/
-#define    MAX_TEX      4
-static uint        s_fbo       [MAX_TEX];       /* framebuffer       */
-static uint        s_depth     [MAX_TEX];       /* depth buffer      */
-static uint        s_tex       [MAX_TEX];       /* texture array     */
-static float       s_beg       [MAX_TEX];       /* begining script position   */             
+#define    MAX_PANEL      4
+static uint        s_fbo       [MAX_PANEL];     /* framebuffer       */
+static uint        s_depth     [MAX_PANEL];     /* depth buffer      */
+static uint        s_tex       [MAX_PANEL];     /* texture array     */
+static float       s_beg       [MAX_PANEL];     /* begining script position   */             
+static int         s_nsec      =      0;        /* total number of sections   */             
+static int         s_sec       [MAX_PANEL];     /* each panels section assign */             
 static float       s_len       =    0.0;
-static int         s_panel     =      0;
 /*---(debugging)----------------------*/
 static char        s_debug     =    '-';
 static char        s_snap      =    '-';
@@ -57,9 +58,8 @@ tLINES      s_line_info  [MAX_LINES] = {
 /*---(single leg vars)----------------*/
 static float       s_textop    =   0.0;    /* single leg top percent in texture   */
 static float       s_texbot    =   0.0;    /* single leg bot percent in texture   */
-static float       s_texavail  =   0.0;         /* texture length available       */
-static float       s_texpct    =   0.0;         /* texture width percent avail    */
-static float       s_texctr    =   0.0;         /* texture width avail center     */
+static float       s_texavail  =   0.0;    /* tex width available in progress      */
+static float       s_texpct    =   0.0;    /* tex width avail in percent of panel */
 static float       s_tsec      =   0.0;         /* texture length of a second     */
 /*> static float       s_tnsec     =   0.0;         /+ texture number of secs shown   +/   <*/
 /*> static float       s_tsecp     =   0.0;         /+ width pct of a texture sec     +/   <*/
@@ -84,6 +84,9 @@ static double      s_lowest    =   0.0;
 
 static int       s_debug_leg;
 static double    s_debug_sec;
+
+
+char    TICK_curr (void);
 
 
 
@@ -322,8 +325,8 @@ TICK_back_label         (void)
    char      x_msg         [100];
    /*---(prepare)------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   /*---(vertical lines)-----------------*/
    yVIKEYS_view_color (YCOLOR_BAS_ACC, 1.00);
+   /*---(vertical lines)-----------------*/
    DEBUG_GRAF   yLOG_value   ("s_nline"   , s_nline);
    for (x_line = 0; x_line < s_nline; ++x_line) {
       DEBUG_GRAF   yLOG_value   ("x_line"    , x_line);
@@ -397,7 +400,7 @@ TICK_back_draw          (void)
 }
 
 char         /*--> draw texture labels -------------------[ ------ [ ------ ]-*/
-TICK_back_copy_label    (int a_index, int a_panel)
+TICK_back_copy_label    (int a_panel)
 {
    /*---(locals)-----------+-----------+-*/
    int       x_line        =    0;
@@ -408,8 +411,8 @@ TICK_back_copy_label    (int a_index, int a_panel)
    char      x_msg         [100];
    /*---(prepare)------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
+   yVIKEYS_view_color (YCOLOR_BAS_MED, 1.00);
    /*---(vertical lines)-----------------*/
-   yVIKEYS_view_color (YCOLOR_BAS_ACC, 1.00);
    DEBUG_GRAF   yLOG_value   ("s_nline"   , s_nline);
    for (x_line = 0; x_line < s_nline; ++x_line) {
       DEBUG_GRAF   yLOG_value   ("x_line"    , x_line);
@@ -421,13 +424,13 @@ TICK_back_copy_label    (int a_index, int a_panel)
       for (x_pos = 0; x_pos <= s_wide; x_pos += s_xinc * 100) {
          DEBUG_GRAF   yLOG_value   ("x_pos"     , x_pos);
          /*---(index)--------------------*/
-         sprintf (x_msg, "%d", a_index);
+         sprintf (x_msg, "%d%c", a_panel, x_pos / (s_xinc * 100) + 'a');
          glPushMatrix(); {
             glTranslatef (x_pos + 250.0, x_top - 14.0,    60.0);
             yFONT_print  (my.fixed,  16, YF_MIDCEN, x_msg);
          } glPopMatrix();
          /*---(panel)--------------------*/
-         sprintf (x_msg, "%d", a_panel);
+         sprintf (x_msg, "%d/%d", s_sec [a_panel], s_nsec);
          glPushMatrix(); {
             glTranslatef (x_pos + 750.0, x_top - 14.0,    60.0);
             yFONT_print  (my.fixed,  16, YF_MIDCEN, x_msg);
@@ -441,7 +444,7 @@ TICK_back_copy_label    (int a_index, int a_panel)
 }
 
 char         /*--> draw texture background ---------------[ ------ [ ------ ]-*/
-TICK_back_copy          (int a_index, int a_panel)
+TICK_back_copy          (int a_panel)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        rc          =    0;          /* generic return code            */
@@ -465,7 +468,7 @@ TICK_back_copy          (int a_index, int a_panel)
       /*---(done)-----------*/
    } glEnd();
    glBindTexture   (GL_TEXTURE_2D, 0);
-   TICK_back_copy_label (a_index, a_panel);
+   TICK_back_copy_label (a_panel);
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -658,13 +661,17 @@ TICK_init          (void)
    DEBUG_GRAF   yLOG_value   ("s_tall"    , s_tall);
    /*---(handles)------------------------*/
    DEBUG_GRAF   yLOG_note    ("initializing handles (tex, fbo, depth)");
-   for (i = 0; i < MAX_TEX; ++i) {
+   for (i = 0; i < MAX_PANEL; ++i) {
       s_tex [i] = s_fbo [i] = s_depth [i] = 0;
    }
    s_beg [0] = 0.0;
+   s_sec [0] =   0;
    s_beg [1] = 0.0 - s_len;
+   s_sec [1] =  -1;
    s_beg [2] = 0.0;
+   s_sec [2] =   0;
    s_beg [3] = 0.0 + s_len;
+   s_sec [3] =   1;
    /*---(working)------------------------*/
    DEBUG_GRAF   yLOG_note    ("initializing working variables");
    /*---(update colors)------------------*/
@@ -688,7 +695,7 @@ TICK_wrap          (void)
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    /*---(handles)------------------------*/
    DEBUG_GRAF   yLOG_note    ("destroying handles (tex, fbo, depth)");
-   for (i = 0; i < MAX_TEX; ++i) {
+   for (i = 0; i < MAX_PANEL; ++i) {
       rc = yGLTEX_free (&s_tex [i], &s_fbo [i], &s_depth [i]);
       DEBUG_GRAF   yLOG_value   ("rc"        , rc);
       if (rc < 0) {
@@ -1141,7 +1148,6 @@ TICK_globals       (void)
    /*---(calc basics)--------------------*/
    s_texavail  = my.p_wide * 2.0;
    s_texpct    = s_texavail / s_wide;
-   s_texctr    = s_texpct / 2.0;
    s_start     = s_section * s_wide;
    /*---(seconds)------------------------*/
    s_tsec      = x_inc / my.p_inc;
@@ -1188,19 +1194,22 @@ TICK_draw_one      (int a_panel)
    DEBUG_GRAF   yLOG_value   ("s_tall"    , s_tall);
    /*---(draw)------------------------*/
    yGLTEX_draw_start (s_fbo [a_panel], YGLTEX_BOTLEF, s_wide, s_tall, 1.0);
-   TICK_back_copy    (a_panel, 15);
-   /*> for (i = 0; i < s_nline; ++i) {                                                <* 
-    *>    x_ref = TICK_line_find (i);                                                 <* 
-    *>    switch (s_line_info [x_ref].content) {                                      <* 
-    *>    case 'o' : break;                                                           <* 
-    *>    case 'c' : break;                                                           <* 
-    *>    case 'l' : TICK_servos  (a_panel, x_ref);   break;                          <* 
-    *>    }                                                                           <* 
-    *> }                                                                              <* 
-    *> if (s_snap == 'y') {                                                           <* 
-    *>    yGLTEX_tex2png    ("ticker.png", s_wide, s_tall);                           <* 
-    *>    s_snap = '-';                                                               <* 
-    *> }                                                                              <*/
+   TICK_back_copy    (a_panel);
+   for (i = 0; i < s_nline; ++i) {
+      DEBUG_GRAF   yLOG_value   ("line"      , i);
+      x_ref = TICK_line_find (i);
+      DEBUG_GRAF   yLOG_value   ("ref"       , x_ref);
+      DEBUG_GRAF   yLOG_char    ("content"   , s_line_info [x_ref].content);
+      switch (s_line_info [x_ref].content) {
+      case 'o' : break;
+      case 'c' : break;
+      case 'l' : TICK_servos  (a_panel, x_ref);   break;
+      }
+   }
+   if (s_snap == 'y') {
+      yGLTEX_tex2png    ("ticker.png", s_wide, s_tall);
+      s_snap = '-';
+   }
    yGLTEX_draw_end   (s_tex [a_panel]);
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
@@ -1210,27 +1219,36 @@ TICK_draw_one      (int a_panel)
 char
 TICK_draw_all           (void)
 {
+   /*---(locals)-----------+-----+-----+-*/
+   char        rc          =    0;
    double      x_pos       =  0.0;
    double      x_cur       =  0.0;
-   double      x_wide      =  0.0;
    int         x_section   =    0;
+   /*---(prepare)------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   DEBUG_GRAF   yLOG_double  ("p_cur"     , my.p_cur);
-   DEBUG_GRAF   yLOG_double  ("p_scale"   , my.p_scale);
-   x_wide = my.p_scale * UNIT2PANEL;
-   DEBUG_GRAF   yLOG_double  ("x_wide"    , x_wide);
-   for (x_pos = 0.0; x_pos <= my.p_len; ++x_wide) {
+   DEBUG_GRAF   yLOG_double  ("s_len"     , s_len);
+   rc = TICK_curr  ();
+   /*---(review sections)----------------*/
+   for (x_pos = 0.0; x_pos <= my.p_len; x_pos += s_len) {
       DEBUG_GRAF   yLOG_double  ("p_pos"     , my.p_pos);
-      if (x_pos >= my.p_cur) break;
-      x_cur = x_pos;
-      ++x_section;
-      DEBUG_GRAF   yLOG_double  ("x_cur"     , x_cur);
-      DEBUG_GRAF   yLOG_double  ("x_section" , x_section);
+      if (x_pos <  my.p_cur) {
+         ++x_section;
+         x_cur = x_pos;
+      }
+      ++s_nsec;
    }
+   DEBUG_GRAF   yLOG_double  ("x_cur"     , x_cur);
+   DEBUG_GRAF   yLOG_double  ("x_section" , x_section);
+   DEBUG_GRAF   yLOG_double  ("s_nsec"    , s_nsec);
+   /*---(assign globals)-----------------*/
    s_beg [0] = 0.0;
-   s_beg [1] = x_cur - x_wide;
+   s_beg [1] = x_cur - s_len;
+   s_sec [1] = x_section - 1;
    s_beg [2] = x_cur;
-   s_beg [3] = x_cur + x_wide;
+   s_sec [2] = x_section;
+   s_beg [3] = x_cur + s_len;
+   s_sec [3] = x_section + 1;
+   /*---(re-create)----------------------*/
    TICK_draw_one (1);
    TICK_draw_one (2);
    TICK_draw_one (3);
@@ -1246,246 +1264,182 @@ TICK_snap               (void)
    return 0;
 }
 
-char         /*--> calculate texture positioning ---------[ ------ [ ------ ]-*/
-TICK_current       (void)
+char
+TICK_rotate_earlier     (void)
 {
    /*---(locals)-----------+-----------+-*/
-   char        rc          = 0;
-   int         x_save      = s_section;
-   /*---(current pos)--------------------*/
-   s_curp      = ((my.p_cur * s_tsec) - s_start) / s_wide;
-   while (s_curp  > 1.60) {
-      ++s_section;
-      TICK_globals ();
-      s_curp      = ((my.p_cur * s_tsec) - s_start) / s_wide;
-      ++rc;
+   char        rc          =    0;
+   int         i           =    0;
+   uint        x_fbo       =    0;
+   uint        x_depth     =    0;
+   uint        x_tex       =    0;
+   float       x_beg       =  0.0;
+   int         x_sec       =    0;
+   /*---(save later into temp)-----------*/
+   x_fbo       = s_fbo   [3];
+   x_depth     = s_depth [3];
+   x_tex       = s_tex   [3];
+   x_beg       = s_beg   [3];
+   x_sec       = s_sec   [3];
+   /*---(move later into temp)-----------*/
+   for (i = 3; i >= 2; --i) {
+      s_fbo   [i] = s_fbo   [i - 1];
+      s_depth [i] = s_depth [i - 1];
+      s_tex   [i] = s_tex   [i - 1];
+      s_beg   [i] = s_beg   [i - 1];
+      s_sec   [i] = s_sec   [i - 1];
    }
-   while (s_curp  < 0.40) {
-      --s_section;
-      TICK_globals ();
-      s_curp      = ((my.p_cur * s_tsec) - s_start) / s_wide;
-      ++rc;
-   }
-   /*> if (s_section != x_save)  TICK_draw ();                                        <*/
-   /*---(script fits screen)-------------*/
-   if (s_plenp <= s_texpct) {
-      s_texbeg = 0.0f;
-      s_texend = s_texpct;
-   }
-   /*---(script is bigger than screen)---*/
-   else {
-      switch (s_anchor) {
-      case '0' :
-         s_texbeg  = s_curp - (s_texpct * 0.00);
-         s_texend  = s_texbeg  + s_texpct;
-         break;
-      case 's' :
-         s_texbeg  = s_curp - (s_texpct * 0.05);
-         s_texend  = s_texbeg  + s_texpct;
-         break;
-      case 'h' :
-         s_texbeg  = s_curp - (s_texpct * 0.28);
-         s_texend  = s_texbeg  + s_texpct;
-         break;
-      case 'c' :
-         s_texbeg  = s_curp - (s_texpct * 0.50);
-         s_texend  = s_texbeg  + s_texpct;
-         break;
-      case 'l' :
-         s_texbeg  = s_curp - (s_texpct * 0.72);
-         s_texend  = s_texbeg  + s_texpct;
-         break;
-      case 'e' :
-         s_texbeg  = s_curp - (s_texpct * 0.95);
-         s_texend  = s_texbeg  + s_texpct;
-         break;
-      case '$' :
-         s_texbeg  = s_curp - (s_texpct * 1.00);
-         s_texend  = s_texbeg  + s_texpct;
-         break;
-      }
-      /*> if (s_texbeg < 0.0) {                                                       <* 
-       *>    s_texbeg  = 0.0f;                                                        <* 
-       *>    s_texend  = s_texpct;                                                    <* 
-       *> } else if (s_texend > s_plenp) {                                            <* 
-       *>    s_texend  = s_plenp;                                                     <* 
-       *>    s_texbeg  = s_texend - s_texpct;                                         <* 
-       *> }                                                                           <*/
-   }
-   /*---(prepare for multitex)-----------*/
-   s_texbeg1 = s_texend1 = s_texpct1 = s_texbeg2 = s_texend2 = s_texpct2 = 0.0;
-   /*---(all first tex area)-------------*/
-   if        (s_texend <= 1.0) {
-      s_texbeg1  = s_texbeg;
-      s_texend1  = s_texend;
-      s_texpct1  = 1.0;
-   }
-   /*---(all second tex area)------------*/
-   else if (s_texbeg >= 1.0) {
-      s_texbeg2  = s_texbeg - 1.0;
-      s_texend2  = s_texend - 1.0;
-      s_texpct2  = 1.0;
-   }
-   /*---(mixed text area)----------------*/
-   else {
-      s_texbeg1  = s_texbeg;
-      s_texend1  = 1.0;
-      s_texpct1  = (s_texend1 - s_texbeg1) / s_texpct;
-      s_texbeg2  = 0.0;
-      s_texend2  = s_texend - 1.0;
-      s_texpct2  = (s_texend2 - s_texbeg2) / s_texpct;
-      /*---(rounding issues)-------------*/
-      if (s_texpct1 <= 0.01) {
-         s_texbeg1  = 0.0;
-         s_texend1  = 0.0;
-         s_texpct1  = 0.0;
-         s_texbeg2  = s_texbeg - 1.0;
-         s_texend2  = s_texend - 1.0;
-         s_texpct2  = 1.0;
-      }
-      /*---(rounding issues)-------------*/
-      if (s_texpct2 <= 0.01) {
-         s_texbeg1  = s_texbeg;
-         s_texend1  = s_texend;
-         s_texpct1  = 1.0;
-         s_texbeg2  = 0.0;
-         s_texend2  = 0.0;
-         s_texpct2  = 0.0;
-      }
-   }
-   /*---(current pos)--------------------*/
-   s_cur       = ((s_curp - s_texbeg) / s_texpct) * my.p_wide;
-   /*---(complete)-----------------------*/
-   return rc;
-}
-
-char         /*--> draw texture labels -------------------[ ------ [ ------ ]-*/
-TICK_title              (void)
-{
-   /*---(locals)-----------+-----------+-*/
-   int       i;                             /* loop iterator                  */
-   int       j;                             /* loop iterator                  */
-   int       x_line        =    0;          /* loop iterator                  */
-   float     x_bot         =  0.0;
-   float     x_top         =  0.0;
-   float     x_pos         =  0.0;
-   char      x_msg         [100];
-   char      x_part        [100];
-   double    x_sec         = 0.0;
-   double    x_lowest      = 0.0;
-   int       x_lowcnt      = 0;
-   char      rc            = 0;
-   /*---(prepare)------------------------*/
-   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   yVIKEYS_view_color (YCOLOR_BAS_ACC, 1.00);
-   /*---(leg labels)---------------------*/
-   for (i = 0; i < s_wide; i += s_xinc * 100) {
-      for (x_line = 0; x_line < s_nline; ++x_line) {
-         x_top = (x_line + 1) * s_yinc;
-         /*---(scale)--------------------*/
-         yVIKEYS_scale_desc (x_msg);
-         glPushMatrix(); {
-            glTranslatef (i +  15.0, x_top - 2.0,    60.0  );
-            yFONT_print  (my.fixed,  16, YF_TOPLEF, x_msg);
-         } glPopMatrix();
-         /*---(leg)----------------------*/
-         sprintf (x_msg, "%s", s_line_info [x_line]);
-         glPushMatrix(); {
-            glTranslatef (i + 500.0, x_top - 2.0,    60.0  );
-            yFONT_print  (my.fixed,  16, YF_TOPCEN, x_msg);
-         } glPopMatrix();
-         /*---(speed)--------------------*/
-         yVIKEYS_speed_desc (x_msg);
-         glPushMatrix(); {
-            glTranslatef (i + 985.0, x_top - 2.0,    60.0  );
-            yFONT_print  (my.fixed,  16, YF_TOPRIG, x_msg);
-         } glPopMatrix();
-         /*---(done)---------------------*/
-      }
-   }
+   /*---(put temp into earliest)---------*/
+   s_fbo   [1] = x_fbo;
+   s_depth [1] = x_depth;
+   s_tex   [1] = x_tex;
+   s_beg   [1] = x_beg - s_len;
+   s_sec   [1] = x_sec - 1;
+   /*---(draw earliest)------------------*/
+   rc = TICK_draw_one (1);
    /*---(complete)-----------------------*/
    return 0;
 }
 
-char         /*--> show texture on screen ----------------[ ------ [ ------ ]-*/
-TICK_showtex       (float a_height, float a_top, float a_bot)
+char
+TICK_rotate_later       (void)
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rc          =    0;
+   int         i           =    0;
+   uint        x_fbo       =    0;
+   uint        x_depth     =    0;
+   uint        x_tex       =    0;
+   float       x_beg       =  0.0;
+   int         x_sec       =    0;
+   /*---(save later into temp)-----------*/
+   x_fbo       = s_fbo   [1];
+   x_depth     = s_depth [1];
+   x_tex       = s_tex   [1];
+   x_beg       = s_beg   [1];
+   x_sec       = s_sec   [1];
+   /*---(save later into temp)-----------*/
+   for (i = 2; i <= 3; ++i) {
+      s_fbo   [i - 1] = s_fbo   [i];
+      s_depth [i - 1] = s_depth [i];
+      s_tex   [i - 1] = s_tex   [i];
+      s_beg   [i - 1] = s_beg   [i];
+      s_sec   [i - 1] = s_sec   [i];
+   }
+   /*---(put temp into earliest)---------*/
+   s_fbo   [3] = x_fbo;
+   s_depth [3] = x_depth;
+   s_tex   [3] = x_tex;
+   s_beg   [3] = x_beg + s_len;
+   s_sec   [3] = x_sec + 1;
+   /*---(draw earliest)------------------*/
+   rc = TICK_draw_one (3);
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
+char
+TICK_anchor             (void)
+{
+   switch (s_anchor) {
+   case '0' :
+      s_texbeg  = s_curp - (s_texpct * 0.00);
+      s_texend  = s_texbeg  + s_texpct;
+      break;
+   case 's' :
+      s_texbeg  = s_curp - (s_texpct * 0.05);
+      s_texend  = s_texbeg  + s_texpct;
+      break;
+   case 'h' :
+      s_texbeg  = s_curp - (s_texpct * 0.28);
+      s_texend  = s_texbeg  + s_texpct;
+      break;
+   case 'c' :
+      s_texbeg  = s_curp - (s_texpct * 0.50);
+      s_texend  = s_texbeg  + s_texpct;
+      break;
+   case 'l' :
+      s_texbeg  = s_curp - (s_texpct * 0.72);
+      s_texend  = s_texbeg  + s_texpct;
+      break;
+   case 'e' :
+      s_texbeg  = s_curp - (s_texpct * 0.95);
+      s_texend  = s_texbeg  + s_texpct;
+      break;
+   case '$' :
+      s_texbeg  = s_curp - (s_texpct * 1.00);
+      s_texend  = s_texbeg  + s_texpct;
+      break;
+   }
+   return 0;
+}
+
+char         /*--> calculate texture positioning ---------[ ------ [ ------ ]-*/
+TICK_curr          (void)
 {
    /*---(locals)-----------+-----------+-*/
    char        rc          = 0;
-   /*---(figure current)-----------------*/
+   /*---(header)-------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   DEBUG_GRAF   yLOG_value   ("a_height"  , a_height);
-   DEBUG_GRAF   yLOG_value   ("a_top"     , a_top);
-   DEBUG_GRAF   yLOG_value   ("a_bot"     , a_bot);
-   rc = TICK_current    ();
-   /*---(draw texture)-------------------*/
-   glBindTexture   (GL_TEXTURE_2D, my.p_tex);
-   /*---(first part)---------------------*/
-   if (s_texpct1 >= 0.01) {
-      glBegin(GL_POLYGON); {
-         /*---(top beg)--------*/
-         glTexCoord2f (s_texbeg1             , a_top );
-         glVertex3f   (0.0                   , a_height ,     0.00f);
-         /*---(top end)--------*/
-         glTexCoord2f (s_texend1             , a_top );
-         glVertex3f   (my.p_wide * s_texpct1, a_height ,     0.00f);
-         /*---(bottom end)-----*/
-         glTexCoord2f (s_texend1             , a_bot );
-         glVertex3f   (my.p_wide * s_texpct1, 0.0      ,     0.00f);
-         /*---(bottom beg)-----*/
-         glTexCoord2f (s_texbeg1             , a_bot );
-         glVertex3f   (0.0                   , 0.0      ,     0.00f);
-         /*---(done)-----------*/
-      } glEnd();
-   }
-   if (s_texpct2 >= 0.01) {
-      glBegin(GL_POLYGON); {
-         /*---(top beg)--------*/
-         glTexCoord2f (s_texbeg2             , a_top + 0.5 );
-         glVertex3f   (my.p_wide * s_texpct1, a_height ,     0.00f);
-         /*---(top end)--------*/
-         glTexCoord2f (s_texend2             , a_top + 0.5 );
-         glVertex3f   (my.p_wide            , a_height ,     0.00f);
-         /*---(bottom end)-----*/
-         glTexCoord2f (s_texend2             , a_bot + 0.5 );
-         glVertex3f   (my.p_wide            , 0.0      ,     0.00f);
-         /*---(bottom beg)-----*/
-         glTexCoord2f (s_texbeg2             , a_bot + 0.5 );
-         glVertex3f   (my.p_wide * s_texpct1, 0.0      ,     0.00f);
-         /*---(done)-----------*/
-      } glEnd();
-   }
-   glBindTexture   (GL_TEXTURE_2D, 0);
-   /*---(draw current)-------------------*/
-   glColor4f    (0.00f, 0.00f, 1.00f, 1.0f);
-   glLineWidth  ( 5.0f);
-   glPushMatrix(); {
-      glBegin(GL_LINE_STRIP); {
-         glVertex3f  (s_cur, a_height - 15.0,   70.0);
-         glVertex3f  (s_cur, 0.0            ,   70.0);
-      } glEnd   ();
-   } glPopMatrix();
-   /*---(complete)-----------------------*/
+   /*---(get the current data)-----------*/
+   rc  = yVIKEYS_view_coords   (YVIKEYS_PROGRESS, NULL, &my.p_wide, NULL, &my.p_tall);
+   rc  = yVIKEYS_prog_cur (&s_anchor, &my.p_cur, &my.p_scale, &my.p_inc, &my.p_leg);
+   /*---(check rotation)-----------------*/
+   if (my.p_cur <  s_beg [2])  TICK_rotate_earlier ();
+   if (my.p_cur >= s_beg [3])  TICK_rotate_later   ();
+   /*---(secs per panel)-----------------*/
+   DEBUG_GRAF   yLOG_double  ("p_cur"     , my.p_cur);
+   DEBUG_GRAF   yLOG_double  ("p_scale"   , my.p_scale);
+   s_len       = my.p_scale * UNIT2PANEL;
+   /*---(tex measures)-------------------*/
+   s_textop    = ((12.0 - my.p_leg    ) * s_yinc) / s_tall;
+   DEBUG_GRAF   yLOG_double  ("s_textop"  , s_textop);
+   s_texbot    = ((12.0 - my.p_leg - 1) * s_yinc) / s_tall;
+   DEBUG_GRAF   yLOG_double  ("s_texbot"  , s_texbot);
+   s_texavail  = my.p_wide * 2.0;
+   DEBUG_GRAF   yLOG_double  ("s_texavail", s_texavail);
+   s_texpct    = s_texavail / s_wide;
+   DEBUG_GRAF   yLOG_double  ("s_texpct"  , s_texpct);
+   /*---(current horizontal pos)---------*/
+   s_curp      = (my.p_cur - s_beg [2]) / s_wide;
+   DEBUG_GRAF   yLOG_double  ("s_curp"    , s_curp);
+   TICK_anchor ();
+   DEBUG_GRAF   yLOG_char    ("s_anchor"  , s_anchor);
+   DEBUG_GRAF   yLOG_double  ("s_texbeg"  , s_texbeg);
+   DEBUG_GRAF   yLOG_double  ("s_texend"  , s_texend);
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
-   return rc;
+   return 0;
 }
 
-/*> char         /+--> show texture on screen ----------------[ ------ [ ------ ]-+/   <* 
- *> TICK_full          (void)                                                          <* 
- *> {                                                                                  <* 
- *>    /+---(locals)-------------------------+/                                        <* 
- *>    char        rc          = 0;                                                    <* 
- *>    /+---(setup view)---------------------+/                                        <* 
- *>    glViewport      (    0, 0.0        , my.p_wide, my.w_tall);                     <* 
- *>    glMatrixMode    (GL_PROJECTION);                                                <* 
- *>    glLoadIdentity  ();                                                             <* 
- *>    glOrtho         ( 0.0f, my.p_wide, 0.0     , my.w_tall,  -500.0,   500.0);      <* 
- *>    glMatrixMode    (GL_MODELVIEW);                                                 <* 
- *>    /+---(firgure current)----------------+/                                        <* 
- *>    rc = TICK_showtex    (my.w_tall,  0.5,  0.0);                                   <* 
- *>    /+---(complete)-----------------------+/                                        <* 
- *>    return rc;                                                                      <* 
- *> }                                                                                  <*/
+char
+TICK_show_panel         (int a_panel, double a_beg, double a_end, double a_left, double a_wide)
+{
+   DEBUG_GRAF   yLOG_senter  (__FUNCTION__);
+   DEBUG_GRAF   yLOG_sint    (a_panel);
+   DEBUG_GRAF   yLOG_sdouble (a_beg);
+   DEBUG_GRAF   yLOG_sdouble (a_end);
+   DEBUG_GRAF   yLOG_sdouble (a_left);
+   DEBUG_GRAF   yLOG_sdouble (a_wide);
+   glBindTexture   (GL_TEXTURE_2D, s_tex [a_panel]);
+   glBegin(GL_POLYGON); {
+      /*---(top beg)--------*/
+      glTexCoord2f (a_beg, s_textop);
+      glVertex3f   (a_left, 100.00, 0.00);
+      /*---(top end)--------*/
+      glTexCoord2f (a_end, s_textop);
+      glVertex3f   (a_left + a_wide, 100.00, 0.00);
+      /*---(bottom end)-----*/
+      glTexCoord2f (a_end, s_texbot);
+      glVertex3f   (a_left + a_wide,   0.00, 0.00);
+      /*---(bottom beg)-----*/
+      glTexCoord2f (a_beg, s_texbot);
+      glVertex3f   (a_left,   0.00, 0.00);
+      /*---(done)-----------*/
+   } glEnd();
+   glBindTexture   (GL_TEXTURE_2D, 0);
+   DEBUG_GRAF   yLOG_sexit   (__FUNCTION__);
+   return 0;
+}
 
 char         /*--> show texture on screen ----------------[ ------ [ ------ ]-*/
 TICK_show          (void)
@@ -1501,52 +1455,48 @@ TICK_show          (void)
    int         x           =    0;
    int         y           =    0;
    char        t           [LEN_LABEL] = "";
+   double      x_beg       =  0.0;
+   double      x_end       =  0.0;
+   double      x_left      =  0.0;
+   double      x_wide      =  0.0;
    /*---(upper bar)----------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   rc = yVIKEYS_prog_cur (&s_anchor, &my.p_cur, &my.p_scale, &my.p_inc, &my.p_leg);
+   rc = TICK_curr  ();
    /*> if (yVIKEYS_prog_redraw ())  rc = TICK_draw ();                                <*/
-   /*---(draw texture)-------------------*/
-   glBindTexture   (GL_TEXTURE_2D, s_tex [2]);
-   glBegin(GL_POLYGON); {
-      /*---(top beg)--------*/
-      glTexCoord2f (0.0                   , 10.0/12.0   );
-      glVertex3f   (0.0                   , 100.0    ,     0.00f);
-      /*---(top end)--------*/
-      glTexCoord2f (0.5                   , 10.0/12.0   );
-      glVertex3f   (my.p_wide             , 100.0    ,     0.00f);
-      /*---(bottom end)-----*/
-      glTexCoord2f (0.5                   ,  9.0/12.0   );
-      glVertex3f   (my.p_wide             , 0.0      ,     0.00f);
-      /*---(bottom beg)-----*/
-      glTexCoord2f (0.0                   ,  9.0/12.0   );
-      glVertex3f   (0.0                   , 0.0      ,     0.00f);
-      /*---(done)-----------*/
-   } glEnd();
-   glBindTexture   (GL_TEXTURE_2D, 0);
-   /*> s_texbeg1 = 0.0;                                                               <* 
-    *> s_texend1 = 1.0;                                                               <*/
-   /*> int a_top =   1.0;                                                             <* 
-    *> int a_bot =   0.0;                                                             <* 
-    *> int a_height = 200.0;                                                          <* 
-    *> my.p_wide    = 800.0;                                                          <* 
-    *> s_texpct1    = 100.0;                                                          <* 
-    *> glBegin(GL_POLYGON); {                                                         <* 
-    *>    /+---(top beg)--------+/                                                    <* 
-    *>    glTexCoord2f (s_texbeg1             , a_top );                              <* 
-    *>    glVertex3f   (0.0                   , a_height ,     0.00f);                <* 
-    *>    /+---(top end)--------+/                                                    <* 
-    *>    glTexCoord2f (s_texend1             , a_top );                              <* 
-    *>    glVertex3f   (my.p_wide * s_texpct1, a_height ,     0.00f);                 <* 
-    *>    /+---(bottom end)-----+/                                                    <* 
-    *>    glTexCoord2f (s_texend1             , a_bot );                              <* 
-    *>    glVertex3f   (my.p_wide * s_texpct1, 0.0      ,     0.00f);                 <* 
-    *>    /+---(bottom beg)-----+/                                                    <* 
-    *>    glTexCoord2f (s_texbeg1             , a_bot );                              <* 
-    *>    glVertex3f   (0.0                   , 0.0      ,     0.00f);                <* 
-    *>    /+---(done)-----------+/                                                    <* 
-    *> } glEnd();                                                                     <*/
-   /*---(firgure current)----------------*/
-   /*> rc = TICK_showtex     (my.p_tall,  s_textop,  s_texbot);                       <*/
+   /*---(first two panels displayed)-----*/
+   if (s_texbeg  < 0.00) {
+      x_beg  = 1.00 + s_texbeg;
+      x_end  = 1.00;
+      x_left = 0.00;
+      x_wide = ((-s_texbeg) / s_texpct) * my.p_wide;
+      TICK_show_panel (1, x_beg, x_end, x_left, x_wide);
+      x_beg  = 0.00;
+      x_end  = s_texend;
+      x_left = x_wide;
+      x_wide = (x_end / s_texpct) * my.p_wide;
+      TICK_show_panel (2, x_beg, x_end, x_left, x_wide);
+   }
+   /*---(second two panels displayed)----*/
+   else if (s_texend > 100.00) {
+      x_beg  = s_texbeg;
+      x_end  = 1.00;
+      x_left = 0.00;
+      x_wide = ((1.00 -s_texbeg) / s_texpct) * my.p_wide;
+      TICK_show_panel (2, x_beg, x_end, x_left, x_wide);
+      x_beg  = 0.00;
+      x_end  = 1.00 - s_texend;
+      x_left = x_wide;
+      x_wide = (x_end / s_texpct) * my.p_wide;
+      TICK_show_panel (3, x_beg, x_end, x_left, x_wide);
+   }
+   /*---(all on main panel)--------------*/
+   else {
+      x_beg  = s_texbeg;
+      x_end  = s_texend;
+      x_left = 0.00;
+      x_wide = (x_end / s_texpct) * my.p_wide;
+      TICK_show_panel (2, x_beg, x_end, x_left, x_wide);
+   }
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return rc;
@@ -1582,7 +1532,6 @@ TICK_debug              (void)
       printf ("   my.p_inc         = %10.3f\n", my.p_inc);
       printf ("   s_texavail       = %10.3f\n", s_texavail);
       printf ("   s_texpct         = %10.3f\n", s_texpct);
-      printf ("   s_texctr         = %10.3f\n", s_texctr);
       printf ("\n");
       printf ("   s_tsec           = %10.3f\n", s_tsec);
       /*> printf ("   s_tnsec          = %10.3f\n", s_tnsec);                         <*/
