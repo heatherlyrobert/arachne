@@ -75,6 +75,7 @@ PROG_init          (void)
    /*---(progress ticker)----------------*/
    DEBUG_TOPS   yLOG_note  ("defaul progress ticker values");
    my.p_len     =  0.0;
+   my.p_line    =  0.0;
    my.p_leg     =  0.0;
    my.p_cur     =  0.0;
    my.p_endsec  = -1.0;

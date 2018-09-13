@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9t"
-#define VER_TXT   "progress bar displays and anchors work"
+#define VER_NUM   "0.9u"
+#define VER_TXT   "basic play and horz/vert movements working"
 
 
 
@@ -240,7 +240,6 @@ struct cACCESSOR {
    double      p_cur;                       /* current timeline seconds       */
    double      p_scale;                     /* scale of progress bar          */
    double      p_len;                       /* length of script               */
-
    double      p_endsec;                    /* end second for timeline play   */
    char        p_quit;                      /* quit after initial playing     */
    int         p_line;                      /* progress line being viewed     */

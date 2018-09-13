@@ -817,7 +817,7 @@ TICK_servos        (int a_panel, int a_line)
    /*---(prepare)------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    x_leg     = s_line_info [a_line].leg;
-   x_base    = (s_tall - (s_yinc * x_leg)) - s_top;
+   x_base    = (s_tall - (s_yinc * a_line)) - s_top;
    x_unit    = s_xinc / my.p_inc;
    /*---(femur)--------------------------*/
    glPushMatrix(); {
@@ -1143,8 +1143,8 @@ TICK_globals       (void)
    yVIKEYS_view_coords   (YVIKEYS_PROGRESS, NULL, &my.p_wide, NULL, &my.p_tall);
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    y_inc       = 1.0 / 12.0;
-   s_textop    = 0.5 - ((my.p_leg + 0) * y_inc);
-   s_texbot    = 0.5 - ((my.p_leg + 1) * y_inc);
+   s_textop    = 0.5 - ((my.p_line + 0) * y_inc);
+   s_texbot    = 0.5 - ((my.p_line + 1) * y_inc);
    /*---(calc basics)--------------------*/
    s_texavail  = my.p_wide * 2.0;
    s_texpct    = s_texavail / s_wide;
@@ -1345,30 +1345,37 @@ TICK_anchor             (void)
    case '0' :
       s_texbeg  = s_curp - (s_texpct * 0.00);
       s_texend  = s_texbeg  + s_texpct;
+      s_cur     = 0.00 * my.p_wide;
       break;
    case 's' :
       s_texbeg  = s_curp - (s_texpct * 0.05);
       s_texend  = s_texbeg  + s_texpct;
+      s_cur     = 0.05 * my.p_wide;
       break;
    case 'h' :
       s_texbeg  = s_curp - (s_texpct * 0.28);
       s_texend  = s_texbeg  + s_texpct;
+      s_cur     = 0.28 * my.p_wide;
       break;
    case 'c' :
       s_texbeg  = s_curp - (s_texpct * 0.50);
       s_texend  = s_texbeg  + s_texpct;
+      s_cur     = 0.50 * my.p_wide;
       break;
    case 'l' :
       s_texbeg  = s_curp - (s_texpct * 0.72);
       s_texend  = s_texbeg  + s_texpct;
+      s_cur     = 0.72 * my.p_wide;
       break;
    case 'e' :
       s_texbeg  = s_curp - (s_texpct * 0.95);
       s_texend  = s_texbeg  + s_texpct;
+      s_cur     = 0.95 * my.p_wide;
       break;
    case '$' :
       s_texbeg  = s_curp - (s_texpct * 1.00);
       s_texend  = s_texbeg  + s_texpct;
+      s_cur     = 1.00 * my.p_wide;
       break;
    }
    return 0;
@@ -1383,25 +1390,26 @@ TICK_curr          (void)
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    /*---(get the current data)-----------*/
    rc  = yVIKEYS_view_coords   (YVIKEYS_PROGRESS, NULL, &my.p_wide, NULL, &my.p_tall);
-   rc  = yVIKEYS_prog_cur (&s_anchor, &my.p_cur, &my.p_scale, &my.p_inc, &my.p_leg);
-   /*---(check rotation)-----------------*/
-   if (my.p_cur <  s_beg [2])  TICK_rotate_earlier ();
-   if (my.p_cur >= s_beg [3])  TICK_rotate_later   ();
+   rc  = yVIKEYS_prog_cur (&s_anchor, &my.p_cur, &my.p_scale, &my.p_inc, &my.p_line);
+   my.p_leg = my.p_line - 2;
    /*---(secs per panel)-----------------*/
    DEBUG_GRAF   yLOG_double  ("p_cur"     , my.p_cur);
    DEBUG_GRAF   yLOG_double  ("p_scale"   , my.p_scale);
    s_len       = my.p_scale * UNIT2PANEL;
+   /*---(check rotation)-----------------*/
+   if (my.p_cur <  s_beg [2])  TICK_rotate_earlier ();
+   if (my.p_cur >= s_beg [3])  TICK_rotate_later   ();
    /*---(tex measures)-------------------*/
-   s_textop    = ((12.0 - my.p_leg    ) * s_yinc) / s_tall;
+   s_textop    = ((12.0 - my.p_line    ) * s_yinc) / s_tall;
    DEBUG_GRAF   yLOG_double  ("s_textop"  , s_textop);
-   s_texbot    = ((12.0 - my.p_leg - 1) * s_yinc) / s_tall;
+   s_texbot    = ((12.0 - my.p_line - 1) * s_yinc) / s_tall;
    DEBUG_GRAF   yLOG_double  ("s_texbot"  , s_texbot);
    s_texavail  = my.p_wide * 2.0;
    DEBUG_GRAF   yLOG_double  ("s_texavail", s_texavail);
    s_texpct    = s_texavail / s_wide;
    DEBUG_GRAF   yLOG_double  ("s_texpct"  , s_texpct);
    /*---(current horizontal pos)---------*/
-   s_curp      = (my.p_cur - s_beg [2]) / s_wide;
+   s_curp      = (my.p_cur - s_beg [2]) / s_len;
    DEBUG_GRAF   yLOG_double  ("s_curp"    , s_curp);
    TICK_anchor ();
    DEBUG_GRAF   yLOG_char    ("s_anchor"  , s_anchor);
@@ -1462,7 +1470,7 @@ TICK_show          (void)
    /*---(upper bar)----------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    rc = TICK_curr  ();
-   /*> if (yVIKEYS_prog_redraw ())  rc = TICK_draw ();                                <*/
+   if (yVIKEYS_prog_redraw ())  rc = TICK_draw_all ();
    /*---(first two panels displayed)-----*/
    if (s_texbeg  < 0.00) {
       x_beg  = 1.00 + s_texbeg;
@@ -1494,9 +1502,18 @@ TICK_show          (void)
       x_beg  = s_texbeg;
       x_end  = s_texend;
       x_left = 0.00;
-      x_wide = (x_end / s_texpct) * my.p_wide;
+      x_wide = ((x_end - x_beg) / s_texpct) * my.p_wide;
       TICK_show_panel (2, x_beg, x_end, x_left, x_wide);
    }
+   /*---(current)------------------------*/
+   glColor4f    (0.00f, 0.00f, 1.00f, 1.0f);
+   glLineWidth  ( 5.0f);
+   glPushMatrix(); {
+      glBegin         (GL_LINES); {
+         glVertex3f  (s_cur,  85.0,   239.0);
+         glVertex3f  (s_cur,   0.0,   239.0);
+      } glEnd   ();
+   } glPopMatrix();
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return rc;
@@ -1522,6 +1539,7 @@ TICK_debug              (void)
       printf ("   my.p_tall        = %6d\n"   , my.p_tall);
       printf ("   max legs         = %6d\n"   , 6);
       printf ("   height per leg   = %10.3f\n", s_tall / 6.0);
+      printf ("   my.p_line        = %10.3f\n", my.p_line);
       printf ("   my.p_leg         = %10.3f\n", my.p_leg);
       printf ("   s_textop         = %10.3f\n", s_textop);
       printf ("   s_texbot         = %10.3f\n", s_texbot);
