@@ -40,19 +40,19 @@ struct cLINES {
    int         leg;
 };
 tLINES      s_line_info  [MAX_LINES] = {
-   { "orientation"      , 'y' , 'o' , -1       },
-   { "center offset"    , 'y' , 'c' , -1       },
-   { "right rear"       , 'y' , 'l' , YKINE_RR },
-   { "right middle"     , 'y' , 'l' , YKINE_RM },
-   { "right front"      , 'y' , 'l' , YKINE_RF },
-   { "left front"       , 'y' , 'l' , YKINE_LF },
-   { "left middle"      , 'y' , 'l' , YKINE_LM },
-   { "left rear"        , 'y' , 'l' , YKINE_LR },
-   { "right posterior"  , '-' , 'l' , YKINE_RP },
-   { "right anterior"   , '-' , 'l' , YKINE_RA },
-   { "left anterior"    , '-' , 'l' , YKINE_LA },
-   { "left posterior"   , '-' , 'l' , YKINE_LP },
-   { "---"              , 'x' , '-' , -1       },
+   { "center/zero"      , 'y' , 'z' , YKINE_BODY },
+   { "orientation"      , 'y' , 'o' , YKINE_BODY },
+   { "right rear"       , 'y' , 'l' , YKINE_RR   },
+   { "right middle"     , 'y' , 'l' , YKINE_RM   },
+   { "right front"      , 'y' , 'l' , YKINE_RF   },
+   { "left front"       , 'y' , 'l' , YKINE_LF   },
+   { "left middle"      , 'y' , 'l' , YKINE_LM   },
+   { "left rear"        , 'y' , 'l' , YKINE_LR   },
+   { "right posterior"  , '-' , 'l' , YKINE_RP   },
+   { "right anterior"   , '-' , 'l' , YKINE_RA   },
+   { "left anterior"    , '-' , 'l' , YKINE_LA   },
+   { "left posterior"   , '-' , 'l' , YKINE_LP   },
+   { "---"              , 'x' , '-' , -1         },
 };
 
 /*---(single leg vars)----------------*/
@@ -803,7 +803,52 @@ TICK_servoline     (int a_panel, char a_type, float a_base, float a_bsec, float 
 }
 
 char         /*--> draw texture labels -------------------[ ------ [ ------ ]-*/
-TICK_servos        (int a_panel, int a_line)
+TICK_servos_pos    (int a_panel, int a_line)
+{
+   /*---(locals)-----------+-----+-----+-*/
+   char      rc            =    0;               /* generic return code       */
+   float     x_base        =  0.0;
+   float     x_unit        =    0;
+   int       x_leg         =    0;
+   double    x_bsec        =    0;
+   double    x_bx          =  0.0;
+   double    x_bz          =  0.0;
+   double    x_by          =  0.0;
+   double    x_esec        =    0;
+   double    x_ex          =  0.0;
+   double    x_ez          =  0.0;
+   double    x_ey          =  0.0;
+   /*---(prepare)------------------------*/
+   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
+   x_leg     = s_line_info [a_line].leg;
+   x_base    = (s_tall - (s_yinc * a_line)) - s_top;
+   x_unit    = s_xinc / my.p_inc;
+   /*---(all)----------------------------*/
+   glPushMatrix(); {
+      rc = yKINE_zero_first (&x_bsec, &x_bx, &x_bz, &x_by);
+      while (rc >= 0) {
+         /*---(read next)---*/
+         rc = yKINE_zero_next  (&x_esec, &x_ex, &x_ez, &x_ey);
+         if (rc <  0) break;
+         /*---(fix points)--*/
+         TICK_servoline     (a_panel, 'f', x_base, x_bsec, x_esec, x_bx, x_ex, x_unit);
+         TICK_servoline     (a_panel, 'p', x_base, x_bsec, x_esec, x_bz, x_ez, x_unit);
+         TICK_servoline     (a_panel, 't', x_base, x_bsec, x_esec, x_by, x_ey, x_unit);
+         /*---(save)--------*/
+         x_bsec = x_esec;
+         x_bx   = x_ex;
+         x_bz   = x_ez;
+         x_by   = x_ey;
+         /*---(done)--------*/
+      }
+   } glPopMatrix();
+   /*---(complete)-----------------------*/
+   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
+char         /*--> draw texture labels -------------------[ ------ [ ------ ]-*/
+TICK_servos_deg    (int a_panel, int a_line)
 {
    /*---(locals)-----------+-----+-----+-*/
    char      rc            =    0;               /* generic return code       */
@@ -1201,9 +1246,9 @@ TICK_draw_one      (int a_panel)
       DEBUG_GRAF   yLOG_value   ("ref"       , x_ref);
       DEBUG_GRAF   yLOG_char    ("content"   , s_line_info [x_ref].content);
       switch (s_line_info [x_ref].content) {
-      case 'o' : break;
-      case 'c' : break;
-      case 'l' : TICK_servos  (a_panel, x_ref);   break;
+      case 'z' : TICK_servos_pos  (a_panel, x_ref);   break;
+      case 'o' : 
+      case 'l' : TICK_servos_deg  (a_panel, x_ref);   break;
       }
    }
    if (s_snap == 'y') {
@@ -1453,16 +1498,7 @@ char         /*--> show texture on screen ----------------[ ------ [ ------ ]-*/
 TICK_show          (void)
 {
    /*---(locals)-------------------------*/
-   char        rc          = 0;
-   /*---(setup view)---------------------*/
-   /*> glViewport      (my.p_left, my.p_bott, my.p_wide, my.p_tall);                  <* 
-    *> glMatrixMode    (GL_PROJECTION);                                               <* 
-    *> glLoadIdentity  ();                                                            <* 
-    *> glOrtho         ( 0.0f, my.p_wide, 0.0 , my.p_tall,  -500.0,   500.0);         <* 
-    *> glMatrixMode    (GL_MODELVIEW);                                                <*/
-   int         x           =    0;
-   int         y           =    0;
-   char        t           [LEN_LABEL] = "";
+   char        rc          =    0;
    double      x_beg       =  0.0;
    double      x_end       =  0.0;
    double      x_left      =  0.0;

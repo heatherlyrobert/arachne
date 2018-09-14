@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9u"
-#define VER_TXT   "basic play and horz/vert movements working"
+#define VER_NUM   "0.9v"
+#define VER_TXT   "shows body orientation line and moves body appropriately"
 
 
 
