@@ -202,10 +202,10 @@ char    /* ---- : calculate the mass center ----------------------------------*/
 stat_masscenter    (void)
 {
    /*---(locals)-------*-----------------*/
-   double    sumx      = 0.0;          /* total mass * distance               */
-   double    sumz      = 0.0;          /* total mass * distance               */
-   double    sumy      = 0.0;          /* total mass * distance               */
-   double    mass      = 0.0;          /* total mass in the system            */
+   float     sumx      = 0.0;          /* total mass * distance               */
+   float     sumz      = 0.0;          /* total mass * distance               */
+   float     sumy      = 0.0;          /* total mass * distance               */
+   float     mass      = 0.0;          /* total mass in the system            */
    float     x         = 0.0;          /* x coordinate of mass center         */
    float     z         = 0.0;          /* z coordinate of mass center         */
    float     y         = 0.0;          /* y coordinate of mass center         */

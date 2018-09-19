@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "0.9v"
-#define VER_TXT   "shows body orientation line and moves body appropriately"
+#define VER_NUM   "1.0a"
+#define VER_TXT   "fixed panel drawing transitions/rotates"
 
 
 
@@ -237,10 +237,10 @@ struct cACCESSOR {
    char        f_name      [LEN_STR];       /* full file name                 */
    /*---(progress pane)---*/
    char        p_pos;                       /* position of current bar (shcle)*/
-   double      p_cur;                       /* current timeline seconds       */
-   double      p_scale;                     /* scale of progress bar          */
-   double      p_len;                       /* length of script               */
-   double      p_endsec;                    /* end second for timeline play   */
+   float       p_cur;                       /* current timeline seconds       */
+   float       p_scale;                     /* scale of progress bar          */
+   float       p_len;                       /* length of script               */
+   float       p_endsec;                    /* end second for timeline play   */
    char        p_quit;                      /* quit after initial playing     */
    int         p_line;                      /* progress line being viewed     */
    int         p_leg;                       /* leg currently viewed           */
@@ -254,8 +254,8 @@ struct cACCESSOR {
    /*> uint        p_fbo;                       /+ framebuffer                    +/   <*/
    /*> uint        p_depth;                     /+ depth buffer                   +/   <*/
    /*---(progress working)*/
-   double      p_inc;                       /* increment for h,l              */
-   double      p_multi;                     /* label multiple                 */
+   float       p_inc;                       /* increment for h,l              */
+   float       p_multi;                     /* label multiple                 */
    char        p_debug; 
    /*---(command line)----*/
    char        c_command   [LEN_STR];       /* current text in command mode   */
@@ -300,8 +300,8 @@ extern    float     arg_y;
 
 /*===[[ CONSTANTS and ENUMS ]]============================*/
 extern    int       LEGS;
-extern    const     double    DEG2RAD;
-extern    const     double    RAD2DEG;
+extern    const     float     DEG2RAD;
+extern    const     float     RAD2DEG;
 
 
 
@@ -355,74 +355,27 @@ extern    tSEG      ik [MAX_LEGS] [MAX_SEGS];    /* inverse kinematics        */
 /*===[[ REFERENCE TEXT ]]=================================*/
 extern char    legs_name [YKINE_MAX_LEGS][LEN_LABEL];
 extern char    legs_long [YKINE_MAX_LEGS][LEN_LABEL];
-extern double  legs_deg  [YKINE_MAX_LEGS];
+extern float   legs_deg  [YKINE_MAX_LEGS];
 
 extern char    segs_name [YKINE_MAX_SEGS][LEN_LABEL];
 extern char    segs_long [YKINE_MAX_SEGS][LEN_LABEL];
 
-extern double  segs_len  [YKINE_MAX_SEGS];
-extern double  segs_act  [YKINE_MAX_SEGS];
-extern double  segs_lnk  [YKINE_MAX_SEGS];
-extern double  segs_max  [YKINE_MAX_SEGS];
-extern double  segs_min  [YKINE_MAX_SEGS];
+extern float   segs_len  [YKINE_MAX_SEGS];
+extern float   segs_act  [YKINE_MAX_SEGS];
+extern float   segs_lnk  [YKINE_MAX_SEGS];
+extern float   segs_max  [YKINE_MAX_SEGS];
+extern float   segs_min  [YKINE_MAX_SEGS];
 
 
 typedef  struct cLOCAUDIT  tLOCAUDIT;
 struct cLOCAUDIT {
    tMOVE      *curr;
-   double      sec;
-   double      xpos;
-   double      zpos;
-   double      ypos;
+   float       sec;
+   float       xpos;
+   float       zpos;
+   float       ypos;
 };
 
-/*> struct cSERVO {                                                                   <* 
- *>    /+---(overall)------------------------+/                                       <* 
- *>    char        label       [20];                                                  <* 
- *>    int         count;                                                             <* 
- *>    /+---(current)------------------------+/                                       <* 
- *>    tMOVE      *curr;                                                              <* 
- *>    double      deg;                                                               <* 
- *>    double      xexp;                                                              <* 
- *>    double      zexp;                                                              <* 
- *>    double      yexp;                                                              <* 
- *>    char        segno_flag;                                                        <* 
- *>    tMOVE      *segno;                                                             <* 
- *>    char        coda_flag;                                                         <* 
- *>    tMOVE      *coda;                                                              <* 
- *>    char        scrp;                                                              <* 
- *>    /+---(list)---------------------------+/                                       <* 
- *>    tMOVE      *head;                                                              <* 
- *>    tMOVE      *tail;                                                              <* 
- *>    /+---(done)---------------------------+/                                       <* 
- *> };                                                                                <*/
-/*> extern      tSERVO      g_servos    [MAX_SERVO];                                  <* 
- *> extern      int         g_nservo;                                                 <*/
-
-
-
-/*> struct      cMOVE {                                                               <* 
- *>    int         seq;                                                               <* 
- *>    char        type;                                                              <* 
- *>    tSERVO     *servo;                                                             <* 
- *>    char        label       [LEN_LABEL];                                           <* 
- *>    int         line;                                                              <* 
- *>    double      sec_dur;                                                           <* 
- *>    double      deg_beg;                                                           <* 
- *>    double      deg_end;                                                           <* 
- *>    double      sec_beg;                                                           <* 
- *>    double      sec_end;                                                           <* 
- *>    double      x_pos;                                                             <* 
- *>    double      y_pos;                                                             <* 
- *>    double      z_pos;                                                             <* 
- *>    tMOVE      *m_prev;                                                            <* 
- *>    tMOVE      *m_next;                                                            <* 
- *>    tMOVE      *s_prev;                                                            <* 
- *>    tMOVE      *s_next;                                                            <* 
- *> };                                                                                <*/
-/*> extern      tMOVE      *m_head;                                                   <* 
- *> extern      tMOVE      *m_tail;                                                   <* 
- *> extern      int         m_count;                                                  <*/
 
 
 /*===[[ DISPLAY LISTS ]]==================================*/
@@ -499,7 +452,7 @@ extern    float     my_calf;
 extern    int       my_curr;
 
 extern    float     my_len;
-extern    double    my_ppos;
+extern    float     my_ppos;
 extern    float     my_run;
 extern    float     my_inc;
 extern    float     my_deg;
@@ -536,7 +489,7 @@ char        PROG_testloud      (void);
 char        MOVE_create        (char a_type, tSERVO *a_servo, char *a_label, int a_line, float a_deg, float a_sec);
 char        MOVE_repeat        (tSERVO *a_servo, int a_count, int a_times);
 char        MOVE_dalsegno      (tSERVO *a_servo, int a_times);
-char        MOVE_curleg        (double a_time, int a_leg);
+char        MOVE_curleg        (float a_time, int a_leg);
 
 
 /*---(mode keys)------------*/
@@ -556,13 +509,10 @@ int        glx_init          (void);
 
 char      TICK_init               (void);
 char      TICK_draw               (void);
-char      TICK_draw_one           (int a_panel);
 char      TICK_draw_all           (void);
 char      TICK_show               (void);
 char      TICK_legend             (void);
 char      TICK_snap               (void);
-/*> char      DRAW_command       (void);                                              <*/
-/*> char      DRAW_title         (void);                                              <*/
 
 char      DRAW_init               (void);
 char      DRAW_begin         (void);      /* prepare drawing environment      */
@@ -613,16 +563,17 @@ void       leg_init          (tSEG a_leg);
 
 
 
-char      KINE_begin         (void);
-char      KINE_end           (void);
-char      KINE_write         (int   a_leg);
-char      KINE_compare       (int   a_seg);
-char      KINE_unitcond      (void);
-
-char      kine_center        (double a_x, double a_z);
-char      kine_height        (double a_y);
-char      kine_pivot         (double a_x, double a_z);
-char      kine_attitude      (double, double, double);
+/*---1----- -----2----- -----3----- -----4-----  ---------comments------------*/
+char        KINE_begin              (void);
+char        KINE_end                (void);
+char        KINE_write              (int   a_leg);
+char        KINE_compare            (int   a_seg);
+char        KINE_unitcond           (void);
+/*---1----- -----2----- -----3----- -----4-----  ---------comments------------*/
+char        kine_center             (float a_x, float a_z);
+char        kine_height             (float a_y);
+char        kine_pivot              (float a_x, float a_z);
+char        kine_attitude           (float, float, float);
 
 
 

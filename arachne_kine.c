@@ -7,20 +7,20 @@
 /*---[[ CONSTANTS ]]----------------------------------------------------------*/
 char    legs_name [YKINE_MAX_LEGS][LEN_LABEL];
 char    legs_long [YKINE_MAX_LEGS][LEN_LABEL];
-double  legs_deg  [YKINE_MAX_LEGS];
+float   legs_deg  [YKINE_MAX_LEGS];
 
 char    segs_name [YKINE_MAX_SEGS][LEN_LABEL];
 char    segs_long [YKINE_MAX_SEGS][LEN_LABEL];
-double  segs_len  [YKINE_MAX_SEGS];
-double  segs_max  [YKINE_MAX_SEGS];
-double  segs_min  [YKINE_MAX_SEGS];
+float   segs_len  [YKINE_MAX_SEGS];
+float   segs_max  [YKINE_MAX_SEGS];
+float   segs_min  [YKINE_MAX_SEGS];
 
-double  segs_lnk  [YKINE_MAX_SEGS]      = {   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0  };
-double  segs_act  [YKINE_MAX_SEGS]      = {   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0  };
+float   segs_lnk  [YKINE_MAX_SEGS]      = {   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0  };
+float   segs_act  [YKINE_MAX_SEGS]      = {   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0 ,   0.0  };
 
 
-const    double   DEG2RAD   = M_PI / 180.0;
-const    double   RAD2DEG   = 180.0 / M_PI;
+const    float    DEG2RAD   = M_PI / 180.0;
+const    float    RAD2DEG   = 180.0 / M_PI;
 
 
 tSEG      fk [MAX_LEGS] [MAX_SEGS];    /* opengl kinematics check   */
@@ -43,7 +43,7 @@ static   FILE  *f_move  = NULL;
 
 static  int   s_error [YKINE_MAX_SEGS][YKINE_MAX_METH][5];
 
-static double    s_secs [YKINE_MAX_LEGS];
+static float     s_secs [YKINE_MAX_LEGS];
 
 
 /*====================------------------------------------====================*/
@@ -86,7 +86,7 @@ char
 KINE_begin         (void)
 {
    yKINE_init      (0);
-   yKINE_center    (0.0, 0.0, 0.0);
+   /*> yKINE_center    (0.0, 0.0, 0.0);                                               <*/
    KINE_load       ();
    if (my.p_dump   != '-') {
       f_dump = fopen ("arachne.dump", "w");
@@ -162,14 +162,14 @@ KINE_end           (void)
 char
 KINE_compare       (int a_seg)
 {
-   /*> double      x_len       = 0.0;                                                       <* 
-    *> double      x_xpos      = 0.0;                                                       <* 
-    *> double      x_zpos      = 0.0;                                                       <* 
-    *> double      x_ypos      = 0.0;                                                       <* 
-    *> double      x_coxa      = 0.0;                                                       <* 
-    *> double      x_femu      = 0.0;                                                       <* 
-    *> double      x_pate      = 0.0;                                                       <* 
-    *> double      x_tibi      = 0.0;                                                       <* 
+   /*> float       x_len       = 0.0;                                                       <* 
+    *> float       x_xpos      = 0.0;                                                       <* 
+    *> float       x_zpos      = 0.0;                                                       <* 
+    *> float       x_ypos      = 0.0;                                                       <* 
+    *> float       x_coxa      = 0.0;                                                       <* 
+    *> float       x_femu      = 0.0;                                                       <* 
+    *> float       x_pate      = 0.0;                                                       <* 
+    *> float       x_tibi      = 0.0;                                                       <* 
     *> printf ("--------  --coxa--  --femu--  --pate--  --tibi--\n");                       <* 
     *> yKINE_angles     (my.p_leg, &x_coxa, &x_femu, &x_pate, &x_tibi);                     <* 
     *> printf ("angles    %8.2f  %8.2f  %8.2f  %8.2f\n", x_coxa, x_femu, x_pate, x_tibi);   <* 
@@ -188,11 +188,11 @@ char
 KINE_line          (int a_line, char a_meth, int a_leg)
 {
    char        x_type      [LEN_LABEL];
-   double      x_deg       = 0.0;
-   double      x_len       = 0.0;
-   double      x_xpos      = 0.0;
-   double      x_zpos      = 0.0;
-   double      x_ypos      = 0.0;
+   float       x_deg       = 0.0;
+   float       x_len       = 0.0;
+   float       x_xpos      = 0.0;
+   float       x_zpos      = 0.0;
+   float       x_ypos      = 0.0;
    switch (a_meth) {
    case  YKINE_GK :
       fprintf (f_dump, "%-8d  %8.4f  %d/%s  ", a_line,  my.p_cur, a_leg, legs_name [a_leg]);
@@ -237,13 +237,13 @@ KINE_line          (int a_line, char a_meth, int a_leg)
 }
 
 char
-KINE_diffmsg       (char *a_msg, int a_seg, int a_meth, double a_deg, double a_len, double a_xpos, double a_zpos, double a_ypos)
+KINE_diffmsg       (char *a_msg, int a_seg, int a_meth, float  a_deg, float  a_len, float  a_xpos, float  a_zpos, float  a_ypos)
 {
    /*---(locals)-------------------------*/
    char        x_meth      [LEN_LABEL];
    char        x_msg       [LEN_LABEL];
    char        x_seg       [LEN_LABEL];
-   double      x_forgive   = 0.0;
+   float       x_forgive   = 0.0;
    /*---(prepare)------------------------*/
    strlcpy (x_msg, "----", LEN_LABEL);
    switch (a_seg) {
@@ -317,11 +317,11 @@ char
 KINE_diff          (int a_line, char a_meth, int a_leg)
 {
    char        x_msg       [LEN_LABEL];
-   double      x_deg       = 0.0;
-   double      x_len       = 0.0;
-   double      x_xpos      = 0.0;
-   double      x_zpos      = 0.0;
-   double      x_ypos      = 0.0;
+   float       x_deg       = 0.0;
+   float       x_len       = 0.0;
+   float       x_xpos      = 0.0;
+   float       x_zpos      = 0.0;
+   float       x_ypos      = 0.0;
    int         rc          =   0;
    fprintf (f_dump, "                          ");
    /*---(coxa)---------------------------*/
@@ -391,13 +391,13 @@ KINE_unitseg       (char *a_leg, int a_seg, int a_meth)
     *
     */
    int         i           = 0.0;   /* iterator   */
-   double      l           = 0.0;   /* length     */
-   double      d           = 0.0;   /* degrees    */
-   double      x           = 0.0;   /* x pos      */
-   double      z           = 0.0;   /* z pos      */
-   double      y           = 0.0;   /* y pos      */
-   double      v           = 0.0;   /* vert rads  */
-   double      h           = 0.0;   /* horz rads  */
+   float       l           = 0.0;   /* length     */
+   float       d           = 0.0;   /* degrees    */
+   float       x           = 0.0;   /* x pos      */
+   float       z           = 0.0;   /* z pos      */
+   float       y           = 0.0;   /* y pos      */
+   float       v           = 0.0;   /* vert rads  */
+   float       h           = 0.0;   /* horz rads  */
    char        x_seg       [LEN_LABEL];
    char        x_segupper  [LEN_LABEL];
    char        x_full      [LEN_LABEL];
@@ -565,7 +565,7 @@ KINE_unitcond      (void)
 static void      o___BODY____________________o (void) {;}
 
 char       /*----: change the center of gravity ------------------------------*/
-kine_center        (double a_x, double a_z)
+kine_center        (float  a_x, float  a_z)
 {
    center.bx     = a_x;
    center.bz     = a_z;
@@ -573,14 +573,14 @@ kine_center        (double a_x, double a_z)
 }
 
 char       /*----: change the center of gravity ------------------------------*/
-kine_height        (double a_y)
+kine_height        (float  a_y)
 {
    center.by     = a_y;
    return 0;
 }
 
 char       /*----: change the pivot (center of movement) --------------------*/
-kine_pivot         (double a_x, double a_z)
+kine_pivot         (float  a_x, float  a_z)
 {
    /*---(save position)-----------------------------------*/
    if (a_x >  100.0)  a_x =  100.0;
@@ -594,7 +594,7 @@ kine_pivot         (double a_x, double a_z)
 }
 
 char       /*----: change the body angles ------------------------------------*/
-kine_attitude      (double a_roll, double a_pitch, double a_yaw)
+kine_attitude      (float  a_roll, float  a_pitch, float  a_yaw)
 {
    /*---(fix pitch angle)---------------------------------*/
    /*--> properly only between -90 and 90 degrees         */

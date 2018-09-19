@@ -7,16 +7,7 @@ int
 main (int argc, char *argv[])
 {
    /*---(locals)-----------+-----------+-*/
-   int         updates     = 0;
    char        rc          = 0;
-   char        x_savemode  = '-';
-   tTSPEC      timer;
-   XKeyEvent  *key_event;
-   char        the_key[5];
-   int         the_bytes;
-   char        is_moved = 'n';
-   char        x_draw   = '-';
-   double      x_save   = 0.0;
    /*---(initialize)---------------------*/
    if (rc >= 0)  rc = yURG_logger  (argc, argv);
    if (rc >= 0)  rc = PROG_init    ();
@@ -32,8 +23,8 @@ main (int argc, char *argv[])
    yKINE_script    (&my.p_len);
    yKINE_moves_rpt ();
    TICK_init       ();
-   yVIKEYS_prog_script (0.0, my.p_len, 12);
    printf ("script length %8.3lf\n", my.p_len);
+   yVIKEYS_prog_script (0.0, my.p_len, 12);
    /*> if (my.report == RPTG_MOVES)  yKINE_moves_rpt ();                              <*/
    /*> TICK_draw     ();                                                              <*/
    /*---(main loop)----------------------*/

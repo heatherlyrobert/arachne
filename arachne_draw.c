@@ -43,7 +43,7 @@ float     my_calf = -20.0;
 int       my_curr = 5;
 
 float     my_len  = MAX_POS - 1;
-double    my_ppos = 0;
+float     my_ppos = 0;
 float     my_run  = 0;
 float     my_inc  = 1;
 float     my_deg  = 0;
@@ -227,22 +227,22 @@ DRAW_alternate     (void)
 static void      o___LEG_GK__________________o (void) {;}
 
 static double  s_loc      [16];
-static double  s_xpos_p   = 0.0;
-static double  s_zpos_p   = 0.0;
-static double  s_ypos_p   = 0.0;
-static double  s_xpos     = 0.0;
-static double  s_zpos     = 0.0;
-static double  s_ypos     = 0.0;
-static double  s_xz       = 0.0;
-static double  s_len      = 0.0;
+static float   s_xpos_p   = 0.0;
+static float   s_zpos_p   = 0.0;
+static float   s_ypos_p   = 0.0;
+static float   s_xpos     = 0.0;
+static float   s_zpos     = 0.0;
+static float   s_ypos     = 0.0;
+static float   s_xz       = 0.0;
+static float   s_len      = 0.0;
 
 char       /*----: determine the current opengl position ---------------------*/
 draw_leg_label          (int a_leg, int a_seg, float a_deg)
 {
    /*---(locals)-------------------------*/
    char      x_msg [100];
-   double    d, l;
-   double    x, y, z;
+   float     d, l;
+   float     x, y, z;
    /*---(current)------------------------*/
    yKINE_endpoint (a_leg, a_seg, YKINE_GK, &d, &l, &x, &z, &y);
    /*---(draw)---------------------------*/
@@ -473,7 +473,7 @@ DRAW_wire_locate        (int a_leg, int a_seg, float a_deg)
 {
    /*---(locals)-------------------------*/
    char      x_msg [100];
-   double    x, y, z;
+   float     x, y, z;
    /*---(current)------------------------*/
    glGetDoublev(GL_MODELVIEW_MATRIX,  s_loc);
    s_xpos     = s_loc [12];
@@ -537,24 +537,24 @@ DRAW_wire_body     (void)
    /*---(locals)-----------+-----+-----+-*/
    char        rc          = 0;
    int         x_leg       =    0;
-   double      x_coxa      =  0.0;
-   double      x_femu      =  0.0;
-   double      x_pate      =  0.0;
-   double      x_tibi      =  0.0;
+   float       x_coxa      =  0.0;
+   float       x_femu      =  0.0;
+   float       x_pate      =  0.0;
+   float       x_tibi      =  0.0;
    /*---(prepare)------------------------*/
    center.by = 130.0;
    /*---(body)---------------------------*/
    glPushMatrix (); {
-      yKINE_move_curall ( my.p_cur);
+      yKINE_exact_all ( my.p_cur);
       for (x_leg = YKINE_RR; x_leg <= YKINE_LR; ++x_leg) {
          glPushMatrix (); {
             /*---(prepare)---------------*/
             glRotatef  ( legs_deg [x_leg], 0.0f, 1.0f, 0.0f);
             /*---(check servos)----------*/
             x_coxa  = legs_deg [x_leg];
-            rc = yKINE_servo_deg  (x_leg, YKINE_FEMU, &x_femu);
-            rc = yKINE_servo_deg  (x_leg, YKINE_PATE, &x_pate);
-            rc = yKINE_servo_deg  (x_leg, YKINE_TIBI, &x_tibi);
+            rc = yKINE_exact  (x_leg, YKINE_FEMU, &x_femu, NULL, NULL, NULL);
+            rc = yKINE_exact  (x_leg, YKINE_PATE, &x_pate, NULL, NULL, NULL);
+            rc = yKINE_exact  (x_leg, YKINE_TIBI, &x_tibi, NULL, NULL, NULL);
             /*---(draw)------------------*/
             DRAW_wire_leg  (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
             /*---(done)------------------*/
@@ -571,13 +571,13 @@ DRAW_spider        (void)
    /*---(locals)-----------+-----------+-*/
    int         i           = 0;
    int         x_leg       = 0;
-   double      x_coxa      = 0.0;
-   double      x_femu      = 0.0;
-   double      x_pate      = 0.0;
-   double      x_tibi      = 0.0;
+   float       x_coxa      = 0.0;
+   float       x_femu      = 0.0;
+   float       x_pate      = 0.0;
+   float       x_tibi      = 0.0;
    char        x_debug     = '-';
    char        rc          = 0;
-   double      x, y, z;
+   float       x, y, z;
 
    DRAW_wire_body  ();
    DRAW_reset      ();
@@ -593,14 +593,15 @@ DRAW_spider        (void)
    center.by = 130.0;
    glPushMatrix (); {
       yGOD_view ();
-      glTranslatef    (     0.0 , - 80.0,      0.0 );
+      glTranslatef    (     0.0 , - 85.0,      0.0 );
+      glTranslatef    (     0.0 , - 50.0,      0.0 );
       glCallList      (dl_ground);
-      yKINE_move_curall  ( my.p_cur);
+      yKINE_exact_all  ( my.p_cur);
       yKINE_zero_pos     (&x, &z, &y);
-      glTranslatef    (       x , y + 80.0,       z  );
-      rc = yKINE_servo_deg  (YKINE_BODY, YKINE_YAW  , &x_femu);
-      rc = yKINE_servo_deg  (YKINE_BODY, YKINE_PITCH, &x_pate);
-      rc = yKINE_servo_deg  (YKINE_BODY, YKINE_ROLL , &x_tibi);
+      glTranslatef    (       x , y + 85.0,       z  );
+      rc = yKINE_exact  (YKINE_BODY, YKINE_YAW  , &x_femu, NULL, NULL, NULL);
+      rc = yKINE_exact  (YKINE_BODY, YKINE_PITCH, &x_pate, NULL, NULL, NULL);
+      rc = yKINE_exact  (YKINE_BODY, YKINE_ROLL , &x_tibi, NULL, NULL, NULL);
       glRotatef (x_femu, 0.0f, 1.0f, 0.0f);
       glRotatef (x_pate, 1.0f, 0.0f, 0.0f);
       glRotatef (x_tibi, 0.0f, 0.0f, 1.0f);
@@ -615,9 +616,9 @@ DRAW_spider        (void)
             /*---(default values)--------*/
             x_coxa  = legs_deg [x_leg];
             /*---(check servos)----------*/
-            rc = yKINE_servo_deg  (x_leg, YKINE_FEMU, &x_femu);
-            rc = yKINE_servo_deg  (x_leg, YKINE_PATE, &x_pate);
-            rc = yKINE_servo_deg  (x_leg, YKINE_TIBI, &x_tibi);
+            rc = yKINE_exact  (x_leg, YKINE_FEMU, &x_femu, NULL, NULL, NULL);
+            rc = yKINE_exact  (x_leg, YKINE_PATE, &x_pate, NULL, NULL, NULL);
+            rc = yKINE_exact  (x_leg, YKINE_TIBI, &x_tibi, NULL, NULL, NULL);
             /*---(draw)------------------*/
             draw_leg   (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
             /*---(calc in yKINE)---------*/
@@ -848,16 +849,16 @@ draw_setup ()
  *>    int         i           = 0;                                                                                                <* 
  *>    int         x_leg       = 0;                                                                                                <* 
  *>    int         x_servo     = 0;                                                                                                <* 
- *>    double      x_coxa      = 0.0;                                                                                              <* 
- *>    double      x_femu      = 0.0;                                                                                              <* 
- *>    double      x_pate      = 0.0;                                                                                              <* 
- *>    double      x_tibi      = 0.0;                                                                                              <* 
- *>    double      x_xpos1     = 0.0;                                                                                              <* 
- *>    double      x_zpos1     = 0.0;                                                                                              <* 
- *>    double      x_ypos1     = 0.0;                                                                                              <* 
- *>    double      x_xpos2     = 0.0;                                                                                              <* 
- *>    double      x_zpos2     = 0.0;                                                                                              <* 
- *>    double      x_ypos2     = 0.0;                                                                                              <* 
+ *>    float       x_coxa      = 0.0;                                                                                              <* 
+ *>    float       x_femu      = 0.0;                                                                                              <* 
+ *>    float       x_pate      = 0.0;                                                                                              <* 
+ *>    float       x_tibi      = 0.0;                                                                                              <* 
+ *>    float       x_xpos1     = 0.0;                                                                                              <* 
+ *>    float       x_zpos1     = 0.0;                                                                                              <* 
+ *>    float       x_ypos1     = 0.0;                                                                                              <* 
+ *>    float       x_xpos2     = 0.0;                                                                                              <* 
+ *>    float       x_zpos2     = 0.0;                                                                                              <* 
+ *>    float       x_ypos2     = 0.0;                                                                                              <* 
  *>    char        x_debug     = '-';                                                                                              <* 
  *>    char        rc          = 0;                                                                                                <* 
  *>    /+> draw_axis();                                                                   <+/                                      <* 
@@ -872,7 +873,7 @@ draw_setup ()
  *>       /+> draw_arrow      ();                                                         <+/                                      <* 
  *>       /+> if (flag_annotate == 'y')  draw__center ();                                 <+/                                      <* 
  *>       /+> glCallList      (dl_body);                                                  <+/                                      <* 
- *>       yKINE_move_curall ( my.p_cur);                                                                                           <* 
+ *>       yKINE_exact_all ( my.p_cur);                                                                                           <* 
  *>       /+> for (x_leg = 0; x_leg < 6; ++x_leg) {                                       <+/                                      <* 
  *>       for (x_leg = 3; x_leg < 4; ++x_leg) {                                                                                    <* 
  *>          glPushMatrix (); {                                                                                                    <* 
