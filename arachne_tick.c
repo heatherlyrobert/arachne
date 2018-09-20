@@ -22,6 +22,8 @@ struct      cPOS {
    float       o_xpos;
    float       o_zpos;
    float       o_ypos;
+   /*---(planned success)----------------*/
+   char        o_rc;
    /*---(revised endpoint)---------------*/
    float       r_xpos;
    float       r_zpos;
@@ -30,6 +32,8 @@ struct      cPOS {
    float       r_femu;
    float       r_pate;
    float       r_tibi;
+   /*---(revised success)----------------*/
+   char        r_rc;
    /*---(done)---------------------------*/
 };
 
@@ -53,6 +57,8 @@ static      tPANEL     *p_back      = NULL;
 static      tPANEL     *p_pref      = NULL;
 static      tPANEL     *p_curr      = NULL;
 static      tPANEL     *p_suff      = NULL;
+static      tPANEL     *p_draw      = NULL;      /* panel with current pos    */
+static      int         s_draw      =    0;      /* draw position in panel    */
 
 /*---1----- -----2----- -----3----- -----4-----  ---------comments------------*/
 /*---(horizontal)---------------------*/
@@ -735,6 +741,9 @@ TICK_init          (void)
    p_suff->seq   =    3;
    p_suff->beg   =  0.0 + s_len;
    p_suff->sect  =    1;
+   /*---(drawing position)---------------*/
+   p_draw        = p_curr;
+   s_draw        =    0;
    /*---(working)------------------------*/
    DEBUG_GRAF   yLOG_note    ("initializing working variables");
    /*---(update colors)------------------*/
@@ -939,6 +948,7 @@ TICK_servos_deg    (tPANEL *a_panel, int a_line, float a_scale)
    float     x_bdeg        =    0;
    float     x_esec        =    0;
    float     x_edeg        =    0;
+   int       i             =    0;
    /*---(prepare)------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    x_leg     = s_line_info [a_line].leg;
@@ -946,53 +956,64 @@ TICK_servos_deg    (tPANEL *a_panel, int a_line, float a_scale)
    x_unit    = s_xinc / my.p_inc;
    /*---(femur)--------------------------*/
    glPushMatrix(); {
-      rc = yKINE_move_first (x_leg, YKINE_FEMU, &x_bsec, &x_bdeg);
-      x_bdeg *= a_scale;
-      while (rc >= 0) {
-         /*---(read next)---*/
-         rc = yKINE_move_next  (&x_esec, &x_edeg);
-         if (rc <  0) break;
-         /*---(fix points)--*/
-         x_edeg *= a_scale;
-         TICK_servoline     (a_panel, 'f', x_base, x_bsec, x_esec, x_bdeg, x_edeg, x_unit);
-         /*---(save)--------*/
-         x_bsec = x_esec;
-         x_bdeg = x_edeg;
-         /*---(done)--------*/
+      glColor4f    (0.70f, 0.00f, 0.00f, 1.0f);
+      glLineWidth  (15.0f);
+      for (i = 0; i < 399; ++i) {
+         glBegin(GL_LINES); {
+            glVertex3f  ((i + 0) * 10, x_base + (a_panel->detail [a_line][i + 0].o_femu * a_scale - 3), 230);
+            glVertex3f  ((i + 1) * 10, x_base + (a_panel->detail [a_line][i + 1].o_femu * a_scale - 3), 230);
+            glVertex3f  ((i + 0) * 10, x_base + (a_panel->detail [a_line][i + 0].o_femu * a_scale + 3), 230);
+            glVertex3f  ((i + 1) * 10, x_base + (a_panel->detail [a_line][i + 1].o_femu * a_scale + 3), 230);
+         } glEnd   ();
+      }
+      /*> glColor4f    (0.40f, 0.00f, 0.00f, 1.0f);                                   <*/
+      glPointSize  ( 5.0f);
+      if (a_line >= 2)  for (i = 0; i < 400; ++i) {
+         if (a_panel->detail [a_line][i].r_rc < 0)  continue;
+         glBegin(GL_POINTS); {
+            glVertex3f  ((i + 0) * 10, x_base + (a_panel->detail [a_line][i + 0].r_femu * a_scale), 330);
+         } glEnd   ();
       }
    } glPopMatrix();
    /*---(patella)------------------------*/
    glPushMatrix(); {
-      rc = yKINE_move_first (x_leg, YKINE_PATE, &x_bsec, &x_bdeg);
-      x_bdeg *= a_scale;
-      while (rc >= 0) {
-         /*---(read next)---*/
-         rc = yKINE_move_next  (&x_esec, &x_edeg);
-         if (rc <  0) break;
-         /*---(fix points)--*/
-         x_edeg *= a_scale;
-         TICK_servoline     (a_panel, 'p', x_base, x_bsec, x_esec, x_bdeg, x_edeg, x_unit);
-         /*---(save)--------*/
-         x_bsec = x_esec;
-         x_bdeg = x_edeg;
-         /*---(done)--------*/
+      glColor4f    (0.20f, 0.20f, 0.80f, 1.0f);
+      glLineWidth  (10.0f);
+      for (i = 0; i < 399; ++i) {
+         glBegin(GL_LINES); {
+            glVertex3f  ((i + 0) * 10, x_base + (a_panel->detail [a_line][i + 0].o_pate * a_scale - 1), 240);
+            glVertex3f  ((i + 1) * 10, x_base + (a_panel->detail [a_line][i + 1].o_pate * a_scale - 1), 240);
+            glVertex3f  ((i + 0) * 10, x_base + (a_panel->detail [a_line][i + 0].o_pate * a_scale + 1), 240);
+            glVertex3f  ((i + 1) * 10, x_base + (a_panel->detail [a_line][i + 1].o_pate * a_scale + 1), 240);
+         } glEnd   ();
+      }
+      /*> glColor4f    (0.10f, 0.10f, 0.50f, 1.0f);                                   <*/
+      glPointSize  ( 5.0f);
+      if (a_line >= 2)  for (i = 0; i < 400; ++i) {
+         if (a_panel->detail [a_line][i].r_rc < 0)  continue;
+         glBegin(GL_POINTS); {
+            glVertex3f  (i * 10      , x_base + (a_panel->detail [a_line][i + 0].r_pate * a_scale), 340);
+         } glEnd   ();
       }
    } glPopMatrix();
    /*---(tibia)--------------------------*/
    glPushMatrix(); {
-      rc = yKINE_move_first (x_leg, YKINE_TIBI, &x_bsec, &x_bdeg);
-      x_bdeg *= a_scale;
-      while (rc >= 0) {
-         /*---(read next)---*/
-         rc = yKINE_move_next  (&x_esec, &x_edeg);
-         if (rc <  0) break;
-         /*---(fix points)--*/
-         x_edeg *= a_scale;
-         TICK_servoline     (a_panel, 't', x_base, x_bsec, x_esec, x_bdeg, x_edeg, x_unit);
-         /*---(save)--------*/
-         x_bsec = x_esec;
-         x_bdeg = x_edeg;
-         /*---(done)--------*/
+      glColor4f    (0.60f, 0.60f, 0.00f, 1.0f);
+      glLineWidth  ( 5.0f);
+      for (i = 0; i < 399; ++i) {
+         glBegin(GL_LINES); {
+            glVertex3f  ((i + 0) * 10, x_base + (a_panel->detail [a_line][i + 0].o_tibi * a_scale), 250);
+            glVertex3f  ((i + 1) * 10, x_base + (a_panel->detail [a_line][i + 1].o_tibi * a_scale), 250);
+         } glEnd   ();
+      }
+      /*> glColor4f    (0.50f, 0.50f, 0.00f, 1.0f);                                   <*/
+      glPointSize  ( 5.0f);
+      for (i = 0; i < 400; ++i) {
+         if (a_panel->detail [a_line][i].r_rc < 0)  continue;
+         glBegin(GL_POINTS); {
+            glVertex3f  ((i + 0) * 10, x_base + (a_panel->detail [a_line][i + 0].r_tibi * a_scale), 350);
+         } glEnd   ();
+         /*> printf ("%d  %3d  :: %2d   %8.1ff %8.1fp %8.1ft   %8.1fx %8.1fz %8.1fy    %8.1fx %8.1fy \n", a_panel->sect, i, a_line, a_panel->detail [a_line][i].o_femu, a_panel->detail [a_line][i].o_pate, a_panel->detail [a_line][i].o_tibi, a_panel->detail [a_line][i].o_xpos, a_panel->detail [a_line][i].o_zpos, a_panel->detail [a_line][i].o_ypos, i * 10, x_base + a_panel->detail [a_line][i].o_tibi);   <*/
       }
    } glPopMatrix();
    /*---(draw end)-----------------------*/
@@ -1001,6 +1022,13 @@ TICK_servos_deg    (tPANEL *a_panel, int a_line, float a_scale)
    } glPopMatrix();
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
+char         /*--> draw texture labels -------------------[ ------ [ ------ ]-*/
+TICK_servos_ik     (tPANEL *a_panel, int a_line)
+{
+   int         i           =    0;
    return 0;
 }
 
@@ -1229,54 +1257,167 @@ TICK_height        (int a_sec, float  a_pos)
  *>    glPushMatrix(); {                                                                                                                   <* 
  *>       glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);                                                                                        <* 
  *>       for (i = 0; i < s_wide; i += s_xinc) {                                                                                        <* 
- *>          /+---(labels)-------------------+/                                                                                            <* 
- *>          if (i % (int) (s_xinc * 10) == 0) {                                                                                           <* 
- *>             for (j = 0; j < 12; ++j) {                                                                                                 <* 
- *>                glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);                                                                               <* 
- *>                if (j < 6)  snprintf     (x_msg, 50, "%d%c"  , (int) ((i / s_xinc) * my.p_multi) + x_secbeg1, my.p_base);               <* 
- *>                else        snprintf     (x_msg, 50, "%d%c"  , (int) ((i / s_xinc) * my.p_multi) + x_secbeg2, my.p_base);               <* 
- *>                x_pos = (j + 1) * x_yinc;                                                                                               <* 
- *>                glPushMatrix(); {                                                                                                       <* 
- *>                   glTranslatef ( i , x_pos - x_bar + 25.0 ,    60.0  );                                                                <* 
- *>                   yFONT_print  (my.fixed,  14, YF_TOPLEF, x_msg);                                                                      <* 
- *>                } glPopMatrix();                                                                                                        <* 
- *>             }                                                                                                                          <* 
- *>          }                                                                                                                             <* 
- *>          /+---(accuracy heatmap)---------+/                                                                                            <* 
- *>          for (j = 0; j < 12; ++j) {                                                                                                    <* 
- *>             if (j < 6) {                                                                                                               <* 
- *>                x_pos = (6 - j) * x_yinc;                                                                                               <* 
- *>                x_sec = (((float) (i) / s_xinc) * my.p_multi) + x_secbeg1;                                                              <* 
- *>                if (j == 0) {                                                                                                           <* 
- *>                   rc = yKINE_phys_flat   (YKINE_FK, x_sec, &s_lowest, &x_lowcnt);                                                      <* 
- *>                   /+> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <+/   <* 
- *>                }                                                                                                                       <* 
- *>                /+> TICK_height   (i, x_pos);                                          <+/                                              <* 
- *>                if (x_sec >= 0.0 && x_sec <= my.p_len)  TICK__heat_column (j    , x_sec, i, x_pos - 35.0);                              <* 
- *>             } else {                                                                                                                   <* 
- *>                x_pos = (12 + (6 - j)) * x_yinc;                                                                                        <* 
- *>                x_sec = (((float) (i) / s_xinc) * my.p_multi) + x_secbeg2;                                                              <* 
- *>                if (j == 6) {                                                                                                           <* 
- *>                   yKINE_phys_flat   (YKINE_FK, x_sec, &s_lowest, &x_lowcnt);                                                           <* 
- *>                   /+> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <+/   <* 
- *>                }                                                                                                                       <* 
- *>                /+> TICK_height   (i, x_pos);                                          <+/                                              <* 
- *>                if (x_sec >= 0.0 && x_sec <= my.p_len)  TICK__heat_column (j - 6, x_sec, i, x_pos - 35.0);                              <* 
- *>             }                                                                                                                          <* 
- *>          }                                                                                                                             <* 
- *>       }                                                                                                                                <* 
- *>    } glPopMatrix();                                                                                                                    <* 
- *>    /+---(complete)-----------------------+/                                                                                            <* 
- *>    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);                                                                                           <* 
- *>    return 0;                                                                                                                           <* 
- *> }                                                                                                                                      <*/
+*>          /+---(labels)-------------------+/                                                                                            <* 
+*>          if (i % (int) (s_xinc * 10) == 0) {                                                                                           <* 
+   *>             for (j = 0; j < 12; ++j) {                                                                                                 <* 
+      *>                glColor4f    (1.00f, 1.00f, 1.00f, 1.0f);                                                                               <* 
+         *>                if (j < 6)  snprintf     (x_msg, 50, "%d%c"  , (int) ((i / s_xinc) * my.p_multi) + x_secbeg1, my.p_base);               <* 
+         *>                else        snprintf     (x_msg, 50, "%d%c"  , (int) ((i / s_xinc) * my.p_multi) + x_secbeg2, my.p_base);               <* 
+         *>                x_pos = (j + 1) * x_yinc;                                                                                               <* 
+         *>                glPushMatrix(); {                                                                                                       <* 
+            *>                   glTranslatef ( i , x_pos - x_bar + 25.0 ,    60.0  );                                                                <* 
+               *>                   yFONT_print  (my.fixed,  14, YF_TOPLEF, x_msg);                                                                      <* 
+               *>                } glPopMatrix();                                                                                                        <* 
+               *>             }                                                                                                                          <* 
+               *>          }                                                                                                                             <* 
+               *>          /+---(accuracy heatmap)---------+/                                                                                            <* 
+               *>          for (j = 0; j < 12; ++j) {                                                                                                    <* 
+                  *>             if (j < 6) {                                                                                                               <* 
+                     *>                x_pos = (6 - j) * x_yinc;                                                                                               <* 
+                        *>                x_sec = (((float) (i) / s_xinc) * my.p_multi) + x_secbeg1;                                                              <* 
+                        *>                if (j == 0) {                                                                                                           <* 
+                           *>                   rc = yKINE_phys_flat   (YKINE_FK, x_sec, &s_lowest, &x_lowcnt);                                                      <* 
+                              *>                   /+> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <+/   <* 
+                              *>                }                                                                                                                       <* 
+                              *>                /+> TICK_height   (i, x_pos);                                          <+/                                              <* 
+                              *>                if (x_sec >= 0.0 && x_sec <= my.p_len)  TICK__heat_column (j    , x_sec, i, x_pos - 35.0);                              <* 
+                              *>             } else {                                                                                                                   <* 
+                                 *>                x_pos = (12 + (6 - j)) * x_yinc;                                                                                        <* 
+                                    *>                x_sec = (((float) (i) / s_xinc) * my.p_multi) + x_secbeg2;                                                              <* 
+                                    *>                if (j == 6) {                                                                                                           <* 
+                                       *>                   yKINE_phys_flat   (YKINE_FK, x_sec, &s_lowest, &x_lowcnt);                                                           <* 
+                                          *>                   /+> printf ("i=%5d, j=%2d, x_sec=%8.3lf, s_lowest=%8.1lf, x_lowcnt=%2d\n", i, j, x_sec, s_lowest, x_lowcnt);   <+/   <* 
+                                          *>                }                                                                                                                       <* 
+                                          *>                /+> TICK_height   (i, x_pos);                                          <+/                                              <* 
+                                          *>                if (x_sec >= 0.0 && x_sec <= my.p_len)  TICK__heat_column (j - 6, x_sec, i, x_pos - 35.0);                              <* 
+                                          *>             }                                                                                                                          <* 
+                                          *>          }                                                                                                                             <* 
+                                          *>       }                                                                                                                                <* 
+                                          *>    } glPopMatrix();                                                                                                                    <* 
+                                          *>    /+---(complete)-----------------------+/                                                                                            <* 
+                                          *>    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);                                                                                           <* 
+                                          *>    return 0;                                                                                                                           <* 
+                                          *> }                                                                                                                                      <*/
 
 
 
-/*====================------------------------------------====================*/
-/*===----                         panel handlers                       ----===*/
-/*====================------------------------------------====================*/
-static void      o___PANELS__________________o (void) {;}
+                                          /*====================------------------------------------====================*/
+                                          /*===----                         panel handlers                       ----===*/
+                                          /*====================------------------------------------====================*/
+                                          static void      o___PANELS__________________o (void) {;}
+
+char         /*--> draw texture for progress ticker ------[ ------ [ ------ ]-*/
+TICK_load_exact    (tPANEL *a_panel)
+{
+   /*---(locals)-----------+-----+-----+-*/
+   char        rc          =    0;
+   int         i;                             /* loop iterator                  */
+   int         j;                             /* loop iterator                  */
+   float       x_pos       =  0.0;
+   int         x_leg       =    0;
+   int         x_seg       =    0;
+   float       x_deg       =    0;
+   float       x, y, z;
+   float       x_yaw       =    0;
+   float       x_pitch     =    0;
+   float       x_roll      =    0;
+   DEBUG_GRAF   yLOG_senter  (__FUNCTION__);
+   DEBUG_GRAF   yLOG_spoint  (a_panel);
+   DEBUG_GRAF   yLOG_sdouble (a_panel->beg);
+   for (i = 0; i < 400; ++i) {
+      x_pos       = a_panel->beg + ((i / 10.0) * my.p_scale);
+      rc = yKINE_exact_all (x_pos);
+      for (j = 0; j < YKINE_MAX_SERVO; ++j) {
+         rc = yKINE_servo_which (j, &x_leg, &x_seg);
+         if (rc < 0) continue;
+         rc = yKINE_exact       (x_leg, x_seg, &x_deg, &x, &z, &y);
+         if (rc < 0) continue;
+         if (x_leg == YKINE_BODY) {
+            switch (x_seg) {
+            case YKINE_FOCU  :
+               a_panel->detail [x_leg + 1][i].o_xpos = x;
+               a_panel->detail [x_leg + 1][i].o_zpos = z;
+               a_panel->detail [x_leg + 1][i].o_ypos = y;
+            case YKINE_YAW   :
+               a_panel->detail [x_leg + 1][i].o_femu = x_deg;
+               break;
+            case YKINE_PITCH :
+               a_panel->detail [x_leg + 1][i].o_pate = x_deg;
+               break;
+            case YKINE_ROLL  :
+               a_panel->detail [x_leg + 1][i].o_tibi = x_deg;
+               /*> if (x_leg == 0)  printf ("%2d  %3d  :: %2d (%2d %2d)  rc = %2d    %8.1ff %8.1fp %8.1ft    %8.1fx %8.1fz %8.1fy\n", a_panel->sect, i, j, x_leg, x_seg, rc, a_panel->detail [x_leg + 1][i].o_femu, a_panel->detail [x_leg + 1][i].o_pate, x_deg, x, z, y);   <*/
+               break;
+            }
+         } else {
+            switch (x_seg) {
+            case YKINE_FEMU  :
+               a_panel->detail [x_leg + 1][i].o_femu = x_deg;
+               break;
+            case YKINE_PATE  :
+               a_panel->detail [x_leg + 1][i].o_pate = x_deg;
+               break;
+            case YKINE_TIBI  :
+               a_panel->detail [x_leg + 1][i].o_tibi = x_deg;
+               a_panel->detail [x_leg + 1][i].o_xpos = x;
+               a_panel->detail [x_leg + 1][i].o_zpos = z;
+               a_panel->detail [x_leg + 1][i].o_ypos = y;
+               /*> if (x_leg == 0)  printf ("%2d  %3d  :: %2d (%2d %2d)  rc = %2d    %8.1ff %8.1fp %8.1ft    %8.1fx %8.1fz %8.1fy\n", a_panel->sect, i, j, x_leg, x_seg, rc, a_panel->detail [x_leg + 1][i].o_femu, a_panel->detail [x_leg + 1][i].o_pate, x_deg, x, z, y);   <*/
+               break;
+            }
+         }
+      }
+   }
+   for (i = 0; i < 400; ++i) {
+      x       = a_panel->detail [1][i].o_xpos;
+      z       = a_panel->detail [1][i].o_zpos;
+      y       = a_panel->detail [1][i].o_ypos;
+      rc      = yKINE_zero (x, z, y);
+      x_yaw   = a_panel->detail [1][i].o_femu;
+      x_pitch = a_panel->detail [1][i].o_pate;
+      x_roll  = a_panel->detail [1][i].o_tibi;
+      rc      = yKINE_orient (x_yaw, x_pitch, x_roll);
+      for (j = 2; j < YKINE_MAX_LEGS; ++j) {
+         printf ("%2d  %3d  %2d  ::", a_panel->sect, i, j);
+         printf ("   %7.1fx %7.1fz %7.1fy", a_panel->detail [1][i].o_xpos, a_panel->detail [1][i].o_zpos, a_panel->detail [1][i].o_ypos);
+         printf ("   %7.1fy %7.1fp %7.1fr", a_panel->detail [1][i].o_femu, a_panel->detail [1][i].o_pate, a_panel->detail [1][i].o_tibi);
+         x       = a_panel->detail [j][i].o_xpos;
+         z       = a_panel->detail [j][i].o_zpos;
+         y       = a_panel->detail [j][i].o_ypos;
+         printf ("    %7.1fx %7.1fz %7.1fy", x, z, y);
+         rc = yKINE_inverse_adapt (j - 1, x, z, y);
+         a_panel->detail [j][i].r_rc   = rc;
+         printf ("   %3d", rc);
+         yKINE_endpoint (j - 1, YKINE_FEMU, YKINE_IK, &x_deg, NULL, NULL, NULL, NULL);
+         a_panel->detail [j][i].r_femu = x_deg;
+         printf ("   %7.1ff %7.1ff", a_panel->detail [j][i].o_femu, x_deg);
+         yKINE_endpoint (j - 1, YKINE_PATE, YKINE_IK, &x_deg, NULL, NULL, NULL, NULL);
+         a_panel->detail [j][i].r_pate = x_deg;
+         printf ("   %7.1fp %7.1fp", a_panel->detail [j][i].o_pate, x_deg);
+         yKINE_endpoint (j - 1, YKINE_TIBI, YKINE_IK, &x_deg, NULL, &x, &z, &y);
+         a_panel->detail [j][i].r_tibi = x_deg;
+         printf ("   %7.1ft %7.1ft", a_panel->detail [j][i].o_tibi, x_deg);
+         a_panel->detail [j][i].r_xpos = x;
+         a_panel->detail [j][i].r_zpos = z;
+         a_panel->detail [j][i].r_ypos = y;
+         printf ("   %7.1fx %7.1fz %7.1fy", x, z, y);
+         printf ("\n");
+         /*> printf ("%2d  %3d  :: %2d    %8.1ff %8.1fp %8.1ft    %8.1fx %8.1fz %8.1fy\n", a_panel->sect, i, j, a_panel->detail [x_leg][i].r_femu, a_panel->detail [x_leg][i].r_pate, x_deg, x, z, y);   <*/
+      }
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_GRAF   yLOG_sexit   (__FUNCTION__);
+   return 0;
+}
+
+char
+TICK_exact         (int a_leg, float *a_femu, float *a_pate, float *a_tibi)
+{
+   if (a_femu != NULL)  *a_femu = p_draw->detail [a_leg + 1][s_draw].r_femu;
+   if (a_pate != NULL)  *a_pate = p_draw->detail [a_leg + 1][s_draw].r_pate;
+   if (a_tibi != NULL)  *a_tibi = p_draw->detail [a_leg + 1][s_draw].r_tibi;
+   return 0;
+}
 
 char         /*--> draw texture for progress ticker ------[ ------ [ ------ ]-*/
 TICK_draw_one      (tPANEL *a_panel)
@@ -1313,6 +1454,7 @@ TICK_draw_one      (tPANEL *a_panel)
    /*---(draw)------------------------*/
    yGLTEX_draw_start (a_panel->fbo, YGLTEX_BOTLEF, s_wide, s_tall, 1.0);
    TICK_back_copy    (a_panel);
+   TICK_load_exact   (a_panel);
    for (i = 0; i < s_nline; ++i) {
       DEBUG_GRAF   yLOG_value   ("line"      , i);
       x_ref = TICK_line_find (i);
@@ -1598,6 +1740,14 @@ TICK_show          (void)
          glVertex3f  (s_cur,   0.0,   239.0);
       } glEnd   ();
    } glPopMatrix();
+   /*---(drawing position)---------------*/
+   if      (my.p_cur <  p_curr->beg)  p_draw = p_pref;
+   else if (my.p_cur >  p_suff->beg)  p_draw = p_suff;
+   else                               p_draw = p_curr;
+   s_draw = ((my.p_cur - p_draw->beg) / s_len) * 400;
+   DEBUG_GRAF   yLOG_point   ("p_draw"    , p_draw);
+   DEBUG_GRAF   yLOG_value   ("->sect"    , p_draw->sect);
+   DEBUG_GRAF   yLOG_value   ("s_draw"    , s_draw);
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return rc;

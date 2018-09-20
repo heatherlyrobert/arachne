@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "1.0a"
-#define VER_TXT   "fixed panel drawing transitions/rotates"
+#define VER_NUM   "1.0b"
+#define VER_TXT   "ik adapt is now stored properly in arachne and drawn in main/progress"
 
 
 
@@ -513,6 +513,7 @@ char      TICK_draw_all           (void);
 char      TICK_show               (void);
 char      TICK_legend             (void);
 char      TICK_snap               (void);
+char      TICK_exact              (int a_leg, float *a_femu, float *a_pate, float *a_tibi);
 
 char      DRAW_init               (void);
 char      DRAW_begin         (void);      /* prepare drawing environment      */

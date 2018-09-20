@@ -532,6 +532,39 @@ DRAW_wire_leg      (int a_leg, float a_body, float a_coxa, float a_femu, float a
 }
 
 void
+DRAW__body_detail  (char a_type)
+{
+   /*---(locals)-----------+-----+-----+-*/
+   char        rc          = 0;
+   int         x_leg       =    0;
+   float       x_coxa      =  0.0;
+   float       x_femu      =  0.0;
+   float       x_pate      =  0.0;
+   float       x_tibi      =  0.0;
+   /*---(body)---------------------------*/
+   glPushMatrix (); {
+      /*> yKINE_exact_all ( my.p_cur);                                                <*/
+      for (x_leg = YKINE_RR; x_leg <= YKINE_LR; ++x_leg) {
+         glPushMatrix (); {
+            /*---(prepare)---------------*/
+            glRotatef  ( legs_deg [x_leg], 0.0f, 1.0f, 0.0f);
+            /*---(check servos)----------*/
+            x_coxa  = legs_deg [x_leg];
+            rc = TICK_exact (x_leg, &x_femu, &x_pate, &x_tibi);
+            /*> rc = yKINE_exact  (x_leg, YKINE_FEMU, &x_femu, NULL, NULL, NULL);     <* 
+             *> rc = yKINE_exact  (x_leg, YKINE_PATE, &x_pate, NULL, NULL, NULL);     <* 
+             *> rc = yKINE_exact  (x_leg, YKINE_TIBI, &x_tibi, NULL, NULL, NULL);     <*/
+            /*---(draw)------------------*/
+            DRAW_wire_leg  (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
+            /*---(done)------------------*/
+         } glPopMatrix ();
+      }
+   } glPopMatrix   ();
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
+void
 DRAW_wire_body     (void)
 {
    /*---(locals)-----------+-----+-----+-*/
@@ -545,16 +578,17 @@ DRAW_wire_body     (void)
    center.by = 130.0;
    /*---(body)---------------------------*/
    glPushMatrix (); {
-      yKINE_exact_all ( my.p_cur);
+      /*> yKINE_exact_all ( my.p_cur);                                                <*/
       for (x_leg = YKINE_RR; x_leg <= YKINE_LR; ++x_leg) {
          glPushMatrix (); {
             /*---(prepare)---------------*/
             glRotatef  ( legs_deg [x_leg], 0.0f, 1.0f, 0.0f);
             /*---(check servos)----------*/
             x_coxa  = legs_deg [x_leg];
-            rc = yKINE_exact  (x_leg, YKINE_FEMU, &x_femu, NULL, NULL, NULL);
-            rc = yKINE_exact  (x_leg, YKINE_PATE, &x_pate, NULL, NULL, NULL);
-            rc = yKINE_exact  (x_leg, YKINE_TIBI, &x_tibi, NULL, NULL, NULL);
+            rc = TICK_exact (x_leg, &x_femu, &x_pate, &x_tibi);
+            /*> rc = yKINE_exact  (x_leg, YKINE_FEMU, &x_femu, NULL, NULL, NULL);     <* 
+             *> rc = yKINE_exact  (x_leg, YKINE_PATE, &x_pate, NULL, NULL, NULL);     <* 
+             *> rc = yKINE_exact  (x_leg, YKINE_TIBI, &x_tibi, NULL, NULL, NULL);     <*/
             /*---(draw)------------------*/
             DRAW_wire_leg  (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
             /*---(done)------------------*/
@@ -616,9 +650,10 @@ DRAW_spider        (void)
             /*---(default values)--------*/
             x_coxa  = legs_deg [x_leg];
             /*---(check servos)----------*/
-            rc = yKINE_exact  (x_leg, YKINE_FEMU, &x_femu, NULL, NULL, NULL);
-            rc = yKINE_exact  (x_leg, YKINE_PATE, &x_pate, NULL, NULL, NULL);
-            rc = yKINE_exact  (x_leg, YKINE_TIBI, &x_tibi, NULL, NULL, NULL);
+            rc = TICK_exact (x_leg, &x_femu, &x_pate, &x_tibi);
+            /*> rc = yKINE_exact  (x_leg, YKINE_FEMU, &x_femu, NULL, NULL, NULL);     <* 
+             *> rc = yKINE_exact  (x_leg, YKINE_PATE, &x_pate, NULL, NULL, NULL);     <* 
+             *> rc = yKINE_exact  (x_leg, YKINE_TIBI, &x_tibi, NULL, NULL, NULL);     <*/
             /*---(draw)------------------*/
             draw_leg   (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
             /*---(calc in yKINE)---------*/

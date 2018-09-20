@@ -28,9 +28,15 @@
 
 ze_pure       -a-  zz    -       -.--     -.--     -.--  -       
 or_pure       -a-  oo    -       -.--     -.--     -.--  -       
-fk_pure       -a-  AA    -       -.--     -.--     -.--  -       
+ik_pure       -a-  RR    -     130.00   225.00   -85.00  -       
+ik_pure       -a-  RM    -     260.00     -.--   -85.00  -       
+ik_pure       -a-  RF    -     130.00  -225.00   -85.00  -       
+ik_pure       -a-  LF    -    -130.00  -225.00   -85.00  -       
+ik_pure       -a-  LM    -    -260.00     -.--   -85.00  -       
+ik_pure       -a-  LR    -    -130.00   225.00   -85.00  -       
 
 
+ze_pure       -a-  zz    4       -.--     -.--     -.--  -       
 or_pure       -a-  oo    4       -.--     -.--     -.--  -       
 ik_pure       -a-  RR    4     130.00   225.00   -85.00  -       
 ik_pure       -a-  RM    4     260.00     -.--   -85.00  -       
@@ -40,13 +46,13 @@ ik_pure       -a-  LM    4    -260.00     -.--   -85.00  -       
 ik_pure       -a-  LR    4    -130.00   225.00   -85.00  -       
 
 #ik_from       -a-  AA  200       -.--     -.--     -.--  -       
+or_pure       -a-  oo  200       -.--     -.--     -.--  -       
 ik_from       -a-  RR  200       -.--     -.--     -.--  -       
 ik_from       -a-  RM  200       -.--     -.--     -.--  -       
 ik_from       -a-  RF  200       -.--     -.--     -.--  -       
 ik_from       -a-  LF  200       -.--     -.--     -.--  -       
 ik_from       -a-  LM  200       -.--     -.--     -.--  -       
 ik_from       -a-  LR  200       -.--     -.--     -.--  -       
-ze_pure       -a-  zz  200       -.--     -.--     -.--  -       
 
 #PASSAGE       -a-  ==  ================================================= 
 
@@ -54,47 +60,146 @@ ze_pure       -a-  zz  200       -.--     -.--     -.--  -       
 #tempo         -a-  **  90                ----------------------------- 
 
 #note          -a-  --  prepare...        ----------------------------- 
-  or_pure     -b-  oo    1       -.--     -.--     2.59  -       
-  or_pure     -b-  oo    1       -.--     -.--     5.00  -       
-  or_pure     -b-  oo    1       -.--     -.--     7.07  -       
-  or_pure     -b-  oo    1       -.--     -.--     8.66  -       
-  or_pure     -b-  oo    1       -.--     -.--     9.66  -       
-  or_pure     -b-  oo    1       -.--     -.--    10.00  -       
+#  or_pure     -b-  oo    1       -.--     -.--     2.59  -       
+#  or_pure     -b-  oo    1       -.--     -.--     5.00  -       
+#  or_pure     -b-  oo    1       -.--     -.--     7.07  -       
+#  or_pure     -b-  oo    1       -.--     -.--     8.66  -       
+#  or_pure     -b-  oo    1       -.--     -.--     9.66  -       
+#  or_pure     -b-  oo    1       -.--     -.--    10.00  -       
 
 #note          -b-  --  to right          ----------------------------- 
-  or_pure     -b-  oo    1       -.--     2.59     9.66  -       
-  or_pure     -b-  oo    1       -.--     5.00     8.66  -       
-  or_pure     -b-  oo    1       -.--     7.07     7.07  -       
-  or_pure     -b-  oo    1       -.--     8.66     5.00  -       
-  or_pure     -b-  oo    1       -.--     9.66     2.59  -       
-  or_pure     -b-  oo    1       -.--    10.00     0.00  -       
+#  or_pure     -b-  oo    1       -.--     2.59     9.66  -       
+#  or_pure     -b-  oo    1       -.--     5.00     8.66  -       
+#  or_pure     -b-  oo    1       -.--     7.07     7.07  -       
+#  or_pure     -b-  oo    1       -.--     8.66     5.00  -       
+#  or_pure     -b-  oo    1       -.--     9.66     2.59  -       
+#  or_pure     -b-  oo    1       -.--    10.00     0.00  -       
 
 #note          -a-  --  to back           ----------------------------- 
-  or_pure     -b-  oo    1       -.--     9.66    -2.59  -       
-  or_pure     -b-  oo    1       -.--     8.66    -5.00  -       
-  or_pure     -b-  oo    1       -.--     7.07    -7.07  -       
-  or_pure     -b-  oo    1       -.--     5.00    -8.66  -       
-  or_pure     -b-  oo    1       -.--     2.59    -9.66  -       
-  or_pure     -b-  oo    1       -.--     0.00   -10.00  -       
+#  or_pure     -b-  oo    1       -.--     9.66    -2.59  -       
+#  or_pure     -b-  oo    1       -.--     8.66    -5.00  -       
+#  or_pure     -b-  oo    1       -.--     7.07    -7.07  -       
+#  or_pure     -b-  oo    1       -.--     5.00    -8.66  -       
+#  or_pure     -b-  oo    1       -.--     2.59    -9.66  -       
+#  or_pure     -b-  oo    1       -.--     0.00   -10.00  -       
 
 #note          -a-  --  to left           ----------------------------- 
-  or_pure     -b-  oo    1       -.--    -2.59    -9.66  -       
-  or_pure     -b-  oo    1       -.--    -5.00    -8.66  -       
-  or_pure     -b-  oo    1       -.--    -7.07    -7.07  -       
-  or_pure     -b-  oo    1       -.--    -8.66    -5.00  -       
-  or_pure     -b-  oo    1       -.--    -9.66    -2.59  -       
-  or_pure     -b-  oo    1       -.--   -10.00     0.00  -       
+#  or_pure     -b-  oo    1       -.--    -2.59    -9.66  -       
+#  or_pure     -b-  oo    1       -.--    -5.00    -8.66  -       
+#  or_pure     -b-  oo    1       -.--    -7.07    -7.07  -       
+#  or_pure     -b-  oo    1       -.--    -8.66    -5.00  -       
+#  or_pure     -b-  oo    1       -.--    -9.66    -2.59  -       
+#  or_pure     -b-  oo    1       -.--   -10.00     0.00  -       
 
 #note          -a-  --  to front          ----------------------------- 
-  or_pure     -b-  oo    1       -.--    -9.66     2.59  -       
-  or_pure     -b-  oo    1       -.--    -8.66     5.00  -       
-  or_pure     -b-  oo    1       -.--    -7.07     7.07  -       
-  or_pure     -b-  oo    1       -.--    -5.00     8.66  -       
-  or_pure     -b-  oo    1       -.--    -2.59     9.66  -       
-  or_pure     -b-  oo    1       -.--     0.00    10.00  -       
+#  or_pure     -b-  oo    1       -.--    -9.66     2.59  -       
+#  or_pure     -b-  oo    1       -.--    -8.66     5.00  -       
+#  or_pure     -b-  oo    1       -.--    -7.07     7.07  -       
+#  or_pure     -b-  oo    1       -.--    -5.00     8.66  -       
+#  or_pure     -b-  oo    1       -.--    -2.59     9.66  -       
+#  or_pure     -b-  oo    1       -.--     0.00    10.00  -       
 
-REPEAT        -b-  oo  24     10       ----------------------------- 
+#REPEAT        -b-  oo  24     10       ----------------------------- 
 
+  ze_pure     -a-  zz    1       -.--     -.--     2.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--     4.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--     6.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--     8.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    10.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    12.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    14.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    16.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    18.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    20.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    22.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    24.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    26.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    28.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    30.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    32.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    34.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    36.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    38.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    40.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    42.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    44.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    46.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    48.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    50.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    52.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    54.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    56.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    58.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    60.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    62.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    64.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    66.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    68.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    70.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    72.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    74.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    76.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    78.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    80.00  -       
+
+  ze_pure     -a-  zz    1       -.--     -.--    78.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    76.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    74.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    72.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    70.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    68.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    66.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    64.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    62.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    60.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    58.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    56.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    54.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    52.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    50.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    48.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    46.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    44.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    42.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    40.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    38.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    36.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    34.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    32.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    30.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    28.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    26.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    24.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    22.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    20.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    18.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    16.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    14.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    12.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    10.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--     8.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--     6.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--     4.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--     2.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--     -.--  -       
+
+  ze_pure     -a-  zz    1       -.--     -.--    -2.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    -4.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    -6.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    -8.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--   -10.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--   -12.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--   -14.00  -       
+
+  ze_pure     -a-  zz    1       -.--     -.--   -12.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--   -10.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    -8.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    -6.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    -4.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--    -2.00  -       
+  ze_pure     -a-  zz    1       -.--     -.--     -.--  -       
+
+REPEAT        -b-  zz  94     10       ----------------------------- 
 
 
 
