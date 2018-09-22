@@ -24,6 +24,10 @@ struct      cPOS {
    float       o_ypos;
    /*---(planned success)----------------*/
    char        o_rc;
+   /*---(target endpoint)----------------*/
+   float       t_xpos;
+   float       t_zpos;
+   float       t_ypos;
    /*---(revised endpoint)---------------*/
    float       r_xpos;
    float       r_zpos;
@@ -34,6 +38,29 @@ struct      cPOS {
    float       r_tibi;
    /*---(revised success)----------------*/
    char        r_rc;
+   float       r_error;
+   /*---(opengl endpoint)----------------*/
+   float       g_xpos;
+   float       g_zpos;
+   float       g_ypos;
+   float       g_error;
+   /*---(alternative)--------------------*/
+   char        a_found;
+   float       a_femu;
+   float       a_pate;
+   float       a_tibi;
+   /*---(alternative endpoint)-----------*/
+   float       a_xpos;
+   float       a_zpos;
+   float       a_ypos;
+   float       a_error;
+   char        a_gross;
+   char        a_normal;
+   char        a_fine;
+   char        a_tiny;
+   /*---(temp)---------------------------*/
+   float       x_pate;
+   float       x_tibi;
    /*---(done)---------------------------*/
 };
 
@@ -1159,6 +1186,7 @@ TICK__heat_spot    (char a_type, char a_rc, float  a_diff, float  a_x, float  *a
  *>    return 0;                                                                                                                                                                        <* 
  *> }                                                                                                                                                                                   <*/
 
+
 char
 TICK_height        (int a_sec, float  a_pos)
 {
@@ -1306,6 +1334,98 @@ TICK_height        (int a_sec, float  a_pos)
                                           /*====================------------------------------------====================*/
                                           static void      o___PANELS__________________o (void) {;}
 
+char
+TICK_exact_alt     (tPANEL *a_panel, int i, int j, float a_pate, float a_tibi)
+{
+   char        rc          =    0;
+   float       x, y, z;
+   float       x_dist      =  0.0;
+   float       xd, zd, yd;
+   char        x_adj       =  '-';
+   rc = yKINE_forward (j - 1, a_panel->detail [j][i].a_femu, a_panel->detail [j][i].a_pate + a_pate, a_panel->detail [j][i].a_tibi + a_tibi);
+   yKINE_endpoint (j - 1, YKINE_TIBI, YKINE_FK, NULL, NULL, &x, &z, &y);
+   xd  = x - a_panel->detail [j][i].t_xpos;
+   zd  = z - a_panel->detail [j][i].t_zpos;
+   yd  = y - a_panel->detail [j][i].t_ypos;
+   x_dist = cbrt ((xd * xd) + (zd * zd) + (yd * yd));
+   if (x_dist > a_panel->detail [j][i].a_error)  return 0;
+   if (a_panel->detail [j][i].a_found == 'y' && x_dist > a_panel->detail [j][i].a_error)  return 0;
+   a_panel->detail [j][i].a_found = 'y';
+   a_panel->detail [j][i].x_pate += a_pate;
+   a_panel->detail [j][i].x_tibi += a_tibi;
+   a_panel->detail [j][i].a_xpos  = x;
+   a_panel->detail [j][i].a_zpos  = z;
+   a_panel->detail [j][i].a_ypos  = y;
+   a_panel->detail [j][i].a_error = x_dist;
+   if      (a_pate < 0.0)   x_adj  = 1;
+   else if (a_pate > 0.0)   x_adj  = 7;
+   else                     x_adj  = 4;
+   if      (a_tibi < 0.0)   x_adj += 0;
+   else if (a_tibi > 0.0)   x_adj += 2;
+   else                     x_adj += 1;
+   return x_adj;
+}
+
+char
+TICK_exact_driver      (tPANEL *a_panel, int i, int j, char a_size)
+{
+   char        rc        =    0;
+   float       p         =  0.0;
+   float       t         =  0.0;
+   float       s         =  0.0;
+   char        x_adj     =    0;
+   switch (a_size) {
+   case 't' : s = 0.125; break;      /* tiny    */
+   case 'f' : s = 0.250; break;      /* fine    */
+   case 'n' : s = 0.500; break;      /* normal  */
+   default  : s = 1.000; break;      /* gross   */
+   }
+   /*> a_panel->detail [j][i].a_found = '-';                                          <*/
+   for (p = -s; p <= s; p += s) {
+      for (t = -s; t <= s; t += s) {
+         /*> if (p == 0.0 && p == t)  continue;  /+ skip middle  +/                   <*/
+         rc = TICK_exact_alt (a_panel, i, j, p, t);
+         if (rc != 0)  x_adj = rc;
+      }
+   }
+   if (x_adj != 0) {
+      a_panel->detail [j][i].a_pate   = a_panel->detail [j][i].x_pate;
+      a_panel->detail [j][i].a_tibi   = a_panel->detail [j][i].x_tibi;
+   }
+   if (x_adj == 0)  x_adj = 5;
+   switch (a_size) {
+   case 't' : a_panel->detail [j][i].a_tiny   = x_adj; break;
+   case 'f' : a_panel->detail [j][i].a_fine   = x_adj; break;
+   case 'n' : a_panel->detail [j][i].a_normal = x_adj; break;
+   default  : a_panel->detail [j][i].a_gross  = x_adj; break;
+   }
+   return x_adj;
+}
+
+char
+TICK_exact_grid        (tPANEL *a_panel, int i, int j)
+{
+   char        rc        =    0;
+   float       p         =  0.0;
+   float       t         =  0.0;
+   float       s         =  0.0;
+   char        x_adj     =    0;
+   /*> a_panel->detail [j][i].a_found = '-';                                          <*/
+   for (p = -1.0; p <= 1.0; p += 0.25) {
+      for (t = -1.0; t <= 1.0; t += 0.25) {
+         rc = TICK_exact_alt (a_panel, i, j, p, t);
+         if (rc != 0)  x_adj = rc;
+      }
+   }
+   /*> switch (a_size) {                                                              <* 
+    *> case 't' : a_panel->detail [j][i].a_tiny   = x_adj; break;                     <* 
+    *> case 'f' : a_panel->detail [j][i].a_fine   = x_adj; break;                     <* 
+    *> case 'n' : a_panel->detail [j][i].a_normal = x_adj; break;                     <* 
+    *> default  : a_panel->detail [j][i].a_gross  = x_adj; break;                     <* 
+    *> }                                                                              <*/
+   return x_adj;
+}
+
 char         /*--> draw texture for progress ticker ------[ ------ [ ------ ]-*/
 TICK_load_exact    (tPANEL *a_panel)
 {
@@ -1318,9 +1438,13 @@ TICK_load_exact    (tPANEL *a_panel)
    int         x_seg       =    0;
    float       x_deg       =    0;
    float       x, y, z;
+   float       x_error     =  0.0;
+   float       x_dist      =  0.0;
    float       x_yaw       =    0;
    float       x_pitch     =    0;
    float       x_roll      =    0;
+   float       x_femu      =  0.0;
+   float       x_tibi      =  0.0;
    DEBUG_GRAF   yLOG_senter  (__FUNCTION__);
    DEBUG_GRAF   yLOG_spoint  (a_panel);
    DEBUG_GRAF   yLOG_sdouble (a_panel->beg);
@@ -1378,31 +1502,62 @@ TICK_load_exact    (tPANEL *a_panel)
       x_roll  = a_panel->detail [1][i].o_tibi;
       rc      = yKINE_orient (x_yaw, x_pitch, x_roll);
       for (j = 2; j < YKINE_MAX_LEGS; ++j) {
-         printf ("%2d  %3d  %2d  ::", a_panel->sect, i, j);
-         printf ("   %7.1fx %7.1fz %7.1fy", a_panel->detail [1][i].o_xpos, a_panel->detail [1][i].o_zpos, a_panel->detail [1][i].o_ypos);
-         printf ("   %7.1fy %7.1fp %7.1fr", a_panel->detail [1][i].o_femu, a_panel->detail [1][i].o_pate, a_panel->detail [1][i].o_tibi);
+         /*> printf ("%2d  %3d  %2d  ::", a_panel->sect, i, j);                                                                                 <* 
+          *> printf ("   %7.1fx %7.1fz %7.1fy", a_panel->detail [1][i].o_xpos, a_panel->detail [1][i].o_zpos, a_panel->detail [1][i].o_ypos);   <* 
+          *> printf ("   %7.1fy %7.1fp %7.1fr", a_panel->detail [1][i].o_femu, a_panel->detail [1][i].o_pate, a_panel->detail [1][i].o_tibi);   <*/
+         /*---(run inverse)--------------*/
          x       = a_panel->detail [j][i].o_xpos;
          z       = a_panel->detail [j][i].o_zpos;
          y       = a_panel->detail [j][i].o_ypos;
-         printf ("    %7.1fx %7.1fz %7.1fy", x, z, y);
+         /*> printf ("    %7.1fx %7.1fz %7.1fy", x, z, y);                            <*/
          rc = yKINE_inverse_adapt (j - 1, x, z, y);
          a_panel->detail [j][i].r_rc   = rc;
-         printf ("   %3d", rc);
+         /*> printf ("   %3d", rc);                                                   <*/
+         /*---(grab femur)---------------*/
          yKINE_endpoint (j - 1, YKINE_FEMU, YKINE_IK, &x_deg, NULL, NULL, NULL, NULL);
          a_panel->detail [j][i].r_femu = x_deg;
-         printf ("   %7.1ff %7.1ff", a_panel->detail [j][i].o_femu, x_deg);
+         /*> printf ("   %7.1ff %7.1ff", a_panel->detail [j][i].o_femu, x_deg);       <*/
+         /*---(grab patella)-------------*/
          yKINE_endpoint (j - 1, YKINE_PATE, YKINE_IK, &x_deg, NULL, NULL, NULL, NULL);
          a_panel->detail [j][i].r_pate = x_deg;
-         printf ("   %7.1fp %7.1fp", a_panel->detail [j][i].o_pate, x_deg);
+         /*> printf ("   %7.1fp %7.1fp", a_panel->detail [j][i].o_pate, x_deg);       <*/
+         /*---(grab tibia)---------------*/
          yKINE_endpoint (j - 1, YKINE_TIBI, YKINE_IK, &x_deg, NULL, &x, &z, &y);
          a_panel->detail [j][i].r_tibi = x_deg;
-         printf ("   %7.1ft %7.1ft", a_panel->detail [j][i].o_tibi, x_deg);
+         /*> printf ("   %7.1ft %7.1ft", a_panel->detail [j][i].o_tibi, x_deg);       <*/
          a_panel->detail [j][i].r_xpos = x;
          a_panel->detail [j][i].r_zpos = z;
          a_panel->detail [j][i].r_ypos = y;
-         printf ("   %7.1fx %7.1fz %7.1fy", x, z, y);
-         printf ("\n");
+         x -= a_panel->detail [j][i].t_xpos;
+         z -= a_panel->detail [j][i].t_zpos;
+         y -= a_panel->detail [j][i].t_ypos;
+         x_error = a_panel->detail [j][i].r_error = cbrt ((x * x) + (z * z) + (y * y));
+         /*> printf ("   %7.1fx %7.1fz %7.1fy", x, z, y);                             <*/
+         /*> printf ("\n");                                                           <*/
          /*> printf ("%2d  %3d  :: %2d    %8.1ff %8.1fp %8.1ft    %8.1fx %8.1fz %8.1fy\n", a_panel->sect, i, j, a_panel->detail [x_leg][i].r_femu, a_panel->detail [x_leg][i].r_pate, x_deg, x, z, y);   <*/
+         /*---(grab the target)----------*/
+         yKINE_endpoint (j - 1, YKINE_TARG, YKINE_IK, &x_deg, NULL, &x, &z, &y);
+         a_panel->detail [j][i].t_xpos = x;
+         a_panel->detail [j][i].t_zpos = z;
+         a_panel->detail [j][i].t_ypos = y;
+         /*---(check alternatives)-------*/
+         a_panel->detail [j][i].a_femu  = a_panel->detail [j][i].r_femu;
+         a_panel->detail [j][i].a_pate  = a_panel->detail [j][i].r_pate;
+         a_panel->detail [j][i].a_tibi  = a_panel->detail [j][i].r_tibi;
+         a_panel->detail [j][i].a_error = a_panel->detail [j][i].r_error;
+         a_panel->detail [j][i].a_found  = '-';
+         a_panel->detail [j][i].a_gross  = 5;
+         a_panel->detail [j][i].a_normal = 5;
+         a_panel->detail [j][i].a_fine   = 5;
+         a_panel->detail [j][i].a_tiny   = 5;
+         a_panel->detail [j][i].x_pate  = a_panel->detail [j][i].r_pate;
+         a_panel->detail [j][i].x_tibi  = a_panel->detail [j][i].r_tibi;
+         rc = TICK_exact_driver (a_panel, i, j, 'g');
+         rc = TICK_exact_driver (a_panel, i, j, 'n');
+         rc = TICK_exact_driver (a_panel, i, j, 'f');
+         rc = TICK_exact_driver (a_panel, i, j, 't');
+         /*> rc = TICK_exact_grid (a_panel, i, j);                                    <*/
+         /*---(done)---------------------*/
       }
    }
    /*---(complete)-----------------------*/
@@ -1413,9 +1568,126 @@ TICK_load_exact    (tPANEL *a_panel)
 char
 TICK_exact         (int a_leg, float *a_femu, float *a_pate, float *a_tibi)
 {
-   if (a_femu != NULL)  *a_femu = p_draw->detail [a_leg + 1][s_draw].r_femu;
-   if (a_pate != NULL)  *a_pate = p_draw->detail [a_leg + 1][s_draw].r_pate;
-   if (a_tibi != NULL)  *a_tibi = p_draw->detail [a_leg + 1][s_draw].r_tibi;
+   if (p_draw->detail [a_leg + 1][s_draw].a_found == 'y') {
+      if (a_femu != NULL)  *a_femu = p_draw->detail [a_leg + 1][s_draw].a_femu;
+      if (a_pate != NULL)  *a_pate = p_draw->detail [a_leg + 1][s_draw].a_pate;
+      if (a_tibi != NULL)  *a_tibi = p_draw->detail [a_leg + 1][s_draw].a_tibi;
+   } else {
+      if (a_femu != NULL)  *a_femu = p_draw->detail [a_leg + 1][s_draw].r_femu;
+      if (a_pate != NULL)  *a_pate = p_draw->detail [a_leg + 1][s_draw].r_pate;
+      if (a_tibi != NULL)  *a_tibi = p_draw->detail [a_leg + 1][s_draw].r_tibi;
+   }
+   return 0;
+}
+
+char
+TICK_opengl        (int a_leg, float x, float z, float y)
+{
+   p_draw->detail [a_leg + 1][s_draw].g_xpos  = x;
+   p_draw->detail [a_leg + 1][s_draw].g_zpos  = z;
+   p_draw->detail [a_leg + 1][s_draw].g_ypos  = y;
+   x -= p_draw->detail [a_leg + 1][s_draw].t_xpos;
+   z -= p_draw->detail [a_leg + 1][s_draw].t_zpos;
+   y -= p_draw->detail [a_leg + 1][s_draw].t_ypos;
+   p_draw->detail [a_leg + 1][s_draw].g_error = cbrt ((x * x) + (z * z) + (y * y));
+   if (s_draw == 399)   TICK_panel_dump ();
+   return 0;
+}
+
+char
+TICK_panel_dump         (void)
+{
+   /*---(locals)-----------+-----+-----+-*/
+   char        rc          =    0;
+   int         i;                             /* loop iterator                  */
+   int         j;                             /* loop iterator                  */
+   float       d;
+   char        t;
+   for (i = 0; i < 400; ++i) {
+      printf ("pan pos svo ::  --cX-- --cZ-- --cY--  --cy-- --cp-- --cr--  --oX-- --oZ-- --oY--  --of-- --op-- --ot--  rci  --tX-- --tZ-- --tY--  --rX-- --rZ-- --rY--  --rf-- --rp-- --rt--  --dX-- ----  --dZ-- ----  --rerr--  --gX-- --gZ-- --gY--  --dX-- ----  --dZ-- ----  --gerr--  a  --aX-- --aZ-- --aY--  --af-- --ap-- --at--  --dX-- ----  --dZ-- ----  --aerr--  g n f t\n");
+      for (j = 2; j < YKINE_MAX_LEGS; ++j) {
+         if (p_curr->detail [j][i].r_rc < 0)  continue;
+         printf ("%3d %3d %3d ::", p_curr->sect, i, j);
+         /*---(center)-------------------*/
+         printf ("  %6.1f %6.1f %6.1f", p_curr->detail [1][i].o_xpos, p_curr->detail [1][i].o_zpos, p_curr->detail [1][i].o_ypos);
+         printf ("  %6.1f %6.1f %6.1f", p_curr->detail [1][i].o_femu, p_curr->detail [1][i].o_pate, p_curr->detail [1][i].o_tibi);
+         /*---(original)-----------------*/
+         printf ("  %6.1f %6.1f %6.1f", p_curr->detail [j][i].o_xpos, p_curr->detail [j][i].o_zpos, p_curr->detail [j][i].o_ypos);
+         printf ("  %6.1f %6.1f %6.1f", p_curr->detail [j][i].o_femu, p_curr->detail [j][i].o_pate, p_curr->detail [j][i].o_tibi);
+         /*---(adapted)------------------*/
+         printf ("  %3d", p_curr->detail [j][i].r_rc);
+         printf ("  %6.1f %6.1f %6.1f", p_curr->detail [j][i].t_xpos, p_curr->detail [j][i].t_zpos, p_curr->detail [j][i].t_ypos);
+         printf ("  %6.1f %6.1f %6.1f", p_curr->detail [j][i].r_xpos, p_curr->detail [j][i].r_zpos, p_curr->detail [j][i].r_ypos);
+         printf ("  %6.1f %6.1f %6.1f", p_curr->detail [j][i].r_femu, p_curr->detail [j][i].r_pate, p_curr->detail [j][i].r_tibi);
+         /*---(revised vs original)------*/
+         d   = p_curr->detail [j][i].o_xpos - p_curr->detail [j][i].r_xpos;
+         printf ("  %6.1f", d);
+         if      (d < 0.5 && d > -0.5)  printf (" -   ");
+         else if (d < 1.0 && d > -1.0)  printf (" ====");
+         else if (d < 2.0 && d > -2.0)  printf (" hmmm");
+         else                           printf (" BOOM");
+         d   = p_curr->detail [j][i].o_zpos - p_curr->detail [j][i].r_zpos;
+         printf ("  %6.1f", d);
+         if      (d < 0.5 && d > -0.5)  printf (" -   ");
+         else if (d < 1.0 && d > -1.0)  printf (" ====");
+         else if (d < 2.0 && d > -2.0)  printf (" hmmm");
+         else                           printf (" BOOM");
+         printf ("  %8.3f", p_curr->detail [j][i].r_error);
+         /*---(opengl)-------------------*/
+         printf ("  %6.1f %6.1f %6.1f", p_curr->detail [j][i].g_xpos, p_curr->detail [j][i].g_zpos, p_curr->detail [j][i].g_ypos);
+         /*---(opengl vs opengl)---------*/
+         d   = p_curr->detail [j][i].o_xpos - p_curr->detail [j][i].g_xpos;
+         printf ("  %6.1f", d);
+         if      (d < 0.5 && d > -0.5)  printf (" -   ");
+         else if (d < 1.0 && d > -1.0)  printf (" ====");
+         else if (d < 2.0 && d > -2.0)  printf (" hmmm");
+         else                           printf (" BOOM");
+         d   = p_curr->detail [j][i].o_zpos - p_curr->detail [j][i].g_zpos;
+         printf ("  %6.1f", d);
+         if      (d < 0.5 && d > -0.5)  printf (" -   ");
+         else if (d < 1.0 && d > -1.0)  printf (" ====");
+         else if (d < 2.0 && d > -2.0)  printf (" hmmm");
+         else                           printf (" BOOM");
+         printf ("  %8.3f", p_curr->detail [j][i].g_error);
+         /*---(alternative)--------------*/
+         printf ("  %c", p_curr->detail [j][i].a_found);
+         /*> if (p_curr->detail [j][i].a_found != 'y') {                              <* 
+          *>    printf ("     -.-    -.-    -.-");                                    <* 
+          *>    printf ("     -.-    -.-    -.-");                                    <* 
+          *>    printf ("     -.- -   ");                                             <* 
+          *>    printf ("     -.- -   ");                                             <* 
+          *>    printf ("       -.-");                                                <* 
+          *>    printf ("  - - - -");                                                 <* 
+          *> } else {                                                                 <*/
+            printf ("  %6.1f %6.1f %6.1f", p_curr->detail [j][i].a_xpos, p_curr->detail [j][i].a_zpos, p_curr->detail [j][i].a_ypos);
+            printf ("  %6.1f %6.1f %6.1f", p_curr->detail [j][i].a_femu, p_curr->detail [j][i].a_pate, p_curr->detail [j][i].a_tibi);
+            d   = p_curr->detail [j][i].o_xpos - p_curr->detail [j][i].a_xpos;
+            printf ("  %6.1f", d);
+            if      (d < 0.5 && d > -0.5)  printf (" -   ");
+            else if (d < 1.0 && d > -1.0)  printf (" ====");
+            else if (d < 2.0 && d > -2.0)  printf (" hmmm");
+            else                           printf (" BOOM");
+            d   = p_curr->detail [j][i].o_zpos - p_curr->detail [j][i].a_zpos;
+            printf ("  %6.1f", d);
+            if      (d < 0.5 && d > -0.5)  printf (" -   ");
+            else if (d < 1.0 && d > -1.0)  printf (" ====");
+            else if (d < 2.0 && d > -2.0)  printf (" hmmm");
+            else                           printf (" BOOM");
+            printf ("  %8.3f", p_curr->detail [j][i].a_error);
+            t = p_curr->detail [j][i].a_gross;
+            printf ("  %c", (t != 5) ? t + '0' : '-');
+            t = p_curr->detail [j][i].a_normal;
+            printf (" %c", (t != 5) ? t + '0' : '-');
+            t = p_curr->detail [j][i].a_fine;
+            printf (" %c", (t != 5) ? t + '0' : '-');
+            t = p_curr->detail [j][i].a_tiny;
+            printf (" %c", (t != 5) ? t + '0' : '-');
+         /*> }                                                                        <*/
+         printf ("\n");
+      }
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_GRAF   yLOG_sexit   (__FUNCTION__);
    return 0;
 }
 

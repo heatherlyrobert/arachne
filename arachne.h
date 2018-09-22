@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "1.0b"
-#define VER_TXT   "ik adapt is now stored properly in arachne and drawn in main/progress"
+#define VER_NUM   "1.0c"
+#define VER_TXT   "ik adjusting logic roughed in to get closest match (later move to yKINE)"
 
 
 
@@ -507,13 +507,17 @@ int        glx_init          (void);
 
 /*---(arachne_draw)----------------------*/
 
-char      TICK_init               (void);
-char      TICK_draw               (void);
-char      TICK_draw_all           (void);
-char      TICK_show               (void);
-char      TICK_legend             (void);
-char      TICK_snap               (void);
-char      TICK_exact              (int a_leg, float *a_femu, float *a_pate, float *a_tibi);
+/*---1----- -----2----- -----3----- -----4-----  ---------comments------------*/
+char        TICK_init               (void);
+char        TICK_draw               (void);
+char        TICK_draw_all           (void);
+char        TICK_show               (void);
+char        TICK_legend             (void);
+char        TICK_snap               (void);
+char        TICK_exact              (int a_leg, float *a_femu, float *a_pate, float *a_tibi);
+char        TICK_opengl             (int a_leg, float x, float z, float y);
+char        TICK_panel_dump         (void);
+
 
 char      DRAW_init               (void);
 char      DRAW_begin         (void);      /* prepare drawing environment      */

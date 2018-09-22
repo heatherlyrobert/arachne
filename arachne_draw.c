@@ -495,6 +495,7 @@ DRAW_wire_locate        (int a_leg, int a_seg, float a_deg)
       yKINE_opengl   (a_leg, YKINE_META,     0.0, s_xpos, s_zpos, s_ypos, 0.0);
       yKINE_opengl   (a_leg, YKINE_TARS,     0.0, s_xpos, s_zpos, s_ypos, 0.0);
       yKINE_opengl   (a_leg, YKINE_FOOT,     0.0, s_xpos, s_zpos, s_ypos, 0.0);
+      TICK_opengl    (a_leg, s_xpos, s_zpos, s_ypos);
       yKINE_inverse  (a_leg, s_xpos, s_zpos, s_ypos);
    }
    /*---(complete)-----------------------*/
