@@ -54,10 +54,23 @@ struct      cPOS {
    float       a_zpos;
    float       a_ypos;
    float       a_error;
+   char        a_super;
+   char        a_GROSS;
    char        a_gross;
+   char        a_NORMAL;
    char        a_normal;
+   char        a_normal3;
+   char        a_normal4;
+   char        a_FINE;
    char        a_fine;
+   char        a_fine3;
+   char        a_TINY;
    char        a_tiny;
+   char        a_tiny3;
+   char        a_ULTRA;
+   char        a_ultra;
+   char        a_ultra3;
+   char        a_check   [LEN_LABEL];
    /*---(temp)---------------------------*/
    float       x_pate;
    float       x_tibi;
@@ -1375,10 +1388,12 @@ TICK_exact_driver      (tPANEL *a_panel, int i, int j, char a_size)
    float       s         =  0.0;
    char        x_adj     =    0;
    switch (a_size) {
-   case 't' : s = 0.125; break;      /* tiny    */
-   case 'f' : s = 0.250; break;      /* fine    */
-   case 'n' : s = 0.500; break;      /* normal  */
-   default  : s = 1.000; break;      /* gross   */
+   case 'U' : case 'u' : case 'û' : s = 0.062; break;      /* ultra   */
+   case 'T' : case 't' : case 'ú' : s = 0.125; break;      /* tiny    */
+   case 'F' : case 'f' : case 'ü' : s = 0.250; break;      /* fine    */
+   case 'N' : case 'n' : case 'ô' : s = 0.500; break;      /* normal  */
+   case 'G' : case 'g' :            s = 1.000; break;      /* gross   */
+   default  :                       s = 1.500; break;      /* super   */
    }
    /*> a_panel->detail [j][i].a_found = '-';                                          <*/
    for (p = -s; p <= s; p += s) {
@@ -1394,11 +1409,48 @@ TICK_exact_driver      (tPANEL *a_panel, int i, int j, char a_size)
    }
    if (x_adj == 0)  x_adj = 5;
    switch (a_size) {
-   case 't' : a_panel->detail [j][i].a_tiny   = x_adj; break;
-   case 'f' : a_panel->detail [j][i].a_fine   = x_adj; break;
-   case 'n' : a_panel->detail [j][i].a_normal = x_adj; break;
-   default  : a_panel->detail [j][i].a_gross  = x_adj; break;
+   case 'û' : a_panel->detail [j][i].a_ultra3  = x_adj; break;
+   case 'u' : a_panel->detail [j][i].a_ultra   = x_adj; break;
+   case 'U' : a_panel->detail [j][i].a_ULTRA   = x_adj; break;
+   case 'ú' : a_panel->detail [j][i].a_tiny3   = x_adj; break;
+   case 't' : a_panel->detail [j][i].a_tiny    = x_adj; break;
+   case 'T' : a_panel->detail [j][i].a_TINY    = x_adj; break;
+   case 'ü' : a_panel->detail [j][i].a_fine3   = x_adj; break;
+   case 'f' : a_panel->detail [j][i].a_fine    = x_adj; break;
+   case 'F' : a_panel->detail [j][i].a_FINE    = x_adj; break;
+   case 'ô' : a_panel->detail [j][i].a_normal3 = x_adj; break;
+   case 'n' : a_panel->detail [j][i].a_normal  = x_adj; break;
+   case 'N' : a_panel->detail [j][i].a_NORMAL  = x_adj; break;
+   case 'g' : a_panel->detail [j][i].a_gross   = x_adj; break;
+   case 'G' : a_panel->detail [j][i].a_GROSS   = x_adj; break;
+   default  : a_panel->detail [j][i].a_super   = x_adj; break;
    }
+   return x_adj;
+}
+
+char
+TICK_exact_driver_new  (tPANEL *a_panel, int i, int j, char a_size)
+{
+   char        rc        =    0;
+   int         k         =    0;
+   float       p         =  0.0;
+   float       t         =  0.0;
+   float       s         =  1.0;
+   char        x_adj     =    0;
+   for (k = 0;  k < a_size; ++k)    s *= 0.80;
+   for (p = -s; p <= s; p += s) {
+      for (t = -s; t <= s; t += s) {
+         /*> if (p == 0.0 && p == t)  continue;  /+ skip middle  +/                   <*/
+         rc = TICK_exact_alt (a_panel, i, j, p, t);
+         if (rc != 0)  x_adj = rc;
+      }
+   }
+   if (x_adj != 0) {
+      a_panel->detail [j][i].a_pate   = a_panel->detail [j][i].x_pate;
+      a_panel->detail [j][i].a_tibi   = a_panel->detail [j][i].x_tibi;
+   }
+   if (x_adj == 0)  x_adj = 5;
+   a_panel->detail [j][i].a_check [a_size]  = '0' + x_adj;
    return x_adj;
 }
 
@@ -1433,6 +1485,7 @@ TICK_load_exact    (tPANEL *a_panel)
    char        rc          =    0;
    int         i;                             /* loop iterator                  */
    int         j;                             /* loop iterator                  */
+   int         k;                             /* loop iterator                  */
    float       x_pos       =  0.0;
    int         x_leg       =    0;
    int         x_seg       =    0;
@@ -1545,17 +1598,41 @@ TICK_load_exact    (tPANEL *a_panel)
          a_panel->detail [j][i].a_pate  = a_panel->detail [j][i].r_pate;
          a_panel->detail [j][i].a_tibi  = a_panel->detail [j][i].r_tibi;
          a_panel->detail [j][i].a_error = a_panel->detail [j][i].r_error;
-         a_panel->detail [j][i].a_found  = '-';
-         a_panel->detail [j][i].a_gross  = 5;
-         a_panel->detail [j][i].a_normal = 5;
-         a_panel->detail [j][i].a_fine   = 5;
-         a_panel->detail [j][i].a_tiny   = 5;
+         a_panel->detail [j][i].a_found   = '-';
+         strlcpy (a_panel->detail [j][i].a_check, "5555555555", LEN_LABEL);
+         a_panel->detail [j][i].a_super   = 5;
+         a_panel->detail [j][i].a_GROSS   = 5;
+         a_panel->detail [j][i].a_gross   = 5;
+         a_panel->detail [j][i].a_NORMAL  = 5;
+         a_panel->detail [j][i].a_normal  = 5;
+         a_panel->detail [j][i].a_normal3 = 5;
+         a_panel->detail [j][i].a_FINE    = 5;
+         a_panel->detail [j][i].a_fine    = 5;
+         a_panel->detail [j][i].a_fine3   = 5;
+         a_panel->detail [j][i].a_TINY    = 5;
+         a_panel->detail [j][i].a_tiny    = 5;
+         a_panel->detail [j][i].a_tiny3   = 5;
+         a_panel->detail [j][i].a_ULTRA   = 5;
+         a_panel->detail [j][i].a_ultra   = 5;
+         a_panel->detail [j][i].a_ultra3  = 5;
          a_panel->detail [j][i].x_pate  = a_panel->detail [j][i].r_pate;
          a_panel->detail [j][i].x_tibi  = a_panel->detail [j][i].r_tibi;
+         /*> for (k = 0; k < 10; ++k)   rc = TICK_exact_driver_new (a_panel, i, j, k);   <*/
+         rc = TICK_exact_driver (a_panel, i, j, 's');
+         rc = TICK_exact_driver (a_panel, i, j, 'G');
          rc = TICK_exact_driver (a_panel, i, j, 'g');
+         rc = TICK_exact_driver (a_panel, i, j, 'N');
          rc = TICK_exact_driver (a_panel, i, j, 'n');
+         rc = TICK_exact_driver (a_panel, i, j, 'ô');
+         rc = TICK_exact_driver (a_panel, i, j, 'F');
          rc = TICK_exact_driver (a_panel, i, j, 'f');
+         rc = TICK_exact_driver (a_panel, i, j, 'ü');
+         rc = TICK_exact_driver (a_panel, i, j, 'T');
          rc = TICK_exact_driver (a_panel, i, j, 't');
+         rc = TICK_exact_driver (a_panel, i, j, 'ú');
+         rc = TICK_exact_driver (a_panel, i, j, 'U');
+         rc = TICK_exact_driver (a_panel, i, j, 'u');
+         rc = TICK_exact_driver (a_panel, i, j, 'û');
          /*> rc = TICK_exact_grid (a_panel, i, j);                                    <*/
          /*---(done)---------------------*/
       }
@@ -1581,6 +1658,30 @@ TICK_exact         (int a_leg, float *a_femu, float *a_pate, float *a_tibi)
 }
 
 char
+TICK_exact_cond    (int a_leg, float *a_femu, float *a_pate, float *a_tibi)
+{
+   if (p_draw->detail [a_leg + 1][s_draw].a_found == 'y') {
+      if (a_femu != NULL)  *a_femu = p_draw->detail [a_leg + 1][s_draw].a_femu;
+      if (a_pate != NULL)  *a_pate = p_draw->detail [a_leg + 1][s_draw].a_pate;
+      if (a_tibi != NULL)  *a_tibi = p_draw->detail [a_leg + 1][s_draw].a_tibi;
+   } else {
+      if (a_femu != NULL)  *a_femu = p_draw->detail [a_leg + 1][s_draw].r_femu;
+      if (a_pate != NULL)  *a_pate = p_draw->detail [a_leg + 1][s_draw].r_pate;
+      if (a_tibi != NULL)  *a_tibi = p_draw->detail [a_leg + 1][s_draw].r_tibi;
+   }
+   return 0;
+}
+
+char
+TICK_exact_adj_target   (int a_leg, float x, float z, float y)
+{
+   if (a_femu != NULL)  *a_femu = p_draw->detail [a_leg + 1][s_draw].r_femu;
+   if (a_pate != NULL)  *a_pate = p_draw->detail [a_leg + 1][s_draw].r_pate;
+   if (a_tibi != NULL)  *a_tibi = p_draw->detail [a_leg + 1][s_draw].r_tibi;
+   return 0;
+}
+
+char
 TICK_opengl        (int a_leg, float x, float z, float y)
 {
    p_draw->detail [a_leg + 1][s_draw].g_xpos  = x;
@@ -1590,7 +1691,7 @@ TICK_opengl        (int a_leg, float x, float z, float y)
    z -= p_draw->detail [a_leg + 1][s_draw].t_zpos;
    y -= p_draw->detail [a_leg + 1][s_draw].t_ypos;
    p_draw->detail [a_leg + 1][s_draw].g_error = cbrt ((x * x) + (z * z) + (y * y));
-   if (s_draw == 399)   TICK_panel_dump ();
+   if (a_leg == YKINE_RR && s_draw == 399)   TICK_panel_dump ();
    return 0;
 }
 
@@ -1601,10 +1702,11 @@ TICK_panel_dump         (void)
    char        rc          =    0;
    int         i;                             /* loop iterator                  */
    int         j;                             /* loop iterator                  */
+   int         k;                             /* loop iterator                  */
    float       d;
    char        t;
    for (i = 0; i < 400; ++i) {
-      printf ("pan pos svo ::  --cX-- --cZ-- --cY--  --cy-- --cp-- --cr--  --oX-- --oZ-- --oY--  --of-- --op-- --ot--  rci  --tX-- --tZ-- --tY--  --rX-- --rZ-- --rY--  --rf-- --rp-- --rt--  --dX-- ----  --dZ-- ----  --rerr--  --gX-- --gZ-- --gY--  --dX-- ----  --dZ-- ----  --gerr--  a  --aX-- --aZ-- --aY--  --af-- --ap-- --at--  --dX-- ----  --dZ-- ----  --aerr--  g n f t\n");
+      printf ("pan pos svo ::  --cX-- --cZ-- --cY--  --cy-- --cp-- --cr--  --oX-- --oZ-- --oY--  --of-- --op-- --ot--  rci  --tX-- --tZ-- --tY--  --rX-- --rZ-- --rY--  --rf-- --rp-- --rt--  --dX-- ----  --dZ-- ----  --rerr--  --gX-- --gZ-- --gY--  --dX-- ----  --dZ-- ----  --gerr--  a  --aX-- --aZ-- --aY--  --af-- --ap-- --at--  --dX-- ----  --dZ-- ----  --aerr--  s G g N n ô F f ü T t ú U u û\n");
       for (j = 2; j < YKINE_MAX_LEGS; ++j) {
          if (p_curr->detail [j][i].r_rc < 0)  continue;
          printf ("%3d %3d %3d ::", p_curr->sect, i, j);
@@ -1674,13 +1776,40 @@ TICK_panel_dump         (void)
             else if (d < 2.0 && d > -2.0)  printf (" hmmm");
             else                           printf (" BOOM");
             printf ("  %8.3f", p_curr->detail [j][i].a_error);
+            printf (" ");
+            /*> for (k = 0; k < 10; ++k) {                                                                             <* 
+             *>    if (p_curr->detail [j][i].a_check [k] == '5')  printf (" -");                                       <* 
+             *>    else                                           printf (" %c", p_curr->detail [j][i].a_check [k]);   <* 
+             *> }                                                                                                      <*/
+            t = p_curr->detail [j][i].a_super;
+            printf (" %c", (t != 5) ? t + '0' : '-');
+            t = p_curr->detail [j][i].a_GROSS;
+            printf (" %c", (t != 5) ? t + '0' : '-');
             t = p_curr->detail [j][i].a_gross;
-            printf ("  %c", (t != 5) ? t + '0' : '-');
+            printf (" %c", (t != 5) ? t + '0' : '-');
+            t = p_curr->detail [j][i].a_NORMAL;
+            printf (" %c", (t != 5) ? t + '0' : '-');
             t = p_curr->detail [j][i].a_normal;
+            printf (" %c", (t != 5) ? t + '0' : '-');
+            t = p_curr->detail [j][i].a_normal3;
+            printf (" %c", (t != 5) ? t + '0' : '-');
+            t = p_curr->detail [j][i].a_FINE;
             printf (" %c", (t != 5) ? t + '0' : '-');
             t = p_curr->detail [j][i].a_fine;
             printf (" %c", (t != 5) ? t + '0' : '-');
+            t = p_curr->detail [j][i].a_fine3;
+            printf (" %c", (t != 5) ? t + '0' : '-');
+            t = p_curr->detail [j][i].a_TINY;
+            printf (" %c", (t != 5) ? t + '0' : '-');
             t = p_curr->detail [j][i].a_tiny;
+            printf (" %c", (t != 5) ? t + '0' : '-');
+            t = p_curr->detail [j][i].a_tiny3;
+            printf (" %c", (t != 5) ? t + '0' : '-');
+            t = p_curr->detail [j][i].a_ULTRA;
+            printf (" %c", (t != 5) ? t + '0' : '-');
+            t = p_curr->detail [j][i].a_ultra;
+            printf (" %c", (t != 5) ? t + '0' : '-');
+            t = p_curr->detail [j][i].a_ultra3;
             printf (" %c", (t != 5) ? t + '0' : '-');
          /*> }                                                                        <*/
          printf ("\n");
@@ -1927,7 +2056,7 @@ TICK_curr          (void)
    /*---(get the current data)-----------*/
    rc  = yVIKEYS_view_coords   (YVIKEYS_PROGRESS, NULL, &my.p_wide, NULL, &my.p_tall);
    rc  = yVIKEYS_prog_cur (&s_anchor, &my.p_cur, &my.p_scale, &my.p_inc, &my.p_line);
-   my.p_leg = my.p_line - 2;
+   my.p_leg = my.p_line - 1;
    /*---(secs per panel)-----------------*/
    DEBUG_GRAF   yLOG_double  ("p_cur"     , my.p_cur);
    DEBUG_GRAF   yLOG_double  ("p_scale"   , my.p_scale);

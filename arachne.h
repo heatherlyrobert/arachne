@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "1.0c"
-#define VER_TXT   "ik adjusting logic roughed in to get closest match (later move to yKINE)"
+#define VER_NUM   "1.0d"
+#define VER_TXT   "ik adjusting logic report very sweet and more detailed (later move to yKINE)"
 
 
 

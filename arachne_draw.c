@@ -333,7 +333,7 @@ draw_leg                (int a_leg, float a_body, float a_coxa, float a_femu, fl
       /*---(thorax)----------------------*/
       glTranslatef (a_body,  0.0,  0.0f);
       draw_leg_label (a_leg, YKINE_THOR, a_coxa);
-      if ((a_leg - YKINE_RR) == my.p_leg) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+      if (a_leg == my.p_leg) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
       glPushMatrix (); {
          /*---(label)-------*/
          snprintf (x_msg, 10, "#%d/%s", a_leg, legs_name [a_leg]);
