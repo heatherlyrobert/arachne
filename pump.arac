@@ -1,0 +1,23 @@
+#!/usr/local/bin/arachne
+#   spider visualization and simulation script
+
+
+
+ze_pure       -a-  zz  -       -.-     -.-     -.-  -            
+or_pure       -a-  oo  -       -.-     -.-     -.-  -            
+fk_pure       -a-  AA  -       -.-     -.-     -.-  -            
+
+ik_from       -a-  RR  300     -.-     -.-     -.-  -            
+ik_from       -a-  RM  300     -.-     -.-     -.-  -            
+ik_from       -a-  RF  300     -.-     -.-     -.-  -            
+ik_from       -a-  LF  300     -.-     -.-     -.-  -            
+ik_from       -a-  LM  300     -.-     -.-     -.-  -            
+ik_from       -a-  LR  300     -.-     -.-     -.-  -            
+
+or_pure       -a-  zz  200     -.-     -.-     -.-               
+ze_pure       -a-  zz    4     -.-     -.-    30.0               
+ze_pure       -a-  zz    4     -.-     -.-   -30.0               
+REPEAT        -a-  zz    2      20  -------------------------------  
+
+
+#end-of-file

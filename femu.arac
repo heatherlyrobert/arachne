@@ -1,0 +1,78 @@
+#!/usr/local/bin/arachne
+#   spider visualization and simulation script
+
+#==(verb)======  ver  ==(leg)===  ==(secs)==  ==(femu)==  ==(pate)==  ==(tibi)==  ==(adjs)============ 
+#full_leg         -a-  aa               0.000       0.000       0.000      90.000  -                    
+
+#==(verb)======  ver  ==(leg)===  ==(secs)==  ==(xpos)==  ==(zpos)==  ==(ypos)==  ==(adjs)============ 
+#6_GAIT_BEG       -a-  aa                   -           -           -           -  -                    
+#  inverse        -a-  aa               0.500     -10.000       0.000      20.000  attn,zR2L            
+#  inverse        -a-  aa               0.500     -10.000     -40.000       0.000  attn,zR2L            
+#  inverse        -a-  aa               0.500     -10.000     -20.000       0.000  attn,zR2L            
+#  inverse        -a-  aa               0.500     -10.000       0.000       0.000  attn,zR2L            
+#  inverse        -a-  aa               0.500     -10.000      20.000       0.000  attn,zR2L            
+#  inverse        -a-  aa               0.500     -10.000      40.000       0.000  attn,zR2L            
+#  REPEAT         -b-  aa.femu             10           6           -           -  -                    
+#  REPEAT         -b-  aa.pate             10           6           -           -  -                    
+#  REPEAT         -b-  aa.tibi             10           6           -           -  -                    
+#  6_GAIT_END     -a-  315240     
+
+#==(verb)======  ver  ==(leg)===  ==(secs)==  ==(xpos)==  ==(zpos)==  ==(ypos)==  ==(adjs)============ 
+#6_GAIT_BEG       -a-  aa                   -           -           -           -  -                    
+#  inverse        -a-  aa               0.500     -40.000       0.000      20.000  crab                 
+#  inverse        -a-  aa               0.500     -60.000       0.000       0.000  crab                 
+#  inverse        -a-  aa               0.500     -50.000       0.000       0.000  crab                 
+#  inverse        -a-  aa               0.500     -40.000       0.000       0.000  crab                 
+#  inverse        -a-  aa               0.500     -30.000       0.000       0.000  crab                 
+#  inverse        -a-  aa               0.500     -20.000       0.000       0.000  crab                 
+#  REPEAT         -b-  aa.femu             10           6           -           -  -                    
+#  REPEAT         -b-  aa.pate             10           6           -           -  -                    
+#  REPEAT         -b-  aa.tibi             10           6           -           -  -                    
+#  6_GAIT_END     -a-  315240     
+
+
+#==(verb)======  ver  ==(leg)===  ==(secs)==  ==(xpos)==  ==(zpos)==  ==(ypos)==  ==(adjs)============ 
+#6_GAIT_BEG       -a-  aa                   -           -           -           -  -                    
+#  inverse        -a-  La               0.500     -40.000       0.000      60.000  crab                 
+#  inverse        -a-  La               0.500     -60.000       0.000      30.000  crab                 
+#  inverse        -a-  La               0.500     -50.000       0.000      30.000  crab                 
+#  inverse        -a-  La               0.500     -40.000       0.000      30.000  crab                 
+#  inverse        -a-  La               0.500     -30.000       0.000      30.000  crab                 
+#  inverse        -a-  La               0.500     -20.000       0.000      30.000  crab                 
+#  inverse        -a-  Ra               0.500      40.000       0.000      60.000  crab                 
+#  inverse        -a-  Ra               0.500      20.000       0.000      30.000  crab                 
+#  inverse        -a-  Ra               0.500      30.000       0.000      30.000  crab                 
+#  inverse        -a-  Ra               0.500      40.000       0.000      30.000  crab                 
+#  inverse        -a-  Ra               0.500      50.000       0.000      30.000  crab                 
+#  inverse        -a-  Ra               0.500      60.000       0.000      30.000  crab                 
+#  REPEAT         -b-  aa.femu             10           6           -           -  -                    
+#  REPEAT         -b-  aa.pate             10           6           -           -  -                    
+#  REPEAT         -b-  aa.tibi             10           6           -           -  -                    
+#  6_GAIT_END     -a-  315240     
+#
+full_leg         -a-  aa               0.000       0.000       0.000      90.000  -                    
+
+full_leg         -a-  aa               1.000       0.000      45.000     100.000  -                    
+
+full_leg         -a-  aa               1.000       0.000     -45.000     100.000  -                    
+
+#==(verb)======  ver  ==(leg)===  ==(secs)==  ==(xpos)==  ==(zpos)==  ==(ypos)==  ==(adjs)============ 
+6_GAIT_BEG       -a-  aa                   -           -           -           -  -                    
+  inverse        -a-  La               0.500     -20.000       0.000      30.000  crab                 
+  inverse        -a-  La               0.500     -40.000       0.000       0.000  crab                 
+  inverse        -a-  La               0.500     -30.000       0.000       0.000  crab                 
+  inverse        -a-  La               0.500     -20.000       0.000       0.000  crab                 
+  inverse        -a-  La               0.500     -10.000       0.000       0.000  crab                 
+  inverse        -a-  La               0.500       0.000       0.000       0.000  crab                 
+  inverse        -a-  Ra               0.500      20.000       0.000      30.000  crab                 
+  inverse        -a-  Ra               0.500       0.000       0.000       0.000  crab                 
+  inverse        -a-  Ra               0.500      10.000       0.000       0.000  crab                 
+  inverse        -a-  Ra               0.500      20.000       0.000       0.000  crab                 
+  inverse        -a-  Ra               0.500      30.000       0.000       0.000  crab                 
+  inverse        -a-  Ra               0.500      40.000       0.000       0.000  crab                 
+  REPEAT         -b-  aa.femu             10           6           -           -  -                    
+  REPEAT         -b-  aa.pate             10           6           -           -  -                    
+  REPEAT         -b-  aa.tibi             10           6           -           -  -                    
+  6_GAIT_END     -a-  315240     
+
+#end-of-file

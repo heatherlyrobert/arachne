@@ -551,10 +551,7 @@ DRAW__body_detail  (char a_type)
             glRotatef  ( legs_deg [x_leg], 0.0f, 1.0f, 0.0f);
             /*---(check servos)----------*/
             x_coxa  = legs_deg [x_leg];
-            rc = TICK_exact (x_leg, &x_femu, &x_pate, &x_tibi);
-            /*> rc = yKINE_exact  (x_leg, YKINE_FEMU, &x_femu, NULL, NULL, NULL);     <* 
-             *> rc = yKINE_exact  (x_leg, YKINE_PATE, &x_pate, NULL, NULL, NULL);     <* 
-             *> rc = yKINE_exact  (x_leg, YKINE_TIBI, &x_tibi, NULL, NULL, NULL);     <*/
+            rc = TICK_exact_deg (x_leg, &x_femu, &x_pate, &x_tibi);
             /*---(draw)------------------*/
             DRAW_wire_leg  (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
             /*---(done)------------------*/
@@ -576,7 +573,7 @@ DRAW_wire_body     (void)
    float       x_pate      =  0.0;
    float       x_tibi      =  0.0;
    /*---(prepare)------------------------*/
-   center.by = 130.0;
+   /*> center.by = 130.0;                                                             <*/
    /*---(body)---------------------------*/
    glPushMatrix (); {
       /*> yKINE_exact_all ( my.p_cur);                                                <*/
@@ -586,10 +583,7 @@ DRAW_wire_body     (void)
             glRotatef  ( legs_deg [x_leg], 0.0f, 1.0f, 0.0f);
             /*---(check servos)----------*/
             x_coxa  = legs_deg [x_leg];
-            rc = TICK_exact (x_leg, &x_femu, &x_pate, &x_tibi);
-            /*> rc = yKINE_exact  (x_leg, YKINE_FEMU, &x_femu, NULL, NULL, NULL);     <* 
-             *> rc = yKINE_exact  (x_leg, YKINE_PATE, &x_pate, NULL, NULL, NULL);     <* 
-             *> rc = yKINE_exact  (x_leg, YKINE_TIBI, &x_tibi, NULL, NULL, NULL);     <*/
+            rc = TICK_exact_deg (x_leg, &x_femu, &x_pate, &x_tibi);
             /*---(draw)------------------*/
             DRAW_wire_leg  (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
             /*---(done)------------------*/
@@ -597,6 +591,29 @@ DRAW_wire_body     (void)
       }
    } glPopMatrix   ();
    /*---(complete)-----------------------*/
+   return 0;
+}
+
+char
+DRAW_turtle             (void)
+{
+   char        rc          =    0;
+   float       s;
+   float       x, xp, z, zp, y, yp;
+   rc = yKINE_zero_first (&s, &x, &z, &y);
+   while (rc >= 0) {
+      /*---(save prev)-------------------*/
+      xp = x;
+      zp = z;
+      yp = y;
+      /*---(get next)--------------------*/
+      rc = yKINE_zero_next  (&s, &x, &z, &y);
+      if (rc < 0)  break;
+      glBegin (GL_LINES); {
+         glVertex3f (xp, yp + 2.0, zp);
+         glVertex3f (x , y  + 2.0, z );
+      } glEnd ();
+   }
    return 0;
 }
 
@@ -625,23 +642,22 @@ DRAW_spider        (void)
 
 
    /*---(begin)--------------------------*/
-   center.by = 130.0;
    glPushMatrix (); {
       yGOD_view ();
-      glTranslatef    (     0.0 , - 85.0,      0.0 );
-      glTranslatef    (     0.0 , - 50.0,      0.0 );
+      draw_arrow      ();
+      /*> DRAW_reset      ();                                                         <*/
+      glTranslatef    (     0.0 , -130.0,      0.0 );
       glCallList      (dl_ground);
+      DRAW_turtle ();
+      glTranslatef    (     0.0 ,  130.0,      0.0 );
       yKINE_exact_all  ( my.p_cur);
-      yKINE_zero_pos     (&x, &z, &y);
-      glTranslatef    (       x , y + 85.0,       z  );
-      rc = yKINE_exact  (YKINE_BODY, YKINE_YAW  , &x_femu, NULL, NULL, NULL);
-      rc = yKINE_exact  (YKINE_BODY, YKINE_PITCH, &x_pate, NULL, NULL, NULL);
-      rc = yKINE_exact  (YKINE_BODY, YKINE_ROLL , &x_tibi, NULL, NULL, NULL);
+      TICK_exact_deg  (YKINE_BODY, &x_femu, &x_pate, &x_tibi);
       glRotatef (x_femu, 0.0f, 1.0f, 0.0f);
-      glRotatef (x_pate, 1.0f, 0.0f, 0.0f);
       glRotatef (x_tibi, 0.0f, 0.0f, 1.0f);
-      /*> draw_arrow      ();                                                         <*/
-      /*> if (flag_annotate == 'y')  draw__center ();                                 <*/
+      glRotatef (x_pate, 1.0f, 0.0f, 0.0f);
+      TICK_exact_end  (YKINE_BODY, &x, &z, &y);
+      glTranslatef    (x, y, z);
+      draw_center     ();
       glCallList      (dl_body);
       for (x_leg = YKINE_RR; x_leg <= YKINE_LR; ++x_leg) {
          glPushMatrix (); {
@@ -651,15 +667,9 @@ DRAW_spider        (void)
             /*---(default values)--------*/
             x_coxa  = legs_deg [x_leg];
             /*---(check servos)----------*/
-            rc = TICK_exact (x_leg, &x_femu, &x_pate, &x_tibi);
-            /*> rc = yKINE_exact  (x_leg, YKINE_FEMU, &x_femu, NULL, NULL, NULL);     <* 
-             *> rc = yKINE_exact  (x_leg, YKINE_PATE, &x_pate, NULL, NULL, NULL);     <* 
-             *> rc = yKINE_exact  (x_leg, YKINE_TIBI, &x_tibi, NULL, NULL, NULL);     <*/
+            rc = TICK_exact_deg (x_leg, &x_femu, &x_pate, &x_tibi);
             /*---(draw)------------------*/
             draw_leg   (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
-            /*---(calc in yKINE)---------*/
-            /*> yKINE_forward  (x_leg, x_femu, x_pate, x_tibi);                       <*/
-            /*> KINE_write     (x_leg);                                               <*/
             /*---(done)------------------*/
          } glPopMatrix ();
       }
@@ -780,12 +790,12 @@ draw_setup ()
          gk[i][YKINE_TARS].d     =    0.0f;
       }
    }
-   if (arg_y != 0.0) {
-      printf("setting center to %8.1f\n", arg_y);
-      center.by = arg_y;
-   }
+   /*> if (arg_y != 0.0) {                                                            <* 
+    *>    printf("setting center to %8.1f\n", arg_y);                                 <* 
+    *>    center.by = arg_y;                                                          <* 
+    *> }                                                                              <*/
    /*> my_y   = lens[YKINE_TIBI];                                                           <*/
-   my_y   = center.by;
+   /*> my_y   = center.by;                                                            <*/
    /*-------- label   min     max   start    step   minor   major -----*/
    yGOD_axis( 'v',      0,    360,     25,      1,      5,     45);
    yGOD_axis( 'o',      0,    360,     20,      1,      5,     45);
@@ -2415,32 +2425,32 @@ position_draw(int a_leg)
             *>    return;                                                                                        <* 
             *> }                                                                                                 <*/
 
-void
-draw_masscenter    (void)
-{
-   /*---(locals)-------------------------*/
-   float     x, z;
-   int       deg;
-   float     rad;
-   /*---(center)-------------------------*/
-   glPushMatrix (); {
-      /*> glTranslatef(center.mcx + center.bx, center.mcy - center.by, center.mcz + center.bz);   <*/
-      glTranslatef(center.mcx, center.mcy, center.mcz);
-      glLineWidth ( 5.0);
-      glColor4f (1.0f, 0.0f, 0.0f, 1.0f);
-      glBegin   (GL_LINE_STRIP);
-      for (deg = 0; deg < 365; deg += 5) {
-         rad = deg * DEG2RAD;
-         x   = 15.0 * cos (rad);
-         z   = 15.0 * sin (rad);
-         glVertex3f ( x, 0.00f, z);
-      }
-      glEnd     ();
-      glLineWidth ( 0.5);
-   } glPopMatrix ();
-   /*---(complete)-----------------------*/
-   return;
-}
+            /*> void                                                                                                    <* 
+             *> draw_masscenter    (void)                                                                               <* 
+             *> {                                                                                                       <* 
+             *>    /+---(locals)-------------------------+/                                                             <* 
+             *>    float     x, z;                                                                                      <* 
+             *>    int       deg;                                                                                       <* 
+             *>    float     rad;                                                                                       <* 
+             *>    /+---(center)-------------------------+/                                                             <* 
+             *>    glPushMatrix (); {                                                                                   <* 
+             *>       /+> glTranslatef(center.mcx + center.bx, center.mcy - center.by, center.mcz + center.bz);   <+/   <* 
+             *>       glTranslatef(center.mcx, center.mcy, center.mcz);                                                 <* 
+             *>       glLineWidth ( 5.0);                                                                               <* 
+             *>       glColor4f (1.0f, 0.0f, 0.0f, 1.0f);                                                               <* 
+             *>       glBegin   (GL_LINE_STRIP);                                                                        <* 
+             *>       for (deg = 0; deg < 365; deg += 5) {                                                              <* 
+             *>          rad = deg * DEG2RAD;                                                                           <* 
+             *>          x   = 15.0 * cos (rad);                                                                        <* 
+             *>          z   = 15.0 * sin (rad);                                                                        <* 
+             *>          glVertex3f ( x, 0.00f, z);                                                                     <* 
+             *>       }                                                                                                 <* 
+             *>       glEnd     ();                                                                                     <* 
+             *>       glLineWidth ( 0.5);                                                                               <* 
+             *>    } glPopMatrix ();                                                                                    <* 
+             *>    /+---(complete)-----------------------+/                                                             <* 
+             *>    return;                                                                                              <* 
+             *> }                                                                                                       <*/
 
 void
 draw_arrow()
@@ -2450,88 +2460,109 @@ draw_arrow()
    int       deg;
    float     rad;
    /*---(arrow)--------------------------*/
-   glColor3f(0.0f, 1.0f, 0.0f);
-   glBegin(GL_LINE_STRIP);
-   glVertex3f( 0.0f * 25, 0.0f * 25,-1.0f * 25);
-   glVertex3f( 1.0f * 25, 0.0f * 25, 0.0f * 25);
-   glVertex3f( 0.5f * 25, 0.0f * 25, 0.0f * 25);
-   glVertex3f( 0.5f * 25, 0.0f * 25, 1.0f * 25);
-   glVertex3f(-0.5f * 25, 0.0f * 25, 1.0f * 25);
-   glVertex3f(-0.5f * 25, 0.0f * 25, 0.0f * 25);
-   glVertex3f(-1.0f * 25, 0.0f * 25, 0.0f * 25);
-   glVertex3f( 0.0f * 25, 0.0f * 25,-1.0f * 25);
-   glEnd();
+   /*> glColor3f(0.0f, 1.0f, 0.0f);                                                   <*/
+   glBegin(GL_POLYGON); {
+      glVertex3f ( 0.0f * 25, 0.0f * 25,-1.0f * 25);
+      glVertex3f ( 1.0f * 25, 0.0f * 25, 0.0f * 25);
+      glVertex3f ( 0.5f * 25, 0.0f * 25, 0.0f * 25);
+      glVertex3f ( 0.5f * 25, 0.0f * 25, 1.0f * 25);
+      glVertex3f (-0.5f * 25, 0.0f * 25, 1.0f * 25);
+      glVertex3f (-0.5f * 25, 0.0f * 25, 0.0f * 25);
+      glVertex3f (-1.0f * 25, 0.0f * 25, 0.0f * 25);
+      glVertex3f ( 0.0f * 25, 0.0f * 25,-1.0f * 25);
+   } glEnd();
    /*---(center)-------------------------*/
-   glLineWidth ( 5.0);
-   glColor4f (0.5f, 0.0f, 1.0f, 0.5f);
-   glBegin   (GL_QUAD_STRIP);
-   for (deg = 0; deg < 365; deg += 30) {
-      rad = deg * DEG2RAD;
-      x   = 5.0 * cos (rad);
-      z   = 5.0 * sin (rad);
-      glVertex3f ( x,    0.00f, z);
-      glVertex3f ( x, -130.00f, z);
-   }
-   glEnd     ();
-   glLineWidth ( 0.5);
+   /*> glLineWidth ( 5.0);                                                            <* 
+    *> glColor4f (0.5f, 0.0f, 1.0f, 0.5f);                                            <* 
+    *> glBegin   (GL_QUAD_STRIP);                                                     <* 
+    *> for (deg = 0; deg < 365; deg += 30) {                                          <* 
+    *>    rad = deg * DEG2RAD;                                                        <* 
+    *>    x   = 5.0 * cos (rad);                                                      <* 
+    *>    z   = 5.0 * sin (rad);                                                      <* 
+    *>    glVertex3f ( x,    0.00f, z);                                               <* 
+    *>    glVertex3f ( x, -130.00f, z);                                               <* 
+    *> }                                                                              <* 
+    *> glEnd     ();                                                                  <* 
+    *> glLineWidth ( 0.5);                                                            <*/
    /*---(complete)-----------------------*/
    return;
 }
 
 void
-draw_contact       (void)
+draw_center             (void)
 {
-   /*---(locals)-------*-----------------*/
-   int       i         = 0;
+   /*---(locals)-------------------------*/
    float     x, z;
    int       deg;
    float     rad;
-   /*---(polygon)------------------------*/
-   glColor4f       (0.5f, 0.0f, 1.0f, 0.1f);
-   glPolygonMode   (GL_FRONT_AND_BACK, GL_FILL);
-   glBegin         (GL_POLYGON);
-   for (i = 0; i < LEGS; ++i) {
-      if (gait.tleg[(int) my.p_cur][i] != 1) continue;
-      glVertex3f      ( gk [i][YKINE_TIBI].cx - center.bx, -center.by , gk [i][YKINE_TIBI].cz - center.bz);
-   }
-   glEnd           ();
-   /*---(touches)------------------------*/
    glLineWidth ( 5.0);
-   for (i = 0; i < LEGS; ++i) {
-      switch (gait.tleg[(int) my.p_cur][i]) {
-      case  0  : 
-         glColor4f       (0.2f, 0.2f, 0.2f, 1.0f);
-         break;
-      case  1  : 
-         glColor4f       (0.5f, 0.0f, 1.0f, 1.0f);
-         break;
-      case -1  : 
-         glColor4f       (1.0f, 0.0f, 0.5f, 1.0f);
-         break;
-      }
-      if (gait.tleg[(int) my.p_cur][i] != 0) {
-         glBegin   (GL_LINE_STRIP);
-         for (deg = 0; deg < 365; deg +=  5) {
-            rad = deg * DEG2RAD;
-            x   = 25.0 * cos (rad) + gk[i][YKINE_TIBI].cx - center.bx;
-            z   = 25.0 * sin (rad) + gk[i][YKINE_TIBI].cz - center.bz;
-            glVertex3f ( x, -center.by + 2.0, z);
-         }
-         glEnd     ();
-      }
-      glBegin   (GL_LINE_STRIP);
-      for (deg = 0; deg < 365; deg +=  5) {
-         rad = deg * DEG2RAD;
-         x   =  5.0 * cos (rad) + gk[i][YKINE_TIBI].cx - center.bx;
-         z   =  5.0 * sin (rad) + gk[i][YKINE_TIBI].cz - center.bz;
-         glVertex3f ( x, -center.by + 2.0, z);
-      }
-      glEnd     ();
+   glColor4f (0.5f, 0.0f, 1.0f, 0.5f);
+   glBegin   (GL_QUAD_STRIP);
+   for (deg = 0; deg < 365; deg += 30) {
+      rad = deg * DEG2RAD;
+      x   = 1.0 * cos (rad);
+      z   = 1.0 * sin (rad);
+      glVertex3f ( x,    0.00f, z);
+      glVertex3f ( x, -128.00f, z);
    }
+   glEnd     ();
    glLineWidth ( 0.5);
-   /*---(complete)-----------------------*/
-   return;
 }
+
+/*> void                                                                                                          <* 
+ *> draw_contact       (void)                                                                                     <* 
+ *> {                                                                                                             <* 
+ *>    /+---(locals)-------*-----------------+/                                                                   <* 
+ *>    int       i         = 0;                                                                                   <* 
+ *>    float     x, z;                                                                                            <* 
+ *>    int       deg;                                                                                             <* 
+ *>    float     rad;                                                                                             <* 
+ *>    /+---(polygon)------------------------+/                                                                   <* 
+ *>    glColor4f       (0.5f, 0.0f, 1.0f, 0.1f);                                                                  <* 
+ *>    glPolygonMode   (GL_FRONT_AND_BACK, GL_FILL);                                                              <* 
+ *>    glBegin         (GL_POLYGON);                                                                              <* 
+ *>    for (i = 0; i < LEGS; ++i) {                                                                               <* 
+ *>       if (gait.tleg[(int) my.p_cur][i] != 1) continue;                                                        <* 
+ *>       glVertex3f      ( gk [i][YKINE_TIBI].cx - center.bx, -center.by , gk [i][YKINE_TIBI].cz - center.bz);   <* 
+ *>    }                                                                                                          <* 
+ *>    glEnd           ();                                                                                        <* 
+ *>    /+---(touches)------------------------+/                                                                   <* 
+ *>    glLineWidth ( 5.0);                                                                                        <* 
+ *>    for (i = 0; i < LEGS; ++i) {                                                                               <* 
+ *>       switch (gait.tleg[(int) my.p_cur][i]) {                                                                 <* 
+ *>       case  0  :                                                                                              <* 
+ *>          glColor4f       (0.2f, 0.2f, 0.2f, 1.0f);                                                            <* 
+ *>          break;                                                                                               <* 
+ *>       case  1  :                                                                                              <* 
+ *>          glColor4f       (0.5f, 0.0f, 1.0f, 1.0f);                                                            <* 
+ *>          break;                                                                                               <* 
+ *>       case -1  :                                                                                              <* 
+ *>          glColor4f       (1.0f, 0.0f, 0.5f, 1.0f);                                                            <* 
+ *>          break;                                                                                               <* 
+ *>       }                                                                                                       <* 
+ *>       if (gait.tleg[(int) my.p_cur][i] != 0) {                                                                <* 
+ *>          glBegin   (GL_LINE_STRIP);                                                                           <* 
+ *>          for (deg = 0; deg < 365; deg +=  5) {                                                                <* 
+ *>             rad = deg * DEG2RAD;                                                                              <* 
+ *>             x   = 25.0 * cos (rad) + gk[i][YKINE_TIBI].cx - center.bx;                                        <* 
+ *>             z   = 25.0 * sin (rad) + gk[i][YKINE_TIBI].cz - center.bz;                                        <* 
+ *>             glVertex3f ( x, -center.by + 2.0, z);                                                             <* 
+ *>          }                                                                                                    <* 
+ *>          glEnd     ();                                                                                        <* 
+ *>       }                                                                                                       <* 
+ *>       glBegin   (GL_LINE_STRIP);                                                                              <* 
+ *>       for (deg = 0; deg < 365; deg +=  5) {                                                                   <* 
+ *>          rad = deg * DEG2RAD;                                                                                 <* 
+ *>          x   =  5.0 * cos (rad) + gk[i][YKINE_TIBI].cx - center.bx;                                           <* 
+ *>          z   =  5.0 * sin (rad) + gk[i][YKINE_TIBI].cz - center.bz;                                           <* 
+ *>          glVertex3f ( x, -center.by + 2.0, z);                                                                <* 
+ *>       }                                                                                                       <* 
+ *>       glEnd     ();                                                                                           <* 
+ *>    }                                                                                                          <* 
+ *>    glLineWidth ( 0.5);                                                                                        <* 
+ *>    /+---(complete)-----------------------+/                                                                   <* 
+ *>    return;                                                                                                    <* 
+ *> }                                                                                                             <*/
 
 
 

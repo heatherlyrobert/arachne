@@ -1,0 +1,73 @@
+#!/usr/local/bin/arachne
+#   spider visualization and simulation script
+
+
+#==(verb)======  ver  =(segs)=  =(secs)=  =(femu)=  =(pate)=  =(tibi)=  ==(adjs)============ 
+fk_pure          -a-  aa.full      0.000      0.00    -25.00    100.00  -                    
+
+fk_pure          -a-  RR.full      1.000      0.00      0.00     90.00  -                    
+fk_pure          -a-  RM.full      1.000      0.00      0.00     90.00  -                    
+fk_pure          -a-  RF.full      1.000      0.00      0.00     90.00  -                    
+fk_pure          -a-  LF.full      1.000      0.00      0.00     90.00  -                    
+fk_pure          -a-  LM.full      1.000      0.00      0.00     90.00  -                    
+fk_pure          -a-  LR.full      1.000      0.00      0.00     90.00  -                    
+
+06_GAIT_BEG      -a-  aa               -         -         -         -  -                    
+  ik_from        -a-  aa.full      0.500      0.00      0.00     10.00  -                    
+  ik_from        -a-  aa.full      0.500    -20.00      0.00      0.00  -                    
+  ik_from        -a-  aa.full      0.500    -10.00      0.00      0.00  -                    
+  ik_from        -a-  aa.full      0.500      0.00      0.00      0.00  -                    
+  ik_from        -a-  aa.full      0.500     10.00      0.00      0.00  -                    
+  ik_from        -a-  aa.full      0.500     20.00      0.00      0.00  -                    
+  REPEAT         -b-  aa.femu         10         6         -         -  -                    
+  REPEAT         -b-  aa.pate         10         6         -         -  -                    
+  REPEAT         -b-  aa.tibi         10         6         -         -  -                    
+  06_GAIT_END    -a-  315240   
+
+#==(verb)=====  ver  =(segs)=  =(secs)=  =(femu)=  =(pate)=  =(tibi)=  ==(adjs)============ 
+#12_GAIT_BEG     -a-  aa               -         -         -         -  -                    
+#  ik_from       -a-  aa.full      0.250      0.00      0.00     10.00  -                    
+#  ik_from       -a-  aa.full      0.250    -25.00      0.00      5.00  -                    
+#  ik_from       -a-  aa.full      0.250    -20.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250    -15.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250    -10.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250     -5.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250      0.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250      5.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250     10.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250     15.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250     20.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250     25.00      0.00      5.00  -                    
+#  REPEAT        -b-  aa.femu         10        12         -         -  -                    
+#  REPEAT        -b-  aa.pate         10        12         -         -  -                    
+#  REPEAT        -b-  aa.tibi         10        12         -         -  -                    
+#  12_GAIT_END   -a-  315240   
+
+#==(verb)=====  ver  =(segs)=  =(secs)=  =(femu)=  =(pate)=  =(tibi)=  ==(adjs)============ 
+#
+# walk            -a-  crab_left                                                                        
+#circle          -a-                                                                                   
+#
+#12_GAIT_BEG     -a-  aa               -         -         -         -  -                    
+#  ik_from       -a-  aa.full      0.250      0.00      0.00     20.00  -                    
+#  ik_from       -a-  aa.full      0.250    -45.00      0.00     10.00  -                    
+#  ik_from       -a-  aa.full      0.250    -40.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250    -30.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250    -20.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250    -10.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250      0.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250     10.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250     20.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250     30.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250     40.00      0.00      0.00  -                    
+#  ik_from       -a-  aa.full      0.250     45.00      0.00     10.00  -                    
+#  REPEAT        -b-  aa.femu         10        12         -         -  -                    
+#  REPEAT        -b-  aa.pate         10        12         -         -  -                    
+#  REPEAT        -b-  aa.tibi         10        12         -         -  -                    
+#  12_GAIT_END   -a-  315240   
+
+
+#==(verb)=====  ver  =(segs)=  =(secs)=  =(x/fe)=  =(z/pa)=  =(y/ti)=  ==(adjs)============ 
+#CIRCLE          -a-  315240       0.250      0.00   -200.00     10.00  -                    
+
+#end-of-file

@@ -1,0 +1,26 @@
+#!/usr/local/bin/arachne
+#   spider visualization and simulation script
+
+#==(verb)===  ver  =(segs)=  =(secs)=  =x/femu=  =y/pate=  =z/tibi=  ==(adjs)============ 
+#
+SYNC
+fk_pure       -a-  aa.full      0.000      0.00      0.00      0.00  -                    
+ze_pure       -a-  aa.full      0.000      0.00    130.00      0.00  -                    
+or_pure       -a-  aa.full      0.000      0.00      0.00      0.00  -                    
+
+fk_pure       -a-  aa.full      1.000      0.00      0.00      0.00  -                    
+ze_pure       -a-  aa.full      1.000      0.00    100.00      0.00  -                    
+or_pure       -a-  aa.full      1.000      0.00      0.00      0.00  -                    
+
+
+
+#or_from       -a-  aa.full      1.000      0.00      8.00      0.00  -                    
+#ik_from       -a-  aa.full      1.000      0.00      0.00      0.00  -                    
+#fk_pure       -a-  aa.full      1.000      0.00     90.00     80.00  -                    
+#fk_pure       -a-  aa.full      2.000      0.00    -45.00    -45.00  -                    
+#fk_pure       -a-  aa.full      2.000    -85.00     90.00     80.00  -                    
+
+#fk_pure       -a-  aa.full      3.000      0.00      0.00      0.00  -                    
+#ze_from       -a-  aa.full      1.000      0.00    -10.00      0.00  -                    
+#ze_from       -a-  aa.full      1.000      0.00     20.00      0.00  -                    
+#ze_from       -a-  aa.full      1.000      0.00    -10.00      0.00  -                    

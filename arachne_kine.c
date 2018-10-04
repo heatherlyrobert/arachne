@@ -86,7 +86,6 @@ char
 KINE_begin         (void)
 {
    yKINE_init      (0);
-   /*> yKINE_center    (0.0, 0.0, 0.0);                                               <*/
    KINE_load       ();
    if (my.p_dump   != '-') {
       f_dump = fopen ("arachne.dump", "w");
@@ -495,8 +494,14 @@ KINE_unitcond      (void)
 }
 
 
+
+/*====================------------------------------------====================*/
+/*===----             adjusted inverse kinematics testing              ----===*/
+/*====================------------------------------------====================*/
+static void      o___INVERSE_________________o (void) {;}
+
 char
-KINE_unitseg       (char *a_leg, int a_seg, int a_meth)
+KINE_unitseg_ik    (char *a_leg, int a_seg)
 {  /*---(design notes)-------------------*/
    /*
     *   always request opengl actuals from yKINE as the "true" test
@@ -514,45 +519,28 @@ KINE_unitseg       (char *a_leg, int a_seg, int a_meth)
    char        x_seg       [LEN_LABEL];
    char        x_segupper  [LEN_LABEL];
    char        x_full      [LEN_LABEL];
-   char        x_meth      [LEN_LABEL];
+   char       *x_meth      = "IK";
    int         x_forgive   = 1;
    strlcpy  (x_seg     , segs_name [a_seg], LEN_LABEL);
    strlcpy  (x_segupper, segs_name [a_seg], LEN_LABEL);
    for (i = 0; i < 4; ++i)  x_segupper [i] = toupper (x_segupper [i]);
    strlcpy  (x_full, segs_long [a_seg], LEN_LABEL);
-   if (a_meth == YKINE_FK) {
-      strlcpy  (x_meth, "FK", LEN_LABEL);
-      x_forgive = 1;
-   } else { 
-      strlcpy  (x_meth, "IK", LEN_LABEL);
-      x_forgive = 3;
-   }
    yKINE_angle     (my.p_leg, a_seg, YKINE_GK, &d, &l, &v, &h);       
    yKINE_endpoint  (my.p_leg, a_seg, YKINE_GK, &d, &l, &x, &z, &y);
-   /*---(same for both)------------------*/
-   if (a_seg <= YKINE_TROC || (a_seg >= YKINE_META && a_seg <= YKINE_FOOT)) {
-      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__%s                 YKINE_%s                                                                                              i_equal     0                                                                                                    \n" , x_meth, a_leg, x_full, x_seg, a_leg);
+   /*---(set values)---------------------*/
+   /*---(inverse)------------------------*/
+   switch (a_seg) {
+   case YKINE_FEMU : case YKINE_PATE : case YKINE_TIBI :
+      fprintf (f_cond, "     exec     v21  calc adapted IK on %s %-14s         yKINE__IK_%s              YKINE_%s                                                                                              i_equal     0                                                                                                    \n"   , a_leg, x_full, x_seg, a_leg);
+      break;
+   case YKINE_LOWR :
+      fprintf (f_cond, "     exec     v21  calc adapted IK on %s %-14s         yKINE__%s                 YKINE_%s       , YKINE_%s                                                                             i_equal     0                                                                                                    \n"   , a_leg, x_full, x_seg, a_leg, x_meth);
+      break;
+   case YKINE_TARG :
+      fprintf (f_cond, "     exec     v21  calc adapted IK on %s %-14s         yKINE__IK_%s              YKINE_%s       , %8.3lf       , %8.3lf       , %8.3lf                                           i_equal     0                                                                                                    \n"   , x_meth, a_leg, x_full, x_seg, a_leg, x, z, y);
+      break;
    }
-   /*---(forward special)----------------*/
-   else if (a_seg <= YKINE_TIBI && a_meth == YKINE_FK) {
-      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__%s                 YKINE_%s       , %8.3lf       , YKINE_%s                                                            i_equal     0                                                                                                    \n"   , x_meth, a_leg, x_full, x_seg, a_leg, d, x_meth);
-   }
-   else if (a_seg == YKINE_TARG && a_meth == YKINE_FK) {
-      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__FK_%s              YKINE_%s       , YKINE_%s                                                                             i_equal     0                                                                                                    \n"   , x_meth, a_leg, x_full, x_seg, a_leg, x_meth);
-   }
-   else if (a_seg >  YKINE_TIBI && a_meth == YKINE_FK) {
-      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__%s                 YKINE_%s       , YKINE_%s                                                                             i_equal     0                                                                                                    \n"   , x_meth, a_leg, x_full, x_seg, a_leg, x_meth);
-   }
-   /*---(inverse special)----------------*/
-   else if (a_seg <= YKINE_TIBI && a_meth == YKINE_IK) {
-      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__IK_%s              YKINE_%s                                                                                              i_equal     0                                                                                                    \n"   , x_meth, a_leg, x_full, x_seg, a_leg);
-   }
-   else if (a_seg == YKINE_LOWR && a_meth == YKINE_IK) {
-      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__%s                 YKINE_%s       , YKINE_%s                                                                             i_equal     0                                                                                                    \n"   , x_meth, a_leg, x_full, x_seg, a_leg, x_meth);
-   }
-   else if (a_seg == YKINE_TARG && a_meth == YKINE_IK) {
-      fprintf (f_cond, "     exec     v21  calc %s on %s %-14s         yKINE__IK_%s              YKINE_%s       , %8.3lf       , %8.3lf       , %8.3lf                                           i_equal     0                                                                                                    \n"   , x_meth, a_leg, x_full, x_seg, a_leg, x, z, y);
-   }
+   /*---(check)--------------------------*/
    fprintf (f_cond, "     get      v21  -- verify %s angles                  yKINE__getter               \"%s_seg_angle\" , YKINE_%s       , YKINE_%s                                                          u_round/%d   %s-%s.%s ang :%8.1lfd,%8.3lfv,%8.3lfh                                                        \n" , x_meth, x_meth, a_leg, x_segupper, x_forgive, x_meth, a_leg, x_seg, d, v, h);
    yKINE_segment   (my.p_leg, a_seg, YKINE_GK, &d, &l, &x, &z, &y);
    fprintf (f_cond, "     get      v21  -- verify %s segment                 yKINE__getter               \"%s_seg_size\"  , YKINE_%s       , YKINE_%s                                                          u_round/%d   %s-%s.%s siz :%8.1lfm,%8.1lfx,%8.1lfz,%8.1lfy                                              \n"   , x_meth, x_meth, a_leg, x_segupper, x_forgive, x_meth, a_leg, x_seg, l, x, z, y);
@@ -561,178 +549,38 @@ KINE_unitseg       (char *a_leg, int a_seg, int a_meth)
    return 0;
 }
 
-
-
 char
 KINE_unitcond_ik   (void)
 {
    /*---(locals)-----------+-----+-----+-*/
+   char        rc          =    0;
    char        x_leg       [LEN_LABEL];
+   float       x, z, y;
+   float       c, f, p, t;
    /*---(prepare common vars)------------*/
-   strlcpy  (x_leg, legs_name [(int) my.p_leg], LEN_LABEL);
+   if (my.p_leg < YKINE_RR || my.p_leg > YKINE_LP)  return -1;
+   strlcpy  (x_leg , legs_name [my.p_leg], LEN_LABEL);
    /*---(prepare for testing)------------*/
    fprintf (f_cond, "   COND       v21  inverse kinematics (IK)                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n", x_leg);
-   fprintf (f_cond, "     exec     v21  wipe all calculated values           yKINE__wipe                 YKINE_%s       , YKINE_FK                                                                             i_equal     0                                                                      \n", x_leg);
-   KINE_unitseg_ik  (x_leg, YKINE_TARG, YKINE_IK);
-   KINE_unitseg_ik  (x_leg, YKINE_FEMU, YKINE_IK);
-   KINE_unitseg_ik  (x_leg, YKINE_LOWR, YKINE_IK);
-   KINE_unitseg_ik  (x_leg, YKINE_PATE, YKINE_IK);
-   KINE_unitseg_ik  (x_leg, YKINE_TIBI, YKINE_IK);
+   fprintf (f_cond, "     exec     v21  wipe all calculated values           yKINE__wipe                 YKINE_%s  , YKINE_IK                                                                                  i_equal     0                                                                                                    \n", x_leg);
+   /*---(set body position)--------------*/
+   rc = TICK_exact_end    (YKINE_BODY, &x, &z, &y);
+   fprintf (f_cond, "     exec     v21  set zero-point values                yKINE_zero                  %8.3f, %8.3f, %8.3f                                                                          i_equal     0                                                                                                    \n", x, z, y);
+   rc = TICK_exact_deg    (YKINE_BODY, &f, &p, &t);
+   fprintf (f_cond, "     exec     v21  set orientation values               yKINE_orient                %8.3f, %8.3f, %8.3f                                                                          i_equal     0                                                                                                    \n", f, p, t);
+   /*---(run IK)-------------------------*/
+   rc = TICK_exact_target (my.p_leg, &x, &z, &y);
+   fprintf (f_cond, "     exec     v21  calc adapted IK on %s                yKINE_inverse_adapt         YKINE_%s  , %8.3f, %8.3f, %8.3f                                                              i_equal     0                                                                                                    \n"   , x_leg, x_leg, x, z, y);
+   /*---(check results)------------------*/
+   rc = yKINE_angle       (my.p_leg, YKINE_COXA, YKINE_IK, &c, NULL, NULL, NULL);
+   rc = TICK_exact_deg    (my.p_leg  , &f, &p, &t);
+   fprintf (f_cond, "     get      v21  verify all IK angles on %s           yKINE__getter               \"IK_result\" , YKINE_%s, YKINE_IK                                                                      u_round/1   IK-%s/angles   : %8.1fc, %8.1ff, %8.1fp, %8.1ft                                          \n" , x_leg, x_leg, x_leg, c, f, p, t);
+   rc = TICK_exact_end    (my.p_leg  , &x, &z, &y);
+   fprintf (f_cond, "     get      v21  verify IK endpoint on %s             yKINE__getter               \"IK_final\"  , YKINE_%s, YKINE_IK                                                                      u_round/1   IK-%s/final    : %8.1fx, %8.1fz, %8.1fy                                                     \n" , x_leg, x_leg, x_leg, x, z, y);
    /*---(add some space)-----------------*/
    fprintf (f_cond, "\n");
    fflush  (f_cond);
    /*---(complete)-----------------------*/
-   return 0;
-}
-
-
-
-/*> char       /+----: set all segments to defaults ------------------------------+/   <* 
- *> kine_init          (void)                                                          <* 
- *> {                                                                                  <* 
- *>    /+---(locals)-------------------------+/                                        <* 
- *>    int      x_leg = 0;              /+ iterator         +/                         <* 
- *>    int      x_seg = 0;              /+ iterator         +/                         <* 
- *>    /+---(set body)-----------------------+/                                        <* 
- *>    kine_center       (0.0f, 0.0f);                                                 <* 
- *>    kine_height       (segs_len [YKINE_TIBI]);                                      <* 
- *>    kine_pivot        (0.0f, 0.0f);                                                 <* 
- *>    kine_attitude     (0.0f, 0.0f, 0.0f);                                           <* 
- *>    /+---(clean legs)---------------------+/                                        <* 
- *>    for (x_leg = 0; x_leg < MAX_LEGS; ++x_leg) {                                    <* 
- *>       for (x_seg = 0; x_seg < MAX_SEGS; ++x_seg) {                                 <* 
- *>          kine_clear ("gk", &gk[x_leg][x_seg], x_leg, x_seg);                       <* 
- *>          kine_clear ("fk", &fk[x_leg][x_seg], x_leg, x_seg);                       <* 
- *>          kine_clear ("ik", &ik[x_leg][x_seg], x_leg, x_seg);                       <* 
- *>       }                                                                            <* 
- *>    }                                                                               <* 
- *>    /+---(complete)-----------------------+/                                        <* 
- *>    return 0;                                                                       <* 
- *> }                                                                                  <*/
-
-/*> char       /+----: set segment kimematics to defaults ------------------------+/         <* 
- *> kine_clear         (char *a_name, tSEG *a_curr, int a_nleg, int a_nseg)                  <* 
- *> {                                                                                        <* 
- *>    /+---(defenses)-----------------------+/                                              <* 
- *>    if (strlen(a_name) != 2)                   return -1;                                 <* 
- *>    if (a_curr  == NULL)                       return -2;                                 <* 
- *>    if (a_nleg  <  0  || a_nleg >= MAX_LEGS)   return -3;                                 <* 
- *>    if (a_nleg  <  0  || a_nleg >= MAX_SEGS)   return -4;                                 <* 
- *>    /+---(set name)-----------------------+/                                              <* 
- *>    snprintf(a_curr->n, 11, "%s.%s.%s", legs_name [a_nleg], segs_name[a_nseg], a_name);   <* 
- *>    /+---(set lengths)--------------------+/                                              <* 
- *>    a_curr->l   = segs_len [a_nseg];                                                      <* 
- *>    a_curr->sl  = segs_len [a_nseg];                                                      <* 
- *>    a_curr->fl  =   0.0;                                                                  <* 
- *>    /+---(angles)-------------------------+/                                              <* 
- *>    if (a_nseg <= YKINE_COXA)    a_curr->d   = legs_deg [a_nleg];                         <* 
- *>    a_curr->h   =   0.0;                                                                  <* 
- *>    a_curr->v   =   0.0;                                                                  <* 
- *>    a_curr->cd  =   0.0;                                                                  <* 
- *>    a_curr->ch  =   0.0;                                                                  <* 
- *>    a_curr->cv  =   0.0;                                                                  <* 
- *>    /+---(coordinates)--------------------+/                                              <* 
- *>    a_curr->x   =   0.0;                                                                  <* 
- *>    a_curr->z   =   0.0;                                                                  <* 
- *>    a_curr->xz  =   0.0;                                                                  <* 
- *>    a_curr->y   =   0.0;                                                                  <* 
- *>    a_curr->cx  =   0.0;                                                                  <* 
- *>    a_curr->cz  =   0.0;                                                                  <* 
- *>    a_curr->cy  =   0.0;                                                                  <* 
- *>    /+---(control)------------------------+/                                              <* 
- *>    a_curr->p   =   'n';                                                                  <* 
- *>    a_curr->m   =   'i';                                                                  <* 
- *>    a_curr->c   =   'n';                                                                  <* 
- *>    /+---(complete)-----------------------+/                                              <* 
- *>    return 0;                                                                             <* 
- *> }                                                                                        <*/
-
-
-
-
-
-/*====================------------------------------------====================*/
-/*===----                        body adjustments                      ----===*/
-/*====================------------------------------------====================*/
-static void      o___BODY____________________o (void) {;}
-
-char       /*----: change the center of gravity ------------------------------*/
-kine_center        (float  a_x, float  a_z)
-{
-   center.bx     = a_x;
-   center.bz     = a_z;
-   return 0;
-}
-
-char       /*----: change the center of gravity ------------------------------*/
-kine_height        (float  a_y)
-{
-   center.by     = a_y;
-   return 0;
-}
-
-char       /*----: change the pivot (center of movement) --------------------*/
-kine_pivot         (float  a_x, float  a_z)
-{
-   /*---(save position)-----------------------------------*/
-   if (a_x >  100.0)  a_x =  100.0;
-   if (a_x < -100.0)  a_x = -100.0;
-   center.mx     = a_x;
-   if (a_z >  100.0)  a_z =  100.0;
-   if (a_z < -100.0)  a_z = -100.0;
-   center.mz     = a_z;
-   /*---(complete)----------------------------------------*/
-   return 0;
-}
-
-char       /*----: change the body angles ------------------------------------*/
-kine_attitude      (float  a_roll, float  a_pitch, float  a_yaw)
-{
-   /*---(fix pitch angle)---------------------------------*/
-   /*--> properly only between -90 and 90 degrees         */
-   while (a_pitch <= -180.0 || a_pitch >  180.0) {
-      if (a_pitch <= -180.0)   a_pitch += 360.0;
-      if (a_pitch >   180.0)   a_pitch -= 360.0;
-   }
-   if (a_pitch <= -90.0) {
-      a_yaw    += 180.0;
-      a_pitch   = -(180.0 + a_pitch);
-      a_roll   += 180.0;
-   }
-   if (a_pitch >   90.0) {
-      a_yaw    += 180.0;
-      a_pitch   = 180.0 - a_pitch;
-      a_roll   += 180.0;
-   }
-   /*---(fix roll angle)----------------------------------*/
-   /*--> properly only between -180 and 180 degrees       */
-   while (a_roll  <= -180.0 || a_roll  >  180.0) {
-      if (a_roll  <= -180.0)   a_roll  += 360.0;
-      if (a_roll  >   180.0)   a_roll  -= 360.0;
-   }
-   /*---(fix yaw angle)-----------------------------------*/
-   /*--> properly only between -180 and 180 degrees       */
-   while (a_yaw   <= -180.0 || a_yaw   >  180.0) {
-      if (a_yaw   <= -180.0)   a_yaw   += 360.0;
-      if (a_yaw   >   180.0)   a_yaw   -= 360.0;
-   }
-   /*---(save values)-------------------------------------*/
-   center.dpitch = a_pitch;
-   center.droll  = a_roll;
-   center.dyaw   = a_yaw;
-   center.pitch  = a_pitch * DEG2RAD;
-   center.roll   = a_roll  * DEG2RAD;
-   center.yaw    = a_yaw   * DEG2RAD;
-   center.cy     = cos(center.yaw);
-   center.sy     = sin(center.yaw);
-   center.ny     = cos(-center.yaw);
-   center.cp     = cos(center.pitch);
-   center.sp     = sin(center.pitch);
-   center.np     = cos(-center.pitch);
-   center.cr     = cos(center.roll);
-   center.sr     = sin(center.roll);
-   center.nr     = cos(-center.roll);
-   /*---(complete)----------------------------------------*/
    return 0;
 }
 

@@ -1,0 +1,102 @@
+#!/usr/local/bin/arachne
+#   spider visualization and simulation script
+
+
+ze_pure               -     -.-      -.-      -.-  
+or_pure               -     -.-      -.-      -.-  
+fk_pure       AA    -     -.-      -.-     10.0  
+
+ik_from       AA  800     -.-      -.-      -.-  
+
+tu_speed (5)
+segno    (!!)
+   tu_move  (10)
+   tu_wait  (5)
+   segno    (!!)
+      tu_move  (30)
+      tu_turn  (90)
+      tu_wait  (5)
+   ripetere (!!, 3)
+   tu_turn  (45)
+ripetere (!!, 8)
+
+#  segno    (!!)
+#     tu_move  (20)
+#     tu_turn  (90)
+#  ripetere (!!, 3)
+#  tu_turn  (45)
+#  segno    (!!)
+#     tu_move  (20)
+#     tu_turn  (90)
+#  ripetere (!!, 3)
+#  tu_turn  (45)
+#  segno    (!!)
+#     tu_move  (20)
+#     tu_turn  (90)
+#  ripetere (!!, 3)
+#  tu_turn  (45)
+#  segno    (!!)
+#     tu_move  (20)
+#     tu_turn  (90)
+#  ripetere (!!, 3)
+#  tu_turn  (45)
+#  segno    (!!)
+#     tu_move  (20)
+#     tu_turn  (90)
+#  ripetere (!!, 3)
+
+#segno         !!  ----------------------------------------------------------------- 
+#  or_pure            40     -.-      -.-      -.-  
+#  zp_pure            10    45.0     52.0      -.-  
+#  zp_pure            10   135.0     52.0      -.-  
+#  zp_pure            10   225.0     52.0      -.-  
+#  zp_pure            10   315.0     52.0      -.-  
+#ripetere      !!    9  ---------------------------------------------------------- 
+
+#or_pure              10     -.-      -.-      -.-  
+#ze_polar             10     -.-      -.-      -.-  
+
+
+
+#tu_home      
+#tu_move         15.0  
+#tu_goto        100.0     42.0  
+
+#tu_turn        -45.0  
+#tu_head        -45.0  
+
+#tu_lower         -.-  
+#tu_raise         -.-  
+
+#tu_push      
+#tu_pop       
+#
+
+# ze_pure  (-, -.-, -.-, -.-)
+# or_pure  (-, -.-, -.-, -.-)
+# fk_pure  (AA, -, -.-, -.-, -.-)
+
+# ik_from  (AA, 410, -.-, -.-, -.-)
+
+# segno    (!!)
+# or_pure  (40,   -.-,  -.-, -.-)
+# ze_polar (10,  45, 50, -)
+# ze_polar ( =, 135,  =, -)
+# ze_polar ( =, 225,  =, -)
+# ze_polar ( =, 315,  =, -)
+# repeat   (10)
+
+# tu_speed (20)
+#
+# tu_home  ()
+# tu_move  (15)
+# tu_goto  (100, 42)
+#
+# tu_turn  (-45)
+# tu_head  (135)
+#
+# tu_lower ()
+# tu_raise ()
+#
+# tu_push  ()
+# tu_pop   ()

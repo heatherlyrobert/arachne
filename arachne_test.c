@@ -51,33 +51,11 @@ unit_accessor      (char *a_question, int a_leg, int a_seg)
    } else if (strcmp(a_question, "IK_lower")  == 0) {
       sprintf(unit_answer, "IK %1d/lower     : %8.3fp,%8.3ft", 
             a_leg, ik[a_leg][YKINE_PATE].v, ik[a_leg][YKINE_TIBI].v);
-   } else if (strcmp(a_question, "orient")    == 0) {
-      sprintf(unit_answer, "-/- %4.4s orient   %6.3f=yaw, %6.3f=pitch, %6.3f=roll", 
-            segs_long [a_seg], center.yaw,  0.0,  0.0);
    } else if (strcmp(a_question, "final")     == 0) {
       sprintf(unit_answer, "%1d/%1d %4.4s final  %8.1fl,%8.1fx,%8.1fz,%8.1fy", 
             a_leg, a_seg, segs_long [a_seg], fk[a_leg][a_seg].l,
             fk[a_leg][a_seg].x, fk[a_leg][a_seg].z, fk[a_leg][a_seg].y);
    }
-   /*---(attitude and center)---------------------------*/
-   else if (strcmp(a_question, "center")          == 0) {
-      sprintf(unit_answer, "--.centerpoint :%8.1fx,%8.1fz,%8.1fy", 
-            center.bx, center.bz, center.by);
-   }
-   else if (strcmp(a_question, "pivot")           == 0) {
-      sprintf(unit_answer, "--.pivotpoint  :%8.1fx,%8.1fz", 
-            center.mx, center.mz);
-   }
-   else if (strcmp(a_question, "attitude_d")      == 0) {
-      sprintf(unit_answer, "--.attitude(d) :%8.1fr,%8.1fp,%8.1fy", 
-            center.droll, center.dpitch, center.dyaw);
-   }
-   else if (strcmp(a_question, "attitude")       == 0) {
-      sprintf(unit_answer, "--.attitude    :%8.3fr,%8.3fp,%8.3fy", 
-            center.roll, center.pitch, center.yaw);
-   }
-
-
    /*---(leg values)--------------------------------------*/
    else if (strcmp(a_question, "FK_angles"     ) == 0) {
       sprintf(unit_answer, "%-10.10s deg :%8.1fm,%8.1fd,%8.3fv,%8.3fh", 

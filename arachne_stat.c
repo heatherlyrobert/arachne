@@ -251,9 +251,9 @@ stat_masscenter    (void)
     *> sumy       += 720.0 * center.by;                                               <*/
    /*> printf ("center   %8.2fx, %8.2fz, %8.2fy\n", center.bx, center.bz, center.by);   <*/
    /*---(final calculations)-------------*/
-   center.mcx  = sumx / mass;
-   center.mcz  = sumz / mass;
-   center.mcy  = sumy / mass;
+   /*> center.mcx  = sumx / mass;                                                     <* 
+    *> center.mcz  = sumz / mass;                                                     <* 
+    *> center.mcy  = sumy / mass;                                                     <*/
    /*> printf ("mass   %10.2lf\n", mass);                                             <* 
     *> printf ("sumx   %10.2lf,  %8.2lfx\n", sumx, sumx / mass);                      <* 
     *> printf ("sumz   %10.2lf,  %8.2lfz\n", sumz, sumz / mass);                      <* 

@@ -79,8 +79,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "1.0d"
-#define VER_TXT   "ik adjusting logic report very sweet and more detailed (later move to yKINE)"
+#define VER_NUM   "1.0e"
+#define VER_TXT   "draws turtle on the ground based on body zero-point movements"
 
 
 
@@ -242,6 +242,7 @@ struct cACCESSOR {
    float       p_len;                       /* length of script               */
    float       p_endsec;                    /* end second for timeline play   */
    char        p_quit;                      /* quit after initial playing     */
+   int         p_nline;                     /* number of progress lines       */
    int         p_line;                      /* progress line being viewed     */
    int         p_leg;                       /* leg currently viewed           */
    int         p_texw;                      /* texture full width             */
@@ -308,16 +309,16 @@ extern    const     float     RAD2DEG;
 /*===[[ DATA STRUCTURES ]]================================*/
 
 /*---(hexapod center)--------------------*/
-struct cCENTER {
-   float   bx, by, bz;                 /* body center location                */
-   float   mx, my, mz;                 /* center of movement                  */
-   float   yaw, pitch, roll;           /* angles of orientation (radians)     */
-   float   dyaw, dpitch, droll;        /* angles of orientation (degrees)     */
-   float   cy, sy, ny;                 /* sin, cos, and -cos of yaw           */
-   float   cp, sp, np;                 /* sin, cos, and -cos of pitch         */
-   float   cr, sr, nr;                 /* sin, cos, and -cos of roll          */
-   float   mcx, mcz, mcy;              /* mass center coordinates             */
-} center;
+/*> struct cCENTER {                                                                   <* 
+ *>    float   bx, by, bz;                 /+ body center location                +/   <* 
+ *>    float   mx, my, mz;                 /+ center of movement                  +/   <* 
+ *>    float   yaw, pitch, roll;           /+ angles of orientation (radians)     +/   <* 
+ *>    float   dyaw, dpitch, droll;        /+ angles of orientation (degrees)     +/   <* 
+ *>    float   cy, sy, ny;                 /+ sin, cos, and -cos of yaw           +/   <* 
+ *>    float   cp, sp, np;                 /+ sin, cos, and -cos of pitch         +/   <* 
+ *>    float   cr, sr, nr;                 /+ sin, cos, and -cos of roll          +/   <* 
+ *>    float   mcx, mcz, mcy;              /+ mass center coordinates             +/   <* 
+ *> } center;                                                                          <*/
 
 /*---(hexapod leg)-----------------------*/
 struct cSEG {
@@ -514,8 +515,10 @@ char        TICK_draw_all           (void);
 char        TICK_show               (void);
 char        TICK_legend             (void);
 char        TICK_snap               (void);
-char        TICK_exact              (int a_leg, float *a_femu, float *a_pate, float *a_tibi);
-char        TICK_opengl             (int a_leg, float x, float z, float y);
+char        TICK_exact_deg          (int a_leg, float *a_femu, float *a_pate, float *a_tibi);
+char        TICK_exact_end          (int a_leg, float *x     , float *z     , float *y     );
+char        TICK_exact_target       (int a_leg, float *x     , float *z     , float *y     );
+char        TICK_opengl             (int a_leg, float  x     , float  z     , float  y     );
 char        TICK_panel_dump         (void);
 
 
@@ -538,6 +541,7 @@ void       draw_ground       (void);
 void       draw_axis         (void);
 void       draw_radians      (void);
 void       draw_arrow        (void);
+void       draw_center             (void);
 void       draw_masscenter   (void);
 void       draw_contact      (void);
 void       draw_3d_orient    (void);
@@ -574,11 +578,8 @@ char        KINE_end                (void);
 char        KINE_write              (int   a_leg);
 char        KINE_compare            (int   a_seg);
 char        KINE_unitcond           (void);
+char        KINE_unitcond_ik        (void);
 /*---1----- -----2----- -----3----- -----4-----  ---------comments------------*/
-char        kine_center             (float a_x, float a_z);
-char        kine_height             (float a_y);
-char        kine_pivot              (float a_x, float a_z);
-char        kine_attitude           (float, float, float);
 
 
 
