@@ -36,12 +36,13 @@ PROG_init          (void)
    DEBUG_TOPS   yLOG_info     ("arachne" , PROG_version    ());
    DEBUG_TOPS   yLOG_info     ("yURG"    , yURG_version    ());
    DEBUG_TOPS   yLOG_info     ("yKINE"   , yKINE_version   ());
+   DEBUG_TOPS   yLOG_info     ("yGOLEM"  , yGOLEM_version  ());
    DEBUG_TOPS   yLOG_info     ("yX11"    , yX11_version    ());
    DEBUG_TOPS   yLOG_info     ("yFONT"   , yFONT_version   ());
    DEBUG_TOPS   yLOG_info     ("yGLTEX"  , yGLTEX_version  ());
    DEBUG_TOPS   yLOG_info     ("yVIKEYS" , yVIKEYS_version ());
    DEBUG_TOPS   yLOG_info     ("ySTR"    , ySTR_version    ());
-   DEBUG_TOPS   yLOG_info     ("yLOG"    , yLOG_version    ());
+   DEBUG_TOPS   yLOG_info     ("yLOG"    , yLOGS_version   ());
    /*---(header)----------------------*/
    DEBUG_TOPS   yLOG_enter (__FUNCTION__);
    /*---(window configuration)-----------*/
@@ -88,6 +89,7 @@ PROG_init          (void)
    /*---(setup yVIKEYS)------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");
    yVIKEYS_init  ();
+   yGOLEM_init   ();
    /*> yVIKEYS_mode_init    ();                                                       <* 
     *> yVIKEYS_mode_enter   (MODE_GOD);                                               <*/
    /*---(complete)-----------------------*/
@@ -199,6 +201,7 @@ PROG_final         (void)
    yVIKEYS_view_colors   (YCOLOR_POS, YCOLOR_BAS, YCOLOR_NEG, YCOLOR_POS);
    yVIKEYS_cmds_add ('a', "p_cond"      , ""    , ""     , KINE_unitcond        , "write out a unit testing condition for yKINE"    );
    yVIKEYS_cmds_add ('a', "p_ik"        , ""    , ""     , KINE_unitcond_ik     , "write out a unit testing condition for yKINE"    );
+   yVIKEYS_cmds_add ('t', "golem"       , ""    , "s"    , yGOLEM_toggle        , "turn yGOLEM on and off"                          );
 
    DRAW_init    ();
    draw_setup   ();
@@ -221,7 +224,7 @@ PROG_end           (void)
    DRAW_end    ();
    /*> yXINIT_end  ();                                                                <*/
    DEBUG_PROG   yLOG_exit    (__FUNCTION__);
-   DEBUG_TOPS   yLOG_end     ();
+   DEBUG_TOPS   yLOGS_end    ();
    return 0;
 }
 

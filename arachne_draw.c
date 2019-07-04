@@ -336,7 +336,7 @@ draw_leg                (int a_leg, float a_body, float a_coxa, float a_femu, fl
       if (a_leg == my.p_leg) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
       glPushMatrix (); {
          /*---(label)-------*/
-         snprintf (x_msg, 10, "#%d/%s", a_leg, legs_name [a_leg]);
+         snprintf (x_msg, 10, "#%d/%s", a_leg - 1, legs_name [a_leg]);
          glTranslatef(    0.0  ,   -15.0 ,     0.0  );
          yFONT_print (my.fixed, 12, YF_TOPLEF, x_msg);
          /*---(desc)--------*/
@@ -609,10 +609,12 @@ DRAW_turtle             (void)
       /*---(get next)--------------------*/
       rc = yKINE_zero_next  (&s, &x, &z, &y);
       if (rc < 0)  break;
-      glBegin (GL_LINES); {
-         glVertex3f (xp, yp + 2.0, zp);
-         glVertex3f (x , y  + 2.0, z );
-      } glEnd ();
+      if (y == 0.0 && yp == 0.0) {
+         glBegin (GL_LINES); {
+            glVertex3f (xp, yp + 2.0, zp);
+            glVertex3f (x , y  + 2.0, z );
+         } glEnd ();
+      }
    }
    return 0;
 }
@@ -670,6 +672,7 @@ DRAW_spider        (void)
             rc = TICK_exact_deg (x_leg, &x_femu, &x_pate, &x_tibi);
             /*---(draw)------------------*/
             draw_leg   (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
+            yGOLEM_leg (x_leg, x_femu, x_pate, x_tibi, 0.10);
             /*---(done)------------------*/
          } glPopMatrix ();
       }

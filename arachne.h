@@ -1,10 +1,55 @@
 /*============================----beg-of-source---============================*/
 
 /*===[[ HEADER ]]=============================================================*/
+/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-12345678901-12345678901-*/
+
+#define     P_FOCUS     "RB (robotics)"
+#define     P_NICHE     "hx (hexapoda)"
+#define     P_PURPOSE   "wickedly accurate and useful hexapod visualization and simulation"
+
+#define     P_NAMESAKE  "arachne (mother of all spiders)"
+#define     P_HERITAGE  "prideful lydian weaver who challenged the gods and lost"
+#define     P_IMAGERY   "womans upside down head/torso attached to spider abdomen/legs"
+
+#define     P_SYSTEM    "gnu/linux   (powerful, ubiquitous, technical, and hackable)"
+#define     P_LANGUAGE  "ansi-c      (wicked, limitless, universal, and everlasting)"
+#define     P_CODESIZE  "moderate    (less than 5,000 lines of code)"
+
+#define     P_AUTHOR    "heatherlyrobert"
+#define     P_CREATED   "2009-07"
+#define     P_DEPENDS   "yKINE, yFONT"
+
+#define     P_VERMAJOR  "1.--, working and advancing"
+#define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
+#define     P_VERNUM    "1.1a"
+#define     P_VERTXT    "arachne displaying using yVIKEYS now, but no movement"
+
+#define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
+#define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
+#define     P_REMINDER  "there are many better options, but i *own* every byte of this one"
+
+
+/*===[[ METIS ]]==============================================================*/
+/*
+ * metis  tn4··  add yvikeys mapping functions for x, y, and z
+ * metis  tn4··  create a yvikeys god mode for arachne and lock it in (no map mode)
+ * metis  dn2··  update yvikeys to allow ",p" to enter progress mode
+ * metis  dn4··  yvikeys remap when entering progress mode
+ * metis  dn4··  yvikeys progress mode to enable time movement in arachne
+ *
+ *
+ *
+ *
+ */
+
+
+
+
+/*===[[ HEADER ]]=============================================================*/
 
 /*   focus         : (RB) robotics
  *   niche         : (hx) hexapods
- *   application   : arachne     (lydian weaver turned into the first spider)
+ *   heritage      : arachne (prideful lydian weaver turned into first spider)
  *   purpose       : wickedly useful hexapod spider visualization
  *
  *   base_system   : gnu/linux   (powerful, ubiquitous, technical, and hackable)
@@ -71,6 +116,11 @@
 /*============================================================================*/
 
 
+/*===[[ REASONING ]]==========================================================*/
+/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-12345678901-12345678901-*/
+
+
+
 
 /*===[[ HEADER GUARD ]]===================================*/
 #ifndef ARACHNE
@@ -117,6 +167,7 @@
 #include    <yVAR.h>         /* CUSTOM  heatherly variable testing            */
 #include    <yGOD.h>         /* CUSTOM  heatherly opengl godview              */
 #include    <yKINE.h>        /* CUSTOM  heatherly kinematics                  */
+#include    <yGOLEM.h>       /* CUSTOM  heatherly robotics controller         */
 #include    <yVIKEYS.h>      /* CUSTOM  heatherly vi_keys standard            */
 #include    <yFONT.h>        /* CUSTOM  heatherly texture-mapped fonts        */
 #include    <yCOLOR.h>       /* CUSTOM  heatherly opengl color handling       */

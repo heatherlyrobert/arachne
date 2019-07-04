@@ -6,19 +6,42 @@ ze_pure               -     -.-      -.-      -.-  
 or_pure               -     -.-      -.-      -.-  
 fk_pure       AA    -     -.-      -.-     10.0  
 
+ze_pure               2     -.-      -.-      -.-  
+or_pure               2     -.-      -.-      -.-  
+fk_pure       AA    2     -.-      -.-     10.0  
+
 ik_from       AA  800     -.-      -.-      -.-  
 
 tu_speed (5)
+
+tu_raise ()
+tu_wait  (2)
+tu_move  (8)
+tu_wait  (2)
+tu_turn  (-90)
+tu_move  (18)
+tu_turn  (90)
+
 segno    (!!)
-   tu_move  (10)
-   tu_wait  (5)
+#  tu_raise ()
+#  tu_wait  (2)
+#  tu_move  (10)
+   tu_wait  (2)
+   tu_lower ()
+   tu_wait  (2)
    segno    (!!)
       tu_move  (30)
       tu_turn  (90)
       tu_wait  (5)
    ripetere (!!, 3)
    tu_turn  (45)
+   tu_raise ()
+   tu_wait  (2)
+   tu_move  (15)
 ripetere (!!, 8)
+
+tu_wait  (2)
+tu_home  ()
 
 #  segno    (!!)
 #     tu_move  (20)
