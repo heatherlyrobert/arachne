@@ -73,6 +73,13 @@ PROG_init          (void)
    my.c_bott = my.t_bott =   0;  
    my.p_bott = my.c_tall;
    my.s_bott = my.a_bott = my.p_bott + my.p_tall;
+   /*---(main window)--------------------*/
+   my.m_xmin    =  -400;
+   my.m_xmax    =   400;
+   my.m_ymin    =  -250;
+   my.m_ymax    =   250;
+   my.m_zmin    = -1000;
+   my.m_zmax    =  1000;
    /*---(progress ticker)----------------*/
    DEBUG_TOPS   yLOG_note  ("defaul progress ticker values");
    my.p_len     =  0.0;
@@ -88,7 +95,7 @@ PROG_init          (void)
    /*> strlcpy (my.t_text     , "arachne, spider robot visualization and simulation"       , LEN_STR  );   <*/
    /*---(setup yVIKEYS)------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");
-   yVIKEYS_init  ();
+   yVIKEYS_init  (MODE_GOD);
    yGOLEM_init   ();
    /*> yVIKEYS_mode_init    ();                                                       <* 
     *> yVIKEYS_mode_enter   (MODE_GOD);                                               <*/
@@ -183,26 +190,7 @@ char       /*----: process the xwindows event stream -------------------------*/
 PROG_final         (void)
 {
    DEBUG_TOPS   yLOG_enter   (__FUNCTION__);
-   /*---(window and panels)--------------*/
-   yVIKEYS_view_config   ("arachne, hexapod visualization and simulation", VER_NUM, YVIKEYS_OPENGL, 800, 500, 0);
-   yVIKEYS_view_setup    (YVIKEYS_MAIN     , YVIKEYS_DEPTH, YVIKEYS_MIDCEN, -400, 400, 250, -250, -1000, 1000, YCOLOR_BAS    , DRAW_primary);
-   yVIKEYS_view_simple   (YVIKEYS_PROGRESS , YCOLOR_BAS   , TICK_show   );
-   yVIKEYS_cmds_direct   (":xaxis    disable");
-   yVIKEYS_cmds_direct   (":yaxis    disable");
-   yVIKEYS_cmds_direct   (":ribbon   disable");
-   yVIKEYS_cmds_direct   (":nav      disable");
-   yVIKEYS_cmds_direct   (":alt      disable");
-   yVIKEYS_cmds_direct   (":formula  disable");
-   yVIKEYS_cmds_direct   (":layout   work");
-   yVIKEYS_cmds_direct   (":progress show");
-   yVIKEYS_cmds_direct   (":buffer   show");
-   /*---(colors)-------------------------*/
-   yVIKEYS_cmds_direct   (":palette 100 rcomp pale earthy");
-   yVIKEYS_view_colors   (YCOLOR_POS, YCOLOR_BAS, YCOLOR_NEG, YCOLOR_POS);
-   yVIKEYS_cmds_add ('a', "p_cond"      , ""    , ""     , KINE_unitcond        , "write out a unit testing condition for yKINE"    );
-   yVIKEYS_cmds_add ('a', "p_ik"        , ""    , ""     , KINE_unitcond_ik     , "write out a unit testing condition for yKINE"    );
-   yVIKEYS_cmds_add ('t', "golem"       , ""    , "s"    , yGOLEM_toggle        , "turn yGOLEM on and off"                          );
-
+   api_yvikeys_init      ();
    DRAW_init    ();
    draw_setup   ();
    font_load    ();

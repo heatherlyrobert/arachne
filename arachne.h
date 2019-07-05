@@ -3,7 +3,7 @@
 /*===[[ HEADER ]]=============================================================*/
 /*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-12345678901-12345678901-*/
 
-#define     P_FOCUS     "RB (robotics)"
+#define     P_FOCUS     "RO (robotics)"
 #define     P_NICHE     "hx (hexapoda)"
 #define     P_PURPOSE   "wickedly accurate and useful hexapod visualization and simulation"
 
@@ -21,8 +21,8 @@
 
 #define     P_VERMAJOR  "1.--, working and advancing"
 #define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
-#define     P_VERNUM    "1.1a"
-#define     P_VERTXT    "arachne displaying using yVIKEYS now, but no movement"
+#define     P_VERNUM    "1.1b"
+#define     P_VERTXT    "pulled into god mode and allows basic movements, progress not right"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -31,9 +31,9 @@
 
 /*===[[ METIS ]]==============================================================*/
 /*
- * metis  tn4··  add yvikeys mapping functions for x, y, and z
- * metis  tn4··  create a yvikeys god mode for arachne and lock it in (no map mode)
- * metis  dn2··  update yvikeys to allow ",p" to enter progress mode
+ * metis  tn4#·  add yvikeys mapping functions for x, y, and z
+ * metis  tn4#·  create a yvikeys god mode for arachne and lock it in (no map mode)
+ * metis  dn2#·  update yvikeys to allow ",p" to enter progress mode
  * metis  dn4··  yvikeys remap when entering progress mode
  * metis  dn4··  yvikeys progress mode to enable time movement in arachne
  *
@@ -282,6 +282,19 @@ struct cACCESSOR {
    int         a_left;                      /* left   of alternate window     */
    int         a_tall;                      /* height of alternate window     */
    int         a_bott;                      /* bottom of alternate window     */
+   /*---(main)------------*/
+   int         m_xmin;                      /* map movement min x_pos         */
+   int         m_xcur;                      /* map movement current x_pos     */
+   int         m_xmax;                      /* map movement max x_pos         */
+   int         m_zmin;                      /* map movement min z_pos         */
+   int         m_zcur;                      /* map movement current z_pos     */
+   int         m_zmax;                      /* map movement max z_pos         */
+   int         m_ymin;                      /* map movement min y_pos         */
+   int         m_ycur;                      /* map movement current y_pos     */
+   int         m_ymax;                      /* map movement max y_pos         */
+   int         m_yaw;                       /* rotation on y                  */
+   int         m_pitch;                     /* rotation on x                  */
+   int         m_roll;                      /* rotation on z                  */
    /*---(file hanndling)--*/
    char        f_base      [LEN_STR];       /* specific file base name        */
    char        f_suffix    [LEN_STR];       /* file suffix for spreadsheet    */
@@ -633,6 +646,10 @@ char        KINE_unitcond_ik        (void);
 /*---1----- -----2----- -----3----- -----4-----  ---------comments------------*/
 
 
+char        api_yvikeys_init        (void);
+char        api_yvikeys__unmap      (tMAPPED *a_map);
+char        api_yvikeys__map        (char a_req, tMAPPED *a_map);
+char        api_yvikeys_mapper      (char a_req);
 
 
 /*---(scripting)----------------------*/
