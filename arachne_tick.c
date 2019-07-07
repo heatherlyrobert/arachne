@@ -60,6 +60,7 @@ struct      cPANEL {
    float       beg;                              /* begining script position  */
    int         sect;                             /* each panel section assign */
    tPOS        detail [YKINE_MAX_LEGS][400];     /* exact positions           */
+   char        act;                              /* action, like snapshot     */
 };
 /*---1----- -----2----- -----3----- -----4-----  ---------comments------------*/
 static      tPANEL      s_panel     [MAX_PANEL];
@@ -86,7 +87,6 @@ static      int         s_nsec      =      0;    /* total number of sections  */
 static      float       s_len       =    0.0;
 /*---(debugging)----------------------*/
 static      char        s_debug     =    '-';
-static      char        s_snap      =    '-';
 
 
 #define        UNIT2PANEL       40.0
@@ -101,20 +101,22 @@ struct cLINES {
    int         leg;
 };
 static tLINES  s_line_info  [MAX_LINES] = {
-   { "center/zero"      , 'y' , 'z' , YKINE_BODY },
-   { "orientation"      , 'y' , 'o' , YKINE_BODY },
-   { "right rear"       , 'y' , 'l' , YKINE_RR   },
-   { "right middle"     , 'y' , 'l' , YKINE_RM   },
-   { "right front"      , 'y' , 'l' , YKINE_RF   },
-   { "left front"       , 'y' , 'l' , YKINE_LF   },
-   { "left middle"      , 'y' , 'l' , YKINE_LM   },
-   { "left rear"        , 'y' , 'l' , YKINE_LR   },
-   { "right posterior"  , '-' , 'l' , YKINE_RP   },
-   { "right anterior"   , '-' , 'l' , YKINE_RA   },
-   { "left anterior"    , '-' , 'l' , YKINE_LA   },
-   { "left posterior"   , '-' , 'l' , YKINE_LP   },
-   { "turtle"           , 'y' , 'p' , YKINE_TU   },
-   { "---"              , 'x' , '-' , -1         },
+   { "center/zero"      , 'y' , 'z' , YKINE_BODY  },
+   { "orientation"      , 'y' , 'o' , YKINE_BODY  },
+   { "right rear"       , 'y' , 'l' , YKINE_RR    },
+   { "right middle"     , 'y' , 'l' , YKINE_RM    },
+   { "right front"      , 'y' , 'l' , YKINE_RF    },
+   { "left front"       , 'y' , 'l' , YKINE_LF    },
+   { "left middle"      , 'y' , 'l' , YKINE_LM    },
+   { "left rear"        , 'y' , 'l' , YKINE_LR    },
+   { "right posterior"  , '-' , 'l' , YKINE_RP    },
+   { "right anterior"   , '-' , 'l' , YKINE_RA    },
+   { "left anterior"    , '-' , 'l' , YKINE_LA    },
+   { "left posterior"   , '-' , 'l' , YKINE_LP    },
+   { "turtle"           , 'y' , 'p' , YKINE_TU    },
+   { "cam offset"       , 'y' , 'p' , YKINE_CAMOF },
+   { "cam orient"       , 'y' , 'p' , YKINE_CAMOR },
+   { "---"              , 'x' , '-' , -1          },
 };
 
 /*---(single leg vars)----------------*/
@@ -677,21 +679,25 @@ TICK_init          (void)
    p_back->seq   =    0;
    p_back->beg   =  0.0;
    p_back->sect  =    0;
+   p_back->act   =  '-';
    /*---(prefix panel)-------------------*/
    p_pref = &(s_panel [1]);
    p_pref->seq   =    1;
    p_pref->beg   =  0.0 - s_len;
    p_pref->sect  =   -1;
+   p_pref->act   =  '-';
    /*---(main panel)---------------------*/
    p_curr = &(s_panel [2]);
    p_curr->seq   =    2;
    p_curr->beg   =  0.0;
    p_curr->sect  =    0;
+   p_curr->act   =  '-';
    /*---(suffix panel)-------------------*/
    p_suff = &(s_panel [3]);
    p_suff->seq   =    3;
    p_suff->beg   =  0.0 + s_len;
    p_suff->sect  =    1;
+   p_suff->act   =  '-';
    /*---(drawing position)---------------*/
    p_draw        = p_curr;
    s_draw        =    0;
@@ -1667,10 +1673,10 @@ TICK_draw_one      (tPANEL *a_panel)
       case 'l' : TICK_servos_deg  (a_panel, x_ref, 1.00);   break;
       }
    }
-   /*> if (s_snap == 'y') {                                                           <* 
-    *>    yGLTEX_tex2png    ("ticker.png", s_wide, s_tall);                           <* 
-    *>    s_snap = '-';                                                               <* 
-    *> }                                                                              <*/
+   if (a_panel->act == 's') {
+      yGLTEX_tex2png    ("ticker.png", s_wide, s_tall);
+      a_panel->act = '-';
+   }
    yGLTEX_draw_end   (a_panel->tex);
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
@@ -1860,6 +1866,8 @@ TICK_curr          (void)
    rc  = yVIKEYS_view_coords   (YVIKEYS_PROGRESS, NULL, &my.p_wide, NULL, &my.p_tall);
    rc  = yVIKEYS_prog_cur (&s_anchor, &my.p_cur, &my.p_scale, &my.p_inc, &my.p_line);
    my.p_leg = my.p_line - 1;
+   DEBUG_GRAF   yLOG_value   ("p_line"    , my.p_line);
+   DEBUG_GRAF   yLOG_value   ("p_leg"     , my.p_leg);
    /*---(secs per panel)-----------------*/
    DEBUG_GRAF   yLOG_double  ("p_cur"     , my.p_cur);
    DEBUG_GRAF   yLOG_double  ("p_scale"   , my.p_scale);
@@ -1960,7 +1968,8 @@ TICK_show          (void)
 char
 TICK_snap               (void)
 {
-   s_snap = 'y';
+   p_curr->act = 's';
+   TICK_draw_one (p_curr);
    return 0;
 }
 

@@ -21,8 +21,8 @@
 
 #define     P_VERMAJOR  "1.--, working and advancing"
 #define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
-#define     P_VERNUM    "1.1b"
-#define     P_VERTXT    "pulled into god mode and allows basic movements, progress not right"
+#define     P_VERNUM    "1.1c"
+#define     P_VERTXT    "progress mode is working and can drive a live hexapod"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
