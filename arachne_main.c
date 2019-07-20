@@ -26,6 +26,7 @@ main (int argc, char *argv[])
    printf ("script length %8.3lf\n", my.p_len);
    yVIKEYS_prog_script (0.0, my.p_len, my.p_nline);
    /*> if (my.report == RPTG_MOVES)  yKINE_moves_rpt ();                              <*/
+   yKINE_moves_rpt ();
    /*> TICK_draw     ();                                                              <*/
    /*---(main loop)----------------------*/
    rc = yVIKEYS_main  ("10ms", "100ms", NULL);

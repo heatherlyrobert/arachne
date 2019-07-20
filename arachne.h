@@ -10,6 +10,7 @@
 #define     P_NAMESAKE  "arachne (mother of all spiders)"
 #define     P_HERITAGE  "prideful lydian weaver who challenged the gods and lost"
 #define     P_IMAGERY   "womans upside down head/torso attached to spider abdomen/legs"
+#define     P_REASON    "queen of spiders should be the patron of spider robots"
 
 #define     P_SYSTEM    "gnu/linux   (powerful, ubiquitous, technical, and hackable)"
 #define     P_LANGUAGE  "ansi-c      (wicked, limitless, universal, and everlasting)"
@@ -21,8 +22,8 @@
 
 #define     P_VERMAJOR  "1.--, working and advancing"
 #define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
-#define     P_VERNUM    "1.1c"
-#define     P_VERTXT    "progress mode is working and can drive a live hexapod"
+#define     P_VERNUM    "1.1d"
+#define     P_VERTXT    "foot is incorporated and properly angled so gk values ar right"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -447,10 +448,12 @@ struct cLOCAUDIT {
 GLuint    dl_spider;
 GLuint    dl_ground;
 GLuint    dl_body;
+GLuint    dl_beak;
 GLuint    dl_coxa;
 GLuint    dl_femur;
 GLuint    dl_patella;
 GLuint    dl_tibia;
+GLuint    dl_foot;
 
 
 

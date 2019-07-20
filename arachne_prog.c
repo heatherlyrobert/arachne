@@ -95,8 +95,9 @@ PROG_init          (void)
    /*> strlcpy (my.t_text     , "arachne, spider robot visualization and simulation"       , LEN_STR  );   <*/
    /*---(setup yVIKEYS)------------------*/
    DEBUG_TOPS   yLOG_note  ("prepare modes");
-   yVIKEYS_init  (MODE_GOD);
-   yGOLEM_init   ();
+   yVIKEYS_init   (MODE_GOD);
+   yVIKEYS_whoami ("arachne", "arac", P_VERNUM, P_VERTXT, "/usr/local/bin/arachne", P_PURPOSE);
+   yGOLEM_init    ();
    /*> yVIKEYS_mode_init    ();                                                       <* 
     *> yVIKEYS_mode_enter   (MODE_GOD);                                               <*/
    /*---(complete)-----------------------*/

@@ -186,7 +186,7 @@ stat_lengths       (
    if (rc == 0)  rc = stat_length (YKINE_COXA, a_coxa,  30.0);
    if (rc == 0)  rc = stat_length (YKINE_FEMU, a_femu,  30.0);
    if (rc == 0)  rc = stat_length (YKINE_PATE, a_femu,  57.0);
-   if (rc == 0)  rc = stat_length (YKINE_TIBI, a_tibi, 130.0);
+   if (rc == 0)  rc = stat_length (YKINE_TIBI, a_tibi, 139.7);
    if (rc == 0)  rc = stat_length (YKINE_TARS, a_tars,   0.0);
    return 0;
 }

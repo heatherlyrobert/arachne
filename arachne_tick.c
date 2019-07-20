@@ -2,6 +2,15 @@
 
 #include "arachne.h"
 
+/*===[[ METIS ]]==============================================================*/
+/*
+ * metis  tw2#·  add large seconds indicator to top half of ticker line
+ * metis  tw1#·  scale/speed indicators are not updating on header of ticker lines
+ * metis  dw2#·  progress servo lines go to zero at panel ends rather than true values
+ *
+ *
+ *
+ */
 
 
 
@@ -113,7 +122,7 @@ static tLINES  s_line_info  [MAX_LINES] = {
    { "right anterior"   , '-' , 'l' , YKINE_RA    },
    { "left anterior"    , '-' , 'l' , YKINE_LA    },
    { "left posterior"   , '-' , 'l' , YKINE_LP    },
-   { "turtle"           , 'y' , 'p' , YKINE_TU    },
+   { "beak"             , 'y' , 'p' , YKINE_BEAK  },
    { "cam offset"       , 'y' , 'p' , YKINE_CAMOF },
    { "cam orient"       , 'y' , 'p' , YKINE_CAMOR },
    { "---"              , 'x' , '-' , -1          },
@@ -422,7 +431,6 @@ TICK_back_copy_label    (tPANEL *a_panel)
    char      x_msg         [100];
    /*---(prepare)------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   yVIKEYS_view_color (YCOLOR_BAS_MED, 1.00);
    /*---(vertical lines)-----------------*/
    DEBUG_GRAF   yLOG_value   ("p_nline"   , my.p_nline);
    for (x_line = 0; x_line < my.p_nline; ++x_line) {
@@ -435,10 +443,17 @@ TICK_back_copy_label    (tPANEL *a_panel)
       for (x_pos = 0; x_pos <= s_wide; x_pos += s_xinc * 100) {
          DEBUG_GRAF   yLOG_value   ("x_pos"     , x_pos);
          /*---(panel)--------------------*/
+         yVIKEYS_view_color (YCOLOR_BAS_MED, 1.00);
          sprintf (x_msg, "%d%c/%d (%d)", a_panel->sect, x_pos / (s_xinc * 100) + 'a', s_nsec, a_panel->seq);
          glPushMatrix(); {
             glTranslatef (x_pos + 750.0, x_top - 14.0,    60.0);
             yFONT_print  (my.fixed,  16, YF_MIDCEN, x_msg);
+         } glPopMatrix();
+         yVIKEYS_view_color (YCOLOR_NEG_MUT, 1.00);
+         sprintf (x_msg, "%d", a_panel->sect * 4 + x_pos / (s_xinc * 100));
+         glPushMatrix(); {
+            glTranslatef (x_pos + 50.0, x_top - 75.0,    60.0);
+            yFONT_print  (my.fixed, 32, YF_MIDCEN, x_msg);
          } glPopMatrix();
          /*---(done)---------------------*/
       }
@@ -1356,11 +1371,13 @@ TICK_load_exact    (tPANEL *a_panel)
    float       x_roll      =    0;
    float       x_femu      =  0.0;
    float       x_tibi      =  0.0;
-   DEBUG_GRAF   yLOG_senter  (__FUNCTION__);
-   DEBUG_GRAF   yLOG_spoint  (a_panel);
-   DEBUG_GRAF   yLOG_sdouble (a_panel->beg);
+   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
+   DEBUG_GRAF   yLOG_point   ("panel"     , a_panel);
+   DEBUG_GRAF   yLOG_double  ("beg"       , a_panel->beg);
+   DEBUG_GRAF   yLOG_double  ("my.p_len"  , my.p_len);
    for (i = 0; i < 400; ++i) {
       x_pos       = a_panel->beg + ((i / 10.0) * my.p_scale);
+      if (x_pos > my.p_len)  break;
       rc = yKINE_exact_all (x_pos);
       for (j = 0; j < YKINE_MAX_SERVO; ++j) {
          rc = yKINE_servo_which (j, &x_leg, &x_seg);
@@ -1408,6 +1425,8 @@ TICK_load_exact    (tPANEL *a_panel)
     *>    if (a_panel->sect == 0) printf ("%2d  %3d  ::  %8.1ff %8.1fp %8.1ft\n", a_panel->sect, i, j, a_panel->detail [1][i].o_femu, a_panel->detail [1][i].o_pate, a_panel->detail [1][i].o_tibi);   <* 
     *> }                                                                                                                                                                                               <*/
    for (i = 0; i < 400; ++i) {
+      x_pos       = a_panel->beg + ((i / 10.0) * my.p_scale);
+      if (x_pos > my.p_len)  break;
       x       = a_panel->detail [0][i].o_xpos;
       z       = a_panel->detail [0][i].o_zpos;
       y       = a_panel->detail [0][i].o_ypos;
@@ -1424,7 +1443,7 @@ TICK_load_exact    (tPANEL *a_panel)
          /*---(run inverse)--------------*/
          x       = a_panel->detail [j][i].o_xpos;
          z       = a_panel->detail [j][i].o_zpos;
-         y       = a_panel->detail [j][i].o_ypos;
+         y       = a_panel->detail [j][i].o_ypos - 6.3;
          /*> printf ("    %7.1fx %7.1fz %7.1fy", x, z, y);                            <*/
          rc = yKINE_inverse_adapt (j - 1, x, z, y);
          a_panel->detail [j][i].r_rc   = rc;
@@ -1502,7 +1521,7 @@ TICK_load_exact    (tPANEL *a_panel)
       }
    }
    /*---(complete)-----------------------*/
-   DEBUG_GRAF   yLOG_sexit   (__FUNCTION__);
+   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -1908,7 +1927,10 @@ TICK_show          (void)
    /*---(upper bar)----------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    rc = TICK_curr  ();
-   if (yVIKEYS_prog_redraw ())  rc = TICK_draw_all ();
+   if (yVIKEYS_prog_redraw ()) {
+      rc = TICK_back_draw ();
+      rc = TICK_draw_all ();
+   }
    /*---(first two panels displayed)-----*/
    if (s_texbeg  < 0.00) {
       x_beg  = 1.00 + s_texbeg;

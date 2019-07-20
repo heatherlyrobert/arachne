@@ -26,16 +26,11 @@
 #
 #
 
-ze_pure       -a-  zz  -       -.-     -.-     -.-  -            
-or_pure       -a-  oo  -       -.-     -.-     -.-  -            
-fk_pure       -a-  AA  -       -.-     -.-     -.-  -            
+ze_pure             -       -.-     -.-     -.-  -            
+or_pure             -       -.-     -.-     -.-  -            
+fk_pure       AA  -       -.-     -.-     -.-  -            
 
-ik_from       -a-  RR  300     -.-     -.-     -.-  -            
-ik_from       -a-  RM  300     -.-     -.-     -.-  -            
-ik_from       -a-  RF  300     -.-     -.-     -.-  -            
-ik_from       -a-  LF  300     -.-     -.-     -.-  -            
-ik_from       -a-  LM  300     -.-     -.-     -.-  -            
-ik_from       -a-  LR  300     -.-     -.-     -.-  -            
+ik_from       AA  300     -.-     -.-     -.-  -            
 
 #PASSAGE       -a-  ==  ================================================= 
 
@@ -43,61 +38,62 @@ ik_from       -a-  LR  300     -.-     -.-     -.-  -            
 #tempo         -a-  **  90                ----------------------------- 
 #
 
-or_pure       -a-  oo   10    10.0     -.-     -.-  -            
-or_pure       -a-  oo   20   -10.0     -.-     -.-  -            
-or_pure       -a-  oo   10     -.-     -.-     -.-  -            
+or_pure              10    15.0     -.-     -.-  -            
+or_pure              20   -15.0     -.-     -.-  -            
+or_pure              10     -.-     -.-     -.-  -            
 
-or_pure       -a-  oo   10     -.-    10.0     -.-  -            
-or_pure       -a-  oo   20     -.-   -10.0     -.-  -            
-or_pure       -a-  oo   10     -.-     -.-     -.-  -            
+or_pure              10     -.-    10.0     -.-  -            
+or_pure              20     -.-   -10.0     -.-  -            
+or_pure              10     -.-     -.-     -.-  -            
 
-or_pure       -a-  oo   10     -.-     -.-    10.0  -            
-or_pure       -a-  oo   20     -.-     -.-   -10.0  -            
-or_pure       -a-  oo   10     -.-     -.-     -.-  -            
+or_pure              10     -.-     -.-    10.0  -            
+or_pure              20     -.-     -.-   -10.0  -            
+or_pure              10     -.-     -.-     -.-  -            
 
 
+#segno         oo 
 
 #note          -a-  --  prepare...        ----------------------------- 
-  or_pure     -a-  oo    1       -.--     -.--     2.59  -       
-  or_pure     -a-  oo    1       -.--     -.--     5.00  -       
-  or_pure     -a-  oo    1       -.--     -.--     7.07  -       
-  or_pure     -a-  oo    1       -.--     -.--     8.66  -       
-  or_pure     -a-  oo    1       -.--     -.--     9.66  -       
-  or_pure     -a-  oo    1       -.--     -.--    10.00  -       
+#  or_pure     oo    1       -.--     -.--     2.59  -       
+#  or_pure     oo    1       -.--     -.--     5.00  -       
+#  or_pure     oo    1       -.--     -.--     7.07  -       
+#  or_pure     oo    1       -.--     -.--     8.66  -       
+#  or_pure     oo    1       -.--     -.--     9.66  -       
+#  or_pure     oo    1       -.--     -.--    10.00  -       
 
 #note          -b-  --  to right          ----------------------------- 
-  or_pure     -a-  oo    1       -.--     2.59     9.66  -       
-  or_pure     -a-  oo    1       -.--     5.00     8.66  -       
-  or_pure     -a-  oo    1       -.--     7.07     7.07  -       
-  or_pure     -a-  oo    1       -.--     8.66     5.00  -       
-  or_pure     -a-  oo    1       -.--     9.66     2.59  -       
-  or_pure     -a-  oo    1       -.--    10.00     0.00  -       
+#  or_pure     oo    1       -.--     2.59     9.66  -       
+#  or_pure     oo    1       -.--     5.00     8.66  -       
+#  or_pure     oo    1       -.--     7.07     7.07  -       
+#  or_pure     oo    1       -.--     8.66     5.00  -       
+#  or_pure     oo    1       -.--     9.66     2.59  -       
+#  or_pure     oo    1       -.--    10.00     0.00  -       
 
 #note          -a-  --  to back           ----------------------------- 
-  or_pure     -a-  oo    1       -.--     9.66    -2.59  -       
-  or_pure     -a-  oo    1       -.--     8.66    -5.00  -       
-  or_pure     -a-  oo    1       -.--     7.07    -7.07  -       
-  or_pure     -a-  oo    1       -.--     5.00    -8.66  -       
-  or_pure     -a-  oo    1       -.--     2.59    -9.66  -       
-  or_pure     -a-  oo    1       -.--     0.00   -10.00  -       
+#  or_pure     oo    1       -.--     9.66    -2.59  -       
+#  or_pure     oo    1       -.--     8.66    -5.00  -       
+#  or_pure     oo    1       -.--     7.07    -7.07  -       
+#  or_pure     oo    1       -.--     5.00    -8.66  -       
+#  or_pure     oo    1       -.--     2.59    -9.66  -       
+#  or_pure     oo    1       -.--     0.00   -10.00  -       
 
 #note          -a-  --  to left           ----------------------------- 
-  or_pure     -a-  oo    1       -.--    -2.59    -9.66  -       
-  or_pure     -a-  oo    1       -.--    -5.00    -8.66  -       
-  or_pure     -a-  oo    1       -.--    -7.07    -7.07  -       
-  or_pure     -a-  oo    1       -.--    -8.66    -5.00  -       
-  or_pure     -a-  oo    1       -.--    -9.66    -2.59  -       
-  or_pure     -a-  oo    1       -.--   -10.00     0.00  -       
+#  or_pure     oo    1       -.--    -2.59    -9.66  -       
+#  or_pure     oo    1       -.--    -5.00    -8.66  -       
+#  or_pure     oo    1       -.--    -7.07    -7.07  -       
+#  or_pure     oo    1       -.--    -8.66    -5.00  -       
+#  or_pure     oo    1       -.--    -9.66    -2.59  -       
+#  or_pure     oo    1       -.--   -10.00     0.00  -       
 
 #note          -a-  --  to front          ----------------------------- 
-  or_pure     -a-  oo    1       -.--    -9.66     2.59  -       
-  or_pure     -a-  oo    1       -.--    -8.66     5.00  -       
-  or_pure     -a-  oo    1       -.--    -7.07     7.07  -       
-  or_pure     -a-  oo    1       -.--    -5.00     8.66  -       
-  or_pure     -a-  oo    1       -.--    -2.59     9.66  -       
-  or_pure     -a-  oo    1       -.--     0.00    10.00  -       
+#  or_pure     oo    1       -.--    -9.66     2.59  -       
+#  or_pure     oo    1       -.--    -8.66     5.00  -       
+#  or_pure     oo    1       -.--    -7.07     7.07  -       
+#  or_pure     oo    1       -.--    -5.00     8.66  -       
+#  or_pure     oo    1       -.--    -2.59     9.66  -       
+#  or_pure     oo    1       -.--     0.00    10.00  -       
 
-REPEAT        -b-  oo  24     10       ----------------------------- 
+#ripetere      oo   10   
 
 #passage       -a-  --  bob            -------------------------------- 
 

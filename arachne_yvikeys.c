@@ -7,8 +7,10 @@ char
 api_yvikeys_init        (void)
 {
    yVIKEYS_view_config   ("arachne, hexapod visualization and simulation", VER_NUM, YVIKEYS_OPENGL, 800, 500, 0);
-   yVIKEYS_view_setup    (YVIKEYS_MAIN     , YVIKEYS_DEPTH, YVIKEYS_MIDCEN, my.m_xmin, my.m_xmax, my.m_ymin, my.m_ymax, my.m_zmin, my.m_zmax, YCOLOR_BAS, DRAW_primary);
-   yVIKEYS_view_simple   (YVIKEYS_PROGRESS , YCOLOR_BAS   , TICK_show   );
+   yVIKEYS_view_setup    (YVIKEYS_MAIN    , YVIKEYS_DEPTH, YVIKEYS_MIDCEN, my.m_xmin, my.m_xmax - my.m_xmin, my.m_ymin, my.m_ymax - my.m_ymin, my.m_zmin, my.m_zmax - my.m_zmin, YCOLOR_BAS, DRAW_primary);
+   yVIKEYS_view_setup    (YVIKEYS_FLOAT   , YVIKEYS_DEPTH, YVIKEYS_MIDCEN, -200     , 400      , -35      , 20       , 0        , 0        , 0         , NULL);
+   yVIKEYS_view_setup    (YVIKEYS_MENUS   , YVIKEYS_DEPTH, YVIKEYS_MIDCEN, 0        , 0        , 0        , 0        , 0        , 0        , 0         , NULL);
+   yVIKEYS_view_simple   (YVIKEYS_PROGRESS, YCOLOR_BAS   , TICK_show   );
    yVIKEYS_cmds_direct   (":xaxis    disable");
    yVIKEYS_cmds_direct   (":yaxis    disable");
    yVIKEYS_cmds_direct   (":ribbon   disable");
@@ -25,6 +27,9 @@ api_yvikeys_init        (void)
    yVIKEYS_cmds_add ('a', "p_ik"        , ""    , ""     , KINE_unitcond_ik     , "write out a unit testing condition for yKINE"    );
    yVIKEYS_cmds_add ('t', "golem"       , ""    , "s"    , yGOLEM_toggle        , "turn yGOLEM on and off"                          );
    yVIKEYS_map_config    (YVIKEYS_OFFICE, api_yvikeys_mapper, NULL, NULL);
+
+
+
    return 0;
 }
 

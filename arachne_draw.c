@@ -243,8 +243,10 @@ draw_leg_label          (int a_leg, int a_seg, float a_deg)
    char      x_msg [100];
    float     d, l;
    float     x, y, z;
+   float     xz;
    /*---(current)------------------------*/
    yKINE_endpoint (a_leg, a_seg, YKINE_GK, &d, &l, &x, &z, &y);
+   xz = sqrt ((x * x) + (z * z));
    /*---(draw)---------------------------*/
    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
    glPushMatrix (); {
@@ -256,6 +258,10 @@ draw_leg_label          (int a_leg, int a_seg, float a_deg)
       glTranslatef(    0.0  ,    -5.0 ,     0.0  );
       snprintf (x_msg, 20, "%6.1lfz", z);
       yFONT_print (my.fixed,  3, YF_TOPLEF, x_msg);
+      /*---(z_pos)-------*/
+      glTranslatef(    0.0  ,    -5.0 ,     0.0  );
+      snprintf (x_msg, 20, "%6.1lfxz", xz);
+      yFONT_print (my.fixed,  3, YF_TOPLEF, x_msg);
       /*---(y_pos)-------*/
       glTranslatef(    0.0  ,    -5.0 ,     0.0  );
       snprintf (x_msg, 20, "%6.1lfy", y);
@@ -265,7 +271,7 @@ draw_leg_label          (int a_leg, int a_seg, float a_deg)
       snprintf (x_msg, 20, "%6.1lfl", l);
       yFONT_print (my.fixed,  3, YF_TOPLEF, x_msg);
       /*---(label)-------*/
-      glTranslatef(   18.0  ,     6.0 ,     0.0  );
+      glTranslatef(   20.0  ,     8.0 ,     0.0  );
       glRotatef  ( 90.0, 0.0f, 0.0f, 1.0f);
       yFONT_print (my.fixed,  3, YF_TOPCEN, segs_long [a_seg]);
       /*---(done)--------*/
@@ -333,7 +339,7 @@ draw_leg                (int a_leg, float a_body, float a_coxa, float a_femu, fl
       /*---(thorax)----------------------*/
       glTranslatef (a_body,  0.0,  0.0f);
       draw_leg_label (a_leg, YKINE_THOR, a_coxa);
-      if (a_leg == my.p_leg) glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+      if (a_leg == my.p_leg) glColor4f (0.8f, 0.8f, 0.8f, 1.0f);
       glPushMatrix (); {
          /*---(label)-------*/
          snprintf (x_msg, 10, "#%d/%s", a_leg - 1, legs_name [a_leg]);
@@ -383,6 +389,14 @@ draw_leg                (int a_leg, float a_body, float a_coxa, float a_femu, fl
       glRotatef  (a_tibi, 0.0f, 0.0f, 1.0f);
       glCallList (dl_tibia);
       draw_leg_label (a_leg, YKINE_TIBI, a_tibi);
+      /*---(foot)---------------------------*/
+      glRotatef  (-a_pate, 0.0f, 0.0f, 1.0f);
+      glRotatef  (-a_tibi, 0.0f, 0.0f, 1.0f);
+      /*> glRotatef  ( 90.0 , 1.0f, 0.0f, 0.0f);                                      <*/
+      glCallList (dl_foot);
+      /*> glRotatef  (-90.0 , 1.0f, 0.0f, 0.0f);                                      <*/
+      glTranslatef(   20.0  ,     0.0 ,     0.0  );
+      draw_leg_label (a_leg, YKINE_FOOT, 0.0);
    } glPopMatrix ();
    /*---(complete)-----------------------*/
    return 0;
@@ -494,7 +508,7 @@ DRAW_wire_locate        (int a_leg, int a_seg, float a_deg)
    } else if (a_seg == YKINE_TIBI) {
       yKINE_opengl   (a_leg, YKINE_META,     0.0, s_xpos, s_zpos, s_ypos, 0.0);
       yKINE_opengl   (a_leg, YKINE_TARS,     0.0, s_xpos, s_zpos, s_ypos, 0.0);
-      yKINE_opengl   (a_leg, YKINE_FOOT,     0.0, s_xpos, s_zpos, s_ypos, 0.0);
+   } else if (a_seg == YKINE_FOOT) {
       TICK_opengl    (a_leg, s_xpos, s_zpos, s_ypos);
       yKINE_inverse  (a_leg, s_xpos, s_zpos, s_ypos);
    }
@@ -526,6 +540,11 @@ DRAW_wire_leg      (int a_leg, float a_body, float a_coxa, float a_femu, float a
       glRotatef    (a_tibi, 0.0f, 0.0f, 1.0f);
       glTranslatef (segs_len [YKINE_TIBI], 0.00f,  0.00f);
       DRAW_wire_locate (a_leg, YKINE_TIBI, a_tibi);
+      /*---(foot)---------------------------*/
+      glRotatef  (-a_pate, 0.0f, 0.0f, 1.0f);
+      glRotatef  (-a_tibi, 0.0f, 0.0f, 1.0f);
+      glTranslatef (segs_len [YKINE_FOOT], 0.00f,  0.00f);
+      DRAW_wire_locate (a_leg, YKINE_FOOT, 0.0);
       /*---(done)------------------------*/
    } glPopMatrix ();
    /*---(complete)-----------------------*/
@@ -595,7 +614,7 @@ DRAW_wire_body     (void)
 }
 
 char
-DRAW_turtle             (void)
+DRAW_turtle_all         (void)
 {
    char        rc          =    0;
    float       s;
@@ -615,6 +634,41 @@ DRAW_turtle             (void)
             glVertex3f (x , y  + 2.0, z );
          } glEnd ();
       }
+   }
+   return 0;
+}
+
+char
+DRAW_turtle_upto        (float a_sec)
+{
+   char        rc          =    0;
+   float       s, sp;
+   float       x, xp, z, zp, y, yp;
+   float       x_pct;
+   rc = yKINE_zero_first (&s, &x, &z, &y);
+   while (rc >= 0) {
+      /*---(save prev)-------------------*/
+      sp = s;
+      xp = x;
+      zp = z;
+      yp = y;
+      /*---(get next)--------------------*/
+      rc = yKINE_zero_next  (&s, &x, &z, &y);
+      if (rc < 0)       break;
+      if (y  != 0.0)    continue;
+      if (yp != 0.0)    continue;
+      if (sp >  a_sec)  break;
+      /*---(draw whole)------------------*/
+      if (s >  a_sec) {
+         x_pct = (a_sec - sp) / (s - sp);
+         x = xp + (x - xp) * x_pct;
+         z = zp + (z - zp) * x_pct;
+      }
+      glBegin (GL_LINES); {
+         glVertex3f (xp, yp + 2.0, zp);
+         glVertex3f (x , y  + 2.0, z );
+      } glEnd ();
+      /*---(done)------------------------*/
    }
    return 0;
 }
@@ -648,10 +702,11 @@ DRAW_spider        (void)
       yGOD_view ();
       draw_arrow      ();
       /*> DRAW_reset      ();                                                         <*/
-      glTranslatef    (     0.0 , -130.0,      0.0 );
+      glTranslatef    (     0.0 , -139.7,      0.0 );
       glCallList      (dl_ground);
-      DRAW_turtle ();
-      glTranslatef    (     0.0 ,  130.0,      0.0 );
+      DRAW_turtle_upto (my.p_cur - my.p_inc);
+      /*> DRAW_turtle_all  ();                                                        <*/
+      glTranslatef    (     0.0 ,  139.7,      0.0 );
       yKINE_exact_all  ( my.p_cur);
       TICK_exact_deg  (YKINE_BODY, &x_femu, &x_pate, &x_tibi);
       glRotatef (x_femu, 0.0f, 1.0f, 0.0f);
@@ -661,6 +716,7 @@ DRAW_spider        (void)
       glTranslatef    (x, y, z);
       draw_center     ();
       glCallList      (dl_body);
+      glCallList      (dl_beak);
       for (x_leg = YKINE_RR; x_leg <= YKINE_LR; ++x_leg) {
          glPushMatrix (); {
             /*---(prepare)---------------*/
