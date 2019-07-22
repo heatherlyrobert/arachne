@@ -384,93 +384,70 @@ dlist_coxa      ()
    return 0;
 }
 
+static char
+dlist_poly              (int d, float px, float pz, float nx, float nz)
+{
+   if (d % 10 == 0) glColor4f (0.0f, 1.0f, 0.0f, 0.5f);
+   else             glColor4f (0.0f, 0.5f, 0.0f, 0.5f);
+   glBegin       (GL_POLYGON); {
+      glVertex3f ( px,   8.00f,  pz);
+      glVertex3f ( px, -12.00f,  pz);
+      glVertex3f ( nx, -12.00f,  nz);
+      glVertex3f ( nx,   8.00f,  nz);
+   } glEnd         ();
+   glColor4f     (0.0f, 0.2f, 0.0f, 0.5f);
+   glBegin       (GL_LINE_STRIP); {
+      glVertex3f ( px,   8.00f,  pz);
+      glVertex3f ( px, -12.00f,  pz);
+      glVertex3f ( nx, -12.00f,  nz);
+      glVertex3f ( nx,   8.00f,  nz);
+      glVertex3f ( px,   8.00f,  pz);
+   } glEnd         ();
+}
+
 static int   /* ---- : create a saved shape for the body -----------------------*/
 dlist_body         (void)
 {
    /*---(begin)-----------------------------*/
-   float      x_radius    = 0.0;
-   int      deg;
-   float    rad;
-   float     nx, nz;
-   float     px, pz;
+   float      ri, ro;
+   float      nxi, nzi, nxo, nzo;
+   float      pxi, pzi, pxo, pzo;
+   int        d;
+   float      r;
+   ro = segs_len [YKINE_THOR];
+   ri = ro - 20.0;
    dl_body = glGenLists(1);
    glNewList(dl_body, GL_COMPILE); {
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
       /*> glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);                                  <*/
       /*---(draw)--------------------------------------------*/
-      x_radius = segs_len [YKINE_THOR];
+      glLineWidth   (2.0);
       glColor4f    (0.5f, 0.0f, 0.0f, 0.5f);
       glPushMatrix  (); {
          glBegin(GL_POLYGON); {     /*->> size is 1" wide by 13/8" out (1.62")      */
             glColor3f(1.0f, 1.0f, 0.0f);
-            for (deg = 0; deg < 365; deg +=  5) {
+            for (d = 0; d <= 360; d +=  5) {
                /*---(calc)------------------------*/
-               rad = deg * DEG2RAD;
-               nx  = x_radius * cos(rad);
-               nz  = x_radius * sin(rad);
-               /*---(color)-----------------------*/
-               if (deg % 10 == 0) glColor4f (0.0f, 1.0f, 0.0f, 0.5f);
-               else               glColor4f (0.0f, 0.5f, 0.0f, 0.5f);
+               r    = d  * DEG2RAD;
+               nxi  = ri * cos (r);
+               nzi  = ri * sin (r);
+               nxo  = ro * cos (r);
+               nzo  = ro * sin (r);
                /*---(draw)------------------------*/
-               if (deg != 0) {
-                  glBegin       (GL_POLYGON); {
-                     glVertex3f( px,   8.00f,  pz);
-                     glVertex3f( px, -12.00f,  pz);
-                     glVertex3f( nx, -12.00f,  nz);
-                     glVertex3f( nx,   8.00f,  nz);
-                  } glEnd         ();
-                  glColor4f (0.0f, 0.2f, 0.0f, 0.5f);
-                  glLineWidth  (2.0);
-                  glBegin    (GL_LINE_STRIP); {
-                     glVertex3f( px,   8.00f,  pz);
-                     glVertex3f( px, -12.00f,  pz);
-                     glVertex3f( nx, -12.00f,  nz);
-                     glVertex3f( nx,   8.00f,  nz);
-                     glVertex3f( px,   8.00f,  pz);
-                  } glEnd         ();
+               if (d != 0) {
+                  if (d <= 90 - 20 || d >  90 + 20) {
+                     dlist_poly (d, pxi, pzi, nxi, nzi);
+                     dlist_poly (d, pxo, pzo, nxo, nzo);
+                  }
+                  if (d == 90 - 20 || d == 90 + 20) {
+                     dlist_poly (d, nxi, nzi, nxo, nzo);
+                  }
                }
-               /*---(prepare)---------------------*/
-               px = nx;
-               pz = nz;
-               /*---(done)------------------------*/
-               /*> glVertex3f( nx,   8.00f, nz);                                      <* 
-                *> glVertex3f( nx, -12.00f, nz);                                      <*/
-            }
-         } glEnd();
-      } glPopMatrix   ();
-      x_radius -= 20.0;
-      glPushMatrix  (); {
-         glBegin(GL_POLYGON); {     /*->> size is 1" wide by 13/8" out (1.62")      */
-            glColor3f(1.0f, 1.0f, 0.0f);
-            for (deg = 0; deg < 365; deg +=  5) {
-               /*---(calc)------------------------*/
-               rad = deg * DEG2RAD;
-               nx  = x_radius * cos(rad);
-               nz  = x_radius * sin(rad);
-               /*---(color)-----------------------*/
-               if (deg % 10 == 0) glColor4f (0.0f, 1.0f, 0.0f, 0.5f);
-               else               glColor4f (0.0f, 0.5f, 0.0f, 0.5f);
-               /*---(draw)------------------------*/
-               if (deg != 0) {
-                  glBegin       (GL_POLYGON); {
-                     glVertex3f( px,   8.00f,  pz);
-                     glVertex3f( px, -12.00f,  pz);
-                     glVertex3f( nx, -12.00f,  nz);
-                     glVertex3f( nx,   8.00f,  nz);
-                  } glEnd         ();
-                  glColor4f (0.0f, 0.2f, 0.0f, 0.5f);
-                  glLineWidth  (2.0);
-                  glBegin    (GL_LINE_STRIP); {
-                     glVertex3f( px,   8.00f,  pz);
-                     glVertex3f( px, -12.00f,  pz);
-                     glVertex3f( nx, -12.00f,  nz);
-                     glVertex3f( nx,   8.00f,  nz);
-                     glVertex3f( px,   8.00f,  pz);
-                  } glEnd         ();
-               }
-               /*---(prepare)---------------------*/
-               px = nx;
-               pz = nz;
+               /*---(prepare for next)------------*/
+               pxi = nxi;
+               pzi = nzi;
+               pxo = nxo;
+               pzo = nzo;
                /*---(done)------------------------*/
             }
          } glEnd();
