@@ -22,8 +22,8 @@
 
 #define     P_VERMAJOR  "1.--, working and advancing"
 #define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
-#define     P_VERNUM    "1.1e"
-#define     P_VERTXT    "updated body to be open in back (future plans ;)"
+#define     P_VERNUM    "1.1f"
+#define     P_VERTXT    "create simple ability to show and hide content display elements"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -326,6 +326,14 @@ struct cACCESSOR {
    /*---(command line)----*/
    char        c_command   [LEN_STR];       /* current text in command mode   */
    char        t_text      [LEN_STR];       /* title text                     */
+   /*---(focus flags)-----*/
+   char        f_ground;                    /* display ground                 */
+   char        f_body;                      /* display body                   */
+   char        f_beak;                      /* display beak                   */
+   char        f_turtle;                    /* display turtle                 */
+   char        f_leg       [LEN_LABEL];     /* display legs 0/RR to 5/LR      */
+   char        f_angle;                     /* display leg annotations        */
+   char        f_joint;                     /* display joint annotations      */
    /*---(done)------------*/
 };
 extern      tACCESSOR my;
@@ -608,7 +616,7 @@ void       draw_ground       (void);
 void       draw_axis         (void);
 void       draw_radians      (void);
 void       draw_arrow        (void);
-void       draw_center             (void);
+void       draw_router       (void);
 void       draw_masscenter   (void);
 void       draw_contact      (void);
 void       draw_3d_orient    (void);
@@ -653,6 +661,7 @@ char        api_yvikeys_init        (void);
 char        api_yvikeys__unmap      (tMAPPED *a_map);
 char        api_yvikeys__map        (char a_req, tMAPPED *a_map);
 char        api_yvikeys_mapper      (char a_req);
+char        api_yvikeys_focus       (char *a_name, char *a_option);
 
 
 /*---(scripting)----------------------*/

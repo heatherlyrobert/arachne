@@ -2,8 +2,13 @@
 #   spider visualization and simulation script
 
 
-#==(verb)===  ver  =(segs)=  =(secs)=  =(femu)=  =(pate)=  =(tibi)=  ==(adjs)============ 
-fk_pure       -a-  aa.full      0.250      0.00      0.00     90.00  -                    
+#==(verb)===  ver  secs  =(femu)=  =(pate)=  =(tibi)=  ==(adjs)============ 
+fk_pure       AA     15      -.--      -.--      -.--  -                    
 
+rk_from       AA     15      -.--    -30.00      -.--  -                    
+
+fk_pure       AA     15      -.--    -42.00     42.00  -                    
+
+fk_pure       AA     15      -.--     45.00    -30.00  -                    
 
 #end-of-file

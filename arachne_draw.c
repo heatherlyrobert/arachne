@@ -338,57 +338,59 @@ draw_leg                (int a_leg, float a_body, float a_coxa, float a_femu, fl
    glPushMatrix (); {
       /*---(thorax)----------------------*/
       glTranslatef (a_body,  0.0,  0.0f);
-      draw_leg_label (a_leg, YKINE_THOR, a_coxa);
+      if (my.f_joint == 'y')  draw_leg_label (a_leg, YKINE_THOR, a_coxa);
       if (a_leg == my.p_leg) glColor4f (0.8f, 0.8f, 0.8f, 1.0f);
-      glPushMatrix (); {
-         /*---(label)-------*/
-         snprintf (x_msg, 10, "#%d/%s", a_leg - 1, legs_name [a_leg]);
-         glTranslatef(    0.0  ,   -15.0 ,     0.0  );
-         yFONT_print (my.fixed, 12, YF_TOPLEF, x_msg);
-         /*---(desc)--------*/
-         snprintf (x_msg, 25, "%s", legs_long [a_leg]);
-         glTranslatef(    0.0  ,   -18.0 ,     0.0  );
-         yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
-         /*---(prep)--------*/
-         glTranslatef(   20.0  ,     0.0 ,     0.0  );
-         /*---(coxa)--------*/
-         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
-         yFONT_print (my.fixed,  5, YF_TOPRIG, "coxa");
-         snprintf (x_msg, 25, " %5.1f", a_coxa);
-         yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
-         /*---(femu)--------*/
-         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
-         yFONT_print (my.fixed,  5, YF_TOPRIG, "femu");
-         snprintf (x_msg, 25, " %5.1f", a_femu);
-         yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
-         /*---(pate)--------*/
-         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
-         yFONT_print (my.fixed,  5, YF_TOPRIG, "pate");
-         snprintf (x_msg, 25, " %5.1f", a_pate);
-         yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
-         /*---(tibi)--------*/
-         glTranslatef(    0.0  ,    -8.0 ,     0.0  );
-         yFONT_print (my.fixed,  5, YF_TOPRIG, "tibi");
-         snprintf (x_msg, 25, " %5.1f", a_tibi);
-         yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
-         /*---(done)--------*/
-      } glPopMatrix ();
+      if (my.f_angle == 'y') {
+         glPushMatrix (); {
+            /*---(label)-------*/
+            snprintf (x_msg, 10, "#%d/%s", a_leg - 1, legs_name [a_leg]);
+            glTranslatef(    0.0  ,   -15.0 ,     0.0  );
+            yFONT_print (my.fixed, 12, YF_TOPLEF, x_msg);
+            /*---(desc)--------*/
+            snprintf (x_msg, 25, "%s", legs_long [a_leg]);
+            glTranslatef(    0.0  ,   -18.0 ,     0.0  );
+            yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
+            /*---(prep)--------*/
+            glTranslatef(   20.0  ,     0.0 ,     0.0  );
+            /*---(coxa)--------*/
+            glTranslatef(    0.0  ,    -8.0 ,     0.0  );
+            yFONT_print (my.fixed,  5, YF_TOPRIG, "coxa");
+            snprintf (x_msg, 25, " %5.1f", a_coxa);
+            yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
+            /*---(femu)--------*/
+            glTranslatef(    0.0  ,    -8.0 ,     0.0  );
+            yFONT_print (my.fixed,  5, YF_TOPRIG, "femu");
+            snprintf (x_msg, 25, " %5.1f", a_femu);
+            yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
+            /*---(pate)--------*/
+            glTranslatef(    0.0  ,    -8.0 ,     0.0  );
+            yFONT_print (my.fixed,  5, YF_TOPRIG, "pate");
+            snprintf (x_msg, 25, " %5.1f", a_pate);
+            yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
+            /*---(tibi)--------*/
+            glTranslatef(    0.0  ,    -8.0 ,     0.0  );
+            yFONT_print (my.fixed,  5, YF_TOPRIG, "tibi");
+            snprintf (x_msg, 25, " %5.1f", a_tibi);
+            yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
+            /*---(done)--------*/
+         } glPopMatrix ();
+      }
       /*---(coxa)------------------------*/
       glCallList (dl_coxa);
-      draw_leg_label (a_leg, YKINE_COXA, a_coxa);
+      if (my.f_joint == 'y')  draw_leg_label (a_leg, YKINE_COXA, a_coxa);
       /*---(femur)--------------------------*/
       glRotatef  (a_femu, 0.0f, 1.0f, 0.0f);
       glCallList (dl_femur);
-      draw_leg_label (a_leg, YKINE_FEMU, a_femu);
+      if (my.f_joint == 'y')  draw_leg_label (a_leg, YKINE_FEMU, a_femu);
       /*---(patella)------------------------*/
       glRotatef  (a_pate, 0.0f, 0.0f, 1.0f);
       glCallList (dl_patella);
-      draw_leg_label (a_leg, YKINE_PATE, a_pate);
+      if (my.f_joint == 'y')  draw_leg_label (a_leg, YKINE_PATE, a_pate);
       /*---(tibia)--------------------------*/
       glRotatef  (-90.0 , 0.0f, 0.0f, 1.0f);
       glRotatef  (a_tibi, 0.0f, 0.0f, 1.0f);
       glCallList (dl_tibia);
-      draw_leg_label (a_leg, YKINE_TIBI, a_tibi);
+      if (my.f_joint == 'y')  draw_leg_label (a_leg, YKINE_TIBI, a_tibi);
       /*---(foot)---------------------------*/
       glRotatef  (-a_pate, 0.0f, 0.0f, 1.0f);
       glRotatef  (-a_tibi, 0.0f, 0.0f, 1.0f);
@@ -396,7 +398,7 @@ draw_leg                (int a_leg, float a_body, float a_coxa, float a_femu, fl
       glCallList (dl_foot);
       /*> glRotatef  (-90.0 , 1.0f, 0.0f, 0.0f);                                      <*/
       glTranslatef(   20.0  ,     0.0 ,     0.0  );
-      draw_leg_label (a_leg, YKINE_FOOT, 0.0);
+      if (my.f_joint == 'y')  draw_leg_label (a_leg, YKINE_FOOT, 0.0);
    } glPopMatrix ();
    /*---(complete)-----------------------*/
    return 0;
@@ -703,8 +705,8 @@ DRAW_spider        (void)
       draw_arrow      ();
       /*> DRAW_reset      ();                                                         <*/
       glTranslatef    (     0.0 , -139.7,      0.0 );
-      glCallList      (dl_ground);
-      DRAW_turtle_upto (my.p_cur - my.p_inc);
+      if (my.f_ground == 'y')  glCallList      (dl_ground);
+      if (my.f_turtle == 'y')  DRAW_turtle_upto (my.p_cur - my.p_inc);
       /*> DRAW_turtle_all  ();                                                        <*/
       glTranslatef    (     0.0 ,  139.7,      0.0 );
       yKINE_exact_all  ( my.p_cur);
@@ -714,9 +716,9 @@ DRAW_spider        (void)
       glRotatef (x_pate, 1.0f, 0.0f, 0.0f);
       TICK_exact_end  (YKINE_BODY, &x, &z, &y);
       glTranslatef    (x, y, z);
-      draw_center     ();
-      glCallList      (dl_body);
-      glCallList      (dl_beak);
+      if (my.f_turtle == 'y')  draw_router     ();
+      if (my.f_body   == 'y')  glCallList      (dl_body);
+      if (my.f_beak   == 'y')  glCallList      (dl_beak);
       for (x_leg = YKINE_RR; x_leg <= YKINE_LR; ++x_leg) {
          glPushMatrix (); {
             /*---(prepare)---------------*/
@@ -727,7 +729,7 @@ DRAW_spider        (void)
             /*---(check servos)----------*/
             rc = TICK_exact_deg (x_leg, &x_femu, &x_pate, &x_tibi);
             /*---(draw)------------------*/
-            draw_leg   (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
+            if (my.f_leg [x_leg] == 'y')  draw_leg   (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
             yGOLEM_leg (x_leg, x_femu, x_pate, x_tibi, 0.10);
             /*---(done)------------------*/
          } glPopMatrix ();
@@ -756,10 +758,13 @@ DRAW_init               (void)
    int         x_wide, x_tall;
    /*---(header)-------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-
-
-
-
+   my.f_ground      = 'y';
+   my.f_body        = 'y';
+   my.f_beak        = 'y';
+   my.f_turtle      = 'y';
+   strlcpy (my.f_leg, "-yyyyyy----", LEN_LABEL);
+   my.f_joint       = 'y';
+   my.f_angle       = 'y';
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -2548,7 +2553,7 @@ draw_arrow()
 }
 
 void
-draw_center             (void)
+draw_router             (void)
 {
    /*---(locals)-------------------------*/
    float     x, z;

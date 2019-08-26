@@ -452,6 +452,17 @@ dlist_body         (void)
             }
          } glEnd();
       } glPopMatrix   ();
+      glColor4f    (0.8f, 0.8f, 0.0f, 0.5f);
+      glBegin(GL_LINE_STRIP); {
+         glVertex3f ( 0.0f * 25, 0.0f * 25,-1.0f * 25);
+         glVertex3f ( 1.0f * 25, 0.0f * 25, 0.0f * 25);
+         glVertex3f ( 0.5f * 25, 0.0f * 25, 0.0f * 25);
+         glVertex3f ( 0.5f * 25, 0.0f * 25, 1.0f * 25);
+         glVertex3f (-0.5f * 25, 0.0f * 25, 1.0f * 25);
+         glVertex3f (-0.5f * 25, 0.0f * 25, 0.0f * 25);
+         glVertex3f (-1.0f * 25, 0.0f * 25, 0.0f * 25);
+         glVertex3f ( 0.0f * 25, 0.0f * 25,-1.0f * 25);
+      } glEnd();
       /*---(end)-------------------------------*/
    } glEndList();
    return 0;
