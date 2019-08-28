@@ -22,8 +22,8 @@
 
 #define     P_VERMAJOR  "1.--, working and advancing"
 #define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
-#define     P_VERNUM    "1.1g"
-#define     P_VERTXT    "change ground cover to beautiful hexagons to promote later mapping"
+#define     P_VERNUM    "1.1h"
+#define     P_VERTXT    "ruler for height and leg distance in place, sweet"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -249,6 +249,7 @@ struct cACCESSOR {
    char        cch;
    char        sch;
    char        report;                      /* report to generate             */
+   float       y;
    /*---(fonts)-----------*/
    char        face_pretty [LEN_LABEL];
    char        face_fixed  [LEN_LABEL];
@@ -328,6 +329,7 @@ struct cACCESSOR {
    char        t_text      [LEN_STR];       /* title text                     */
    /*---(focus flags)-----*/
    char        f_ground;                    /* display ground                 */
+   char        f_ruler;                     /* display ruler for movements    */
    char        f_body;                      /* display body                   */
    char        f_beak;                      /* display beak                   */
    char        f_turtle;                    /* display turtle                 */
@@ -456,6 +458,7 @@ struct cLOCAUDIT {
 /*===[[ DISPLAY LISTS ]]==================================*/
 GLuint    dl_spider;
 GLuint    dl_ground;
+GLuint    dl_ruler;
 GLuint    dl_body;
 GLuint    dl_beak;
 GLuint    dl_coxa;

@@ -3,23 +3,24 @@
 
 
 
-#define     MAX_FOCUS      30
+#define     MAX_FOCUS      50
 typedef struct cFOCUS   tFOCUS;
 struct cFOCUS {
    char        label       [LEN_LABEL];
    char       *flag;
 };
 tFOCUS      s_focuses [MAX_FOCUS] = {
-   { "ground"    , &my.f_ground    },
+   { "stage"     , &my.f_ground    },
+   { "ruler"     , &my.f_ruler     },
    { "body"      , &my.f_body      },
    { "beak"      , &my.f_beak      },
    { "turtle"    , &my.f_turtle    },
-   { "rr"        , &my.f_leg [1]   },
-   { "rm"        , &my.f_leg [2]   },
-   { "rf"        , &my.f_leg [3]   },
-   { "lf"        , &my.f_leg [4]   },
-   { "lm"        , &my.f_leg [5]   },
-   { "lr"        , &my.f_leg [6]   },
+   { "RR"        , &my.f_leg [1]   },
+   { "RM"        , &my.f_leg [2]   },
+   { "RF"        , &my.f_leg [3]   },
+   { "LF"        , &my.f_leg [4]   },
+   { "LM"        , &my.f_leg [5]   },
+   { "LR"        , &my.f_leg [6]   },
    { "angle"     , &my.f_angle     },
    { "joint"     , &my.f_joint     },
    { "ygod"      , &my.f_ygod      },
@@ -30,6 +31,7 @@ tFOCUS      s_focuses [MAX_FOCUS] = {
 char
 api_yvikeys_init        (void)
 {
+   int         i           =    0;
    yVIKEYS_view_config   ("arachne, hexapod visualization and simulation", VER_NUM, YVIKEYS_OPENGL, 800, 500, 0);
    yVIKEYS_view_setup    (YVIKEYS_MAIN    , YVIKEYS_DEPTH, YVIKEYS_MIDCEN, my.m_xmin, my.m_xmax - my.m_xmin, my.m_ymin, my.m_ymax - my.m_ymin, my.m_zmin, my.m_zmax - my.m_zmin, YCOLOR_BAS, DRAW_primary);
    yVIKEYS_view_setup    (YVIKEYS_FLOAT   , YVIKEYS_DEPTH, YVIKEYS_MIDCEN, -200     , 400      , -35      , 20       , 0        , 0        , 0         , NULL);
@@ -51,10 +53,13 @@ api_yvikeys_init        (void)
    yVIKEYS_cmds_add ('a', "p_ik"        , ""    , ""     , KINE_unitcond_ik     , "write out a unit testing condition for yKINE"    );
    yVIKEYS_cmds_add ('t', "golem"       , ""    , "s"    , yGOLEM_toggle        , "turn yGOLEM on and off"                          );
    yVIKEYS_map_config    (YVIKEYS_OFFICE, api_yvikeys_mapper, NULL, NULL);
-   yVIKEYS_cmds_add ('c', "focus"       , ""    , "ss"   , api_yvikeys_focus    , "control display of content elements"                         );
-
-
-
+   /*---(display content)----------------*/
+   for (i = 0; i < MAX_FOCUS; ++i) {
+      if (s_focuses [i].label [0] == '\0')            break;
+      if (s_focuses [i].label [0] == '-' )            break;
+      yVIKEYS_cmds_add ('c', s_focuses [i].label, "", "Cs", api_yvikeys_focus    , "control display of content elements");
+   }
+   /*---(complete)-----------------------*/
    return 0;
 }
 

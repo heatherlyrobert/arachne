@@ -689,7 +689,8 @@ DRAW_spider        (void)
    char        x_debug     = '-';
    char        rc          = 0;
    float       x, y, z;
-
+   y = 139.7;
+   /*> y = 50.8;                                                                      <*/
    DRAW_wire_body  ();
    DRAW_reset      ();
    if (my.f_ygod == 'y')   {
@@ -705,11 +706,12 @@ DRAW_spider        (void)
       yGOD_view ();
       draw_arrow      ();
       /*> DRAW_reset      ();                                                         <*/
-      glTranslatef    (     0.0 , -139.7,      0.0 );
+      glTranslatef    (     0.0 , -y,      0.0 );
       if (my.f_ground == 'y')  glCallList      (dl_ground);
+      if (my.f_ruler  == 'y')  glCallList      (dl_ruler);
       if (my.f_turtle == 'y')  DRAW_turtle_upto (my.p_cur - my.p_inc);
       /*> DRAW_turtle_all  ();                                                        <*/
-      glTranslatef    (     0.0 ,  139.7,      0.0 );
+      glTranslatef    (     0.0 ,  y,      0.0 );
       yKINE_exact_all  ( my.p_cur);
       TICK_exact_deg  (YKINE_BODY, &x_femu, &x_pate, &x_tibi);
       glRotatef (x_femu, 0.0f, 1.0f, 0.0f);
@@ -760,6 +762,7 @@ DRAW_init               (void)
    /*---(header)-------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    my.f_ground      = 'y';
+   my.f_ruler       = 'y';
    my.f_body        = 'y';
    my.f_beak        = 'y';
    my.f_turtle      = 'y';

@@ -4,6 +4,7 @@
 #include "arachne.h"
 
 static   int       dlist_ground       (void);
+static   int       dlist_ruler        (void);
 static   int       dlist_body         (void);
 static   int       dlist_beak         (void);
 static   int       dlist_coxa         (void);
@@ -17,6 +18,7 @@ char       /* ---- : prepare display lists for use ---------------------------*/
 dlist_begin        (void)
 {
    dlist_ground  ();
+   dlist_ruler   ();
    dlist_body    ();
    dlist_beak    ();
    dlist_coxa    ();
@@ -31,6 +33,7 @@ char       /* ---- : prepare display lists for use ---------------------------*/
 dlist_end          (void)
 {
    glDeleteLists (dl_ground  , 1);
+   glDeleteLists (dl_ruler   , 1);
    glDeleteLists (dl_body    , 1);
    glDeleteLists (dl_beak    , 1);
    glDeleteLists (dl_coxa    , 1);
@@ -127,33 +130,6 @@ dlist__level       (int n, int l, char t, char b, float x, float z)
 }
 
 static char
-dlist__hex_orig    (char c, float s, float xo, float zo, float x, float z, float y)
-{
-   /* exterior hexagon */
-   if (c == 'y') glColor4f (0.0f, 0.0f, 0.0f, 0.8f);
-   else          glColor4f (0.2f, 0.2f, 0.2f, 0.3f);
-   glBegin       (GL_LINE_STRIP); {
-      glVertex3f (x               , y, z     );  /* start      */
-      glVertex3f (x + xo * 1.0    , y, z - zo);  /* up-right   */
-      glVertex3f (x + xo * 1.0 + s, y, z - zo);  /* over       */
-      glVertex3f (x + xo * 2.0 + s, y, z     );  /* down-right */
-      glVertex3f (x + xo * 1.0 + s, y, z + zo);  /* down-left  */
-      glVertex3f (x + xo * 1.0    , y, z + zo);  /* back       */
-      glVertex3f (x               , y, z     );  /* up-left    */
-   } glEnd         ();
-   /* interior triangles */
-   glColor4f (0.2f, 0.2f, 0.2f, 0.1f);
-   glBegin       (GL_LINES); {
-      glVertex3f (x               , y, z     );  /* start      */
-      glVertex3f (x + xo * 2.0 + s, y, z     );  /* horizontal */
-      glVertex3f (x + xo * 1.0    , y, z - zo);  /* up-right   */
-      glVertex3f (x + xo * 1.0 + s, y, z + zo);  /* down-left  */
-      glVertex3f (x + xo * 1.0 + s, y, z - zo);  /* over       */
-      glVertex3f (x + xo * 1.0    , y, z + zo);  /* back       */
-   } glEnd         ();
-}
-
-static char
 dlist__compass    (void)
 {
    glPushMatrix    (); {
@@ -221,104 +197,64 @@ dlist_ground            (void)
 }
 
 static int
-dlist_ground_hex_orig   (void)
+dlist_ruler             (void)
 {
-   dl_ground = glGenLists(1);
-   glNewList(dl_ground, GL_COMPILE);
+   float       i           =  0.0;
+   float       j           =  0.0;
+   char        n           [LEN_LABEL] = "a";
+   dl_ruler = glGenLists(1);
+   glNewList(dl_ruler, GL_COMPILE);
    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
    /*---(begin)-----------------------------*/
-   int      x_pos, z_pos;
-   float    x, z;
-   float       y           =   0.0;
-   int      deg;
-   float    rad;
-   float       x_side      =  25.4;
-   float       x_off       = x_side * cos (60 * DEG2RAD);
-   float       z_off       = x_side * sin (60 * DEG2RAD);
-   float       x_inc       = x_side + (x_off * 4.0);
-   float       z_inc       = z_off * 2.0;
-   float       x_far       =  6.0 * x_inc - 1.00 * x_off;
-   float       z_far       = 10.0 * z_inc - 1.00 * z_off;
-   char        c           = '-';
-   /*---(draw)--------------------------------------------*/
-   glColor4f (0.2f, 0.2f, 0.2f, 0.3f);
-   for (x = -x_far; x < x_far; x += x_inc) {
-      for (z = -z_far; z < z_far; z += z_inc) {
-         /*> if (x > -x_near && x < x_near)   c = 'y';                                <* 
-          *> else                             c = '-';                                <*/
-         dlist__hex_orig (c, x_side, x_off, z_off, x, z, y);
-         dlist__hex_orig (c, x_side, x_off, z_off, x + x_off + x_side, z + z_off, y);
-      }
+   glColor4f (0.0, 0.0, 0.0, 1.0);
+   for (i = 0; i < 360; i += 60) {
+      glPushMatrix    (); {
+         glRotatef (i, 0.0f, 1.0f, 0.0f);
+         glColor4f (0.3, 0.3, 0.3, 0.3);
+         glBegin(GL_LINES); {
+            glVertex3f ( 0.0 * 25.4,  1.00f,  0.00f);
+            glVertex3f ( 3.0 * 25.4,  1.00f,  0.00f);
+         } glEnd();
+         glColor4f (0.0, 0.0, 0.0, 1.0);
+         glBegin(GL_LINES); {
+            glVertex3f ( 3.0 * 25.4,  1.00f,  0.00f);
+            glVertex3f (16.0 * 25.4,  1.00f,  0.00f);
+         } glEnd();
+         n [0] = 'a';
+         for (j = 3.0 * 25.4; j < 16.0 * 25.4; j += 25.4 * 0.50) {
+            glBegin(GL_LINES); {
+               glVertex3f (  j, 1.00f, -1.00f);
+               glVertex3f (  j, 1.00f,  1.00f);
+               glVertex3f (  j, 0.00f,  0.00f);
+               glVertex3f (  j, 2.00f,  0.00f);
+            } glEnd();
+            glPushMatrix    (); {
+               glTranslatef( j, 4.00f, -0.00f);
+               yFONT_print  (my.fixed,  6 , YF_BASCEN, n);
+            } glPopMatrix();
+            ++n [0];
+         }
+         /*> glRotatef (180.0, 0.0f, 0.0f, 1.0f);                                        <*/
+      } glPopMatrix();
    }
-   /*---(end)-------------------------------*/
-   glEndList();
-   return 0;
-}
-
-
-static int
-dlist_ground_boxes ()
-{
-   dl_ground = glGenLists(1);
-   glNewList(dl_ground, GL_COMPILE);
-   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-   /*---(begin)-----------------------------*/
-   int      x_pos, z_pos;
-   float    x, z;
-   int      deg;
-   float    rad;
-   /*---(draw)--------------------------------------------*/
-   glColor4f (0.2f, 0.2f, 0.2f, 0.3f);
-   for (z_pos = -1000; z_pos < 1000; z_pos += 50) {
-      glBegin(GL_QUAD_STRIP);
-      for (x_pos = -1000; x_pos < 1000; x_pos += 50) {
-         glVertex3f( x_pos, 0.0f, z_pos);
-         glVertex3f( x_pos, 0.0f, z_pos + 25);
-      }
-      glEnd();
-      glBegin(GL_QUAD_STRIP);
-      for (x_pos = -1000; x_pos < 1000; x_pos += 50) {
-         glVertex3f( x_pos + 25, 0.0f, z_pos);
-         glVertex3f( x_pos + 25, 0.0f, z_pos - 25);
-      }
-      glEnd();
+   n [0] = 'a';
+   glBegin(GL_LINES); {
+      glVertex3f (0.0, -4.5 * 25.4, 0.0);
+      glVertex3f (0.0,  8.0 * 25.4, 0.0);
+   } glEnd();
+   for (j = -4.5 * 25.4; j <  8.0 * 25.4; j += 25.4 * 0.50) {
+      glBegin(GL_LINES); {
+         glVertex3f ( 1.0f,  j,  0.00f);
+         glVertex3f (-1.0f,  j,  0.00f);
+         glVertex3f ( 0.0f,  j,  1.00f);
+         glVertex3f ( 0.0f,  j, -1.00f);
+      } glEnd();
+      glPushMatrix    (); {
+         glTranslatef( 2.00 , j,  0.00f);
+         yFONT_print  (my.fixed,  6 , YF_MIDLEF, n);
+      } glPopMatrix();
+      ++n [0];
    }
-   glPushMatrix    (); {
-      glColor4f (1.0, 1.0, 0.0, 1.0);
-      glTranslatef (    0.00f,   20.00f, -950.00f);
-      glRotatef(-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (my.fixed, 150, YF_BASCEN, "n");
-   } glPopMatrix();
-   glPushMatrix    (); {
-      glColor4f (1.0, 1.0, 0.0, 1.0);
-      glTranslatef (    0.00f,   20.00f,  950.00f);
-      glRotatef(-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (my.fixed, 150, YF_BASCEN, "s");
-   } glPopMatrix();
-   glPushMatrix    (); {
-      glColor4f (1.0, 1.0, 0.0, 1.0);
-      glTranslatef (  950.00f,   20.00f,    0.00f);
-      glRotatef(-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (my.fixed, 150, YF_BASCEN, "e");
-   } glPopMatrix();
-   glPushMatrix    (); {
-      glColor4f (1.0, 1.0, 0.0, 1.0);
-      glTranslatef ( -950.00f,   20.00f,    0.00f);
-      glRotatef(-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (my.fixed, 150, YF_BASCEN, "w");
-   } glPopMatrix();
-   /*---(center)----------------------------*/
-   /*> glLineWidth ( 5.0);                                                            <* 
-    *> glBegin   (GL_LINE_STRIP);                                                     <* 
-    *> glColor4f (0.5f, 0.0f, 1.0f, 0.5f);                                            <* 
-    *> for (deg = 0; deg < 365; deg += 15) {                                          <* 
-    *>    rad = deg * DEG2RAD;                                                        <* 
-    *>    x   = (segs_len [YKINE_THOR] / 5) * cos (rad);                                    <* 
-    *>    z   = (segs_len [YKINE_THOR] / 5) * sin (rad);                                    <* 
-    *>    glVertex3f ( x,  10.00f, z);                                                <* 
-    *> }                                                                              <* 
-    *> glEnd     ();                                                                  <* 
-    *> glLineWidth ( 0.5);                                                            <*/
    /*---(end)-------------------------------*/
    glEndList();
    return 0;
