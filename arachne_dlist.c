@@ -42,8 +42,222 @@ dlist_end          (void)
 }
 
 
+static float    s_side    = 25.4;   /*  one inch in millimeters               */
+static float    s_xoff    =  0.0;
+static float    s_zoff    =  0.0;
+static float    s_xinc    =  0.0;
+static float    s_zinc    =  0.0;
+
+static float    y         =  0.0;
+
+
+static char
+dlist__hex         (int l, char c, float x, float z)
+{
+   float       y           =  0.0;
+   /* exterior hexagon */
+   if (l > 0 && l < 3)  return 0;
+   switch (c) {
+   case 'y' : glColor4f (0.8f, 0.4f, 0.2f, 1.0f);  break;
+   case 'i' : glColor4f (0.2f, 0.2f, 0.2f, 0.3f);  break;
+   case 'o' : glColor4f (0.2f, 0.2f, 0.2f, 0.1f);  break;
+   case '-' : glColor4f (0.2f, 0.2f, 0.2f, 0.1f);  break;
+   default  : glColor4f (0.8f, 0.8f, 0.8f, 0.1f);  break;
+   }
+   glBegin       (GL_LINE_STRIP); {
+      glVertex3f (x - s_xoff - 0.5 * s_side, y, z         );  /* east       */
+      glVertex3f (x          - 0.5 * s_side, y, z - s_zoff);  /* east-north */
+      glVertex3f (x          + 0.5 * s_side, y, z - s_zoff);  /* west-north */
+      glVertex3f (x + s_xoff + 0.5 * s_side, y, z         );  /* west       */
+      glVertex3f (x          + 0.5 * s_side, y, z + s_zoff);  /* west-south */
+      glVertex3f (x          - 0.5 * s_side, y, z + s_zoff);  /* east-south */
+      glVertex3f (x - s_xoff - 0.5 * s_side, y, z         );  /* east       */
+   } glEnd         ();
+   /* interior triangles */
+   if (l > 0 && l <= 10) {
+      glColor4f (0.2f, 0.2f, 0.2f, 0.1f);
+      glBegin       (GL_LINES); {
+         glVertex3f (x - s_xoff - 0.5 * s_side, y, z         );  /* east       */
+         glVertex3f (x + s_xoff + 0.5 * s_side, y, z         );  /* west       */
+         glVertex3f (x          - 0.5 * s_side, y, z - s_zoff);  /* east-north */
+         glVertex3f (x          + 0.5 * s_side, y, z + s_zoff);  /* west-south */
+         glVertex3f (x          + 0.5 * s_side, y, z - s_zoff);  /* west-north */
+         glVertex3f (x          - 0.5 * s_side, y, z + s_zoff);  /* east-south */
+      } glEnd         ();
+   }
+   /*> y -= 1.0;                                                                      <*/
+}
+
+static char
+dlist__level       (int n, int l, char t, char b, float x, float z)
+{
+   char        c           =  '-';
+   int         i           =    0;
+   char        x_subs      [LEN_LABEL] = ".------.";
+   /*---(defense)------------------------*/
+   if (l > n)  return 0;
+   /*---(new coords)---------------------*/
+   switch (t) {
+   case  0 :                             strlcpy (x_subs, "-yyyyyy-", LEN_LABEL);  break;      /* in place          */
+   case  1 :  z -= 2.0 * s_zinc;         strlcpy (x_subs, "-yb-----", LEN_LABEL);  break;      /* north             */
+   case  2 :  z -= s_zinc; x += s_xinc;  strlcpy (x_subs, "--yb----", LEN_LABEL);  break;      /* north-east        */
+   case  3 :  z += s_zinc; x += s_xinc;  strlcpy (x_subs, "---yb---", LEN_LABEL);  break;      /* south-east        */
+   case  4 :  z += 2.0 * s_zinc;         strlcpy (x_subs, "----yb--", LEN_LABEL);  break;      /* south             */
+   case  5 :  z += s_zinc; x -= s_xinc;  strlcpy (x_subs, "-----yb-", LEN_LABEL);  break;      /* south-west        */
+   case  6 :  z -= s_zinc; x -= s_xinc;  strlcpy (x_subs, "-b----y-", LEN_LABEL);  break;      /* north-west        */
+   }
+   /*---(colors)-------------------------*/
+   if      (l ==  0)   c = 'y';
+   else if (l <=  6)   c = 'i';
+   else if (l <= 10)   c = 'o';
+   /*---(drawa)--------------------------*/
+   dlist__hex (l, c, x, z);
+   /*---(branch)-------------------------*/
+   for (i = 1; i <= 6; ++i) {
+      if (x_subs [i] == '-')              continue;
+      if (x_subs [i] == 'b') {
+         if (b == 'b')                    continue;
+         dlist__level (n, l + 1, i, 'b', x, z);
+      } else {
+         dlist__level (n, l + 1, i,  b , x, z);
+      }
+   }
+   /*---(done)---------------------------*/
+   return 0;
+}
+
+static char
+dlist__hex_orig    (char c, float s, float xo, float zo, float x, float z, float y)
+{
+   /* exterior hexagon */
+   if (c == 'y') glColor4f (0.0f, 0.0f, 0.0f, 0.8f);
+   else          glColor4f (0.2f, 0.2f, 0.2f, 0.3f);
+   glBegin       (GL_LINE_STRIP); {
+      glVertex3f (x               , y, z     );  /* start      */
+      glVertex3f (x + xo * 1.0    , y, z - zo);  /* up-right   */
+      glVertex3f (x + xo * 1.0 + s, y, z - zo);  /* over       */
+      glVertex3f (x + xo * 2.0 + s, y, z     );  /* down-right */
+      glVertex3f (x + xo * 1.0 + s, y, z + zo);  /* down-left  */
+      glVertex3f (x + xo * 1.0    , y, z + zo);  /* back       */
+      glVertex3f (x               , y, z     );  /* up-left    */
+   } glEnd         ();
+   /* interior triangles */
+   glColor4f (0.2f, 0.2f, 0.2f, 0.1f);
+   glBegin       (GL_LINES); {
+      glVertex3f (x               , y, z     );  /* start      */
+      glVertex3f (x + xo * 2.0 + s, y, z     );  /* horizontal */
+      glVertex3f (x + xo * 1.0    , y, z - zo);  /* up-right   */
+      glVertex3f (x + xo * 1.0 + s, y, z + zo);  /* down-left  */
+      glVertex3f (x + xo * 1.0 + s, y, z - zo);  /* over       */
+      glVertex3f (x + xo * 1.0    , y, z + zo);  /* back       */
+   } glEnd         ();
+}
+
+static char
+dlist__compass    (void)
+{
+   glPushMatrix    (); {
+      glColor4f (1.0, 1.0, 0.0, 1.0);
+      glTranslatef (    0.00f,   20.00f, -750.00f);
+      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
+      /*> glRotatef (180.0, 0.0f, 0.0f, 1.0f);                                        <*/
+      yFONT_print  (my.fixed, 45 , YF_BASCEN, "n");
+   } glPopMatrix();
+   glPushMatrix    (); {
+      glColor4f (1.0, 1.0, 0.0, 1.0);
+      glTranslatef (    0.00f,   20.00f,  750.00f);
+      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
+      /*> glRotatef (180.0, 0.0f, 0.0f, 1.0f);                                        <*/
+      yFONT_print  (my.fixed, 45 , YF_BASCEN, "s");
+   } glPopMatrix();
+   glPushMatrix    (); {
+      glColor4f (1.0, 1.0, 0.0, 1.0);
+      glTranslatef ( -750.00f * sin (60 * DEG2RAD), 0.0f, -750.00f * cos (60 * DEG2RAD));
+      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
+      /*> glRotatef (180.0, 0.0f, 0.0f, 1.0f);                                        <*/
+      yFONT_print  (my.fixed, 45 , YF_BASCEN, "nw");
+   } glPopMatrix();
+   glPushMatrix    (); {
+      glColor4f (1.0, 1.0, 0.0, 1.0);
+      glTranslatef (  750.00f * sin (60 * DEG2RAD), 0.0f, -750.00f * cos (60 * DEG2RAD));
+      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
+      /*> glRotatef (180.0, 0.0f, 0.0f, 1.0f);                                        <*/
+      yFONT_print  (my.fixed, 45 , YF_BASCEN, "ne");
+   } glPopMatrix();
+   glPushMatrix    (); {
+      glColor4f (1.0, 1.0, 0.0, 1.0);
+      glTranslatef ( -750.00f * sin (60 * DEG2RAD), 0.0f,  750.00f * cos (60 * DEG2RAD));
+      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
+      /*> glRotatef (180.0, 0.0f, 0.0f, 1.0f);                                        <*/
+      yFONT_print  (my.fixed, 45 , YF_BASCEN, "sw");
+   } glPopMatrix();
+   glPushMatrix    (); {
+      glColor4f (1.0, 1.0, 0.0, 1.0);
+      glTranslatef (  750.00f * sin (60 * DEG2RAD), 0.0f,  750.00f * cos (60 * DEG2RAD));
+      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
+      /*> glRotatef (180.0, 0.0f, 0.0f, 1.0f);                                        <*/
+      yFONT_print  (my.fixed, 45 , YF_BASCEN, "se");
+   } glPopMatrix();
+   return 0;
+}
+
 static int
-dlist_ground()
+dlist_ground            (void)
+{
+   dl_ground = glGenLists(1);
+   glNewList(dl_ground, GL_COMPILE);
+   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+   /*---(begin)-----------------------------*/
+   s_side      =  25.4;
+   s_xoff      = s_side * cos (60 * DEG2RAD);
+   s_zoff      = s_side * sin (60 * DEG2RAD);
+   s_xinc      = s_side + s_xoff;
+   s_zinc      = s_zoff;
+   dlist__level (14, 0, 0, '-', 0, 0);
+   dlist__compass ();
+   /*---(end)-------------------------------*/
+   glEndList();
+   return 0;
+}
+
+static int
+dlist_ground_hex_orig   (void)
+{
+   dl_ground = glGenLists(1);
+   glNewList(dl_ground, GL_COMPILE);
+   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+   /*---(begin)-----------------------------*/
+   int      x_pos, z_pos;
+   float    x, z;
+   float       y           =   0.0;
+   int      deg;
+   float    rad;
+   float       x_side      =  25.4;
+   float       x_off       = x_side * cos (60 * DEG2RAD);
+   float       z_off       = x_side * sin (60 * DEG2RAD);
+   float       x_inc       = x_side + (x_off * 4.0);
+   float       z_inc       = z_off * 2.0;
+   float       x_far       =  6.0 * x_inc - 1.00 * x_off;
+   float       z_far       = 10.0 * z_inc - 1.00 * z_off;
+   char        c           = '-';
+   /*---(draw)--------------------------------------------*/
+   glColor4f (0.2f, 0.2f, 0.2f, 0.3f);
+   for (x = -x_far; x < x_far; x += x_inc) {
+      for (z = -z_far; z < z_far; z += z_inc) {
+         /*> if (x > -x_near && x < x_near)   c = 'y';                                <* 
+          *> else                             c = '-';                                <*/
+         dlist__hex_orig (c, x_side, x_off, z_off, x, z, y);
+         dlist__hex_orig (c, x_side, x_off, z_off, x + x_off + x_side, z + z_off, y);
+      }
+   }
+   /*---(end)-------------------------------*/
+   glEndList();
+   return 0;
+}
+
+
+static int
+dlist_ground_boxes ()
 {
    dl_ground = glGenLists(1);
    glNewList(dl_ground, GL_COMPILE);

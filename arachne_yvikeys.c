@@ -22,6 +22,7 @@ tFOCUS      s_focuses [MAX_FOCUS] = {
    { "lr"        , &my.f_leg [6]   },
    { "angle"     , &my.f_angle     },
    { "joint"     , &my.f_joint     },
+   { "ygod"      , &my.f_ygod      },
    { "---end---" , NULL            },
 };
 

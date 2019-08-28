@@ -647,6 +647,7 @@ DRAW_turtle_upto        (float a_sec)
    float       s, sp;
    float       x, xp, z, zp, y, yp;
    float       x_pct;
+   glColor3f(1.0f, 1.0f, 0.0f);
    rc = yKINE_zero_first (&s, &x, &z, &y);
    while (rc >= 0) {
       /*---(save prev)-------------------*/
@@ -691,14 +692,14 @@ DRAW_spider        (void)
 
    DRAW_wire_body  ();
    DRAW_reset      ();
-   glPushMatrix    (); {
-      glTranslatef ( -(my.s_wide / 18.0),  -32.0f, -100.0f);
-      yGOD_orient ();
-      glTranslatef (  (my.s_wide /  9.0),    0.0f,    0.0f);
-      yGOD_locate ();
-   } glPopMatrix   ();
-
-
+   if (my.f_ygod == 'y')   {
+      glPushMatrix    (); {
+         glTranslatef ( -(my.s_wide / 18.0),  -32.0f, -100.0f);
+         yGOD_orient ();
+         glTranslatef (  (my.s_wide /  9.0),    0.0f,    0.0f);
+         yGOD_locate ();
+      } glPopMatrix   ();
+   }
    /*---(begin)--------------------------*/
    glPushMatrix (); {
       yGOD_view ();
@@ -765,6 +766,7 @@ DRAW_init               (void)
    strlcpy (my.f_leg, "-yyyyyy----", LEN_LABEL);
    my.f_joint       = 'y';
    my.f_angle       = 'y';
+   my.f_ygod        = 'y';
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;

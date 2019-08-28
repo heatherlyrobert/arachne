@@ -22,8 +22,8 @@
 
 #define     P_VERMAJOR  "1.--, working and advancing"
 #define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
-#define     P_VERNUM    "1.1f"
-#define     P_VERTXT    "create simple ability to show and hide content display elements"
+#define     P_VERNUM    "1.1g"
+#define     P_VERTXT    "change ground cover to beautiful hexagons to promote later mapping"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -334,6 +334,7 @@ struct cACCESSOR {
    char        f_leg       [LEN_LABEL];     /* display legs 0/RR to 5/LR      */
    char        f_angle;                     /* display leg annotations        */
    char        f_joint;                     /* display joint annotations      */
+   char        f_ygod;                      /* display ygod ball and jack     */
    /*---(done)------------*/
 };
 extern      tACCESSOR my;
