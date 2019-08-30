@@ -21,6 +21,7 @@ tFOCUS      s_focuses [MAX_FOCUS] = {
    { "LF"        , &my.f_leg [4]   },
    { "LM"        , &my.f_leg [5]   },
    { "LR"        , &my.f_leg [6]   },
+   { "footprint" , &my.f_footprint },
    { "angle"     , &my.f_angle     },
    { "joint"     , &my.f_joint     },
    { "ygod"      , &my.f_ygod      },
@@ -59,6 +60,7 @@ api_yvikeys_init        (void)
       if (s_focuses [i].label [0] == '-' )            break;
       yVIKEYS_cmds_add ('c', s_focuses [i].label, "", "Cs", api_yvikeys_focus    , "control display of content elements");
    }
+   yVIKEYS_cmds_add ('c', "legs"             , "", "Cs", api_yvikeys_focus    , "control display of content elements");
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -118,11 +120,23 @@ char
 api_yvikeys__update     (int n, char *a_option)
 {
    /*> printf ("api_yvikeys__update  %3d  %-10.10s\n", n, a_option);                  <*/
-   if      (strcmp (a_option, "hide"   ) == 0)   *s_focuses [n].flag = '-';
-   else if (strcmp (a_option, "mute"   ) == 0)   *s_focuses [n].flag = 'm';
-   else if (strcmp (a_option, "show"   ) == 0)   *s_focuses [n].flag = 'y';
-   else if (strcmp (a_option, "enable" ) == 0)   *s_focuses [n].flag = 'y';
-   else if (strcmp (a_option, "disable") == 0)   *s_focuses [n].flag = 'X';
+   /*---(disabled)-----------------------*/
+   if (*s_focuses [n].flag == 'X') {
+      if      (strcmp (a_option, "enable" ) == 0)   *s_focuses [n].flag = 'y';
+   }
+   /*---(normal)-------------------------*/
+   else {
+      if      (strcmp (a_option, "hide"   ) == 0)   *s_focuses [n].flag = '-';
+      else if (strcmp (a_option, "off"    ) == 0)   *s_focuses [n].flag = '-';
+      else if (strcmp (a_option, "no"     ) == 0)   *s_focuses [n].flag = '-';
+      else if (strcmp (a_option, "mute"   ) == 0)   *s_focuses [n].flag = 'm';
+      else if (strcmp (a_option, "grey"   ) == 0)   *s_focuses [n].flag = 'm';
+      else if (strcmp (a_option, "show"   ) == 0)   *s_focuses [n].flag = 'y';
+      else if (strcmp (a_option, "on"     ) == 0)   *s_focuses [n].flag = 'y';
+      else if (strcmp (a_option, "yes"    ) == 0)   *s_focuses [n].flag = 'y';
+      else if (strcmp (a_option, "disable") == 0)   *s_focuses [n].flag = 'X';
+   }
+   /*---(complete)-----------------------*/
    return 0;
 }
 
@@ -135,12 +149,12 @@ api_yvikeys_focus       (char *a_name, char *a_option)
    --rce;  if (a_name   == NULL)   return rce;
    --rce;  if (a_option == NULL)   return rce;
    if (strcmp (a_name, "legs") == 0) {
-      api_yvikeys_focus ("rr", a_option);
-      api_yvikeys_focus ("rm", a_option);
-      api_yvikeys_focus ("rf", a_option);
-      api_yvikeys_focus ("lf", a_option);
-      api_yvikeys_focus ("lm", a_option);
-      api_yvikeys_focus ("lr", a_option);
+      api_yvikeys_focus ("RR", a_option);
+      api_yvikeys_focus ("RM", a_option);
+      api_yvikeys_focus ("RF", a_option);
+      api_yvikeys_focus ("LF", a_option);
+      api_yvikeys_focus ("LM", a_option);
+      api_yvikeys_focus ("LR", a_option);
       return 0;
    }
    for (i = 0; i < MAX_FOCUS; ++i) {

@@ -22,8 +22,8 @@
 
 #define     P_VERMAJOR  "1.--, working and advancing"
 #define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
-#define     P_VERNUM    "1.1h"
-#define     P_VERTXT    "ruler for height and leg distance in place, sweet"
+#define     P_VERNUM    "1.1i"
+#define     P_VERTXT    "basic footprint calculations working"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -334,6 +334,7 @@ struct cACCESSOR {
    char        f_beak;                      /* display beak                   */
    char        f_turtle;                    /* display turtle                 */
    char        f_leg       [LEN_LABEL];     /* display legs 0/RR to 5/LR      */
+   char        f_footprint;                 /* display footprints             */
    char        f_angle;                     /* display leg annotations        */
    char        f_joint;                     /* display joint annotations      */
    char        f_ygod;                      /* display ygod ball and jack     */
@@ -578,11 +579,12 @@ char        MODE_progress      (char a_major, char a_minor);
 
 
 /*---(arachne_dlist)---------------------*/
-char       dlist_begin       (void);
-char       dlist_end         (void);
+char       dlist_begin        (void);
+char       dlist_end          (void);
+char       dlist_hex          (int l, char c, float x, float z);
 
-void       glx_draw          (void);
-int        glx_init          (void);
+void       glx_draw           (void);
+int        glx_init           (void);
 
 
 /*---(arachne_draw)----------------------*/

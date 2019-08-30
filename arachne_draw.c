@@ -404,6 +404,48 @@ draw_leg                (int a_leg, float a_body, float a_coxa, float a_femu, fl
    return 0;
 }
 
+char
+draw_footprint (int a_leg, float bx, float bz, float by)
+{
+   /*---(locals)-------------------------*/
+   char        rc          =    0;
+   float       x, y, z;
+   int         c, r;
+   /*---(current)------------------------*/
+   /*> if (a_leg != YKINE_RR)  return 0;                                              <*/
+   yKINE_endpoint (a_leg, YKINE_FOOT, YKINE_GK, NULL, NULL, &x, &z, &y);
+   x += bx;
+   z += bz;
+   /*> printf ("%1d/%2d, %8.2fx, %8.2fz, %8.2fy\n", a_leg, YKINE_FOOT, x, z, y);      <*/
+   rc = yKINE_xz2hex (x, z, &c, &r);
+   /*> printf ("  %8dc, %8dr\n", c, r);                                               <*/
+   /*> printf ("  %8.2fx, %8.2fz\n", x, z);                                           <*/
+   glPushMatrix    (); {
+      glTranslatef (    0.00f, -138.7 - by,  0.00f);
+      yKINE_hex2xz (c, r, &x, &z);
+      dlist_hex (0, 'f', x - bx, z - bz);
+      /*---(before)----------------------*/
+      if (rc % 2 == 1) {
+         yKINE_hex2xz (c, r + 1, &x, &z);
+         dlist_hex (0, 'f', x - bx, z - bz);
+      }
+      /*---(right before)----------------*/
+      if (rc == 2 || rc == 3 || rc == 6 || rc == 7) {
+         if (c % 2 != 0)  yKINE_hex2xz (c + 1, r + 1, &x, &z);
+         else             yKINE_hex2xz (c + 1, r    , &x, &z);
+         dlist_hex (0, 'f', x - bx, z - bz);
+      }
+      /*---(right after)-----------------*/
+      if (rc >= 4) {
+         if (c % 2 != 0)  yKINE_hex2xz (c + 1, r    , &x, &z);
+         else             yKINE_hex2xz (c + 1, r - 1, &x, &z);
+         dlist_hex (0, 'f', x - bx, z - bz);
+      }
+   } glPopMatrix();
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
 /*> char       /+----: draw the leg to opengl ------------------------------------+/                       <* 
  *> draw_leg           (int a_num, tSEG a_curr[], char a_loc)                                              <* 
  *> {                                                                                                      <* 
@@ -723,6 +765,7 @@ DRAW_spider        (void)
       if (my.f_body   == 'y')  glCallList      (dl_body);
       if (my.f_beak   == 'y')  glCallList      (dl_beak);
       for (x_leg = YKINE_RR; x_leg <= YKINE_LR; ++x_leg) {
+         if (my.f_footprint   == 'y')  draw_footprint (x_leg, x, z, y);
          glPushMatrix (); {
             /*---(prepare)---------------*/
             glColor3f(1.0f, 1.0f, 1.0f);
@@ -732,13 +775,14 @@ DRAW_spider        (void)
             /*---(check servos)----------*/
             rc = TICK_exact_deg (x_leg, &x_femu, &x_pate, &x_tibi);
             /*---(draw)------------------*/
-            if (my.f_leg [x_leg] == 'y')  draw_leg   (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
+            if (my.f_leg [x_leg] == 'y')  draw_leg       (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
             yGOLEM_leg (x_leg, x_femu, x_pate, x_tibi, 0.10);
             /*---(done)------------------*/
          } glPopMatrix ();
       }
       /*> draw_contact    ();                                                         <*/
    } glPopMatrix ();
+   /*> exit (0);                                                                      <*/
 }
 
 char
@@ -767,6 +811,7 @@ DRAW_init               (void)
    my.f_beak        = 'y';
    my.f_turtle      = 'y';
    strlcpy (my.f_leg, "-yyyyyy----", LEN_LABEL);
+   my.f_footprint   = 'y';
    my.f_joint       = 'y';
    my.f_angle       = 'y';
    my.f_ygod        = 'y';
