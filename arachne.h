@@ -22,8 +22,8 @@
 
 #define     P_VERMAJOR  "1.--, working and advancing"
 #define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
-#define     P_VERNUM    "1.1i"
-#define     P_VERTXT    "basic footprint calculations working"
+#define     P_VERNUM    "1.1j"
+#define     P_VERTXT    "improved hexagon and footprint calculations, stunning"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -582,6 +582,7 @@ char        MODE_progress      (char a_major, char a_minor);
 char       dlist_begin        (void);
 char       dlist_end          (void);
 char       dlist_hex          (int l, char c, float x, float z);
+char       dlist_footprint    (int l, char t, float x, float z, char rc, int c, int r, float d, float o);
 
 void       glx_draw           (void);
 int        glx_init           (void);

@@ -340,6 +340,7 @@ draw_leg                (int a_leg, float a_body, float a_coxa, float a_femu, fl
       glTranslatef (a_body,  0.0,  0.0f);
       if (my.f_joint == 'y')  draw_leg_label (a_leg, YKINE_THOR, a_coxa);
       if (a_leg == my.p_leg) glColor4f (0.8f, 0.8f, 0.8f, 1.0f);
+      else                   glColor4f (0.8f, 0.8f, 0.0f, 1.0f);
       if (my.f_angle == 'y') {
          glPushMatrix (); {
             /*---(label)-------*/
@@ -411,35 +412,57 @@ draw_footprint (int a_leg, float bx, float bz, float by)
    char        rc          =    0;
    float       x, y, z;
    int         c, r;
+   float       d, o;
    /*---(current)------------------------*/
    /*> if (a_leg != YKINE_RR)  return 0;                                              <*/
    yKINE_endpoint (a_leg, YKINE_FOOT, YKINE_GK, NULL, NULL, &x, &z, &y);
    x += bx;
    z += bz;
    /*> printf ("%1d/%2d, %8.2fx, %8.2fz, %8.2fy\n", a_leg, YKINE_FOOT, x, z, y);      <*/
-   rc = yKINE_xz2hex (x, z, &c, &r);
+   rc = yKINE_xz2hexdo (x, z, &c, &r, &d, &o);
    /*> printf ("  %8dc, %8dr\n", c, r);                                               <*/
    /*> printf ("  %8.2fx, %8.2fz\n", x, z);                                           <*/
    glPushMatrix    (); {
       glTranslatef (    0.00f, -138.7 - by,  0.00f);
       yKINE_hex2xz (c, r, &x, &z);
-      dlist_hex (0, 'f', x - bx, z - bz);
+      dlist_footprint (0, 'F', x - bx, z - bz, rc, c, r, d, o);
+      /*---(left)------------------------*/
+      if (rc >= 32) {
+         if (c % 2 != 0)  yKINE_hex2xz (c - 1, r + 1, &x, &z);
+         else             yKINE_hex2xz (c - 1, r    , &x, &z);
+         dlist_hex (0, 'f', x - bx, z - bz);
+         rc -= 32;
+      }
+      if (rc >= 16) {
+         if (c % 2 != 0)  yKINE_hex2xz (c - 1, r    , &x, &z);
+         else             yKINE_hex2xz (c - 1, r - 1, &x, &z);
+         dlist_hex (0, 'f', x - bx, z - bz);
+         rc -= 16;
+      }
       /*---(before)----------------------*/
-      if (rc % 2 == 1) {
-         yKINE_hex2xz (c, r + 1, &x, &z);
+      if (rc >= 8) {
+         yKINE_hex2xz (c, r - 1, &x, &z);
          dlist_hex (0, 'f', x - bx, z - bz);
+         rc -= 8;
       }
-      /*---(right before)----------------*/
-      if (rc == 2 || rc == 3 || rc == 6 || rc == 7) {
-         if (c % 2 != 0)  yKINE_hex2xz (c + 1, r + 1, &x, &z);
-         else             yKINE_hex2xz (c + 1, r    , &x, &z);
-         dlist_hex (0, 'f', x - bx, z - bz);
-      }
-      /*---(right after)-----------------*/
+      /*---(right)-----------------------*/
       if (rc >= 4) {
          if (c % 2 != 0)  yKINE_hex2xz (c + 1, r    , &x, &z);
          else             yKINE_hex2xz (c + 1, r - 1, &x, &z);
          dlist_hex (0, 'f', x - bx, z - bz);
+         rc -= 4;
+      }
+      if (rc >= 2) {
+         if (c % 2 != 0)  yKINE_hex2xz (c + 1, r + 1, &x, &z);
+         else             yKINE_hex2xz (c + 1, r    , &x, &z);
+         dlist_hex (0, 'f', x - bx, z - bz);
+         rc -= 2;
+      }
+      /*---(before)----------------------*/
+      if (rc % 2 == 1) {
+         yKINE_hex2xz (c, r + 1, &x, &z);
+         dlist_hex (0, 'f', x - bx, z - bz);
+         rc -= 1;
       }
    } glPopMatrix();
    /*---(complete)-----------------------*/
@@ -782,7 +805,6 @@ DRAW_spider        (void)
       }
       /*> draw_contact    ();                                                         <*/
    } glPopMatrix ();
-   /*> exit (0);                                                                      <*/
 }
 
 char

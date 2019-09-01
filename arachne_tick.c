@@ -1682,6 +1682,7 @@ TICK_draw_one      (tPANEL *a_panel)
    TICK_load_exact   (a_panel);
    DEBUG_GRAF   yLOG_value   ("p_nline"   , my.p_nline);
    for (i = 0; i < my.p_nline; ++i) {
+      /*> if (i != 2)  continue;                                                      <*/
       DEBUG_GRAF   yLOG_value   ("line"      , i);
       x_ref = TICK_line_find (i);
       DEBUG_GRAF   yLOG_value   ("ref"       , x_ref);

@@ -163,8 +163,8 @@
 #ze_from       -a-  RR.full      1.000       0.0       0.0       0.0  -                    
 #
 
-rk_pure       AA   300     star         l      attn   
-#fk_pure       AA   300       0.00      0.00      0.00  -                    
+#rk_pure       AA   300     star         m      attn   
+fk_pure       AA   300       0.00      0.00      0.00  -                    
 ze_pure               22        0.0       0.0       0.0  -                    
 
 ze_from              [m]      50.0       -.-       -.-   E                    
