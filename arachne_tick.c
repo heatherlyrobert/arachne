@@ -1375,6 +1375,7 @@ TICK_load_exact    (tPANEL *a_panel)
    DEBUG_GRAF   yLOG_point   ("panel"     , a_panel);
    DEBUG_GRAF   yLOG_double  ("beg"       , a_panel->beg);
    DEBUG_GRAF   yLOG_double  ("my.p_len"  , my.p_len);
+   /*---(load original points)-----------*/
    for (i = 0; i < 400; ++i) {
       x_pos       = a_panel->beg + ((i / 10.0) * my.p_scale);
       if (x_pos > my.p_len)  break;
@@ -1383,6 +1384,11 @@ TICK_load_exact    (tPANEL *a_panel)
          rc = yKINE_servo_which (j, &x_leg, &x_seg);
          if (rc < 0) continue;
          rc = yKINE_exact       (x_leg, x_seg, &x_deg, &x, &z, &y);
+         /*---(DEBUGGING BELOW)--------*/
+         if (x_leg == YKINE_RR && x_seg == YKINE_FEMU) {
+            printf ("%8.2f, %8.3fd, %8.1fx, %8.1fz, %8.1fy\n", x_pos, x_deg, x, z, y);
+         }
+         /*---(DEBUGGING ABOVE)--------*/
          if (rc < 0) continue;
          if (x_leg == YKINE_BODY) {
             switch (x_seg) {
@@ -1424,8 +1430,10 @@ TICK_load_exact    (tPANEL *a_panel)
    /*> for (i = 0; i < 400; ++i) {                                                                                                                                                                     <* 
     *>    if (a_panel->sect == 0) printf ("%2d  %3d  ::  %8.1ff %8.1fp %8.1ft\n", a_panel->sect, i, j, a_panel->detail [1][i].o_femu, a_panel->detail [1][i].o_pate, a_panel->detail [1][i].o_tibi);   <* 
     *> }                                                                                                                                                                                               <*/
+   /*---(create revised points)----------*/
    for (i = 0; i < 400; ++i) {
       x_pos       = a_panel->beg + ((i / 10.0) * my.p_scale);
+      if (x_pos < 0.0     )  break;
       if (x_pos > my.p_len)  break;
       x       = a_panel->detail [0][i].o_xpos;
       z       = a_panel->detail [0][i].o_zpos;
@@ -1435,45 +1443,47 @@ TICK_load_exact    (tPANEL *a_panel)
       x_pitch = a_panel->detail [1][i].o_pate;
       x_roll  = a_panel->detail [1][i].o_tibi;
       rc      = yKINE_orient (x_yaw, x_pitch, x_roll);
-      /*> if (a_panel->sect == 0)  printf ("%2d  %3d  body  %8.2fx, %8.2fz, %8.2fy    %8.2fy, %8.2fp, %8.2fr\n", a_panel->sect, i, x, z, y, x_yaw, x_pitch, x_roll);   <*/
+      printf ("%2d  %3d  body  %7.1f %7.1f %7.1f    %7.1fy, %7.1fp, %7.1fr\n", a_panel->sect, i, x, z, y, x_yaw, x_pitch, x_roll);
+      printf ("p#  sec  leg#  -origx- -origz- -origy-  rc#  femu_or femu_rv  pate_or pate_rv  tibi_or tibi_rv  ---x--- ---z--- ---y---\n");
       for (j = 2; j < YKINE_MAX_LEGS; ++j) {
          /*> printf ("%2d  %3d  %2d  ::", a_panel->sect, i, j);                                                                                 <* 
           *> printf ("   %7.1fx %7.1fz %7.1fy", a_panel->detail [1][i].o_xpos, a_panel->detail [1][i].o_zpos, a_panel->detail [1][i].o_ypos);   <* 
           *> printf ("   %7.1fy %7.1fp %7.1fr", a_panel->detail [1][i].o_femu, a_panel->detail [1][i].o_pate, a_panel->detail [1][i].o_tibi);   <*/
+         printf ("         %4d", j);
          /*---(run inverse)--------------*/
          x       = a_panel->detail [j][i].o_xpos;
          z       = a_panel->detail [j][i].o_zpos;
          y       = a_panel->detail [j][i].o_ypos - 6.3;
-         /*> printf ("    %7.1fx %7.1fz %7.1fy", x, z, y);                            <*/
+         printf ("  %7.1f %7.1f %7.1f", x, z, y);
          rc = yKINE_inverse_adapt (j - 1, x, z, y);
          a_panel->detail [j][i].r_rc   = rc;
-         /*> printf ("   %3d", rc);                                                   <*/
+         printf ("  %3d", rc);
          /*---(grab the target)----------*/
-         yKINE_endpoint (j - 1, YKINE_TARG, YKINE_IK, &x_deg, NULL, &x, &z, &y);
+         yKINE_endpoint (j - 1, YKINE_TARG, YKINE_IK, &x_deg, NULL, &x, &z, &y, NULL);
          a_panel->detail [j][i].t_xpos = x;
          a_panel->detail [j][i].t_zpos = z;
          a_panel->detail [j][i].t_ypos = y;
          /*---(grab femur)---------------*/
-         yKINE_endpoint (j - 1, YKINE_FEMU, YKINE_IK, &x_deg, NULL, NULL, NULL, NULL);
+         yKINE_endpoint (j - 1, YKINE_FEMU, YKINE_IK, &x_deg, NULL, NULL, NULL, NULL, NULL);
          a_panel->detail [j][i].r_femu = x_deg;
-         /*> printf ("   %7.1ff %7.1ff", a_panel->detail [j][i].o_femu, x_deg);       <*/
+         printf ("  %7.1f %7.1f", a_panel->detail [j][i].o_femu, x_deg);
          /*---(grab patella)-------------*/
-         yKINE_endpoint (j - 1, YKINE_PATE, YKINE_IK, &x_deg, NULL, NULL, NULL, NULL);
+         yKINE_endpoint (j - 1, YKINE_PATE, YKINE_IK, &x_deg, NULL, NULL, NULL, NULL, NULL);
          a_panel->detail [j][i].r_pate = x_deg;
-         /*> printf ("   %7.1fp %7.1fp", a_panel->detail [j][i].o_pate, x_deg);       <*/
+         printf ("  %7.1f %7.1f", a_panel->detail [j][i].o_pate, x_deg);
          /*---(grab tibia)---------------*/
-         yKINE_endpoint (j - 1, YKINE_TIBI, YKINE_IK, &x_deg, NULL, &x, &z, &y);
+         yKINE_endpoint (j - 1, YKINE_TIBI, YKINE_IK, &x_deg, NULL, &x, &z, &y, NULL);
          a_panel->detail [j][i].r_tibi = x_deg;
-         /*> printf ("   %7.1ft %7.1ft", a_panel->detail [j][i].o_tibi, x_deg);       <*/
+         printf ("  %7.1f %7.1f", a_panel->detail [j][i].o_tibi, x_deg);
          a_panel->detail [j][i].r_xpos = x;
          a_panel->detail [j][i].r_zpos = z;
          a_panel->detail [j][i].r_ypos = y;
          x -= a_panel->detail [j][i].t_xpos;
          z -= a_panel->detail [j][i].t_zpos;
-         y -= a_panel->detail [j][i].t_ypos;
+         y -= a_panel->detail [j][i].t_ypos + 6.3;
          a_panel->detail [j][i].r_error = sqrt ((x * x) + (z * z) + (y * y));
-         /*> printf ("   %7.1fx %7.1fz %7.1fy", x, z, y);                             <*/
-         /*> printf ("\n");                                                           <*/
+         printf ("  %7.1f %7.1f %7.1f", x, z, y);
+         printf ("\n");
          /*> printf ("%2d  %3d  :: %2d    %8.1ff %8.1fp %8.1ft    %8.1fx %8.1fz %8.1fy\n", a_panel->sect, i, j, a_panel->detail [x_leg][i].r_femu, a_panel->detail [x_leg][i].r_pate, x_deg, x, z, y);   <*/
          /*---(calc revised)-------------*/
          /*---(check alternatives)-------*/
@@ -1682,7 +1692,6 @@ TICK_draw_one      (tPANEL *a_panel)
    TICK_load_exact   (a_panel);
    DEBUG_GRAF   yLOG_value   ("p_nline"   , my.p_nline);
    for (i = 0; i < my.p_nline; ++i) {
-      /*> if (i != 2)  continue;                                                      <*/
       DEBUG_GRAF   yLOG_value   ("line"      , i);
       x_ref = TICK_line_find (i);
       DEBUG_GRAF   yLOG_value   ("ref"       , x_ref);

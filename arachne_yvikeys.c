@@ -25,6 +25,7 @@ tFOCUS      s_focuses [MAX_FOCUS] = {
    { "angle"     , &my.f_angle     },
    { "joint"     , &my.f_joint     },
    { "ygod"      , &my.f_ygod      },
+   { "verify"    , &my.f_verify    },
    { "---end---" , NULL            },
 };
 
@@ -51,6 +52,7 @@ api_yvikeys_init        (void)
    yVIKEYS_cmds_direct   (":palette 100 rcomp pale earthy");
    yVIKEYS_view_colors   (YCOLOR_POS, YCOLOR_BAS, YCOLOR_NEG, YCOLOR_POS);
    yVIKEYS_cmds_add ('a', "p_cond"      , ""    , ""     , KINE_unitcond        , "write out a unit testing condition for yKINE"    );
+   yVIKEYS_cmds_add ('a', "p_call"      , ""    , ""     , KINE_unitcondall     , "write out a unit testing condition for yKINE"    );
    yVIKEYS_cmds_add ('a', "p_ik"        , ""    , ""     , KINE_unitcond_ik     , "write out a unit testing condition for yKINE"    );
    yVIKEYS_cmds_add ('t', "golem"       , ""    , "s"    , yGOLEM_toggle        , "turn yGOLEM on and off"                          );
    yVIKEYS_map_config    (YVIKEYS_OFFICE, api_yvikeys_mapper, NULL, NULL);

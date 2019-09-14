@@ -12,6 +12,7 @@ static   int       dlist_femur        (void);
 static   int       dlist_patella      (void);
 static   int       dlist_tibia        (void);
 static   int       dlist_foot         (void);
+static   int       dlist_verify       (void);
 
 
 char       /* ---- : prepare display lists for use ---------------------------*/
@@ -26,6 +27,7 @@ dlist_begin        (void)
    dlist_patella ();
    dlist_tibia   ();
    dlist_foot    ();
+   dlist_verify  ();
    return 0;
 }
 
@@ -41,6 +43,7 @@ dlist_end          (void)
    glDeleteLists (dl_patella , 1);
    glDeleteLists (dl_tibia   , 1);
    glDeleteLists (dl_foot    , 1);
+   glDeleteLists (dl_verify  , 1);
    return 0;
 }
 
@@ -67,12 +70,14 @@ dlist_hex          (int l, char t, float x, float z)
    case 'i' : glColor4f (0.2f, 0.2f, 0.2f, 0.3f);  break;
    case 'o' : glColor4f (0.2f, 0.2f, 0.2f, 0.1f);  break;
    case '-' : glColor4f (0.2f, 0.2f, 0.2f, 0.1f);  break;
-   case 'F' : glColor4f (0.6f, 0.6f, 0.0f, 1.0f);  break;
-   case 'f' : glColor4f (0.4f, 0.4f, 0.0f, 1.0f);  break;
+   case 'F' : glColor4f (0.0f, 0.7f, 0.0f, 1.0f);  break;
+   case 'f' : glColor4f (0.0f, 0.5f, 0.0f, 1.0f);  break;
+   case 'a' : glColor4f (0.5f, 0.5f, 0.5f, 1.0f);  break;
+   case 'b' : glColor4f (0.5f, 0.0f, 0.0f, 1.0f);  break;
    default  : glColor4f (0.8f, 0.8f, 0.8f, 0.1f);  break;
    }
-   if (strchr ("Ff", t) != NULL)  glBegin       (GL_POLYGON);
-   else                           glBegin       (GL_LINE_STRIP);
+   if (strchr ("Ffab", t) != NULL)  glBegin       (GL_POLYGON);
+   else                             glBegin       (GL_LINE_STRIP);
    {
       glVertex3f (x - s_xoff - 0.5 * s_side, y, z         );  /* east       */
       glVertex3f (x          - 0.5 * s_side, y, z - s_zoff);  /* east-north */
@@ -116,44 +121,44 @@ dlist_hex          (int l, char t, float x, float z)
 }
 
 char
-dlist_footprint    (int l, char t, float x, float z, char rc, int c, int r, float d, float o)
+dlist_footprint    (int l, char t, float x, float z, float y, char rc, int c, int r, float d, float o)
 {
    char        s           [LEN_LABEL];
    dlist_hex (0, t, x, z);
-   glPushMatrix    (); {
-      glColor4f (0.0, 0.0, 0.0, 1.0);
-      /*---(rc)------*/
-      glTranslatef (    x, 1.00f, z - 10.0);
-      sprintf (s, "%3d", rc);
-      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (my.fixed,  4 , YF_BASCEN, s);
-      glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);
-      /*---(dir)-----*/
-      glTranslatef ( 0.00, 0.00,  5.0);
-      sprintf (s, "%5.1f", d);
-      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (my.fixed,  4 , YF_BASCEN, s);
-      glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);
-      /*---(dist)----*/
-      glTranslatef ( 0.00, 0.00,  5.0);
-      sprintf (s, "%5.3f", o);
-      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (my.fixed,  4 , YF_BASCEN, s);
-      glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);
-      /*---(c/x)-----*/
-      glTranslatef ( 0.00, 0.00,  5.0);
-      sprintf (s, "%2d/%6.1f", c, x);
-      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (my.fixed,  4 , YF_BASCEN, s);
-      glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);
-      /*---(r/z)-----*/
-      glTranslatef ( 0.00, 0.00,  5.0);
-      sprintf (s, "%2d,%6.1f", r, z);
-      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
-      yFONT_print  (my.fixed,  4 , YF_BASCEN, s);
-      glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);
-      /*---(done)----*/
-   } glPopMatrix();
+   /*> glPushMatrix    (); {                                                          <* 
+    *>    glColor4f (0.0, 0.0, 0.0, 1.0);                                             <* 
+    *>    /+---(rc)------+/                                                           <* 
+    *>    glTranslatef (    x, 1.00f, z - 10.0);                                      <* 
+    *>    sprintf (s, "%3d", rc);                                                     <* 
+    *>    glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                        <* 
+    *>    yFONT_print  (my.fixed,  4 , YF_BASCEN, s);                                 <* 
+    *>    glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                        <* 
+    *>    /+---(dir)-----+/                                                           <* 
+    *>    glTranslatef ( 0.00, 0.00,  5.0);                                           <* 
+    *>    sprintf (s, "%5.1f", d);                                                    <* 
+    *>    glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                        <* 
+    *>    yFONT_print  (my.fixed,  4 , YF_BASCEN, s);                                 <* 
+    *>    glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                        <* 
+    *>    /+---(dist)----+/                                                           <* 
+    *>    glTranslatef ( 0.00, 0.00,  5.0);                                           <* 
+    *>    sprintf (s, "%5.3f", o);                                                    <* 
+    *>    glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                        <* 
+    *>    yFONT_print  (my.fixed,  4 , YF_BASCEN, s);                                 <* 
+    *>    glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                        <* 
+    *>    /+---(c/x)-----+/                                                           <* 
+    *>    glTranslatef ( 0.00, 0.00,  5.0);                                           <* 
+    *>    sprintf (s, "%2d/%6.1f", c, x);                                             <* 
+    *>    glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                        <* 
+    *>    yFONT_print  (my.fixed,  4 , YF_BASCEN, s);                                 <* 
+    *>    glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                        <* 
+    *>    /+---(r/z)-----+/                                                           <* 
+    *>    glTranslatef ( 0.00, 0.00,  5.0);                                           <* 
+    *>    sprintf (s, "%2d/%6.1f", r, z);                                             <* 
+    *>    glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                        <* 
+    *>    yFONT_print  (my.fixed,  4 , YF_BASCEN, s);                                 <* 
+    *>    glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                        <* 
+    *>    /+---(done)----+/                                                           <* 
+    *> } glPopMatrix();                                                               <*/
    return 0;
 }
 
@@ -267,6 +272,7 @@ dlist_ground            (void)
 static int
 dlist__diamond          (float x, float y, char *a_text, char a_dir)
 {
+   char        t           [LEN_LABEL];
    glBegin(GL_LINE_STRIP); {
       glVertex3f (x - 1.0,  y      ,  0.0);
       glVertex3f (x      ,  y + 1.0,  0.0);
@@ -301,6 +307,12 @@ dlist__diamond          (float x, float y, char *a_text, char a_dir)
             glVertex3f (x + 25.4 / 4.0,  y              , -1.0);
          } glEnd();
       }
+      glPushMatrix    (); {
+         glTranslatef( x, -4.00f, -0.00f);
+         glRotatef (-90.0, 0.0f, 0.0f, 1.0f);
+         sprintf (t, "%5.1f", x);
+         yFONT_print  (my.fixed,  3 , YF_MIDLEF, t);
+      } glPopMatrix();
    } else if (a_dir == 'r') {
       glPushMatrix    (); {
          glTranslatef( 2.00 , y,  0.00f);
@@ -314,6 +326,11 @@ dlist__diamond          (float x, float y, char *a_text, char a_dir)
             glVertex3f (x      , y + 25.4 / 4.0, -1.0);
          } glEnd();
       }
+      glPushMatrix    (); {
+         glTranslatef(-2.00, y, -0.00f);
+         sprintf (t, "%5.1f", y);
+         yFONT_print  (my.fixed,  3 , YF_MIDRIG, t);
+      } glPopMatrix();
    }
    ++a_text [0];
    return 0;
@@ -328,7 +345,7 @@ dlist_ruler             (void)
    dl_ruler = glGenLists(1);
    glNewList(dl_ruler, GL_COMPILE);
    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-   /*---(begin)-----------------------------*/
+   /*---(leg radius)---------------------*/
    glColor4f (0.0, 0.0, 0.0, 1.0);
    for (i = 0; i < 360; i += 60) {
       glPushMatrix    (); {
@@ -354,6 +371,7 @@ dlist_ruler             (void)
          /*> glRotatef (180.0, 0.0f, 0.0f, 1.0f);                                        <*/
       } glPopMatrix();
    }
+   /*---(body height)--------------------*/
    glBegin(GL_LINES); {
       glVertex3f (0.0, -4.5 * s_scale, 0.0);
       glVertex3f (0.0,  8.0 * s_scale, 0.0);
@@ -362,6 +380,31 @@ dlist_ruler             (void)
    for (j = -4.5 * s_scale; j <  8.0 * s_scale; j += s_scale * 0.50) {
       dlist__diamond (0.0, j, n, 'r');
    }
+   /*---(leg depth)----------------------*/
+   /*> for (i = 0; i < 360; i += 60) {                                                <* 
+    *>    glPushMatrix    (); {                                                       <* 
+    *>       glColor4f (0.3, 0.3, 0.3, 0.5);                                          <* 
+    *>       glRotatef (i, 0.0f, 1.0f, 0.0f);                                         <* 
+    *>       glTranslatef (228.1, 139.700f,  0.00f);                                  <* 
+    *>       glBegin(GL_LINES); {                                                     <* 
+    *>          glVertex3f (0.0, -12.5 * s_scale, 0.0);                               <* 
+    *>          glVertex3f (0.0,   0.0 * s_scale, 0.0);                               <* 
+    *>       } glEnd();                                                               <* 
+    *>       n [0] = 'a';                                                             <* 
+    *>       for (j = 0.0; j > -13.0 * s_scale; j -= s_scale * 0.50) {                <* 
+    *>          dlist__diamond (0.0, j, n, 'r');                                      <* 
+    *>       }                                                                        <* 
+    *>       glColor4f (0.5, 0.1, 0.1, 0.5);                                          <* 
+    *>       glBegin(GL_LINES); {                                                     <* 
+    *>          glVertex3f (0.0,   0.0 * s_scale, 0.0);                               <* 
+    *>          glVertex3f (0.0,  12.5 * s_scale, 0.0);                               <* 
+    *>       } glEnd();                                                               <* 
+    *>       n [0] = 'b';                                                             <* 
+    *>       for (j = 0.5 * s_scale; j <  13.0 * s_scale; j += s_scale * 0.50) {      <* 
+    *>          dlist__diamond (0.0, j, n, 'r');                                      <* 
+    *>       }                                                                        <* 
+    *>    } glPopMatrix();                                                            <* 
+    *> }                                                                              <*/
    /*---(end)-------------------------------*/
    glEndList();
    return 0;
@@ -853,6 +896,66 @@ dlist_foot         (void)
       glTranslatef( segs_len [YKINE_FOOT], 0.00f,  0.00f);
       /*---(end)-------------------------------*/
    } glEndList();
+   return 0;
+}
+
+static int   /* ---- : create a saved shape for the body -----------------------*/
+dlist_verify       (void)
+{
+   char        rc;
+   uchar       x_val;
+   int         x_row;
+   int         x_col;
+   char        o_str       [LEN_LABEL];
+   char        y_str       [LEN_LABEL];
+   float       x, y;
+   /*---(begin)-----------------------------*/
+   printf ("DLIST_VERIFY ---beg-----------------------------------------\n");
+   dl_verify = glGenLists(1);
+   glNewList(dl_verify, GL_COMPILE); {
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      rc = ykine_stance_scale_head (&x_row, y_str);
+      while (rc >= 0) {
+         y = yKINE_scale  (y_str);
+         rc = ykine_stance_radius_head (&x_col, o_str);
+         while (rc >= 0) {
+            x = yKINE_radius (o_str) + 228.1;
+            x_val = yKINE_verify_rc (x_row, x_col);
+            printf ("%10.10s (%8.2f)   %10.10s (%8.2f)  %c (%d)", y_str, y, o_str, x, x_val, x_val);
+            if (x_val == 172) {
+               printf ("  SHOW\n");
+               glColor4f (1.0f, 1.0f, 1.0f, 0.5f);
+               glBegin       (GL_POLYGON); {
+                  glVertex3f (x - 1.5, y + 1.5, -3.00f);
+                  glVertex3f (x + 1.5, y + 1.5, -3.00f);
+                  glVertex3f (x + 1.5, y - 1.5, -3.00f);
+                  glVertex3f (x - 1.5, y - 1.5, -3.00f);
+               } glEnd         ();
+               glColor4f (0.0f, 0.0f, 0.0f, 0.5f);
+               glBegin       (GL_LINE_STRIP); {
+                  glVertex3f (x - 1.5, y + 1.5, -3.00f);
+                  glVertex3f (x + 1.5, y + 1.5, -3.00f);
+                  glVertex3f (x + 1.5, y - 1.5, -3.00f);
+                  glVertex3f (x - 1.5, y - 1.5, -3.00f);
+                  glVertex3f (x - 1.5, y + 1.5, -3.00f);
+               } glEnd         ();
+            } else {
+               printf ("\n");
+            }
+            rc = ykine_stance_radius_next (&x_col, o_str);
+         }
+         if (y_str [1] == '·') {
+            glPushMatrix    (); {
+               glColor4f (0.0, 0.0, 0.0, 1.0);
+               glTranslatef (380.0, y, 5.00f);
+               yFONT_print  (my.fixed,  5 , YF_BASCEN, y_str);
+            } glPopMatrix();
+         }
+         rc = ykine_stance_scale_next   (&x_row, y_str);
+      }
+      /*---(end)-------------------------------*/
+   } glEndList();
+   printf ("DLIST_VERIFY ---end-----------------------------------------\n");
    return 0;
 }
 

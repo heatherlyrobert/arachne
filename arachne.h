@@ -22,8 +22,8 @@
 
 #define     P_VERMAJOR  "1.--, working and advancing"
 #define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
-#define     P_VERNUM    "1.1j"
-#define     P_VERTXT    "improved hexagon and footprint calculations, stunning"
+#define     P_VERNUM    "1.1k"
+#define     P_VERTXT    "can display verify/valid leg moves area over hexapod"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -338,6 +338,7 @@ struct cACCESSOR {
    char        f_angle;                     /* display leg annotations        */
    char        f_joint;                     /* display joint annotations      */
    char        f_ygod;                      /* display ygod ball and jack     */
+   char        f_verify;                    /* display possible leg positions */
    /*---(done)------------*/
 };
 extern      tACCESSOR my;
@@ -467,6 +468,7 @@ GLuint    dl_femur;
 GLuint    dl_patella;
 GLuint    dl_tibia;
 GLuint    dl_foot;
+GLuint    dl_verify;
 
 
 
@@ -582,7 +584,7 @@ char        MODE_progress      (char a_major, char a_minor);
 char       dlist_begin        (void);
 char       dlist_end          (void);
 char       dlist_hex          (int l, char c, float x, float z);
-char       dlist_footprint    (int l, char t, float x, float z, char rc, int c, int r, float d, float o);
+char       dlist_footprint    (int l, char t, float x, float z, float y, char rc, int c, int r, float d, float o);
 
 void       glx_draw           (void);
 int        glx_init           (void);
@@ -660,6 +662,7 @@ char        KINE_end                (void);
 char        KINE_write              (int   a_leg);
 char        KINE_compare            (int   a_seg);
 char        KINE_unitcond           (void);
+char        KINE_unitcondall        (void);
 char        KINE_unitcond_ik        (void);
 /*---1----- -----2----- -----3----- -----4-----  ---------comments------------*/
 

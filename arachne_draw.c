@@ -245,7 +245,7 @@ draw_leg_label          (int a_leg, int a_seg, float a_deg)
    float     x, y, z;
    float     xz;
    /*---(current)------------------------*/
-   yKINE_endpoint (a_leg, a_seg, YKINE_GK, &d, &l, &x, &z, &y);
+   yKINE_endpoint (a_leg, a_seg, YKINE_GK, &d, &l, &x, &z, &y, NULL);
    xz = sqrt ((x * x) + (z * z));
    /*---(draw)---------------------------*/
    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
@@ -373,6 +373,11 @@ draw_leg                (int a_leg, float a_body, float a_coxa, float a_femu, fl
             yFONT_print (my.fixed,  5, YF_TOPRIG, "tibi");
             snprintf (x_msg, 25, " %5.1f", a_tibi);
             yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
+            /*---(foot)--------*/
+            glTranslatef(    0.0  ,    -8.0 ,     0.0  );
+            yFONT_print (my.fixed,  5, YF_TOPRIG, "foot");
+            snprintf (x_msg, 25, " %5.1f", - a_pate - a_tibi);
+            yFONT_print (my.fixed,  5, YF_TOPLEF, x_msg);
             /*---(done)--------*/
          } glPopMatrix ();
       }
@@ -399,7 +404,7 @@ draw_leg                (int a_leg, float a_body, float a_coxa, float a_femu, fl
       glCallList (dl_foot);
       /*> glRotatef  (-90.0 , 1.0f, 0.0f, 0.0f);                                      <*/
       glTranslatef(   20.0  ,     0.0 ,     0.0  );
-      if (my.f_joint == 'y')  draw_leg_label (a_leg, YKINE_FOOT, 0.0);
+      if (my.f_joint == 'y')  draw_leg_label (a_leg, YKINE_FOOT, - a_pate - a_tibi);
    } glPopMatrix ();
    /*---(complete)-----------------------*/
    return 0;
@@ -413,11 +418,16 @@ draw_footprint (int a_leg, float bx, float bz, float by)
    float       x, y, z;
    int         c, r;
    float       d, o;
+   char        t           =  'f';
    /*---(current)------------------------*/
    /*> if (a_leg != YKINE_RR)  return 0;                                              <*/
-   yKINE_endpoint (a_leg, YKINE_FOOT, YKINE_GK, NULL, NULL, &x, &z, &y);
+   yKINE_endpoint (a_leg, YKINE_FOOT, YKINE_GK, NULL, NULL, &x, &z, &y, NULL);
    x += bx;
    z += bz;
+   y += 139.7;
+   if      (y >=  2.5)  t = 'a';
+   else if (y <= -2.5)  t = 'b';
+   else                 t = 'f';
    /*> printf ("%1d/%2d, %8.2fx, %8.2fz, %8.2fy\n", a_leg, YKINE_FOOT, x, z, y);      <*/
    rc = yKINE_xz2hexdo (x, z, &c, &r, &d, &o);
    /*> printf ("  %8dc, %8dr\n", c, r);                                               <*/
@@ -425,43 +435,43 @@ draw_footprint (int a_leg, float bx, float bz, float by)
    glPushMatrix    (); {
       glTranslatef (    0.00f, -138.7 - by,  0.00f);
       yKINE_hex2xz (c, r, &x, &z);
-      dlist_footprint (0, 'F', x - bx, z - bz, rc, c, r, d, o);
+      dlist_footprint (0, t, x - bx, z - bz, y + by, rc, c, r, d, o);
       /*---(left)------------------------*/
       if (rc >= 32) {
          if (c % 2 != 0)  yKINE_hex2xz (c - 1, r + 1, &x, &z);
          else             yKINE_hex2xz (c - 1, r    , &x, &z);
-         dlist_hex (0, 'f', x - bx, z - bz);
+         dlist_hex (0, t, x - bx, z - bz);
          rc -= 32;
       }
       if (rc >= 16) {
          if (c % 2 != 0)  yKINE_hex2xz (c - 1, r    , &x, &z);
          else             yKINE_hex2xz (c - 1, r - 1, &x, &z);
-         dlist_hex (0, 'f', x - bx, z - bz);
+         dlist_hex (0, t, x - bx, z - bz);
          rc -= 16;
       }
       /*---(before)----------------------*/
       if (rc >= 8) {
          yKINE_hex2xz (c, r - 1, &x, &z);
-         dlist_hex (0, 'f', x - bx, z - bz);
+         dlist_hex (0, t, x - bx, z - bz);
          rc -= 8;
       }
       /*---(right)-----------------------*/
       if (rc >= 4) {
          if (c % 2 != 0)  yKINE_hex2xz (c + 1, r    , &x, &z);
          else             yKINE_hex2xz (c + 1, r - 1, &x, &z);
-         dlist_hex (0, 'f', x - bx, z - bz);
+         dlist_hex (0, t, x - bx, z - bz);
          rc -= 4;
       }
       if (rc >= 2) {
          if (c % 2 != 0)  yKINE_hex2xz (c + 1, r + 1, &x, &z);
          else             yKINE_hex2xz (c + 1, r    , &x, &z);
-         dlist_hex (0, 'f', x - bx, z - bz);
+         dlist_hex (0, t, x - bx, z - bz);
          rc -= 2;
       }
       /*---(before)----------------------*/
       if (rc % 2 == 1) {
          yKINE_hex2xz (c, r + 1, &x, &z);
-         dlist_hex (0, 'f', x - bx, z - bz);
+         dlist_hex (0, t, x - bx, z - bz);
          rc -= 1;
       }
    } glPopMatrix();
@@ -555,6 +565,8 @@ DRAW_wire_locate        (int a_leg, int a_seg, float a_deg)
    /*---(locals)-------------------------*/
    char      x_msg [100];
    float     x, y, z;
+   /*---(prepare)------------------------*/
+   if (a_seg == YKINE_THOR)   s_xpos_p = s_zpos_p = s_ypos_p = 0.0;
    /*---(current)------------------------*/
    glGetDoublev(GL_MODELVIEW_MATRIX,  s_loc);
    s_xpos     = s_loc [12];
@@ -571,10 +583,10 @@ DRAW_wire_locate        (int a_leg, int a_seg, float a_deg)
    /*---(save to yKINE)------------------*/
    yKINE_opengl   (a_leg, a_seg, a_deg, s_xpos, s_zpos, s_ypos, s_len);
    if (a_seg == YKINE_COXA) {
-      yKINE_opengl   (a_leg, YKINE_TROC, a_deg, s_xpos, s_zpos, s_ypos, 0.0);
+      yKINE_opengl   (a_leg, YKINE_TROC, 0.0, s_xpos, s_zpos, s_ypos, 0.0);
    } else if (a_seg == YKINE_TIBI) {
-      yKINE_opengl   (a_leg, YKINE_META,     0.0, s_xpos, s_zpos, s_ypos, 0.0);
-      yKINE_opengl   (a_leg, YKINE_TARS,     0.0, s_xpos, s_zpos, s_ypos, 0.0);
+      yKINE_opengl   (a_leg, YKINE_META, 0.0, s_xpos, s_zpos, s_ypos, 0.0);
+      yKINE_opengl   (a_leg, YKINE_TARS, 0.0, s_xpos, s_zpos, s_ypos, 0.0);
    } else if (a_seg == YKINE_FOOT) {
       TICK_opengl    (a_leg, s_xpos, s_zpos, s_ypos);
       yKINE_inverse  (a_leg, s_xpos, s_zpos, s_ypos);
@@ -584,16 +596,16 @@ DRAW_wire_locate        (int a_leg, int a_seg, float a_deg)
 }
 
 void
-DRAW_wire_leg      (int a_leg, float a_body, float a_coxa, float a_femu, float a_pate, float a_tibi)
+DRAW_wire_leg      (int a_leg, float a_body, float a_thor, float a_femu, float a_pate, float a_tibi)
 {
    /*---(begin)--------------------------*/
    glPushMatrix (); {
       /*---(thorax)----------------------*/
       glTranslatef (a_body,  0.0,  0.0f);
-      DRAW_wire_locate (a_leg, YKINE_THOR, a_coxa);
+      DRAW_wire_locate (a_leg, YKINE_THOR, a_thor);
       /*---(coxa)------------------------*/
       glTranslatef (segs_len [YKINE_COXA], 0.00f,  0.00f);
-      DRAW_wire_locate (a_leg, YKINE_COXA, a_coxa);
+      DRAW_wire_locate (a_leg, YKINE_COXA, 0.0);
       /*---(femur)-----------------------*/
       glRotatef    (a_femu , 0.0f, 1.0f, 0.0f);
       glTranslatef (segs_len [YKINE_FEMU], 0.00f,  0.00f);
@@ -611,7 +623,7 @@ DRAW_wire_leg      (int a_leg, float a_body, float a_coxa, float a_femu, float a
       glRotatef  (-a_pate, 0.0f, 0.0f, 1.0f);
       glRotatef  (-a_tibi, 0.0f, 0.0f, 1.0f);
       glTranslatef (segs_len [YKINE_FOOT], 0.00f,  0.00f);
-      DRAW_wire_locate (a_leg, YKINE_FOOT, 0.0);
+      DRAW_wire_locate (a_leg, YKINE_FOOT, - a_pate - a_tibi);
       /*---(done)------------------------*/
    } glPopMatrix ();
    /*---(complete)-----------------------*/
@@ -624,7 +636,7 @@ DRAW__body_detail  (char a_type)
    /*---(locals)-----------+-----+-----+-*/
    char        rc          = 0;
    int         x_leg       =    0;
-   float       x_coxa      =  0.0;
+   float       x_thor      =  0.0;
    float       x_femu      =  0.0;
    float       x_pate      =  0.0;
    float       x_tibi      =  0.0;
@@ -636,10 +648,10 @@ DRAW__body_detail  (char a_type)
             /*---(prepare)---------------*/
             glRotatef  ( legs_deg [x_leg], 0.0f, 1.0f, 0.0f);
             /*---(check servos)----------*/
-            x_coxa  = legs_deg [x_leg];
+            x_thor  = legs_deg [x_leg];
             rc = TICK_exact_deg (x_leg, &x_femu, &x_pate, &x_tibi);
             /*---(draw)------------------*/
-            DRAW_wire_leg  (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
+            DRAW_wire_leg  (x_leg, segs_len [YKINE_THOR], x_thor, x_femu, x_pate, x_tibi);
             /*---(done)------------------*/
          } glPopMatrix ();
       }
@@ -654,7 +666,7 @@ DRAW_wire_body     (void)
    /*---(locals)-----------+-----+-----+-*/
    char        rc          = 0;
    int         x_leg       =    0;
-   float       x_coxa      =  0.0;
+   float       x_thor      =  0.0;
    float       x_femu      =  0.0;
    float       x_pate      =  0.0;
    float       x_tibi      =  0.0;
@@ -668,10 +680,10 @@ DRAW_wire_body     (void)
             /*---(prepare)---------------*/
             glRotatef  ( legs_deg [x_leg], 0.0f, 1.0f, 0.0f);
             /*---(check servos)----------*/
-            x_coxa  = legs_deg [x_leg];
+            x_thor  = legs_deg [x_leg];
             rc = TICK_exact_deg (x_leg, &x_femu, &x_pate, &x_tibi);
             /*---(draw)------------------*/
-            DRAW_wire_leg  (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
+            DRAW_wire_leg  (x_leg, segs_len [YKINE_THOR], x_thor, x_femu, x_pate, x_tibi);
             /*---(done)------------------*/
          } glPopMatrix ();
       }
@@ -747,7 +759,7 @@ DRAW_spider        (void)
    /*---(locals)-----------+-----------+-*/
    int         i           = 0;
    int         x_leg       = 0;
-   float       x_coxa      = 0.0;
+   float       x_thor      = 0.0;
    float       x_femu      = 0.0;
    float       x_pate      = 0.0;
    float       x_tibi      = 0.0;
@@ -794,11 +806,19 @@ DRAW_spider        (void)
             glColor3f(1.0f, 1.0f, 1.0f);
             glRotatef( legs_deg [x_leg], 0.0f, 1.0f, 0.0f);
             /*---(default values)--------*/
-            x_coxa  = legs_deg [x_leg];
+            x_thor  = legs_deg [x_leg];
             /*---(check servos)----------*/
             rc = TICK_exact_deg (x_leg, &x_femu, &x_pate, &x_tibi);
+            if (x_leg == my.p_leg && my.f_verify == 'y') {
+               glPushMatrix  (); {
+                  glTranslatef (136.0, 0.0, 0.0);
+                  glRotatef    (x_femu, 0.0f, 1.0f, 0.0f);
+                  glTranslatef (-136.0, 0.0, 0.0);
+                  glCallList   (dl_verify);
+               } glPopMatrix ();
+            }
             /*---(draw)------------------*/
-            if (my.f_leg [x_leg] == 'y')  draw_leg       (x_leg, segs_len [YKINE_THOR], x_coxa, x_femu, x_pate, x_tibi);
+            if (my.f_leg [x_leg] == 'y')  draw_leg       (x_leg, segs_len [YKINE_THOR], x_thor, x_femu, x_pate, x_tibi);
             yGOLEM_leg (x_leg, x_femu, x_pate, x_tibi, 0.10);
             /*---(done)------------------*/
          } glPopMatrix ();
@@ -837,6 +857,7 @@ DRAW_init               (void)
    my.f_joint       = 'y';
    my.f_angle       = 'y';
    my.f_ygod        = 'y';
+   my.f_verify      = '-';
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;

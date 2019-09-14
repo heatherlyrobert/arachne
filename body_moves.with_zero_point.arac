@@ -163,88 +163,89 @@
 #ze_from       -a-  RR.full      1.000       0.0       0.0       0.0  -                    
 #
 
-#rk_pure       AA   300     star         m      attn   
-fk_pure       AA   300       0.00      0.00      0.00  -                    
-ze_pure               22        0.0       0.0       0.0  -                    
+#rk_pure      AA  300     star           m        attn   
+#23456789012  12  123  1234567890  1234567890  1234567890  12345678901234567890 
+fk_pure       AA  300      0.00        0.00        0.00    -                    
+ze_pure              22       0.0         0.0         0.0    -                    
 
-ze_from              [m]      50.0       -.-       -.-   E                    
-ze_from              [m]    -100.0       -.-       -.-   W                    
-ze_from              [m]      50.0       -.-       -.-   neutral              
+ze_from             [m]      50.0 r       -.-         -.-    E                    
+ze_from             [m]    -100.0 r       -.-         -.-    W                    
+ze_from             [m]      50.0 r       -.-         -.-    neutral              
 
-ze_from              [m]       -.-      50.0       -.-   S                    
-ze_from              [m]       -.-    -100.0       -.-   N                    
-ze_from              [m]       -.-      50.0       -.-   neutral              
+ze_from             [m]       -.-        50.0 r       -.-    S                    
+ze_from             [m]       -.-      -100.0 r       -.-    N                    
+ze_from             [m]       -.-        50.0 r       -.-    neutral              
 
-ze_from              [m]       -.-       -.-      40.0   U                    
-ze_from              [m]       -.-       -.-     -80.0   D                    
-ze_from              [m]       -.-       -.-      40.0   neutral              
+ze_from             [m]       -.-         -.-        40.0 r  U                    
+ze_from             [m]       -.-         -.-       -80.0 r  D                    
+ze_from             [m]       -.-         -.-        40.0 r  neutral              
 
-ze_from              [m]      50.0      50.0       -.-   SE                   
-ze_from              [m]    -100.0    -100.0       -.-   NW                   
-ze_from              [m]      50.0      50.0       -.-   neutral              
+ze_from             [m]      50.0 r      50.0 r       -.-    SE                   
+ze_from             [m]    -100.0 r    -100.0 r       -.-    NW                   
+ze_from             [m]      50.0 r      50.0 r       -.-    neutral              
 
-ze_from              [m]      50.0     -50.0       -.-   NE                   
-ze_from              [m]    -100.0     100.0       -.-   SW                   
-ze_from              [m]      50.0     -50.0       -.-   neutral              
+ze_from             [m]      50.0 r     -50.0 r       -.-    NE                   
+ze_from             [m]    -100.0 r     100.0 r       -.-    SW                   
+ze_from             [m]      50.0 r     -50.0 r       -.-    neutral              
 
-zp_pure              [m]       0.0      50.0       -.-   S                    
+zp_pure             [m]       0.0        50.0         -.-    S                    
 
-zp_from              [m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m]       5.0       -.-       -.-   -                    
+zp_from             [m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m]       5.0 r       -.-         -.-    -                    
 
-zp_from              [m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m]       5.0       -.-       -.-   -                    
-
-zp_from              [m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m>       5.0       -.-       -.-   -                    
-zp_from              <m]       5.0       -.-       -.-   -                    
+zp_from             [m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m]       5.0 r       -.-         -.-    -                    
+ 
+zp_from             [m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m>       5.0 r       -.-         -.-    -                    
+zp_from             <m]       5.0 r       -.-         -.-    -                    
 
 
 #==(verb)===  ver  =(segs)=  =(secs)=  =(femu)=  =(pate)=  =(tibi)=  ==(adjs)============ 
