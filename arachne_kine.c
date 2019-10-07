@@ -527,28 +527,51 @@ KINE_unitcond_ik   (void)
    char        x_leg       [LEN_LABEL];
    float       x, z, y;
    float       c, f, p, t;
-   /*---(prepare common vars)------------*/
-   if (my.p_leg < YKINE_RR || my.p_leg > YKINE_LP)  return -1;
-   strlcpy  (x_leg , legs_name [my.p_leg], LEN_LABEL);
+   int         i           =    0;
    /*---(prepare for testing)------------*/
-   fprintf (f_cond, "   COND       v21  inverse kinematics (IK)                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n", x_leg);
-   fprintf (f_cond, "     exec     v21  wipe all calculated values           yKINE__wipe                 YKINE_%s  , YKINE_IK                                                                                  i_equal     0                                                                                                    \n", x_leg);
+   fprintf (f_cond, "   GROUP      v21  inverse kinematics (IK)                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n");
+   fprintf (f_cond, "\n");
    /*---(set body position)--------------*/
+   fprintf (f_cond, "   COND       v21  set the body postion and orientation                               - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n");
    rc = TICK_exact_end    (YKINE_BODY, &x, &z, &y);
    fprintf (f_cond, "     exec     v21  set zero-point values                yKINE_zero                  %8.3f, %8.3f, %8.3f                                                                          i_equal     0                                                                                                    \n", x, z, y);
    rc = TICK_exact_deg    (YKINE_BODY, &f, &p, &t);
    fprintf (f_cond, "     exec     v21  set orientation values               yKINE_orient                %8.3f, %8.3f, %8.3f                                                                          i_equal     0                                                                                                    \n", f, p, t);
-   /*---(run IK)-------------------------*/
-   rc = TICK_exact_target (my.p_leg, &x, &z, &y);
-   fprintf (f_cond, "     exec     v21  calc adapted IK on %s                yKINE_inverse_adapt         YKINE_%s  , %8.3f, %8.3f, %8.3f                                                              i_equal     0                                                                                                    \n"   , x_leg, x_leg, x, z, y);
-   /*---(check results)------------------*/
-   rc = yKINE_angle       (my.p_leg, YKINE_COXA, YKINE_IK, &c, NULL, NULL, NULL, NULL, NULL, NULL);
-   rc = TICK_exact_deg    (my.p_leg  , &f, &p, &t);
-   fprintf (f_cond, "     get      v21  verify all IK angles on %s           yKINE__getter               \"IK_result\" , YKINE_%s, YKINE_IK                                                                      u_round/1   IK-%s/angles   : %8.1fc, %8.1ff, %8.1fp, %8.1ft                                          \n" , x_leg, x_leg, x_leg, c, f, p, t);
-   rc = TICK_exact_end    (my.p_leg  , &x, &z, &y);
-   fprintf (f_cond, "     get      v21  verify IK endpoint on %s             yKINE__getter               \"IK_final\"  , YKINE_%s, YKINE_IK                                                                      u_round/1   IK-%s/final    : %8.1fx, %8.1fz, %8.1fy                                                     \n" , x_leg, x_leg, x_leg, x, z, y);
-   /*---(add some space)-----------------*/
    fprintf (f_cond, "\n");
+   /*---(run legs manually)--------------*/
+   fprintf (f_cond, "   COND       v21  run the legs manually                                              - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n");
+   for (i = YKINE_RR; i <= YKINE_LR; ++i) {
+      strlcpy  (x_leg , legs_name [i], LEN_LABEL);
+      rc = TICK_exact_opengl (i, &x, &z, &y);
+      fprintf (f_cond, "     exec     v21  calc normal IK on %s                 yKINE_inverse               YKINE_%s  , %8.1f, %8.1f, %8.1f                                                              i_equal     0                                                                                                    \n"   , x_leg, x_leg, x, z, y);
+   }
+   fprintf (f_cond, "\n");
+   /*---(check results)------------------*/
+   fprintf (f_cond, "   COND       v21  check manual results                                               - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n");
+   for (i = YKINE_RR; i <= YKINE_LR; ++i) {
+      strlcpy  (x_leg , legs_name [i], LEN_LABEL);
+      c  = yKINE_legdeg (i);
+      rc = TICK_exact_deg    (i, &f, &p, &t);
+      fprintf (f_cond, "     get      v21  verify all IK angles on %s           yKINE__getter               \"IK_angles\" , YKINE_%s, YKINE_IK                                                                      u_round/1   IK-%s/angles   : %8.1fc, %8.1ff, %8.1fp, %8.1ft                                          \n" , x_leg, x_leg, x_leg, c, f, p, t);
+   }
+   fprintf (f_cond, "\n");
+   /*---(use opengl values)--------------*/
+   fprintf (f_cond, "   COND       v21  run the legs adapted                                               - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n");
+   for (i = YKINE_RR; i <= YKINE_LR; ++i) {
+      strlcpy  (x_leg , legs_name [i], LEN_LABEL);
+      rc = TICK_exact_target (i, &x, &z, &y);
+      fprintf (f_cond, "     exec     v21  calc adapted IK on %s                yKINE_inverse_adapt         YKINE_%s  , %8.1f, %8.1f, %8.1f                                                              i_equal     0                                                                                                    \n"   , x_leg, x_leg, x, z, y);
+   }
+   fprintf (f_cond, "\n");
+   /*---(check results)------------------*/
+   fprintf (f_cond, "   COND       v21  check adapted results                                              - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n");
+   for (i = YKINE_RR; i <= YKINE_LR; ++i) {
+      strlcpy  (x_leg , legs_name [i], LEN_LABEL);
+      rc = TICK_exact_opengl (i, &x, &z, &y);
+      fprintf (f_cond, "     get      v21  verify all IK endpoints %s           yKINE__getter               \"IK_seg_end\", YKINE_%s, YKINE_FOOT                                                                    u_round/1   IK-%s.foot end : ¬¬¬¬¬¬¬m, %7.1fx, %7.1fz, %7.1fy, ¬¬¬¬¬¬¬xz                              \n" , x_leg, x_leg, x_leg, x, z, y);
+   }
+   fprintf (f_cond, "\n");
+   /*---(add some space)-----------------*/
    fflush  (f_cond);
    /*---(complete)-----------------------*/
    return 0;

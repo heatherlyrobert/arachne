@@ -766,10 +766,17 @@ DRAW_spider        (void)
    char        x_debug     = '-';
    char        rc          = 0;
    float       x, y, z;
-   y = 139.7;
+   float       yg;
+   yg = 139.7;
    /*> y = 50.8;                                                                      <*/
+   /*---(opengl numbers)-----------------*/
    DRAW_wire_body  ();
+   /*---(preparation)--------------------*/
+   yKINE_exact_all ( my.p_cur);
+   TICK_exact_deg  (YKINE_BODY, &x_femu, &x_pate, &x_tibi);
+   TICK_exact_end  (YKINE_BODY, &x, &z, &y);
    DRAW_reset      ();
+   /*---(yGOD foreground)----------------*/
    if (my.f_ygod == 'y')   {
       glPushMatrix    (); {
          glTranslatef ( -(my.s_wide / 18.0),  -32.0f, -100.0f);
@@ -778,29 +785,45 @@ DRAW_spider        (void)
          yGOD_locate ();
       } glPopMatrix   ();
    }
-   /*---(begin)--------------------------*/
+   /*---(footprints)---------------------*/
    glPushMatrix (); {
+      /*---(scene elements)--------------*/
       yGOD_view ();
       draw_arrow      ();
-      /*> DRAW_reset      ();                                                         <*/
-      glTranslatef    (     0.0 , -y,      0.0 );
+      glTranslatef    (     0.0 , -yg,      0.0 );
       if (my.f_ground == 'y')  glCallList      (dl_ground);
       if (my.f_ruler  == 'y')  glCallList      (dl_ruler);
       if (my.f_turtle == 'y')  DRAW_turtle_upto (my.p_cur - my.p_inc);
-      /*> DRAW_turtle_all  ();                                                        <*/
-      glTranslatef    (     0.0 ,  y,      0.0 );
-      yKINE_exact_all  ( my.p_cur);
-      TICK_exact_deg  (YKINE_BODY, &x_femu, &x_pate, &x_tibi);
+      glTranslatef    (     0.0 ,  yg,      0.0 );
+
+      for (x_leg = YKINE_RR; x_leg <= YKINE_LR; ++x_leg) {
+         glPushMatrix (); {
+            if (my.f_footprint   == 'y')  draw_footprint (x_leg, x, z, y);
+            /*> if (my.f_footprint   == 'y')  draw_footprint (x_leg, 0, 0, 0);        <*/
+         } glPopMatrix   ();
+      }
+      /*---(spider elements)----------------*/
+      /*> yGOD_view ();                                                               <*/
+      /*> draw_arrow      ();                                                         <*/
+      /*> DRAW_reset      ();                                                         <*/
+      /*> glTranslatef    (     0.0 , -y,      0.0 );                                           <* 
+       *> if (my.f_ground == 'y')  glCallList      (dl_ground);                                 <* 
+       *> if (my.f_ruler  == 'y')  glCallList      (dl_ruler);                                  <* 
+       *> if (my.f_turtle == 'y')  DRAW_turtle_upto (my.p_cur - my.p_inc);                      <* 
+       *> /+> DRAW_turtle_all  ();                                                        <+/   <* 
+       *> glTranslatef    (     0.0 ,  y,      0.0 );                                           <*/
+      /*> yKINE_exact_all  ( my.p_cur);                                               <* 
+       *> TICK_exact_deg  (YKINE_BODY, &x_femu, &x_pate, &x_tibi);                    <*/
+      /*> TICK_exact_end  (YKINE_BODY, &x, &z, &y);                                   <*/
       glRotatef (x_femu, 0.0f, 1.0f, 0.0f);
       glRotatef (x_tibi, 0.0f, 0.0f, 1.0f);
       glRotatef (x_pate, 1.0f, 0.0f, 0.0f);
-      TICK_exact_end  (YKINE_BODY, &x, &z, &y);
       glTranslatef    (x, y, z);
       if (my.f_turtle == 'y')  draw_router     ();
       if (my.f_body   == 'y')  glCallList      (dl_body);
       if (my.f_beak   == 'y')  glCallList      (dl_beak);
       for (x_leg = YKINE_RR; x_leg <= YKINE_LR; ++x_leg) {
-         if (my.f_footprint   == 'y')  draw_footprint (x_leg, x, z, y);
+         /*> if (my.f_footprint   == 'y')  draw_footprint (x_leg, x, z, y);           <*/
          glPushMatrix (); {
             /*---(prepare)---------------*/
             glColor3f(1.0f, 1.0f, 1.0f);

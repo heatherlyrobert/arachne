@@ -261,7 +261,7 @@ dlist_ground            (void)
    s_zoff      = s_side * sin (60.0 * DEG2RAD);
    s_xinc      = s_side + s_xoff;
    s_zinc      = s_zoff;
-   printf ("%8.2fs, %8.2fxo, %8.2fxi, %8.2fzo, %8.2fzi\n", s_side, s_xoff, s_xinc, s_zoff, s_zinc);
+   /*> printf ("%8.2fs, %8.2fxo, %8.2fxi, %8.2fzo, %8.2fzi\n", s_side, s_xoff, s_xinc, s_zoff, s_zinc);   <*/
    dlist__level (20, 0, 0, '-', 0, 0);
    dlist__compass ();
    /*---(end)-------------------------------*/
@@ -910,7 +910,7 @@ dlist_verify       (void)
    char        y_str       [LEN_LABEL];
    float       x, y;
    /*---(begin)-----------------------------*/
-   printf ("DLIST_VERIFY ---beg-----------------------------------------\n");
+   /*> printf ("DLIST_VERIFY ---beg-----------------------------------------\n");     <*/
    dl_verify = glGenLists(1);
    glNewList(dl_verify, GL_COMPILE); {
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -921,9 +921,9 @@ dlist_verify       (void)
          while (rc >= 0) {
             x = yKINE_radius (o_str) + 228.1;
             x_val = yKINE_verify_rc (x_row, x_col);
-            printf ("%10.10s (%8.2f)   %10.10s (%8.2f)  %c (%d)", y_str, y, o_str, x, x_val, x_val);
+            /*> printf ("%10.10s (%8.2f)   %10.10s (%8.2f)  %c (%d)", y_str, y, o_str, x, x_val, x_val);   <*/
             if (x_val == 172) {
-               printf ("  SHOW\n");
+               /*> printf ("  SHOW\n");                                               <*/
                glColor4f (1.0f, 1.0f, 1.0f, 0.5f);
                glBegin       (GL_POLYGON); {
                   glVertex3f (x - 1.5, y + 1.5, -3.00f);
@@ -940,7 +940,7 @@ dlist_verify       (void)
                   glVertex3f (x - 1.5, y + 1.5, -3.00f);
                } glEnd         ();
             } else {
-               printf ("\n");
+               /*> printf ("\n");                                                     <*/
             }
             rc = ykine_stance_radius_next (&x_col, o_str);
          }
@@ -955,7 +955,7 @@ dlist_verify       (void)
       }
       /*---(end)-------------------------------*/
    } glEndList();
-   printf ("DLIST_VERIFY ---end-----------------------------------------\n");
+   /*> printf ("DLIST_VERIFY ---end-----------------------------------------\n");     <*/
    return 0;
 }
 

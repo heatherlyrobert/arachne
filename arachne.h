@@ -22,8 +22,8 @@
 
 #define     P_VERMAJOR  "1.--, working and advancing"
 #define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
-#define     P_VERNUM    "1.1k"
-#define     P_VERTXT    "can display verify/valid leg moves area over hexapod"
+#define     P_VERNUM    "1.1l"
+#define     P_VERTXT    "updated progress with hints/sections from yKINE"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -129,10 +129,6 @@
 
 
 /*===[[ VERSION ]]========================================*/
-/* rapidly evolving version number to aid with visual change confirmation     */
-#define VER_NUM   "1.0e"
-#define VER_TXT   "draws turtle on the ground based on body zero-point movements"
-
 
 
 /*===[[ HEADERS ]]========================================*/
@@ -602,6 +598,7 @@ char        TICK_snap               (void);
 char        TICK_exact_deg          (int a_leg, float *a_femu, float *a_pate, float *a_tibi);
 char        TICK_exact_end          (int a_leg, float *x     , float *z     , float *y     );
 char        TICK_exact_target       (int a_leg, float *x     , float *z     , float *y     );
+char        TICK_exact_opengl       (int a_leg, float *x     , float *z     , float *y     );
 char        TICK_opengl             (int a_leg, float  x     , float  z     , float  y     );
 char        TICK_panel_dump         (void);
 
