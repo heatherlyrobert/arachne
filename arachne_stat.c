@@ -28,7 +28,7 @@
 char      debug_sizing   = 'n';
 #define   DEBUG_SIZING   if (debug_sizing == 'y')
 
-char      model_name [100]    = "";
+char      model_name [100]    = "ch3-r";
 char      model_desc [100]    = "";
 int       LEGS           = 6;
 
@@ -43,8 +43,8 @@ static void      o___SETTING_________________o (void) {;}
 char
 stat_init          (char  *a_model)
 {
-   DEBUG_SIZING  fprintf (stderr, "stat_init -------- () begin\n");
-   /*---(locals)-------*-----------------*/
+   /*---(locals)-----------+-----+-----+-*/
+   char        rce         =  -10;
    FILE     *f         = NULL;         /* input file                          */
    int       nrecd     = 0;            /* number of current input record      */
    char      recd [1000];              /* input record                        */
@@ -54,11 +54,15 @@ stat_init          (char  *a_model)
    char     *p         = NULL;
    int       i         = 0;            /* loop iterator -- segs               */
    int       j         = 0;            /* loop iterator -- legs               */
+   /*---(header)-------------------------*/
+   DEBUG_CONF  yLOG_enter   (__FUNCTION__);;
    /*---(open file)----------------------*/
+   DEBUG_CONF  yLOG_info    ("file"      , CONF_SIZE);;
    f = fopen (CONF_SIZE, "r");
-   if (f == NULL) {
-      fprintf (stderr, "FATAL : can not open arachne_size.conf file\n");
-      return   -1;
+   DEBUG_CONF  yLOG_point   ("f"         , f);;
+   --rce;  if (f == NULL) {
+      DEBUG_CONF  yLOG_exitr   (__FUNCTION__, rce);;
+      return rce;
    }
    /*---(check for model name)-----------*/
    if (a_model != NULL && strcmp (a_model, "") != 0) {
@@ -66,8 +70,9 @@ stat_init          (char  *a_model)
       active = 's';
       DEBUG_SIZING  fprintf (stderr, "   - requested model = <%s>\n", model_name);
    } else {
-      strncpy (model_name, "", 25);
+      strncpy (model_name, "ch3-r", 25);
    }
+   DEBUG_CONF  yLOG_info    ("model"     , model_name);;
    /*---(read sections)------------------*/
    while (1) {
       /*---(read)------------------------*/
@@ -162,7 +167,7 @@ stat_init          (char  *a_model)
       return   -3;
    }
    /*---(complete)-----------------------*/
-   DEBUG_SIZING  fprintf (stderr, "stat_init -------- () end\n\n");
+   DEBUG_CONF  yLOG_exit    (__FUNCTION__);;
    return 0;
 }
 

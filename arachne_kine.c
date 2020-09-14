@@ -85,7 +85,7 @@ KINE_load          (void)
 char
 KINE_begin         (void)
 {
-   yKINE_init      (0);
+   yKINE_init      ();
    KINE_load       ();
    if (my.p_dump   != '-') {
       f_dump = fopen ("arachne.dump", "w");
@@ -109,7 +109,7 @@ KINE_begin         (void)
    fprintf (f_cond, "\n");
    fprintf (f_cond, "   COND       v21  initialize global data                                             - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n");
    fprintf (f_cond, "     set      v21  start testing                        yKINE__unit_quiet                                                                                                                 i_equal     0                                                                                                    \n");
-   fprintf (f_cond, "     exec     v21  run init                             yKINE_init                  '0'                                                                                                   i_equal     0                                                                                                    \n");
+   fprintf (f_cond, "     exec     v21  run init                             yKINE_init                                                                                                                        i_equal     0                                                                                                    \n");
    fprintf (f_cond, "\n");
    return 0;
 }
@@ -533,16 +533,19 @@ KINE_unitcond_ik   (void)
    fprintf (f_cond, "\n");
    /*---(set body position)--------------*/
    fprintf (f_cond, "   COND       v21  set the body postion and orientation                               - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n");
-   rc = TICK_exact_end    (YKINE_BODY, &x, &z, &y);
+   /*> rc = TICK_exact_end    (YKINE_BODY, &x, &z, &y);                               <*/
+   yKINE_tick_end  (YKINE_CENTER, my.p_tick, &x, &z, &y);
    fprintf (f_cond, "     exec     v21  set zero-point values                yKINE_zero                  %8.3f, %8.3f, %8.3f                                                                          i_equal     0                                                                                                    \n", x, z, y);
-   rc = TICK_exact_deg    (YKINE_BODY, &f, &p, &t);
+   /*> rc = TICK_exact_deg    (YKINE_BODY, &f, &p, &t);                               <*/
+   rc = yKINE_tick_deg (YKINE_BODY, my.p_tick, &f, &p, &t);
    fprintf (f_cond, "     exec     v21  set orientation values               yKINE_orient                %8.3f, %8.3f, %8.3f                                                                          i_equal     0                                                                                                    \n", f, p, t);
    fprintf (f_cond, "\n");
    /*---(run legs manually)--------------*/
    fprintf (f_cond, "   COND       v21  run the legs manually                                              - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n");
    for (i = YKINE_RR; i <= YKINE_LR; ++i) {
       strlcpy  (x_leg , legs_name [i], LEN_LABEL);
-      rc = TICK_exact_opengl (i, &x, &z, &y);
+      /*> rc = TICK_exact_opengl (i, &x, &z, &y);                                     <*/
+      rc = yKINE_tick_act    (i, my.p_tick, &x, &z, &y);
       fprintf (f_cond, "     exec     v21  calc normal IK on %s                 yKINE_inverse               YKINE_%s  , %8.1f, %8.1f, %8.1f                                                              i_equal     0                                                                                                    \n"   , x_leg, x_leg, x, z, y);
    }
    fprintf (f_cond, "\n");
@@ -551,7 +554,8 @@ KINE_unitcond_ik   (void)
    for (i = YKINE_RR; i <= YKINE_LR; ++i) {
       strlcpy  (x_leg , legs_name [i], LEN_LABEL);
       c  = yKINE_legdeg (i);
-      rc = TICK_exact_deg    (i, &f, &p, &t);
+      /*> rc = TICK_exact_deg    (i, &f, &p, &t);                                     <*/
+      rc = yKINE_tick_deg (i, my.p_tick, &f, &p, &t);
       fprintf (f_cond, "     get      v21  verify all IK angles on %s           yKINE__getter               \"IK_angles\" , YKINE_%s, YKINE_IK                                                                      u_round/1   IK-%s/angles   : %8.1fc, %8.1ff, %8.1fp, %8.1ft                                          \n" , x_leg, x_leg, x_leg, c, f, p, t);
    }
    fprintf (f_cond, "\n");
@@ -559,7 +563,8 @@ KINE_unitcond_ik   (void)
    fprintf (f_cond, "   COND       v21  run the legs adapted                                               - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n");
    for (i = YKINE_RR; i <= YKINE_LR; ++i) {
       strlcpy  (x_leg , legs_name [i], LEN_LABEL);
-      rc = TICK_exact_target (i, &x, &z, &y);
+      /*> rc = TICK_exact_target (i, &x, &z, &y);                                     <*/
+      rc = yKINE_tick_exp (i, my.p_tick, &x, &z, &y);
       fprintf (f_cond, "     exec     v21  calc adapted IK on %s                yKINE_inverse_adapt         YKINE_%s  , %8.1f, %8.1f, %8.1f                                                              i_equal     0                                                                                                    \n"   , x_leg, x_leg, x, z, y);
    }
    fprintf (f_cond, "\n");
@@ -567,7 +572,8 @@ KINE_unitcond_ik   (void)
    fprintf (f_cond, "   COND       v21  check adapted results                                              - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n");
    for (i = YKINE_RR; i <= YKINE_LR; ++i) {
       strlcpy  (x_leg , legs_name [i], LEN_LABEL);
-      rc = TICK_exact_opengl (i, &x, &z, &y);
+      /*> rc = TICK_exact_opengl (i, &x, &z, &y);                                     <*/
+      rc = yKINE_tick_act    (i, my.p_tick, &x, &z, &y);
       fprintf (f_cond, "     get      v21  verify all IK endpoints %s           yKINE__getter               \"IK_seg_end\", YKINE_%s, YKINE_FOOT                                                                    u_round/1   IK-%s.foot end : ¬¬¬¬¬¬¬m, %7.1fx, %7.1fz, %7.1fy, ¬¬¬¬¬¬¬xz                              \n" , x_leg, x_leg, x_leg, x, z, y);
    }
    fprintf (f_cond, "\n");
@@ -627,7 +633,7 @@ static void      o___MOVE_UNIT_______________o (void) {;}
  *>    fprintf (f_cond, "\n");                                                                                                                                                                                                                                                                                                                                                <* 
  *>    fprintf (f_cond, "   COND       v21  initialize global data                                             - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  \n");                             <* 
  *>    fprintf (f_cond, "     set      v21  start testing                        yKINE__unit_quiet                                                                                                                 i_equal     0                                                                                                    \n");                              <* 
- *>    fprintf (f_cond, "     exec     v21  run init                             yKINE_init                  '0'                                                                                                   i_equal     0                                                                                                    \n");                              <* 
+ *>    fprintf (f_cond, "     exec     v21  run init                             yKINE_init                                                                                                                        i_equal     0                                                                                                    \n");                              <* 
  *>    fprintf (f_cond, "\n");                                                                                                                                                                                                                                                                                                                                                <* 
  *>    return 0;                                                                                                                                                                                                                                                                                                                                                              <* 
  *> }                                                                                                                                                                                                                                                                                                                                                                         <*/

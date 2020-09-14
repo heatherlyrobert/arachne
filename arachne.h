@@ -7,10 +7,17 @@
 #define     P_NICHE     "hx (hexapoda)"
 #define     P_PURPOSE   "wickedly accurate and useful hexapod visualization and simulation"
 
-#define     P_NAMESAKE  "arachne (mother of all spiders)"
+#define     P_EXECUTE   "arachne"
+#define     P_FULLPATH  "/usr/local/bin/arachne"
+#define     P_ONELINE   "arachne-anassa (spider queen) work-spider simulation"
+
+#define     P_SUFFIX    "arac"
+#define     P_CONTENT   "spider movement script"
+
+#define     P_NAMESAKE  "arachne-anassa (spider queen)"
 #define     P_HERITAGE  "prideful lydian weaver who challenged the gods and lost"
 #define     P_IMAGERY   "womans upside down head/torso attached to spider abdomen/legs"
-#define     P_REASON    "queen of spiders should be the patron of spider robots"
+#define     P_REASON    "queen of spiders would be the patron of spider robots"
 
 #define     P_SYSTEM    "gnu/linux   (powerful, ubiquitous, technical, and hackable)"
 #define     P_LANGUAGE  "ansi-c      (wicked, limitless, universal, and everlasting)"
@@ -22,8 +29,8 @@
 
 #define     P_VERMAJOR  "1.--, working and advancing"
 #define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
-#define     P_VERNUM    "1.1l"
-#define     P_VERTXT    "updated progress with hints/sections from yKINE"
+#define     P_VERNUM    "1.1m"
+#define     P_VERTXT    "ticker built entirely from yKINE_tick data"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -170,8 +177,25 @@
 #include    <yCOLOR.h>       /* CUSTOM  heatherly opengl color handling       */
 #include    <yGLTEX.h>       /* CUSTOM  heatherly texture handling            */
 #include    <ySTR.h>         /* CUSTOM  heatherly string handling             */
+#include    <yPARSE.h>       /* CUSTOM  heatherly record parsing/queuing      */
 #include    <yLOG.h>         /* CUSTOM  heatherly program logging             */
 
+
+
+
+/*---(mapping)------------------------*/
+#define     HEX_CENTER     'y'
+#define     HEX_INNER      'i'
+#define     HEX_OUTER      'o'
+#define     HEX_BORDER     '-'
+#define     HEX_HATCHED    "io"
+/*---(footprint)----------------------*/
+#define     HEX_ABOVE      'A'
+#define     HEX_OVER       'O'
+#define     HEX_TOUCH      '*'
+#define     HEX_UNDER      'U'
+#define     HEX_BELOW      'B'
+#define     HEX_FILLED     "AO*UB"
 
 
 
@@ -246,6 +270,8 @@ struct cACCESSOR {
    char        sch;
    char        report;                      /* report to generate             */
    float       y;
+   float       std_height;                  /* spider height at attention     */
+   char        verify;                      /* verify script processing       */
    /*---(fonts)-----------*/
    char        face_pretty [LEN_LABEL];
    char        face_fixed  [LEN_LABEL];
@@ -300,6 +326,7 @@ struct cACCESSOR {
    /*---(progress pane)---*/
    char        p_pos;                       /* position of current bar (shcle)*/
    float       p_cur;                       /* current timeline seconds       */
+   int         p_tick;                      /* current ticker position        */
    float       p_scale;                     /* scale of progress bar          */
    float       p_len;                       /* length of script               */
    float       p_endsec;                    /* end second for timeline play   */
@@ -456,6 +483,7 @@ struct cLOCAUDIT {
 /*===[[ DISPLAY LISTS ]]==================================*/
 GLuint    dl_spider;
 GLuint    dl_ground;
+GLuint    dl_snowshoe;
 GLuint    dl_ruler;
 GLuint    dl_body;
 GLuint    dl_beak;
@@ -577,13 +605,15 @@ char        MODE_progress      (char a_major, char a_minor);
 
 
 /*---(arachne_dlist)---------------------*/
-char       dlist_begin        (void);
-char       dlist_end          (void);
-char       dlist_hex          (int l, char c, float x, float z);
-char       dlist_footprint    (int l, char t, float x, float z, float y, char rc, int c, int r, float d, float o);
+char       dlist_begin             (void);
+char       dlist_end               (void);
+char       dlist_distances         (float x, float z);
+char       dlist_littlehex         (float x, float z);
+char       dlist_hex               (int l, char c, float x, float z);
+char       dlist_footprint         (int l, char t, float x, float z, float y, char rc, int c, int r, float d, float o);
 
-void       glx_draw           (void);
-int        glx_init           (void);
+void       glx_draw                (void);
+int        glx_init                (void);
 
 
 /*---(arachne_draw)----------------------*/
@@ -595,11 +625,6 @@ char        TICK_draw_all           (void);
 char        TICK_show               (void);
 char        TICK_legend             (void);
 char        TICK_snap               (void);
-char        TICK_exact_deg          (int a_leg, float *a_femu, float *a_pate, float *a_tibi);
-char        TICK_exact_end          (int a_leg, float *x     , float *z     , float *y     );
-char        TICK_exact_target       (int a_leg, float *x     , float *z     , float *y     );
-char        TICK_exact_opengl       (int a_leg, float *x     , float *z     , float *y     );
-char        TICK_opengl             (int a_leg, float  x     , float  z     , float  y     );
 char        TICK_panel_dump         (void);
 
 
@@ -691,6 +716,12 @@ char      stat_masscenter    (void);
 char      stat_torque        (int   a_pos , int   a_leg);
 float     stat_settle        (void);
 
+
+
+char      FILE_init               (void);
+char      FILE_prepper            (char a_pass);
+char      FILE_finisher           (char a_pass);
+char      FILE_new                (void);
 
 
 #endif

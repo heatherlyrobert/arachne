@@ -4,6 +4,7 @@
 #include "arachne.h"
 
 static   int       dlist_ground       (void);
+static   int       dlist_snowshoe     (void);
 static   int       dlist_ruler        (void);
 static   int       dlist_body         (void);
 static   int       dlist_beak         (void);
@@ -15,19 +16,21 @@ static   int       dlist_foot         (void);
 static   int       dlist_verify       (void);
 
 
+
 char       /* ---- : prepare display lists for use ---------------------------*/
 dlist_begin        (void)
 {
-   dlist_ground  ();
-   dlist_ruler   ();
-   dlist_body    ();
-   dlist_beak    ();
-   dlist_coxa    ();
-   dlist_femur   ();
-   dlist_patella ();
-   dlist_tibia   ();
-   dlist_foot    ();
-   dlist_verify  ();
+   dlist_ground   ();
+   dlist_snowshoe ();
+   dlist_ruler    ();
+   dlist_body     ();
+   dlist_beak     ();
+   dlist_coxa     ();
+   dlist_femur    ();
+   dlist_patella  ();
+   dlist_tibia    ();
+   dlist_foot     ();
+   dlist_verify   ();
    return 0;
 }
 
@@ -35,6 +38,7 @@ char       /* ---- : prepare display lists for use ---------------------------*/
 dlist_end          (void)
 {
    glDeleteLists (dl_ground  , 1);
+   glDeleteLists (dl_snowshoe, 1);
    glDeleteLists (dl_ruler   , 1);
    glDeleteLists (dl_body    , 1);
    glDeleteLists (dl_beak    , 1);
@@ -58,6 +62,12 @@ static float    s_zinc    =  0.0;
 static float    y         =  0.0;
 
 
+
+/*====================------------------------------------====================*/
+/*===----                      hexagonal grid                          ----===*/
+/*====================------------------------------------====================*/
+static void      o___HEXGRID_________________o (void) {;}
+
 char
 dlist_hex          (int l, char t, float x, float z)
 {
@@ -66,18 +76,21 @@ dlist_hex          (int l, char t, float x, float z)
    /* exterior hexagon */
    if (l > 0 && l < 5)  return 0;
    switch (t) {
-   case 'y' : glColor4f (0.8f, 0.4f, 0.2f, 1.0f);  break;
-   case 'i' : glColor4f (0.2f, 0.2f, 0.2f, 0.3f);  break;
-   case 'o' : glColor4f (0.2f, 0.2f, 0.2f, 0.1f);  break;
-   case '-' : glColor4f (0.2f, 0.2f, 0.2f, 0.1f);  break;
-   case 'F' : glColor4f (0.0f, 0.7f, 0.0f, 1.0f);  break;
-   case 'f' : glColor4f (0.0f, 0.5f, 0.0f, 1.0f);  break;
-   case 'a' : glColor4f (0.5f, 0.5f, 0.5f, 1.0f);  break;
-   case 'b' : glColor4f (0.5f, 0.0f, 0.0f, 1.0f);  break;
+      /*---(mapping)---------------------*/
+   case HEX_CENTER : glColor4f (0.8f, 0.4f, 0.2f, 1.0f);  break;
+   case HEX_INNER  : glColor4f (0.2f, 0.2f, 0.2f, 0.3f);  break;
+   case HEX_OUTER  : glColor4f (0.2f, 0.2f, 0.2f, 0.1f);  break;
+   case HEX_BORDER : glColor4f (0.2f, 0.2f, 0.2f, 0.1f);  break;
+                     /*---(footprints)------------------*/
+   case HEX_ABOVE  : glColor4f (0.5f, 0.5f, 0.5f, 1.0f);  break;
+   case HEX_OVER   : glColor4f (0.7f, 0.7f, 0.0f, 1.0f);  break;
+   case HEX_TOUCH  : glColor4f (0.0f, 0.7f, 0.0f, 1.0f);  break;
+   case HEX_UNDER  : glColor4f (0.7f, 0.1f, 0.1f, 1.0f);  break;
+   case HEX_BELOW  : glColor4f (0.0f, 0.0f, 0.0f, 1.0f);  break;
    default  : glColor4f (0.8f, 0.8f, 0.8f, 0.1f);  break;
    }
-   if (strchr ("Ffab", t) != NULL)  glBegin       (GL_POLYGON);
-   else                             glBegin       (GL_LINE_STRIP);
+   if (strchr (HEX_FILLED, t) != NULL)  glBegin       (GL_POLYGON);
+   else                                 glBegin       (GL_LINE_STRIP);
    {
       glVertex3f (x - s_xoff - 0.5 * s_side, y, z         );  /* east       */
       glVertex3f (x          - 0.5 * s_side, y, z - s_zoff);  /* east-north */
@@ -88,7 +101,7 @@ dlist_hex          (int l, char t, float x, float z)
       glVertex3f (x - s_xoff - 0.5 * s_side, y, z         );  /* east       */
    } glEnd         ();
    /* interior triangles */
-   if (strchr ("io", t) != NULL) {
+   if (strchr (HEX_HATCHED, t) != NULL) {
       glColor4f (0.2f, 0.2f, 0.2f, 0.1f);
       glBegin       (GL_LINES); {
          glVertex3f (x - s_xoff - 0.5 * s_side, y, z         );  /* east       */
@@ -99,73 +112,13 @@ dlist_hex          (int l, char t, float x, float z)
          glVertex3f (x          - 0.5 * s_side, y, z + s_zoff);  /* east-south */
       } glEnd         ();
    }
-   /*> if (strchr ("Ff", t) == NULL) {                                                <* 
-    *>    glPushMatrix    (); {                                                       <* 
-    *>       glColor4f (0.0, 0.0, 0.0, 1.0);                                          <* 
-    *>       /+---(c/x)-----+/                                                        <* 
-    *>       glTranslatef (    x, 1.00f, z - 10.0);                                   <* 
-    *>       sprintf (s, "%6.1f", x);                                                 <* 
-    *>       glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                     <* 
-    *>       yFONT_print  (my.fixed,  4 , YF_BASCEN, s);                              <* 
-    *>       glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                     <* 
-    *>       /+---(r/z)-----+/                                                        <* 
-    *>       glTranslatef ( 0.00, 0.00, 10.0);                                        <* 
-    *>       sprintf (s, "%6.1f", z);                                                 <* 
-    *>       glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                     <* 
-    *>       yFONT_print  (my.fixed,  4 , YF_BASCEN, s);                              <* 
-    *>       glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                     <* 
-    *>       /+---(done)----+/                                                        <* 
-    *>    } glPopMatrix();                                                            <* 
-    *> }                                                                              <*/
-   return 0;
-}
-
-char
-dlist_footprint    (int l, char t, float x, float z, float y, char rc, int c, int r, float d, float o)
-{
-   char        s           [LEN_LABEL];
-   dlist_hex (0, t, x, z);
-   /*> glPushMatrix    (); {                                                          <* 
-    *>    glColor4f (0.0, 0.0, 0.0, 1.0);                                             <* 
-    *>    /+---(rc)------+/                                                           <* 
-    *>    glTranslatef (    x, 1.00f, z - 10.0);                                      <* 
-    *>    sprintf (s, "%3d", rc);                                                     <* 
-    *>    glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                        <* 
-    *>    yFONT_print  (my.fixed,  4 , YF_BASCEN, s);                                 <* 
-    *>    glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                        <* 
-    *>    /+---(dir)-----+/                                                           <* 
-    *>    glTranslatef ( 0.00, 0.00,  5.0);                                           <* 
-    *>    sprintf (s, "%5.1f", d);                                                    <* 
-    *>    glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                        <* 
-    *>    yFONT_print  (my.fixed,  4 , YF_BASCEN, s);                                 <* 
-    *>    glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                        <* 
-    *>    /+---(dist)----+/                                                           <* 
-    *>    glTranslatef ( 0.00, 0.00,  5.0);                                           <* 
-    *>    sprintf (s, "%5.3f", o);                                                    <* 
-    *>    glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                        <* 
-    *>    yFONT_print  (my.fixed,  4 , YF_BASCEN, s);                                 <* 
-    *>    glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                        <* 
-    *>    /+---(c/x)-----+/                                                           <* 
-    *>    glTranslatef ( 0.00, 0.00,  5.0);                                           <* 
-    *>    sprintf (s, "%2d/%6.1f", c, x);                                             <* 
-    *>    glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                        <* 
-    *>    yFONT_print  (my.fixed,  4 , YF_BASCEN, s);                                 <* 
-    *>    glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                        <* 
-    *>    /+---(r/z)-----+/                                                           <* 
-    *>    glTranslatef ( 0.00, 0.00,  5.0);                                           <* 
-    *>    sprintf (s, "%2d/%6.1f", r, z);                                             <* 
-    *>    glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                        <* 
-    *>    yFONT_print  (my.fixed,  4 , YF_BASCEN, s);                                 <* 
-    *>    glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                        <* 
-    *>    /+---(done)----+/                                                           <* 
-    *> } glPopMatrix();                                                               <*/
    return 0;
 }
 
 static char
 dlist__level       (int n, int l, char t, char b, float x, float z)
 {
-   char        c           =  '-';
+   char        c           = HEX_BORDER;
    int         i           =    0;
    char        x_subs      [LEN_LABEL] = ".------.";
    /*---(defense)------------------------*/
@@ -182,8 +135,8 @@ dlist__level       (int n, int l, char t, char b, float x, float z)
    }
    /*---(colors)-------------------------*/
    if      (l ==  0)   c = 'y';
-   else if (l <=  9)   c = 'i';
-   else if (l <= 15)   c = 'o';
+   else if (l <=  9)   c = HEX_INNER;
+   else if (l <= 15)   c = HEX_OUTER;
    /*---(drawa)--------------------------*/
    dlist_hex (l, c, x, z);
    /*---(branch)-------------------------*/
@@ -197,6 +150,145 @@ dlist__level       (int n, int l, char t, char b, float x, float z)
       }
    }
    /*---(done)---------------------------*/
+   return 0;
+}
+
+
+
+/*====================------------------------------------====================*/
+/*===----                       footprint related                      ----===*/
+/*====================------------------------------------====================*/
+static void      o___FOOTPRINTS______________o (void) {;}
+
+#define    MM2COL      25.400
+#define    MM2ROW      29.328
+
+char
+dlist_distances         (float x, float z)
+{
+   float       x_fd        [10];
+   int         i           =    0;
+   char        t           [LEN_LABEL];
+   yKINE_neighbors (&x_fd [0], &x_fd [1], &x_fd [2], &x_fd [3], &x_fd [4], &x_fd [5], &x_fd [6]);
+   glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
+   glPushMatrix    (); {
+      glTranslatef (x, 4.0, z);
+      for (i = 0; i <= 6; ++i) {
+         switch (i) {
+         case 1 : glTranslatef (    0.0, 0.0,  MM2ROW);          break;
+         case 2 : glTranslatef ( MM2COL, 0.0, -MM2ROW / 2.0);    break;
+         case 3 : glTranslatef (    0.0, 0.0, -MM2ROW      );    break;
+         case 4 : glTranslatef (-MM2COL, 0.0, -MM2ROW / 2.0);    break;
+         case 5 : glTranslatef (-MM2COL, 0.0,  MM2ROW / 2.0);    break;
+         case 6 : glTranslatef (    0.0, 0.0,  MM2ROW      );    break;
+         }
+         sprintf (t, "%4.2f", x_fd [i]);
+         glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
+         yFONT_print  (my.fixed,  3 , YF_MIDCEN, t);
+         glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);
+      }
+   } glPopMatrix();
+   return 0;
+}
+
+char
+dlist_littlehex    (float x, float z)
+{
+   float       y           =  3.0;
+   float       x_xoff = s_xoff / 4.0;
+   float       x_zoff = s_zoff / 4.0;
+   float       x_side = s_side / 4.0;
+   glColor4f (0.4f, 0.4f, 0.4f, 1.0f);
+   glBegin       (GL_POLYGON); {
+      glVertex3f (x - x_xoff - 0.5 * x_side, y, z         );  /* east       */
+      glVertex3f (x          - 0.5 * x_side, y, z - x_zoff);  /* east-north */
+      glVertex3f (x          + 0.5 * x_side, y, z - x_zoff);  /* west-north */
+      glVertex3f (x + x_xoff + 0.5 * x_side, y, z         );  /* west       */
+      glVertex3f (x          + 0.5 * x_side, y, z + x_zoff);  /* west-south */
+      glVertex3f (x          - 0.5 * x_side, y, z + x_zoff);  /* east-south */
+      glVertex3f (x - x_xoff - 0.5 * x_side, y, z         );  /* east       */
+   } glEnd         ();
+   glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
+   glBegin       (GL_LINE_STRIP); {
+      glVertex3f (x - x_xoff - 0.5 * x_side, y, z         );  /* east       */
+      glVertex3f (x          - 0.5 * x_side, y, z - x_zoff);  /* east-north */
+      glVertex3f (x          + 0.5 * x_side, y, z - x_zoff);  /* west-north */
+      glVertex3f (x + x_xoff + 0.5 * x_side, y, z         );  /* west       */
+      glVertex3f (x          + 0.5 * x_side, y, z + x_zoff);  /* west-south */
+      glVertex3f (x          - 0.5 * x_side, y, z + x_zoff);  /* east-south */
+      glVertex3f (x - x_xoff - 0.5 * x_side, y, z         );  /* east       */
+   } glEnd         ();
+   x_xoff /= 4.0;
+   x_zoff /= 4.0;
+   x_side /= 4.0;
+   y      += 0.25;
+   glBegin       (GL_POLYGON); {
+      glVertex3f (x - x_xoff - 0.5 * x_side, y, z         );  /* east       */
+      glVertex3f (x          - 0.5 * x_side, y, z - x_zoff);  /* east-north */
+      glVertex3f (x          + 0.5 * x_side, y, z - x_zoff);  /* west-north */
+      glVertex3f (x + x_xoff + 0.5 * x_side, y, z         );  /* west       */
+      glVertex3f (x          + 0.5 * x_side, y, z + x_zoff);  /* west-south */
+      glVertex3f (x          - 0.5 * x_side, y, z + x_zoff);  /* east-south */
+      glVertex3f (x - x_xoff - 0.5 * x_side, y, z         );  /* east       */
+   } glEnd         ();
+   return 0;
+}
+
+char
+dlist_footprint    (int l, char t, float x, float z, float y, char rc, int c, int r, float d, float o)
+{
+   char        s           [LEN_LABEL];
+   dlist_hex (0, t, x, z);
+   /*> glPointSize (15.0);                                                            <*/
+   glPushMatrix    (); {
+      glColor4f (0.0, 0.0, 0.0, 1.0);
+      /*> glBegin(GL_POINT); {                                                        <* 
+       *>    glVertex3f (x, 0.0, z);                                                  <* 
+       *> } glEnd ();                                                                 <*/
+      /*---(rc)------*/
+      glTranslatef (    x, 1.00f, z - 10.0);
+      sprintf (s, "%2drc", rc);
+      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
+      yFONT_print  (my.fixed,  3 , YF_BASCEN, s);
+      glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);
+      /*---(hex)-----*/
+      glTranslatef ( 0.00, 0.00,  5.0);
+      sprintf (s, "%dc/%dr", c, r);
+      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
+      yFONT_print  (my.fixed,  3 , YF_BASCEN, s);
+      glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);
+      /*---(dir)-----*/
+      /*> glTranslatef ( 0.00, 0.00,  5.0);                                           <* 
+       *> sprintf (s, "%5.1fd", d);                                                   <* 
+       *> glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                        <* 
+       *> yFONT_print  (my.fixed,  3 , YF_BASCEN, s);                                 <* 
+       *> glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                        <*/
+      /*---(dist)----*/
+      /*> glTranslatef ( 0.00, 0.00,  5.0);                                           <* 
+       *> sprintf (s, "%5.3fo", o);                                                   <* 
+       *> glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                        <* 
+       *> yFONT_print  (my.fixed,  3 , YF_BASCEN, s);                                 <* 
+       *> glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                        <*/
+      /*---(c/x)-----*/
+      glTranslatef ( 0.00, 0.00, 12.0);
+      sprintf (s, "%.1fx", x);
+      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
+      yFONT_print  (my.fixed,  3 , YF_BASCEN, s);
+      glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);
+      /*---(r/z)-----*/
+      glTranslatef ( 0.00, 0.00,  5.0);
+      sprintf (s, "%.1fz", z);
+      glRotatef (-90.0, 1.0f, 0.0f, 0.0f);
+      yFONT_print  (my.fixed,  3 , YF_BASCEN, s);
+      glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);
+      /*---(r/z)-----*/
+      /*> glTranslatef ( 0.00, 0.00,  5.0);                                           <* 
+       *> sprintf (s, "%6.1fy", y);                                                   <* 
+       *> glRotatef (-90.0, 1.0f, 0.0f, 0.0f);                                        <* 
+       *> yFONT_print  (my.fixed,  3 , YF_BASCEN, s);                                 <* 
+       *> glRotatef ( 90.0, 1.0f, 0.0f, 0.0f);                                        <*/
+      /*---(done)----*/
+   } glPopMatrix();
    return 0;
 }
 
@@ -296,7 +388,7 @@ dlist__diamond          (float x, float y, char *a_text, char a_dir)
    } glEnd();
    if (a_dir == 'a') {
       glPushMatrix    (); {
-         glTranslatef( x, 4.00f, -0.00f);
+         glTranslatef( x, 10.00f, 0.00f);
          yFONT_print  (my.fixed,  6 , YF_BASCEN, a_text);
       } glPopMatrix();
       if (a_text [0] < 'z') {
@@ -337,6 +429,52 @@ dlist__diamond          (float x, float y, char *a_text, char a_dir)
 }
 
 static int
+dlist_ruler_one         (float a_deg)
+{
+   float       i           =  0.0;
+   float       j           =  0.0;
+   char        n           [LEN_LABEL] = "a";
+   glPushMatrix    (); {
+      glRotatef (a_deg, 0.0f, 1.0f, 0.0f);
+      glColor4f (0.3, 0.3, 0.3, 0.3);
+      glBegin(GL_LINES); {
+         glVertex3f ( 0.0 * s_scale,  1.00f,  0.00f);
+         glVertex3f ( 3.0 * s_scale,  1.00f,  0.00f);
+      } glEnd();
+      n [0] = 'a';
+      for (j = 0.0 * s_scale; j <  3.0 * s_scale; j += s_scale * 0.50) {
+         dlist__diamond (j, 1.0, n, '-');
+      }
+      glColor4f (0.0, 0.0, 0.0, 1.0);
+      glBegin(GL_LINES); {
+         glVertex3f ( 3.0 * s_scale,  1.00f,  0.00f);
+         glVertex3f (15.5 * s_scale,  1.00f,  0.00f);
+      } glEnd();
+      n [0] = 'a';
+      for (j = 3.0 * s_scale; j < 16.0 * s_scale; j += s_scale * 0.50) {
+         dlist__diamond (j, 1.0, n, 'a');
+      }
+      /*> glRotatef (180.0, 0.0f, 0.0f, 1.0f);                                        <*/
+   } glPopMatrix();
+   return 0;
+}
+
+static int
+dlist_snowshoe          (void)
+{
+   dl_snowshoe = glGenLists(1);
+   glNewList(dl_snowshoe, GL_COMPILE);
+   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+   /*---(leg radius)---------------------*/
+   glColor4f (0.0, 0.0, 0.0, 1.0);
+   dlist_ruler_one (0);
+   /*---(end)-------------------------------*/
+   glEndList();
+   return 0;
+}
+
+
+static int
 dlist_ruler             (void)
 {
    float       i           =  0.0;
@@ -348,28 +486,29 @@ dlist_ruler             (void)
    /*---(leg radius)---------------------*/
    glColor4f (0.0, 0.0, 0.0, 1.0);
    for (i = 0; i < 360; i += 60) {
-      glPushMatrix    (); {
-         glRotatef (i, 0.0f, 1.0f, 0.0f);
-         glColor4f (0.3, 0.3, 0.3, 0.3);
-         glBegin(GL_LINES); {
-            glVertex3f ( 0.0 * s_scale,  1.00f,  0.00f);
-            glVertex3f ( 3.0 * s_scale,  1.00f,  0.00f);
-         } glEnd();
-         n [0] = 'a';
-         for (j = 0.0 * s_scale; j <  3.0 * s_scale; j += s_scale * 0.50) {
-            dlist__diamond (j, 1.0, n, '-');
-         }
-         glColor4f (0.0, 0.0, 0.0, 1.0);
-         glBegin(GL_LINES); {
-            glVertex3f ( 3.0 * s_scale,  1.00f,  0.00f);
-            glVertex3f (15.5 * s_scale,  1.00f,  0.00f);
-         } glEnd();
-         n [0] = 'a';
-         for (j = 3.0 * s_scale; j < 16.0 * s_scale; j += s_scale * 0.50) {
-            dlist__diamond (j, 1.0, n, 'a');
-         }
-         /*> glRotatef (180.0, 0.0f, 0.0f, 1.0f);                                        <*/
-      } glPopMatrix();
+      dlist_ruler_one (i);
+      /*> glPushMatrix    (); {                                                                    <* 
+       *>    glRotatef (i, 0.0f, 1.0f, 0.0f);                                                      <* 
+       *>    glColor4f (0.3, 0.3, 0.3, 0.3);                                                       <* 
+       *>    glBegin(GL_LINES); {                                                                  <* 
+       *>       glVertex3f ( 0.0 * s_scale,  1.00f,  0.00f);                                       <* 
+       *>       glVertex3f ( 3.0 * s_scale,  1.00f,  0.00f);                                       <* 
+       *>    } glEnd();                                                                            <* 
+       *>    n [0] = 'a';                                                                          <* 
+       *>    for (j = 0.0 * s_scale; j <  3.0 * s_scale; j += s_scale * 0.50) {                    <* 
+       *>       dlist__diamond (j, 1.0, n, '-');                                                   <* 
+       *>    }                                                                                     <* 
+       *>    glColor4f (0.0, 0.0, 0.0, 1.0);                                                       <* 
+       *>    glBegin(GL_LINES); {                                                                  <* 
+       *>       glVertex3f ( 3.0 * s_scale,  1.00f,  0.00f);                                       <* 
+       *>       glVertex3f (15.5 * s_scale,  1.00f,  0.00f);                                       <* 
+       *>    } glEnd();                                                                            <* 
+       *>    n [0] = 'a';                                                                          <* 
+       *>    for (j = 3.0 * s_scale; j < 16.0 * s_scale; j += s_scale * 0.50) {                    <* 
+       *>       dlist__diamond (j, 1.0, n, 'a');                                                   <* 
+       *>    }                                                                                     <* 
+       *>    /+> glRotatef (180.0, 0.0f, 0.0f, 1.0f);                                        <+/   <* 
+       *> } glPopMatrix();                                                                         <*/
    }
    /*---(body height)--------------------*/
    glBegin(GL_LINES); {
@@ -405,6 +544,40 @@ dlist_ruler             (void)
     *>       }                                                                        <* 
     *>    } glPopMatrix();                                                            <* 
     *> }                                                                              <*/
+   /*---(x-axis)-------------------------*/
+   for (i = -20; i <= 20; ++i) {
+      glColor4f (0.8, 0.0, 0.0, 1.0);
+      glBegin(GL_POLYGON); {
+         glVertex3f ((i + 0.30) * s_scale,  1.00, -3.00);
+         glVertex3f ((i + 0.00) * s_scale,  1.00,  3.00);
+         glVertex3f ((i + 0.70) * s_scale,  1.00,  3.00);
+         glVertex3f ((i + 1.00) * s_scale,  1.00, -3.00);
+      } glEnd();
+      glColor4f (0.3, 0.0, 0.0, 1.0);
+      glBegin(GL_POLYGON); {
+         glVertex3f ((i + 1.00) * s_scale,  1.00, -3.00);
+         glVertex3f ((i + 0.70) * s_scale,  1.00,  3.00);
+         glVertex3f ((i + 1.00) * s_scale,  1.00,  3.00);
+         glVertex3f ((i + 1.30) * s_scale,  1.00, -3.00);
+      } glEnd();
+   }
+   /*---(z-axis)-------------------------*/
+   for (i = -20; i <= 20; ++i) {
+      glColor4f (0.8, 0.8, 0.0, 1.0);
+      glBegin(GL_POLYGON); {
+         glVertex3f (-3.00,  1.00, (i + 0.30) * s_scale);
+         glVertex3f ( 3.00,  1.00, (i + 0.00) * s_scale);
+         glVertex3f ( 3.00,  1.00, (i + 0.70) * s_scale);
+         glVertex3f (-3.00,  1.00, (i + 1.00) * s_scale);
+      } glEnd();
+      glColor4f (0.3, 0.3, 0.0, 1.0);
+      glBegin(GL_POLYGON); {
+         glVertex3f (-3.00,  1.00, (i + 1.00) * s_scale);
+         glVertex3f ( 3.00,  1.00, (i + 0.70) * s_scale);
+         glVertex3f ( 3.00,  1.00, (i + 1.00) * s_scale);
+         glVertex3f (-3.00,  1.00, (i + 1.30) * s_scale);
+      } glEnd();
+   }
    /*---(end)-------------------------------*/
    glEndList();
    return 0;
@@ -881,17 +1054,17 @@ dlist_foot         (void)
          } glEnd();
       } glPopMatrix   ();
       /*---(lengthwise alignment line)------*/
-      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-      glColor3f(0.8f, 0.3f, 0.0f);
-      glEnable(GL_LINE_STIPPLE);
-      glLineStipple(1, 0xA0A0);
-      glLineWidth (5.0);
-      glBegin(GL_LINES); {
-         glVertex3f( -10.00f,  0.00f,  0.00f);
-         glVertex3f( segs_len [YKINE_FOOT] + 10.0 ,  0.00f,  0.00f);
-      } glEnd();
-      glLineWidth (0.5);
-      glDisable(GL_LINE_STIPPLE);
+      /*> glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);                                  <* 
+       *> glColor3f(0.8f, 0.3f, 0.0f);                                                <* 
+       *> glEnable(GL_LINE_STIPPLE);                                                  <* 
+       *> glLineStipple(1, 0xA0A0);                                                   <* 
+       *> glLineWidth (5.0);                                                          <* 
+       *> glBegin(GL_LINES); {                                                        <* 
+       *>    glVertex3f( -10.00f,  0.00f,  0.00f);                                    <* 
+       *>    glVertex3f( segs_len [YKINE_FOOT] + 10.0 ,  0.00f,  0.00f);              <* 
+       *> } glEnd();                                                                  <* 
+       *> glLineWidth (0.5);                                                          <* 
+       *> glDisable(GL_LINE_STIPPLE);                                                 <*/
       /*---(prepare for next segment)-------*/
       glTranslatef( segs_len [YKINE_FOOT], 0.00f,  0.00f);
       /*---(end)-------------------------------*/

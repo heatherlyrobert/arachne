@@ -97,7 +97,6 @@ static      tPANEL     *p_curr      = NULL;
 static      tPANEL     *p_suff      = NULL;
 static      tPANEL     *p_draw      = NULL;      /* panel with current pos    */
 static      tPANEL     *p_actv      = NULL;      /* panel being drawn         */
-static      int         s_draw      =    0;      /* draw position in panel    */
 
 /*---1----- -----2----- -----3----- -----4-----  ---------comments------------*/
 /*---(horizontal)---------------------*/
@@ -428,11 +427,11 @@ TICK_back_draw          (void)
    }
    /*---(draw)---------------------------*/
    DEBUG_GRAF   yLOG_note    ("draw background");
-   yGLTEX_draw_start (p_back->fbo, YGLTEX_BOTLEF, s_wide, s_tall, 1.0);
+   yGLTEX_draw       (p_back->fbo, YGLTEX_BOTLEF, s_wide, s_tall, 1.0);
    TICK_back_vert    ();
    TICK_back_horz    ();
    TICK_back_label   ();
-   yGLTEX_draw_end   (p_back->tex);
+   yGLTEX_done       (p_back->tex);
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -726,353 +725,353 @@ tick_panel_wipe         (tPANEL *a_panel, char a_init)
    return 0;
 }
 
-char         /*--> set values for progress ticker --------[ ------ [ ------ ]-*/
-tick_panel_init         (void)
-{
-   /*---(locals)-----------+-----+-----+-*/
-   char        rc          =    0;
-   int         i           =    0;
-   /*---(header)-------------------------*/
-   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   /*---(prepare)------------------------*/
-   rc = yGLTEX_init ();
-   DEBUG_GRAF   yLOG_value   ("yGLTEX"    , rc);
-   if (rc < 0)  return rc;
-   /*> rc = yVIKEYS_cmds_add ('c', "p_snap"      , ""    , ""     , TICK_snap            , "save png image of full ticker/progress"                      );   <* 
-    *> DEBUG_GRAF   yLOG_value   ("p_snap"    , rc);                                                                                                          <* 
-    *> if (rc < 0)  return rc;                                                                                                                                <*/
-   /*---(sizes)--------------------------*/
-   DEBUG_GRAF   yLOG_note    ("setting sizes (widths and heights)");
-   TICK_line_count ();
-   s_tall = s_yinc;
-   s_wide = MAX_WIDE;
-   DEBUG_GRAF   yLOG_value   ("s_tall"    , s_tall);
-   /*---(handles)------------------------*/
-   DEBUG_GRAF   yLOG_note    ("initializing handles (tex, fbo, depth)");
-   for (i = 0; i < MAX_PANEL; ++i) {
-      s_ticker [i].tex = s_ticker [i].fbo = s_ticker [i].depth = 0;
-   }
-   /*---(secs per panel)-----------------*/
-   rc  = yVIKEYS_prog_cur (&s_anchor, &my.p_cur, &my.p_scale, &my.p_inc, &my.p_line);
-   DEBUG_GRAF   yLOG_double  ("p_cur"     , my.p_cur);
-   DEBUG_GRAF   yLOG_double  ("p_scale"   , my.p_scale);
-   s_len       = my.p_scale * UNIT2PANEL;
-   DEBUG_GRAF   yLOG_double  ("s_len"     , s_len);
-   /*---(pointers)-----------------------*/
-   for (i = 0; i < MAX_PANEL; ++i) {
-      s_order  [i] = &(s_ticker [i]);
-      s_ticker [i].seq  = i - 2;
-      s_ticker [i].beg  = (i - 2) * s_len;
-      s_ticker [i].sect = i - 2;
-   }
-   /*---(complete)-----------------------*/
-   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
-   return 0;
-}
+/*> char         /+--> set values for progress ticker --------[ ------ [ ------ ]-+/                                                                                    <* 
+ *> tick_panel_init         (void)                                                                                                                                      <* 
+ *> {                                                                                                                                                                   <* 
+ *>    /+---(locals)-----------+-----+-----+-+/                                                                                                                         <* 
+ *>    char        rc          =    0;                                                                                                                                  <* 
+ *>    int         i           =    0;                                                                                                                                  <* 
+ *>    /+---(header)-------------------------+/                                                                                                                         <* 
+ *>    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);                                                                                                                        <* 
+ *>    /+---(prepare)------------------------+/                                                                                                                         <* 
+ *>    rc = yGLTEX_config ();                                                                                                                                           <* 
+ *>    DEBUG_GRAF   yLOG_value   ("yGLTEX"    , rc);                                                                                                                    <* 
+ *>    if (rc < 0)  return rc;                                                                                                                                          <* 
+ *>    /+> rc = yVIKEYS_cmds_add ('c', "p_snap"      , ""    , ""     , TICK_snap            , "save png image of full ticker/progress"                      );   <*    <* 
+ *>     *> DEBUG_GRAF   yLOG_value   ("p_snap"    , rc);                                                                                                          <*    <* 
+ *>     *> if (rc < 0)  return rc;                                                                                                                                <+/   <* 
+ *>    /+---(sizes)--------------------------+/                                                                                                                         <* 
+ *>    DEBUG_GRAF   yLOG_note    ("setting sizes (widths and heights)");                                                                                                <* 
+ *>    TICK_line_count ();                                                                                                                                              <* 
+ *>    s_tall = s_yinc;                                                                                                                                                 <* 
+ *>    s_wide = MAX_WIDE;                                                                                                                                               <* 
+ *>    DEBUG_GRAF   yLOG_value   ("s_tall"    , s_tall);                                                                                                                <* 
+ *>    /+---(handles)------------------------+/                                                                                                                         <* 
+ *>    DEBUG_GRAF   yLOG_note    ("initializing handles (tex, fbo, depth)");                                                                                            <* 
+ *>    for (i = 0; i < MAX_PANEL; ++i) {                                                                                                                                <* 
+ *>       s_ticker [i].tex = s_ticker [i].fbo = s_ticker [i].depth = 0;                                                                                                 <* 
+ *>    }                                                                                                                                                                <* 
+ *>    /+---(secs per panel)-----------------+/                                                                                                                         <* 
+ *>    rc  = yVIKEYS_prog_cur (&s_anchor, &my.p_cur, &my.p_scale, &my.p_inc, &my.p_line);                                                                               <* 
+ *>    DEBUG_GRAF   yLOG_double  ("p_cur"     , my.p_cur);                                                                                                              <* 
+ *>    DEBUG_GRAF   yLOG_double  ("p_scale"   , my.p_scale);                                                                                                            <* 
+ *>    s_len       = my.p_scale * UNIT2PANEL;                                                                                                                           <* 
+ *>    DEBUG_GRAF   yLOG_double  ("s_len"     , s_len);                                                                                                                 <* 
+ *>    /+---(pointers)-----------------------+/                                                                                                                         <* 
+ *>    for (i = 0; i < MAX_PANEL; ++i) {                                                                                                                                <* 
+ *>       s_order  [i] = &(s_ticker [i]);                                                                                                                               <* 
+ *>       s_ticker [i].seq  = i - 2;                                                                                                                                    <* 
+ *>       s_ticker [i].beg  = (i - 2) * s_len;                                                                                                                          <* 
+ *>       s_ticker [i].sect = i - 2;                                                                                                                                    <* 
+ *>    }                                                                                                                                                                <* 
+ *>    /+---(complete)-----------------------+/                                                                                                                         <* 
+ *>    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);                                                                                                                        <* 
+ *>    return 0;                                                                                                                                                        <* 
+ *> }                                                                                                                                                                   <*/
 
-char
-tick_panel__start       (void)
-{
-   char        rc          =    0;
-   /*---(prepare)------------------------*/
-   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   /*---(free)------------------------*/
-   if (p_back->tex != 0) {
-      rc = yGLTEX_free (&(p_back->tex), &(p_back->fbo), &(p_back->depth));
-      if (rc < 0) {
-         DEBUG_GRAF   yLOG_exitr   (__FUNCTION__, rc);
-         return rc;
-      }
-   }
-   /*---(create)----------------------*/
-   rc = yGLTEX_new  (&(p_back->tex), &(p_back->fbo), &(p_back->depth), s_wide, s_tall);
-   DEBUG_GRAF   yLOG_value   ("new"       , rc);
-   if (rc < 0) {
-      DEBUG_GRAF   yLOG_exitr   (__FUNCTION__, rc);
-      return rc;
-   }
-   /*---(draw)---------------------------*/
-   DEBUG_GRAF   yLOG_note    ("draw background");
-   yGLTEX_draw_start (p_back->fbo, YGLTEX_BOTLEF, s_wide, s_tall, 1.0);
-   /*---(complete)-----------------------*/
-   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
-   return 0;
-}
+/*> char                                                                                      <* 
+ *> tick_panel__start       (void)                                                            <* 
+ *> {                                                                                         <* 
+ *>    char        rc          =    0;                                                        <* 
+ *>    /+---(prepare)------------------------+/                                               <* 
+ *>    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);                                              <* 
+ *>    /+---(free)------------------------+/                                                  <* 
+ *>    if (p_back->tex != 0) {                                                                <* 
+ *>       rc = yGLTEX_free (&(p_back->tex), &(p_back->fbo), &(p_back->depth));                <* 
+ *>       if (rc < 0) {                                                                       <* 
+ *>          DEBUG_GRAF   yLOG_exitr   (__FUNCTION__, rc);                                    <* 
+ *>          return rc;                                                                       <* 
+ *>       }                                                                                   <* 
+ *>    }                                                                                      <* 
+ *>    /+---(create)----------------------+/                                                  <* 
+ *>    rc = yGLTEX_new  (&(p_back->tex), &(p_back->fbo), &(p_back->depth), s_wide, s_tall);   <* 
+ *>    DEBUG_GRAF   yLOG_value   ("new"       , rc);                                          <* 
+ *>    if (rc < 0) {                                                                          <* 
+ *>       DEBUG_GRAF   yLOG_exitr   (__FUNCTION__, rc);                                       <* 
+ *>       return rc;                                                                          <* 
+ *>    }                                                                                      <* 
+ *>    /+---(draw)---------------------------+/                                               <* 
+ *>    DEBUG_GRAF   yLOG_note    ("draw background");                                         <* 
+ *>    yGLTEX_draw       (p_back->fbo, YGLTEX_BOTLEF, s_wide, s_tall, 1.0);                   <* 
+ *>    /+---(complete)-----------------------+/                                               <* 
+ *>    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);                                              <* 
+ *>    return 0;                                                                              <* 
+ *> }                                                                                         <*/
 
-char
-tick_panel__back        (int a_pos)
-{
-   /*---(locals)-----------+-----------+-*/
-   float     x_big         =  0.0;
-   float     x_sml         =  0.0;
-   /*---(header)-------------------------*/
-   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   /*---(prepare)------------------------*/
-   yVIKEYS_view_color (YCOLOR_NEG_MUT, 1.00);
-   glLineWidth (2.0);
-   /*---(locators)-----------------*/
-   x_big  = s_xinc / 3.0;
-   x_sml  = 1.0;
-   /*---(title bar)-------------------*/
-   glBegin (GL_POLYGON); {
-      glVertex3f (a_pos         , s_yinc             ,   10.0);
-      glVertex3f (a_pos + s_xinc, s_yinc             ,   10.0);
-      glVertex3f (a_pos + s_xinc, s_yinc - s_title   ,   10.0);
-      glVertex3f (a_pos         , s_yinc - s_title   ,   10.0);
-   } glEnd ();
-   /*---(middle bar)------------------*/
-   glBegin (GL_POLYGON); {
-      glVertex3f (a_pos         , s_yinc - 110       ,   10.0);
-      glVertex3f (a_pos + s_xinc, s_yinc - 110       ,   10.0);
-      glVertex3f (a_pos + s_xinc, s_yinc - 120       ,   10.0);
-      glVertex3f (a_pos         , s_yinc - 120       ,   10.0);
-   } glEnd ();
-   /*---(10.0x bars)---------------*/
-   if (a_pos % (s_xinc * 100) == 0) {
-      glBegin (GL_POLYGON); {
-         glVertex3f (a_pos - x_big, s_yinc, 0.0);
-         glVertex3f (a_pos + x_big, s_yinc, 0.0);
-         glVertex3f (a_pos + x_big, 0.0   , 0.0);
-         glVertex3f (a_pos - x_big, 0.0   , 0.0);
-      } glEnd ();
-   }
-   /*---(1.00x bars)---------------*/
-   else if (a_pos % (s_xinc *  10) == 0) {
-      glBegin (GL_POLYGON); {
-         glVertex3f (a_pos - x_sml, s_yinc, 0.0);
-         glVertex3f (a_pos + x_sml, s_yinc, 0.0);
-         glVertex3f (a_pos + x_sml, 0.0   , 0.0);
-         glVertex3f (a_pos - x_sml, 0.0   , 0.0);
-      } glEnd ();
-   }
-   /*---(0.50x bars)---------------*/
-   else if (a_pos % (s_xinc *   5) == 0) {
-      glBegin (GL_LINES); {
-         glVertex3f (a_pos, s_yinc       , 0.0);
-         glVertex3f (a_pos, s_yinc - 50.0, 0.0);
-         glVertex3f (a_pos, 0.0          , 0.0);
-         glVertex3f (a_pos, 20.0         , 0.0);
-      } glEnd ();
-   }
-   /*---(0.10x bars)---------------*/
-   else {
-      glBegin (GL_LINES); {
-         glVertex3f (a_pos, s_yinc       , 0.0);
-         glVertex3f (a_pos, s_yinc - 40.0, 0.0);
-         glVertex3f (a_pos, 0.0          , 0.0);
-         glVertex3f (a_pos, 10.0         , 0.0);
-      } glEnd ();
-   }
-   /*---(complete)-----------------------*/
-   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
-   return 0;
-}
+/*> char                                                                              <* 
+ *> tick_panel__back        (int a_pos)                                               <* 
+ *> {                                                                                 <* 
+ *>    /+---(locals)-----------+-----------+-+/                                       <* 
+ *>    float     x_big         =  0.0;                                                <* 
+ *>    float     x_sml         =  0.0;                                                <* 
+ *>    /+---(header)-------------------------+/                                       <* 
+ *>    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);                                      <* 
+ *>    /+---(prepare)------------------------+/                                       <* 
+ *>    yVIKEYS_view_color (YCOLOR_NEG_MUT, 1.00);                                     <* 
+ *>    glLineWidth (2.0);                                                             <* 
+ *>    /+---(locators)-----------------+/                                             <* 
+ *>    x_big  = s_xinc / 3.0;                                                         <* 
+ *>    x_sml  = 1.0;                                                                  <* 
+ *>    /+---(title bar)-------------------+/                                          <* 
+ *>    glBegin (GL_POLYGON); {                                                        <* 
+ *>       glVertex3f (a_pos         , s_yinc             ,   10.0);                   <* 
+ *>       glVertex3f (a_pos + s_xinc, s_yinc             ,   10.0);                   <* 
+ *>       glVertex3f (a_pos + s_xinc, s_yinc - s_title   ,   10.0);                   <* 
+ *>       glVertex3f (a_pos         , s_yinc - s_title   ,   10.0);                   <* 
+ *>    } glEnd ();                                                                    <* 
+ *>    /+---(middle bar)------------------+/                                          <* 
+ *>    glBegin (GL_POLYGON); {                                                        <* 
+ *>       glVertex3f (a_pos         , s_yinc - 110       ,   10.0);                   <* 
+ *>       glVertex3f (a_pos + s_xinc, s_yinc - 110       ,   10.0);                   <* 
+ *>       glVertex3f (a_pos + s_xinc, s_yinc - 120       ,   10.0);                   <* 
+ *>       glVertex3f (a_pos         , s_yinc - 120       ,   10.0);                   <* 
+ *>    } glEnd ();                                                                    <* 
+ *>    /+---(10.0x bars)---------------+/                                             <* 
+ *>    if (a_pos % (s_xinc * 100) == 0) {                                             <* 
+ *>       glBegin (GL_POLYGON); {                                                     <* 
+ *>          glVertex3f (a_pos - x_big, s_yinc, 0.0);                                 <* 
+ *>          glVertex3f (a_pos + x_big, s_yinc, 0.0);                                 <* 
+ *>          glVertex3f (a_pos + x_big, 0.0   , 0.0);                                 <* 
+ *>          glVertex3f (a_pos - x_big, 0.0   , 0.0);                                 <* 
+ *>       } glEnd ();                                                                 <* 
+ *>    }                                                                              <* 
+ *>    /+---(1.00x bars)---------------+/                                             <* 
+ *>    else if (a_pos % (s_xinc *  10) == 0) {                                        <* 
+ *>       glBegin (GL_POLYGON); {                                                     <* 
+ *>          glVertex3f (a_pos - x_sml, s_yinc, 0.0);                                 <* 
+ *>          glVertex3f (a_pos + x_sml, s_yinc, 0.0);                                 <* 
+ *>          glVertex3f (a_pos + x_sml, 0.0   , 0.0);                                 <* 
+ *>          glVertex3f (a_pos - x_sml, 0.0   , 0.0);                                 <* 
+ *>       } glEnd ();                                                                 <* 
+ *>    }                                                                              <* 
+ *>    /+---(0.50x bars)---------------+/                                             <* 
+ *>    else if (a_pos % (s_xinc *   5) == 0) {                                        <* 
+ *>       glBegin (GL_LINES); {                                                       <* 
+ *>          glVertex3f (a_pos, s_yinc       , 0.0);                                  <* 
+ *>          glVertex3f (a_pos, s_yinc - 50.0, 0.0);                                  <* 
+ *>          glVertex3f (a_pos, 0.0          , 0.0);                                  <* 
+ *>          glVertex3f (a_pos, 20.0         , 0.0);                                  <* 
+ *>       } glEnd ();                                                                 <* 
+ *>    }                                                                              <* 
+ *>    /+---(0.10x bars)---------------+/                                             <* 
+ *>    else {                                                                         <* 
+ *>       glBegin (GL_LINES); {                                                       <* 
+ *>          glVertex3f (a_pos, s_yinc       , 0.0);                                  <* 
+ *>          glVertex3f (a_pos, s_yinc - 40.0, 0.0);                                  <* 
+ *>          glVertex3f (a_pos, 0.0          , 0.0);                                  <* 
+ *>          glVertex3f (a_pos, 10.0         , 0.0);                                  <* 
+ *>       } glEnd ();                                                                 <* 
+ *>    }                                                                              <* 
+ *>    /+---(complete)-----------------------+/                                       <* 
+ *>    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);                                      <* 
+ *>    return 0;                                                                      <* 
+ *> }                                                                                 <*/
 
-char
-tick_panel__line   (int a_pos, int a_line, char a_type, float a_base, float a_scale, int a_off, float a_z)
-{
-   /*---(locals)-----------+-----+-----+-*/
-   int       i             =    0;
-   float     y_beg         =  0.0;
-   float     y_end         =  0.0;
-   switch (a_type) {
-   case 'F' :  /* femur original    */
-   case 'X' :  /* xpos original     */
-      glColor4f    (0.70f, 0.00f, 0.00f, 1.0f);
-      glLineWidth  (15.0f);
-      break;
-   case 'f' :  /* femur adapted     */
-      glColor4f    (0.50f, 0.00f, 0.00f, 1.0f);
-      glPointSize  ( 5.0f);
-      break;
-   case 'P' :  /* patella original  */
-   case 'Z' :  /* zpos original     */
-      glColor4f    (0.20f, 0.20f, 0.80f, 1.0f);
-      glLineWidth  (10.0f);
-      break;
-   case 'p' :  /* patella adapted   */
-      glColor4f    (0.10f, 0.10f, 0.50f, 1.0f);
-      glPointSize  ( 5.0f);
-      break;
-   case 'T' :  /* tibia original    */
-   case 'Y' :  /* ypos original     */
-      glColor4f    (0.60f, 0.60f, 0.00f, 1.0f);
-      glLineWidth  ( 4.0f);
-      break;
-   case 't' :  /* tibia adapted     */
-      glColor4f    (0.40f, 0.40f, 0.00f, 1.0f);
-      glPointSize  ( 5.0f);
-      break;
-   }
-   /*---(lines)-------------------------*/
-   if (strchr ("FPTXZY", a_type) != NULL) {
-      switch (a_type) {
-      case 'F' :
-         y_beg = p_actv->detail [a_line][a_pos + 0].o_femu;
-         y_end = p_actv->detail [a_line][a_pos + 1].o_femu;
-         glColor4f    (0.70f, 0.00f, 0.00f, 1.0f);
-         glLineWidth  (15.0f);
-         break;
-      case 'P' :
-         y_beg = p_actv->detail [a_line][a_pos + 0].o_pate;
-         y_end = p_actv->detail [a_line][a_pos + 1].o_pate;
-         glColor4f    (0.20f, 0.20f, 0.80f, 1.0f);
-         glLineWidth  (10.0f);
-         break;
-      case 'T' :
-         y_beg = p_actv->detail [a_line][a_pos + 0].o_tibi;
-         y_end = p_actv->detail [a_line][a_pos + 1].o_tibi;
-         glColor4f    (0.60f, 0.60f, 0.00f, 1.0f);
-         glLineWidth  ( 4.0f);
-         break;
-      case 'X' :
-         y_beg = p_actv->detail [a_line][a_pos + 0].o_xpos;
-         y_end = p_actv->detail [a_line][a_pos + 1].o_xpos;
-         glColor4f    (0.70f, 0.00f, 0.00f, 1.0f);
-         glLineWidth  (15.0f);
-         break;
-      case 'Z' :
-         y_beg = p_actv->detail [a_line][a_pos + 0].o_zpos;
-         y_end = p_actv->detail [a_line][a_pos + 1].o_zpos;
-         glColor4f    (0.20f, 0.20f, 0.80f, 1.0f);
-         glLineWidth  (10.0f);
-         break;
-      case 'Y' :
-         y_beg = p_actv->detail [a_line][a_pos + 0].o_ypos;
-         y_end = p_actv->detail [a_line][a_pos + 1].o_ypos;
-         glColor4f    (0.60f, 0.60f, 0.00f, 1.0f);
-         glLineWidth  ( 4.0f);
-         break;
-      }
-      glBegin (GL_LINES); {
-         glVertex3f  ((a_pos + 0) * 10, a_base + (y_beg * a_scale + a_off), a_z);
-         glVertex3f  ((a_pos + 1) * 10, a_base + (y_end * a_scale + a_off), a_z);
-      } glEnd ();
-   }
-   /*---(points)------------------------*/
-   else {
-      glBegin (GL_POINTS); {
-         switch (a_type) {
-         case 'f' :
-            y_beg = p_actv->detail [a_line][a_pos].r_femu;
-            glColor4f    (0.50f, 0.00f, 0.00f, 1.0f);
-            glPointSize  ( 5.0f);
-            break;
-         case 'p' :
-            y_beg = p_actv->detail [a_line][a_pos].r_pate;
-            glColor4f    (0.10f, 0.10f, 0.50f, 1.0f);
-            glPointSize  ( 5.0f);
-            break;
-         case 't' :
-            y_beg = p_actv->detail [a_line][a_pos].r_tibi;
-            glColor4f    (0.40f, 0.40f, 0.00f, 1.0f);
-            glPointSize  ( 5.0f);
-            break;
-            /*> case 'x' : y_beg = p_actv->detail [a_line][a_pos].r_xpos;   break;       <* 
-             *> case 'z' : y_beg = p_actv->detail [a_line][a_pos].r_zpos;   break;       <* 
-             *> case 'y' : y_beg = p_actv->detail [a_line][a_pos].r_ypos;   break;       <*/
-         }
-         glVertex3f  (a_pos * 10, a_base + (y_beg * a_scale + a_off), a_z);
-      } glEnd ();
-   }
-   /*---(complete)----------------------*/
-   return 0;
-}
+/*> char                                                                                                         <* 
+ *> tick_panel__line   (int a_pos, int a_line, char a_type, float a_base, float a_scale, int a_off, float a_z)   <* 
+ *> {                                                                                                            <* 
+ *>    /+---(locals)-----------+-----+-----+-+/                                                                  <* 
+ *>    int       i             =    0;                                                                           <* 
+ *>    float     y_beg         =  0.0;                                                                           <* 
+ *>    float     y_end         =  0.0;                                                                           <* 
+ *>    switch (a_type) {                                                                                         <* 
+ *>    case 'F' :  /+ femur original    +/                                                                       <* 
+ *>    case 'X' :  /+ xpos original     +/                                                                       <* 
+ *>       glColor4f    (0.70f, 0.00f, 0.00f, 1.0f);                                                              <* 
+ *>       glLineWidth  (15.0f);                                                                                  <* 
+ *>       break;                                                                                                 <* 
+ *>    case 'f' :  /+ femur adapted     +/                                                                       <* 
+ *>       glColor4f    (0.50f, 0.00f, 0.00f, 1.0f);                                                              <* 
+ *>       glPointSize  ( 5.0f);                                                                                  <* 
+ *>       break;                                                                                                 <* 
+ *>    case 'P' :  /+ patella original  +/                                                                       <* 
+ *>    case 'Z' :  /+ zpos original     +/                                                                       <* 
+ *>       glColor4f    (0.20f, 0.20f, 0.80f, 1.0f);                                                              <* 
+ *>       glLineWidth  (10.0f);                                                                                  <* 
+ *>       break;                                                                                                 <* 
+ *>    case 'p' :  /+ patella adapted   +/                                                                       <* 
+ *>       glColor4f    (0.10f, 0.10f, 0.50f, 1.0f);                                                              <* 
+ *>       glPointSize  ( 5.0f);                                                                                  <* 
+ *>       break;                                                                                                 <* 
+ *>    case 'T' :  /+ tibia original    +/                                                                       <* 
+ *>    case 'Y' :  /+ ypos original     +/                                                                       <* 
+ *>       glColor4f    (0.60f, 0.60f, 0.00f, 1.0f);                                                              <* 
+ *>       glLineWidth  ( 4.0f);                                                                                  <* 
+ *>       break;                                                                                                 <* 
+ *>    case 't' :  /+ tibia adapted     +/                                                                       <* 
+ *>       glColor4f    (0.40f, 0.40f, 0.00f, 1.0f);                                                              <* 
+ *>       glPointSize  ( 5.0f);                                                                                  <* 
+ *>       break;                                                                                                 <* 
+ *>    }                                                                                                         <* 
+ *>    /+---(lines)-------------------------+/                                                                   <* 
+ *>    if (strchr ("FPTXZY", a_type) != NULL) {                                                                  <* 
+ *>       switch (a_type) {                                                                                      <* 
+ *>       case 'F' :                                                                                             <* 
+ *>          y_beg = p_actv->detail [a_line][a_pos + 0].o_femu;                                                  <* 
+ *>          y_end = p_actv->detail [a_line][a_pos + 1].o_femu;                                                  <* 
+ *>          glColor4f    (0.70f, 0.00f, 0.00f, 1.0f);                                                           <* 
+ *>          glLineWidth  (15.0f);                                                                               <* 
+ *>          break;                                                                                              <* 
+ *>       case 'P' :                                                                                             <* 
+ *>          y_beg = p_actv->detail [a_line][a_pos + 0].o_pate;                                                  <* 
+ *>          y_end = p_actv->detail [a_line][a_pos + 1].o_pate;                                                  <* 
+ *>          glColor4f    (0.20f, 0.20f, 0.80f, 1.0f);                                                           <* 
+ *>          glLineWidth  (10.0f);                                                                               <* 
+ *>          break;                                                                                              <* 
+ *>       case 'T' :                                                                                             <* 
+ *>          y_beg = p_actv->detail [a_line][a_pos + 0].o_tibi;                                                  <* 
+ *>          y_end = p_actv->detail [a_line][a_pos + 1].o_tibi;                                                  <* 
+ *>          glColor4f    (0.60f, 0.60f, 0.00f, 1.0f);                                                           <* 
+ *>          glLineWidth  ( 4.0f);                                                                               <* 
+ *>          break;                                                                                              <* 
+ *>       case 'X' :                                                                                             <* 
+ *>          y_beg = p_actv->detail [a_line][a_pos + 0].o_xpos;                                                  <* 
+ *>          y_end = p_actv->detail [a_line][a_pos + 1].o_xpos;                                                  <* 
+ *>          glColor4f    (0.70f, 0.00f, 0.00f, 1.0f);                                                           <* 
+ *>          glLineWidth  (15.0f);                                                                               <* 
+ *>          break;                                                                                              <* 
+ *>       case 'Z' :                                                                                             <* 
+ *>          y_beg = p_actv->detail [a_line][a_pos + 0].o_zpos;                                                  <* 
+ *>          y_end = p_actv->detail [a_line][a_pos + 1].o_zpos;                                                  <* 
+ *>          glColor4f    (0.20f, 0.20f, 0.80f, 1.0f);                                                           <* 
+ *>          glLineWidth  (10.0f);                                                                               <* 
+ *>          break;                                                                                              <* 
+ *>       case 'Y' :                                                                                             <* 
+ *>          y_beg = p_actv->detail [a_line][a_pos + 0].o_ypos;                                                  <* 
+ *>          y_end = p_actv->detail [a_line][a_pos + 1].o_ypos;                                                  <* 
+ *>          glColor4f    (0.60f, 0.60f, 0.00f, 1.0f);                                                           <* 
+ *>          glLineWidth  ( 4.0f);                                                                               <* 
+ *>          break;                                                                                              <* 
+ *>       }                                                                                                      <* 
+ *>       glBegin (GL_LINES); {                                                                                  <* 
+ *>          glVertex3f  ((a_pos + 0) * 10, a_base + (y_beg * a_scale + a_off), a_z);                            <* 
+ *>          glVertex3f  ((a_pos + 1) * 10, a_base + (y_end * a_scale + a_off), a_z);                            <* 
+ *>       } glEnd ();                                                                                            <* 
+ *>    }                                                                                                         <* 
+ *>    /+---(points)------------------------+/                                                                   <* 
+ *>    else {                                                                                                    <* 
+ *>       glBegin (GL_POINTS); {                                                                                 <* 
+ *>          switch (a_type) {                                                                                   <* 
+ *>          case 'f' :                                                                                          <* 
+ *>             y_beg = p_actv->detail [a_line][a_pos].r_femu;                                                   <* 
+ *>             glColor4f    (0.50f, 0.00f, 0.00f, 1.0f);                                                        <* 
+ *>             glPointSize  ( 5.0f);                                                                            <* 
+ *>             break;                                                                                           <* 
+ *>          case 'p' :                                                                                          <* 
+ *>             y_beg = p_actv->detail [a_line][a_pos].r_pate;                                                   <* 
+ *>             glColor4f    (0.10f, 0.10f, 0.50f, 1.0f);                                                        <* 
+ *>             glPointSize  ( 5.0f);                                                                            <* 
+ *>             break;                                                                                           <* 
+ *>          case 't' :                                                                                          <* 
+ *>             y_beg = p_actv->detail [a_line][a_pos].r_tibi;                                                   <* 
+ *>             glColor4f    (0.40f, 0.40f, 0.00f, 1.0f);                                                        <* 
+ *>             glPointSize  ( 5.0f);                                                                            <* 
+ *>             break;                                                                                           <* 
+ *>             /+> case 'x' : y_beg = p_actv->detail [a_line][a_pos].r_xpos;   break;       <*                  <* 
+ *>              *> case 'z' : y_beg = p_actv->detail [a_line][a_pos].r_zpos;   break;       <*                  <* 
+ *>              *> case 'y' : y_beg = p_actv->detail [a_line][a_pos].r_ypos;   break;       <+/                 <* 
+ *>          }                                                                                                   <* 
+ *>          glVertex3f  (a_pos * 10, a_base + (y_beg * a_scale + a_off), a_z);                                  <* 
+ *>       } glEnd ();                                                                                            <* 
+ *>    }                                                                                                         <* 
+ *>    /+---(complete)----------------------+/                                                                   <* 
+ *>    return 0;                                                                                                 <* 
+ *> }                                                                                                            <*/
 
-char         /*--> draw texture labels -------------------[ ------ [ ------ ]-*/
-tick_panel__pos    (int a_pos, int a_line, float a_scale)
-{
-   /*---(locals)-----------+-----+-----+-*/
-   float     x_base        =  0.0;
-   /*---(prepare)------------------------*/
-   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   x_base    = (s_tall - (s_yinc * a_line)) - s_top;
-   /*---(x-pos)--------------------------*/
-   glPushMatrix(); {
-      tick_panel__line (a_pos, a_line, 'X', x_base, a_scale,  3, 230);
-      tick_panel__line (a_pos, a_line, 'X', x_base, a_scale, -3, 230);
-   } glPopMatrix();
-   /*---(z-pos)--------------------------*/
-   glPushMatrix(); {
-      tick_panel__line (a_pos, a_line, 'Z', x_base, a_scale,  1, 240);
-      tick_panel__line (a_pos, a_line, 'Z', x_base, a_scale, -1, 240);
-   } glPopMatrix();
-   /*---(y-pos)--------------------------*/
-   glPushMatrix(); {
-      tick_panel__line (a_pos, a_line, 'Y', x_base, a_scale,  0, 250);
-   } glPopMatrix();
-   /*---(draw end)-----------------------*/
-   /*> glPushMatrix(); {                                                                           <* 
-    *>    TICK_servoline  (a_pos, 'e', x_base, my.p_len, my.p_len, s_top - 30.0, s_bot, x_unit);   <* 
-    *> } glPopMatrix();                                                                            <*/
-   /*---(complete)-----------------------*/
-   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
-   return 0;
-}
+/*> char         /+--> draw texture labels -------------------[ ------ [ ------ ]-+/                         <* 
+ *> tick_panel__pos    (int a_pos, int a_line, float a_scale)                                                <* 
+ *> {                                                                                                        <* 
+ *>    /+---(locals)-----------+-----+-----+-+/                                                              <* 
+ *>    float     x_base        =  0.0;                                                                       <* 
+ *>    /+---(prepare)------------------------+/                                                              <* 
+ *>    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);                                                             <* 
+ *>    x_base    = (s_tall - (s_yinc * a_line)) - s_top;                                                     <* 
+ *>    /+---(x-pos)--------------------------+/                                                              <* 
+ *>    glPushMatrix(); {                                                                                     <* 
+ *>       tick_panel__line (a_pos, a_line, 'X', x_base, a_scale,  3, 230);                                   <* 
+ *>       tick_panel__line (a_pos, a_line, 'X', x_base, a_scale, -3, 230);                                   <* 
+ *>    } glPopMatrix();                                                                                      <* 
+ *>    /+---(z-pos)--------------------------+/                                                              <* 
+ *>    glPushMatrix(); {                                                                                     <* 
+ *>       tick_panel__line (a_pos, a_line, 'Z', x_base, a_scale,  1, 240);                                   <* 
+ *>       tick_panel__line (a_pos, a_line, 'Z', x_base, a_scale, -1, 240);                                   <* 
+ *>    } glPopMatrix();                                                                                      <* 
+ *>    /+---(y-pos)--------------------------+/                                                              <* 
+ *>    glPushMatrix(); {                                                                                     <* 
+ *>       tick_panel__line (a_pos, a_line, 'Y', x_base, a_scale,  0, 250);                                   <* 
+ *>    } glPopMatrix();                                                                                      <* 
+ *>    /+---(draw end)-----------------------+/                                                              <* 
+ *>    /+> glPushMatrix(); {                                                                           <*    <* 
+ *>     *>    TICK_servoline  (a_pos, 'e', x_base, my.p_len, my.p_len, s_top - 30.0, s_bot, x_unit);   <*    <* 
+ *>     *> } glPopMatrix();                                                                            <+/   <* 
+ *>    /+---(complete)-----------------------+/                                                              <* 
+ *>    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);                                                             <* 
+ *>    return 0;                                                                                             <* 
+ *> }                                                                                                        <*/
 
-char         /*--> draw texture labels -------------------[ ------ [ ------ ]-*/
-tick_panel__deg    (int a_pos, int a_line, float a_scale)
-{
-   /*---(locals)-----------+-----+-----+-*/
-   float     x_base        =  0.0;
-   /*---(prepare)------------------------*/
-   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   x_base    = (s_tall - (s_yinc * a_line)) - s_top;
-   /*---(femur)--------------------------*/
-   glPushMatrix(); {
-      tick_panel__line (a_pos, a_line, 'F', x_base, a_scale,  3, 230);
-      tick_panel__line (a_pos, a_line, 'F', x_base, a_scale, -3, 230);
-      tick_panel__line (a_pos, a_line, 'f', x_base, a_scale,  0, 330);
-   } glPopMatrix();
-   /*---(patella)------------------------*/
-   glPushMatrix(); {
-      tick_panel__line (a_pos, a_line, 'P', x_base, a_scale,  1, 240);
-      tick_panel__line (a_pos, a_line, 'P', x_base, a_scale, -1, 240);
-      tick_panel__line (a_pos, a_line, 'p', x_base, a_scale,  0, 340);
-   } glPopMatrix();
-   /*---(tibia)--------------------------*/
-   glPushMatrix(); {
-      tick_panel__line (a_pos, a_line, 'T', x_base, a_scale,  0, 250);
-      tick_panel__line (a_pos, a_line, 't', x_base, a_scale,  0, 350);
-      /*> printf ("%d  %3d  :: %2d   %8.1ff %8.1fp %8.1ft   %8.1fx %8.1fz %8.1fy    %8.1fx %8.1fy \n", p_actv->sect, i, a_line, p_actv->detail [a_line][i].o_femu, p_actv->detail [a_line][i].o_pate, p_actv->detail [a_line][i].o_tibi, p_actv->detail [a_line][i].o_xpos, p_actv->detail [a_line][i].o_zpos, p_actv->detail [a_line][i].o_ypos, i * 10, x_base + p_actv->detail [a_line][i].o_tibi);   <*/
-   } glPopMatrix();
-   /*---(draw end)-----------------------*/
-   /*> glPushMatrix(); {                                                                               <* 
-    *>    TICK_servoline     (p_actv, 'e', x_base, my.p_len, my.p_len, s_top - 30.0, s_bot, x_unit);   <* 
-    *> } glPopMatrix();                                                                                <*/
-   /*---(complete)-----------------------*/
-   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
-   return 0;
-}
+/*> char         /+--> draw texture labels -------------------[ ------ [ ------ ]-+/                                                                                                                                                                                                                                                                                                                               <* 
+ *> tick_panel__deg    (int a_pos, int a_line, float a_scale)                                                                                                                                                                                                                                                                                                                                                      <* 
+ *> {                                                                                                                                                                                                                                                                                                                                                                                                              <* 
+ *>    /+---(locals)-----------+-----+-----+-+/                                                                                                                                                                                                                                                                                                                                                                    <* 
+ *>    float     x_base        =  0.0;                                                                                                                                                                                                                                                                                                                                                                             <* 
+ *>    /+---(prepare)------------------------+/                                                                                                                                                                                                                                                                                                                                                                    <* 
+ *>    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);                                                                                                                                                                                                                                                                                                                                                                   <* 
+ *>    x_base    = (s_tall - (s_yinc * a_line)) - s_top;                                                                                                                                                                                                                                                                                                                                                           <* 
+ *>    /+---(femur)--------------------------+/                                                                                                                                                                                                                                                                                                                                                                    <* 
+ *>    glPushMatrix(); {                                                                                                                                                                                                                                                                                                                                                                                           <* 
+ *>       tick_panel__line (a_pos, a_line, 'F', x_base, a_scale,  3, 230);                                                                                                                                                                                                                                                                                                                                         <* 
+ *>       tick_panel__line (a_pos, a_line, 'F', x_base, a_scale, -3, 230);                                                                                                                                                                                                                                                                                                                                         <* 
+ *>       tick_panel__line (a_pos, a_line, 'f', x_base, a_scale,  0, 330);                                                                                                                                                                                                                                                                                                                                         <* 
+ *>    } glPopMatrix();                                                                                                                                                                                                                                                                                                                                                                                            <* 
+ *>    /+---(patella)------------------------+/                                                                                                                                                                                                                                                                                                                                                                    <* 
+ *>    glPushMatrix(); {                                                                                                                                                                                                                                                                                                                                                                                           <* 
+ *>       tick_panel__line (a_pos, a_line, 'P', x_base, a_scale,  1, 240);                                                                                                                                                                                                                                                                                                                                         <* 
+ *>       tick_panel__line (a_pos, a_line, 'P', x_base, a_scale, -1, 240);                                                                                                                                                                                                                                                                                                                                         <* 
+ *>       tick_panel__line (a_pos, a_line, 'p', x_base, a_scale,  0, 340);                                                                                                                                                                                                                                                                                                                                         <* 
+ *>    } glPopMatrix();                                                                                                                                                                                                                                                                                                                                                                                            <* 
+ *>    /+---(tibia)--------------------------+/                                                                                                                                                                                                                                                                                                                                                                    <* 
+ *>    glPushMatrix(); {                                                                                                                                                                                                                                                                                                                                                                                           <* 
+ *>       tick_panel__line (a_pos, a_line, 'T', x_base, a_scale,  0, 250);                                                                                                                                                                                                                                                                                                                                         <* 
+ *>       tick_panel__line (a_pos, a_line, 't', x_base, a_scale,  0, 350);                                                                                                                                                                                                                                                                                                                                         <* 
+ *>       /+> printf ("%d  %3d  :: %2d   %8.1ff %8.1fp %8.1ft   %8.1fx %8.1fz %8.1fy    %8.1fx %8.1fy \n", p_actv->sect, i, a_line, p_actv->detail [a_line][i].o_femu, p_actv->detail [a_line][i].o_pate, p_actv->detail [a_line][i].o_tibi, p_actv->detail [a_line][i].o_xpos, p_actv->detail [a_line][i].o_zpos, p_actv->detail [a_line][i].o_ypos, i * 10, x_base + p_actv->detail [a_line][i].o_tibi);   <+/   <* 
+ *>    } glPopMatrix();                                                                                                                                                                                                                                                                                                                                                                                            <* 
+ *>    /+---(draw end)-----------------------+/                                                                                                                                                                                                                                                                                                                                                                    <* 
+ *>    /+> glPushMatrix(); {                                                                               <*                                                                                                                                                                                                                                                                                                      <* 
+ *>     *>    TICK_servoline     (p_actv, 'e', x_base, my.p_len, my.p_len, s_top - 30.0, s_bot, x_unit);   <*                                                                                                                                                                                                                                                                                                      <* 
+ *>     *> } glPopMatrix();                                                                                <+/                                                                                                                                                                                                                                                                                                     <* 
+ *>    /+---(complete)-----------------------+/                                                                                                                                                                                                                                                                                                                                                                    <* 
+ *>    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);                                                                                                                                                                                                                                                                                                                                                                   <* 
+ *>    return 0;                                                                                                                                                                                                                                                                                                                                                                                                   <* 
+ *> }                                                                                                                                                                                                                                                                                                                                                                                                              <*/
 
-char         /*--> draw texture for progress ticker ------[ ------ [ ------ ]-*/
-tick_panel__one         (int a_pos)
-{
-   /*---(locals)-----------+-----+-----+-*/
-   char        rc          =    0;
-   int         i;                             /* loop iterator                  */
-   int         x, y;
-   int         x_ref       =    0;
-   /*---(prepare)------------------------*/
-   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   DEBUG_GRAF   yLOG_value   ("a_pos"     , a_pos);
-   /*---(draw)------------------------*/
-   DEBUG_GRAF   yLOG_value   ("p_line"    , my.p_line);
-   DEBUG_GRAF   yLOG_char    ("content"   , s_line_info [my.p_line].content);
-   tick_panel__back   (a_pos);
-   if (s_line_info [my.p_line].active == 'x') {
-      DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
-      return 0;
-   }
-   switch (s_line_info [my.p_line].content) {
-   case 'z' : tick_panel__pos  (a_pos, my.p_line, 1.00);   break;
-   case 'o' : tick_panel__deg  (a_pos, my.p_line, 2.00);   break;
-   case 'l' : tick_panel__deg  (a_pos, my.p_line, 1.00);   break;
-   }
-   /*---(complete)-----------------------*/
-   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
-   return 0;
-}
+/*> char         /+--> draw texture for progress ticker ------[ ------ [ ------ ]-+/     <* 
+ *> tick_panel__one         (int a_pos)                                                  <* 
+ *> {                                                                                    <* 
+ *>    /+---(locals)-----------+-----+-----+-+/                                          <* 
+ *>    char        rc          =    0;                                                   <* 
+ *>    int         i;                             /+ loop iterator                  +/   <* 
+ *>    int         x, y;                                                                 <* 
+ *>    int         x_ref       =    0;                                                   <* 
+ *>    /+---(prepare)------------------------+/                                          <* 
+ *>    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);                                         <* 
+ *>    DEBUG_GRAF   yLOG_value   ("a_pos"     , a_pos);                                  <* 
+ *>    /+---(draw)------------------------+/                                             <* 
+ *>    DEBUG_GRAF   yLOG_value   ("p_line"    , my.p_line);                              <* 
+ *>    DEBUG_GRAF   yLOG_char    ("content"   , s_line_info [my.p_line].content);        <* 
+ *>    tick_panel__back   (a_pos);                                                       <* 
+ *>    if (s_line_info [my.p_line].active == 'x') {                                      <* 
+ *>       DEBUG_GRAF   yLOG_exit    (__FUNCTION__);                                      <* 
+ *>       return 0;                                                                      <* 
+ *>    }                                                                                 <* 
+ *>    switch (s_line_info [my.p_line].content) {                                        <* 
+ *>    case 'z' : tick_panel__pos  (a_pos, my.p_line, 1.00);   break;                    <* 
+ *>    case 'o' : tick_panel__deg  (a_pos, my.p_line, 2.00);   break;                    <* 
+ *>    case 'l' : tick_panel__deg  (a_pos, my.p_line, 1.00);   break;                    <* 
+ *>    }                                                                                 <* 
+ *>    /+---(complete)-----------------------+/                                          <* 
+ *>    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);                                         <* 
+ *>    return 0;                                                                         <* 
+ *> }                                                                                    <*/
 
 
 
@@ -1090,7 +1089,7 @@ TICK_init          (void)
    /*---(header)-------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    /*---(prepare)------------------------*/
-   rc = yGLTEX_init ();
+   rc = yGLTEX_config ();
    DEBUG_GRAF   yLOG_value   ("yGLTEX"    , rc);
    if (rc < 0)  return rc;
    rc = yVIKEYS_cmds_add ('c', "p_snap"      , ""    , ""     , TICK_snap            , "save png image of full ticker/progress"                      );
@@ -1142,7 +1141,7 @@ TICK_init          (void)
    tick_panel_wipe (p_suff, 'y');
    /*---(drawing position)---------------*/
    p_draw        = p_curr;
-   s_draw        =    0;
+   my.p_tick     =    0;
    /*---(working)------------------------*/
    DEBUG_GRAF   yLOG_note    ("initializing working variables");
    /*---(update colors)------------------*/
@@ -1186,125 +1185,122 @@ TICK_wrap          (void)
 /*====================------------------------------------====================*/
 static void      o___SERVOS__________________o (void) {;}
 
-char
-TICK_line          (float a_x1, float a_y1, float a_x2, float a_y2, float a_xinc, float a_yinc, float a_z)
-{
-   DEBUG_GRAF   yLOG_snote   (__FUNCTION__);
-   /*---(top line)-----------------------*/
-   glBegin(GL_LINE_STRIP); {
-      glVertex3f  (a_x1 - a_xinc, a_y1 + a_yinc, a_z);
-      glVertex3f  (a_x2 - a_xinc, a_y2 + a_yinc, a_z);
-   } glEnd   ();
-   /*---(bottom line)--------------------*/
-   glBegin(GL_LINE_STRIP); {
-      glVertex3f  (a_x1 + a_xinc, a_y1 - a_yinc, a_z);
-      glVertex3f  (a_x2 + a_xinc, a_y2 - a_yinc, a_z);
-   } glEnd   ();
-   /*---(complete)-----------------------*/
-   return 0;
-}
+/*> char                                                                                                         <* 
+ *> TICK_line          (float a_x1, float a_y1, float a_x2, float a_y2, float a_xinc, float a_yinc, float a_z)   <* 
+ *> {                                                                                                            <* 
+ *>    DEBUG_GRAF   yLOG_snote   (__FUNCTION__);                                                                 <* 
+ *>    /+---(top line)-----------------------+/                                                                  <* 
+ *>    glBegin(GL_LINE_STRIP); {                                                                                 <* 
+ *>       glVertex3f  (a_x1 - a_xinc, a_y1 + a_yinc, a_z);                                                       <* 
+ *>       glVertex3f  (a_x2 - a_xinc, a_y2 + a_yinc, a_z);                                                       <* 
+ *>    } glEnd   ();                                                                                             <* 
+ *>    /+---(bottom line)--------------------+/                                                                  <* 
+ *>    glBegin(GL_LINE_STRIP); {                                                                                 <* 
+ *>       glVertex3f  (a_x1 + a_xinc, a_y1 - a_yinc, a_z);                                                       <* 
+ *>       glVertex3f  (a_x2 + a_xinc, a_y2 - a_yinc, a_z);                                                       <* 
+ *>    } glEnd   ();                                                                                             <* 
+ *>    /+---(complete)-----------------------+/                                                                  <* 
+ *>    return 0;                                                                                                 <* 
+ *> }                                                                                                            <*/
 
-char
-TICK_servoline     (tPANEL *a_panel, char a_type, float a_base, float a_bsec, float a_esec, float a_bdeg, float a_edeg, float a_unit)
-{
-   /*---(locals)-----------+-----+-----+-*/
-   float       x_beg       =  0.0;
-   float       x_end       =  0.0;
-   float       y_beg       =  0.0;
-   float       y_end       =  0.0;
-   float       y_inc       =  0.0;
-   float       x_inc       =  0.0;
-   float       z_pos       =  0.0;
-   /*---(header)-------------------------*/
-   DEBUG_GRAF   yLOG_senter  (__FUNCTION__);
-   /*---(prepare beg)--------------------*/
-   DEBUG_GRAF   yLOG_sint    (a_panel->seq);
-   DEBUG_GRAF   yLOG_sint    (a_panel->sect);
-   DEBUG_GRAF   yLOG_sdouble (a_panel->beg);
-   DEBUG_GRAF   yLOG_sdouble (s_len);
-   DEBUG_GRAF   yLOG_sdouble (a_panel->beg + s_len);
-   DEBUG_GRAF   yLOG_snote   ("---");
-   DEBUG_GRAF   yLOG_sdouble (a_bsec);
-   x_beg   = a_bsec - a_panel->beg;
-   DEBUG_GRAF   yLOG_sdouble (x_beg);
-   if (x_beg > s_len) {
-      DEBUG_GRAF   yLOG_snote   ("beyond panel end");
-      DEBUG_GRAF   yLOG_sexit   (__FUNCTION__);
-      return 0;
-   }
-   x_beg  *= a_unit;
-   DEBUG_GRAF   yLOG_sdouble (x_beg);
-   /*---(prepare end)--------------------*/
-   DEBUG_GRAF   yLOG_snote   ("---");
-   DEBUG_GRAF   yLOG_sdouble (a_esec);
-   x_end   = a_esec - a_panel->beg;
-   DEBUG_GRAF   yLOG_sdouble (x_end);
-   if (x_end <  0.0     ) {
-      DEBUG_GRAF   yLOG_snote   ("before panel beg");
-      DEBUG_GRAF   yLOG_sexit   (__FUNCTION__);
-      return 0;
-   }
-   x_end  *= a_unit;
-   DEBUG_GRAF   yLOG_sdouble (x_end);
-   /*---(prepare y-pos)------------------*/
-   y_beg   = a_base + a_bdeg;
-   y_end   = a_base + a_edeg;
-   /*---(prepare adjustments)------------*/
-   DEBUG_GRAF   yLOG_snote   ("GOOD");
-   switch (a_type) {
-   case 'f' :   /* femur         */
-      y_inc = 4;
-      z_pos = 230.0;
-      glColor4f    (0.50f, 0.00f, 0.00f, 1.0f);
-      glLineWidth  (15.0f);
-      break;
-   case 'p' :   /* patella       */
-      y_inc = 2;
-      z_pos = 233.0;
-      glColor4f    (0.20f, 0.20f, 0.70f, 1.0f);
-      glLineWidth  (10.0f);
-      break;
-   case 't' :   /* tibia         */
-      y_inc = 1;
-      z_pos = 236.0;
-      glColor4f    (0.60f, 0.60f, 0.00f, 1.0f);
-      glLineWidth  ( 4.0f);
-      break;
-   case 'e' :   /* end point     */
-      x_inc = 5;
-      z_pos = 239.0;
-      glColor4f    (0.50f, 0.00f, 0.50f, 1.0f);
-      glLineWidth  (10.0f);
-      break;
-   case 'c' :   /* current       */
-      x_inc = 0;
-      z_pos = 239.0;
-      glColor4f    (0.00f, 0.00f, 1.00f, 1.0f);
-      glLineWidth  ( 5.0f);
-      break;
-   }
-   /*---(draw)--------*/
-   TICK_line (x_beg, y_beg, x_end, y_end, x_inc, y_inc, z_pos);
-   /*---(complete)-----------------------*/
-   DEBUG_GRAF   yLOG_sexit   (__FUNCTION__);
-   return 0;
-}
+/*> char                                                                                                                                    <* 
+ *> TICK_servoline     (tPANEL *a_panel, char a_type, float a_base, float a_bsec, float a_esec, float a_bdeg, float a_edeg, float a_unit)   <* 
+ *> {                                                                                                                                       <* 
+ *>    /+---(locals)-----------+-----+-----+-+/                                                                                             <* 
+ *>    float       x_beg       =  0.0;                                                                                                      <* 
+ *>    float       x_end       =  0.0;                                                                                                      <* 
+ *>    float       y_beg       =  0.0;                                                                                                      <* 
+ *>    float       y_end       =  0.0;                                                                                                      <* 
+ *>    float       y_inc       =  0.0;                                                                                                      <* 
+ *>    float       x_inc       =  0.0;                                                                                                      <* 
+ *>    float       z_pos       =  0.0;                                                                                                      <* 
+ *>    /+---(header)-------------------------+/                                                                                             <* 
+ *>    DEBUG_GRAF   yLOG_senter  (__FUNCTION__);                                                                                            <* 
+ *>    /+---(prepare beg)--------------------+/                                                                                             <* 
+ *>    DEBUG_GRAF   yLOG_sint    (a_panel->seq);                                                                                            <* 
+ *>    DEBUG_GRAF   yLOG_sint    (a_panel->sect);                                                                                           <* 
+ *>    DEBUG_GRAF   yLOG_sdouble (a_panel->beg);                                                                                            <* 
+ *>    DEBUG_GRAF   yLOG_sdouble (s_len);                                                                                                   <* 
+ *>    DEBUG_GRAF   yLOG_sdouble (a_panel->beg + s_len);                                                                                    <* 
+ *>    DEBUG_GRAF   yLOG_snote   ("---");                                                                                                   <* 
+ *>    DEBUG_GRAF   yLOG_sdouble (a_bsec);                                                                                                  <* 
+ *>    x_beg   = a_bsec - a_panel->beg;                                                                                                     <* 
+ *>    DEBUG_GRAF   yLOG_sdouble (x_beg);                                                                                                   <* 
+ *>    if (x_beg > s_len) {                                                                                                                 <* 
+ *>       DEBUG_GRAF   yLOG_snote   ("beyond panel end");                                                                                   <* 
+ *>       DEBUG_GRAF   yLOG_sexit   (__FUNCTION__);                                                                                         <* 
+ *>       return 0;                                                                                                                         <* 
+ *>    }                                                                                                                                    <* 
+ *>    x_beg  *= a_unit;                                                                                                                    <* 
+ *>    DEBUG_GRAF   yLOG_sdouble (x_beg);                                                                                                   <* 
+ *>    /+---(prepare end)--------------------+/                                                                                             <* 
+ *>    DEBUG_GRAF   yLOG_snote   ("---");                                                                                                   <* 
+ *>    DEBUG_GRAF   yLOG_sdouble (a_esec);                                                                                                  <* 
+ *>    x_end   = a_esec - a_panel->beg;                                                                                                     <* 
+ *>    DEBUG_GRAF   yLOG_sdouble (x_end);                                                                                                   <* 
+ *>    if (x_end <  0.0     ) {                                                                                                             <* 
+ *>       DEBUG_GRAF   yLOG_snote   ("before panel beg");                                                                                   <* 
+ *>       DEBUG_GRAF   yLOG_sexit   (__FUNCTION__);                                                                                         <* 
+ *>       return 0;                                                                                                                         <* 
+ *>    }                                                                                                                                    <* 
+ *>    x_end  *= a_unit;                                                                                                                    <* 
+ *>    DEBUG_GRAF   yLOG_sdouble (x_end);                                                                                                   <* 
+ *>    /+---(prepare y-pos)------------------+/                                                                                             <* 
+ *>    y_beg   = a_base + a_bdeg;                                                                                                           <* 
+ *>    y_end   = a_base + a_edeg;                                                                                                           <* 
+ *>    /+---(prepare adjustments)------------+/                                                                                             <* 
+ *>    DEBUG_GRAF   yLOG_snote   ("GOOD");                                                                                                  <* 
+ *>    switch (a_type) {                                                                                                                    <* 
+ *>    case 'f' :   /+ femur         +/                                                                                                     <* 
+ *>       y_inc = 4;                                                                                                                        <* 
+ *>       z_pos = 230.0;                                                                                                                    <* 
+ *>       glColor4f    (0.50f, 0.00f, 0.00f, 1.0f);                                                                                         <* 
+ *>       glLineWidth  (15.0f);                                                                                                             <* 
+ *>       break;                                                                                                                            <* 
+ *>    case 'p' :   /+ patella       +/                                                                                                     <* 
+ *>       y_inc = 2;                                                                                                                        <* 
+ *>       z_pos = 233.0;                                                                                                                    <* 
+ *>       glColor4f    (0.20f, 0.20f, 0.70f, 1.0f);                                                                                         <* 
+ *>       glLineWidth  (10.0f);                                                                                                             <* 
+ *>       break;                                                                                                                            <* 
+ *>    case 't' :   /+ tibia         +/                                                                                                     <* 
+ *>       y_inc = 1;                                                                                                                        <* 
+ *>       z_pos = 236.0;                                                                                                                    <* 
+ *>       glColor4f    (0.60f, 0.60f, 0.00f, 1.0f);                                                                                         <* 
+ *>       glLineWidth  ( 4.0f);                                                                                                             <* 
+ *>       break;                                                                                                                            <* 
+ *>    case 'e' :   /+ end point     +/                                                                                                     <* 
+ *>       x_inc = 5;                                                                                                                        <* 
+ *>       z_pos = 239.0;                                                                                                                    <* 
+ *>       glColor4f    (0.50f, 0.00f, 0.50f, 1.0f);                                                                                         <* 
+ *>       glLineWidth  (10.0f);                                                                                                             <* 
+ *>       break;                                                                                                                            <* 
+ *>    case 'c' :   /+ current       +/                                                                                                     <* 
+ *>       x_inc = 0;                                                                                                                        <* 
+ *>       z_pos = 239.0;                                                                                                                    <* 
+ *>       glColor4f    (0.00f, 0.00f, 1.00f, 1.0f);                                                                                         <* 
+ *>       glLineWidth  ( 5.0f);                                                                                                             <* 
+ *>       break;                                                                                                                            <* 
+ *>    }                                                                                                                                    <* 
+ *>    /+---(draw)--------+/                                                                                                                <* 
+ *>    TICK_line (x_beg, y_beg, x_end, y_end, x_inc, y_inc, z_pos);                                                                         <* 
+ *>    /+---(complete)-----------------------+/                                                                                             <* 
+ *>    DEBUG_GRAF   yLOG_sexit   (__FUNCTION__);                                                                                            <* 
+ *>    return 0;                                                                                                                            <* 
+ *> }                                                                                                                                       <*/
 
 char
 TICK_servo_prep         (char a_type)
 {
    switch (a_type) {
    case 'F' :  /* femur original    */
-   case 'X' :  /* xpos original     */
       glColor4f    (0.70f, 0.00f, 0.00f, 1.0f);
       glLineWidth  (15.0f);
-      break;
    case 'f' :  /* femur adapted     */
       glColor4f    (0.50f, 0.00f, 0.00f, 1.0f);
       glPointSize  ( 5.0f);
       break;
    case 'P' :  /* patella original  */
-   case 'Z' :  /* zpos original     */
       glColor4f    (0.20f, 0.20f, 0.80f, 1.0f);
       glLineWidth  (10.0f);
       break;
@@ -1313,7 +1309,6 @@ TICK_servo_prep         (char a_type)
       glPointSize  ( 5.0f);
       break;
    case 'T' :  /* tibia original    */
-   case 'Y' :  /* ypos original     */
       glColor4f    (0.60f, 0.60f, 0.00f, 1.0f);
       glLineWidth  ( 4.0f);
       break;
@@ -1321,9 +1316,34 @@ TICK_servo_prep         (char a_type)
       glColor4f    (0.40f, 0.40f, 0.00f, 1.0f);
       glPointSize  ( 5.0f);
       break;
+   case 'X' :  /* xpos original     */
+      glColor4f    (0.70f, 0.35f, 0.18f, 1.0f);
+      glLineWidth  (15.0f);
+      break;
+   case 'x' :  /* xpos adapted      */
+      glColor4f    (0.50f, 0.25f, 0.12f, 1.0f);
+      glPointSize  ( 5.0f);
+      break;
+   case 'Z' :  /* zpos original     */
+      glColor4f    (0.20f, 0.60f, 0.20f, 1.0f);
+      glLineWidth  (10.0f);
+      break;
+   case 'z' :  /* zpos adapted      */
+      glColor4f    (0.15f, 0.40f, 0.15f, 1.0f);
+      glPointSize  ( 5.0f);
+      break;
+   case 'Y' :  /* ypos original     */
+      glColor4f    (0.60f, 0.00f, 0.40f, 1.0f);
+      glLineWidth  ( 4.0f);
+      break;
+   case 'y' :  /* ypos adapted      */
+      glColor4f    (0.40f, 0.00f, 0.30f, 1.0f);
+      glPointSize  ( 5.0f);
+      break;
    }
    return 0;
 }
+
 char
 TICK_servo_data    (tPANEL *a_panel, int a_row, int a_col, char a_type, float *b, float *e)
 {
@@ -1388,69 +1408,145 @@ TICK_servo_data    (tPANEL *a_panel, int a_row, int a_col, char a_type, float *b
 }
 
 char
-TICK_servo_line    (tPANEL *a_panel, int a_line, char a_type, float a_base, float a_scale, int a_off, float a_z)
+TICK_servo__solid  (tPANEL *a_panel, int a_line, char a_type, float a_base, float a_scale, int a_off, float a_z)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        rc          =    0;
    int         i           =    0;
+   int         x_pos       =    0;
+   int         x_one       =    0;
+   int         x_two       =    0;
    float       y_beg       =  0.0;
    float       y_end       =  0.0;
-   /*---(lines)-------------------------*/
-   if (strchr ("FPTXZY", a_type) != NULL) {
-      for (i = 0; i < MAX_WIDE; ++i) {
-         rc = TICK_servo_data (a_panel, a_line, i, a_type, &y_beg, &y_end);
-         if (rc < 0)   continue;
-         glBegin(GL_LINES); {
-            glVertex3f  ((i + 0) * 10, a_base + (y_beg * a_scale + a_off), a_z);
-            glVertex3f  ((i + 1) * 10, a_base + (y_end * a_scale + a_off), a_z);
-         } glEnd   ();
-      }
-      for (i = 0; i < MAX_WIDE; ++i) {
-         if (a_panel->detail [a_line][i].used != 'y')  continue;
-         glColor4f     (0.0, 0.0, 0.0, 1.0);
-         if (a_panel->detail [a_line][i + 1].label != NULL) {
-            glPushMatrix(); {
-               glTranslatef  ((i + 0) * 10, a_base - 35.0, a_z);
-               yFONT_print  (my.fixed,  15, YF_BOTLEF, a_panel->detail [a_line][i + 1].label);
-            } glPopMatrix();
-         }
-         if (a_panel->detail [a_line][i + 1].cell != '-') {
-            glBegin(GL_POINTS); {
-               glVertex3f  (i * 10, a_base - 45.0, a_z);
-            }
-            glEnd   ();
-         }
-      }
+   char        x_rc        =    0;
+   float       z           =  0.0;
+   for (i = 0; i < MAX_WIDE; ++i) {
+      x_pos = a_panel->beg * 10 + i;
+      x_one = (i + 0) * 10;
+      x_two = (i + 1) * 10;
+      /*> rc = TICK_servo_data (a_panel, a_line, i, a_type, &y_beg, &y_end);          <*/
+      rc = yKINE_ticker (a_line, x_pos, a_type, &y_beg, &y_end, &x_rc);
+      if (rc < 0)   continue;
+      z = a_z;
+      glBegin(GL_LINES); {
+         glVertex3f  (x_one, a_base + (y_beg * a_scale + a_off), z);
+         glVertex3f  (x_two, a_base + (y_end * a_scale + a_off), z);
+      } glEnd   ();
    }
-   /*---(points)------------------------*/
+   return 0;
+}
+
+char
+TICK_servo__dotted (tPANEL *a_panel, int a_line, char a_type, float a_base, float a_scale, int a_off, float a_z)
+{
+   /*---(locals)-----------+-----+-----+-*/
+   char        rc          =    0;
+   int         i           =    0;
+   int         x_pos       =    0;
+   int         x_one       =    0;
+   int         x_two       =    0;
+   float       y_beg       =  0.0;
+   float       y_end       =  0.0;
+   char        x_rc        =    0;
+   float       z           =  0.0;
+   for (i = 0; i < MAX_WIDE; i += 2) {
+      x_pos = a_panel->beg * 10 + i;
+      x_one = (i + 0) * 10;
+      x_two = (i + 1) * 10;
+      /*> rc = TICK_servo_data (a_panel, a_line, i, a_type, &y_beg, &y_end);          <*/
+      rc = yKINE_ticker (a_line, x_pos, a_type, &y_beg, &y_end, &x_rc);
+      if (rc < 0)   continue;
+      z = a_z - 5.0;
+      glBegin(GL_LINES); {
+         glVertex3f  (x_one, a_base + (y_beg * a_scale + 1.0), z);
+         glVertex3f  (x_two, a_base + (y_end * a_scale + 1.0), z);
+         glVertex3f  (x_one, a_base + (y_beg * a_scale - 1.0), z);
+         glVertex3f  (x_two, a_base + (y_end * a_scale - 1.0), z);
+      } glEnd   ();
+   }
+   glColor4f     (0.0, 0.0, 0.0, 1.0);
+   for (i = 1; i < MAX_WIDE; i += 2) {
+      x_pos = a_panel->beg * 10 + i;
+      x_one = (i + 0) * 10;
+      x_two = (i + 1) * 10;
+      /*> rc = TICK_servo_data (a_panel, a_line, i, a_type, &y_beg, &y_end);          <*/
+      rc = yKINE_ticker (a_line, x_pos, a_type, &y_beg, &y_end, &x_rc);
+      if (rc < 0)   continue;
+      z = a_z - 5.0;
+      glBegin(GL_LINES); {
+         glVertex3f  (x_one, a_base + (y_beg * a_scale + 1.0), z);
+         glVertex3f  (x_two, a_base + (y_end * a_scale + 1.0), z);
+         glVertex3f  (x_one, a_base + (y_beg * a_scale - 1.0), z);
+         glVertex3f  (x_two, a_base + (y_end * a_scale - 1.0), z);
+      } glEnd   ();
+   }
+   return 0;
+}
+
+/*> char                                                                                             <* 
+ *> TICK_servo__accel  (tPANEL *a_panel, int a_line, float a_base, float a_z)                        <* 
+ *> {                                                                                                <* 
+ *>    /+---(locals)-----------+-----+-----+-+/                                                      <* 
+ *>    int         i           =    0;                                                               <* 
+ *>    for (i = 1; i < MAX_WIDE; ++i) {                                                              <* 
+ *>       if (a_panel->detail [a_line][i].used  != 'y')   continue;                                  <* 
+ *>       if (a_panel->detail [a_line][i].cell  == '-')   continue;                                  <* 
+ *>       if (a_panel->detail [a_line][i].cell  == a_panel->detail [a_line][i - 1].cell) continue;   <* 
+ *>       glColor4f     (0.0, 0.0, 0.0, 1.0);                                                        <* 
+ *>       glBegin(GL_POINTS); {                                                                      <* 
+ *>          glVertex3f  (i * 10, a_base - 45.0, a_z);                                               <* 
+ *>       }                                                                                          <* 
+ *>       glEnd   ();                                                                                <* 
+ *>    }                                                                                             <* 
+ *>    return 0;                                                                                     <* 
+ *> }                                                                                                <*/
+
+/*> char                                                                                                                    <* 
+ *> TICK_servo__labels (tPANEL *a_panel, int a_line, float a_base, float a_z)                                               <* 
+ *> {                                                                                                                       <* 
+ *>    /+---(locals)-----------+-----+-----+-+/                                                                             <* 
+ *>    int         i           =    0;                                                                                      <* 
+ *>    char        x_show      =  '-';                                                                                      <* 
+ *>    for (i = 0; i < MAX_WIDE; ++i) {                                                                                     <* 
+ *>       if (a_panel->detail [a_line][i].used  != 'y')   continue;                                                         <* 
+ *>       if (a_panel->detail [a_line][i].label == NULL)  continue;                                                         <* 
+ *>       x_show = '-';                                                                                                     <* 
+ *>       if (i - 1 < 0)                                      x_show = 'y';                                                 <* 
+ *>       if (a_panel->detail [a_line][i - 1].label == NULL)  x_show = 'y';                                                 <* 
+ *>       else if (strcmp (a_panel->detail [a_line][i - 1].label, a_panel->detail [a_line][i].label) != 0)  x_show = 'y';   <* 
+ *>       if (x_show != 'y')  continue;                                                                                     <* 
+ *>       glColor4f     (0.0, 0.0, 0.0, 1.0);                                                                               <* 
+ *>       if (a_panel->detail [a_line][i + 1].label != NULL) {                                                              <* 
+ *>          glPushMatrix(); {                                                                                              <* 
+ *>             glTranslatef  ((i + 0) * 10, a_base - 35.0, a_z);                                                           <* 
+ *>             yFONT_print  (my.fixed,  15, YF_BOTLEF, a_panel->detail [a_line][i + 1].label);                             <* 
+ *>          } glPopMatrix();                                                                                               <* 
+ *>       }                                                                                                                 <* 
+ *>       /+> if (a_panel->detail [a_line][i + 1].cell != '-') {                          <*                                <* 
+ *>        *>    glBegin(GL_POINTS); {                                                    <*                                <* 
+ *>        *>       glVertex3f  (i * 10, a_base - 45.0, a_z);                             <*                                <* 
+ *>        *>    }                                                                        <*                                <* 
+ *>        *>    glEnd   ();                                                              <*                                <* 
+ *>        *> }                                                                           <+/                               <* 
+ *>    }                                                                                                                    <* 
+ *>    return 0;                                                                                                            <* 
+ *> }                                                                                                                       <*/
+
+
+char
+TICK_servo_line    (tPANEL *a_panel, int a_line, char a_type, float a_base, float a_scale, int a_off, float a_z)
+{
+   /*---(original)----------------------*/
+   if (strchr ("FPTXZY", a_type) != NULL) {
+      TICK_servo__solid  (a_panel, a_line, a_type, a_base, a_scale, a_off, a_z);
+      /*> TICK_servo__accel  (a_panel, a_line, a_base, a_z);                          <*/
+      /*> if (strchr ("FX",     a_type) != NULL) {                                    <* 
+       *>    TICK_servo__labels (a_panel, a_line, a_base, a_z);                       <* 
+       *> }                                                                           <*/
+   }
+   /*---(revised)-----------------------*/
    else {
-      for (i = 0; i < MAX_WIDE; i += 2) {
-         rc = TICK_servo_data (a_panel, a_line, i, a_type, &y_beg, &y_end);
-         if (rc < 0)   continue;
-         glBegin(GL_LINES); {
-            glVertex3f  ((i + 0) * 10, a_base + (y_beg * a_scale + 1.0), a_z - 5.0);
-            glVertex3f  ((i + 1) * 10, a_base + (y_end * a_scale + 1.0), a_z - 5.0);
-            glVertex3f  ((i + 0) * 10, a_base + (y_beg * a_scale - 1.0), a_z - 5.0);
-            glVertex3f  ((i + 1) * 10, a_base + (y_end * a_scale - 1.0), a_z - 5.0);
-         } glEnd   ();
-         /*> glBegin(GL_POINTS); {                                                    <* 
-          *>    glVertex3f  (i * 10, a_base + (y_beg * a_scale + a_off), a_z);        <* 
-          *> } glEnd   ();                                                            <*/
-      }
-      glColor4f     (0.0, 0.0, 0.0, 1.0);
-      for (i = 1; i < MAX_WIDE; i += 2) {
-         rc = TICK_servo_data (a_panel, a_line, i, a_type, &y_beg, &y_end);
-         if (rc < 0)   continue;
-         glBegin(GL_LINES); {
-            glVertex3f  ((i + 0) * 10, a_base + (y_beg * a_scale + 1.0), a_z - 5.0);
-            glVertex3f  ((i + 1) * 10, a_base + (y_end * a_scale + 1.0), a_z - 5.0);
-            glVertex3f  ((i + 0) * 10, a_base + (y_beg * a_scale - 1.0), a_z - 5.0);
-            glVertex3f  ((i + 1) * 10, a_base + (y_end * a_scale - 1.0), a_z - 5.0);
-         } glEnd   ();
-         /*> glBegin(GL_POINTS); {                                                    <* 
-          *>    glVertex3f  (i * 10, a_base + (y_beg * a_scale + a_off), a_z);        <* 
-          *> } glEnd   ();                                                            <*/
-      }
+      TICK_servo__dotted (a_panel, a_line, a_type, a_base, a_scale, a_off, a_z);
    }
    /*---(complete)----------------------*/
    return 0;
@@ -1474,7 +1570,7 @@ TICK_sections      (tPANEL *a_panel)
    /*---(prepare)------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    DEBUG_GRAF   yLOG_complex ("panel"     , "%d %6.1fb %6.1fl %6.1fe", a_panel->seq, a_panel->beg, s_len, a_panel->beg + s_len);
-   rc = yKINE_section ('[', &x_major, &x_minor, &x_line, x_label, &x_sec);
+   rc = yKINE_sect_cursor (YKINE_HEAD, &x_major, &x_minor, &x_line, x_label, &x_sec);
    DEBUG_GRAF   yLOG_complex ("section"   , "%3d %c %c %3d %-15.15s %6.1f", rc, x_major, x_minor, x_line, x_label, x_sec);
    while (rc >= 0) {
       /*---(filter)----------------------*/
@@ -1486,7 +1582,7 @@ TICK_sections      (tPANEL *a_panel)
       /*---(filter)----------------------*/
       if (x_sec <  a_panel->beg) {
          DEBUG_GRAF   yLOG_note    ("before panel start");
-         rc = yKINE_section ('>', &x_major, &x_minor, &x_line, x_label, &x_sec);
+         rc = yKINE_sect_cursor (YKINE_NEXT, &x_major, &x_minor, &x_line, x_label, &x_sec);
          continue;
       }
       /*---(draw)------------------------*/
@@ -1518,7 +1614,7 @@ TICK_sections      (tPANEL *a_panel)
          }
       }
       /*---(next)------------------------*/
-      rc = yKINE_section ('>', &x_major, &x_minor, &x_line, x_label, &x_sec);
+      rc = yKINE_sect_cursor (YKINE_NEXT, &x_major, &x_minor, &x_line, x_label, &x_sec);
       DEBUG_GRAF   yLOG_complex ("section"   , "%3d %c %c %3d %-15.15s %6.1f", rc, x_major, x_minor, x_line, x_label, x_sec);
       /*---(done)------------------------*/
    }
@@ -1568,7 +1664,7 @@ TICK_servos_pos    (tPANEL *a_panel, int a_line, float a_scale)
       TICK_servo_prep ('Y');
       TICK_servo_line (a_panel, a_line, 'Y', x_base, a_scale,  0, 250);
       TICK_servo_prep ('y');
-      TICK_servo_line (a_panel, a_line, 't', x_base, a_scale,  0, 350);
+      TICK_servo_line (a_panel, a_line, 'y', x_base, a_scale,  0, 350);
       /*> printf ("%d  %3d  :: %2d   %8.1ff %8.1fp %8.1ft   %8.1fx %8.1fz %8.1fy    %8.1fx %8.1fy \n", a_panel->sect, i, a_line, a_panel->detail [a_line][i].o_femu, a_panel->detail [a_line][i].o_pate, a_panel->detail [a_line][i].o_tibi, a_panel->detail [a_line][i].o_xpos, a_panel->detail [a_line][i].o_zpos, a_panel->detail [a_line][i].o_ypos, i * 10, x_base + a_panel->detail [a_line][i].o_tibi);   <*/
    } glPopMatrix();
    /*---(complete)-----------------------*/
@@ -1671,58 +1767,58 @@ static void      o___HEATMAP_________________o (void) {;}
  *>    return 0;                                                                                                           <* 
  *> }                                                                                                                      <*/
 
-static char  /*--> represent tibia placement accuracy ----[ ------ [ ------ ]-*/
-TICK__heat_spot    (char a_type, char a_rc, float  a_diff, float  a_x, float  *a_y)
-{
-   float       x_diff      =   1.00;
-   float       x_base      =   1.00;
-   float       x_width     =   8.00;
-   float       x_xoff      =   1.00;
-   float       x_height    =   8.00;
-   float       x_yoff      =  12.00;
-   float       x_alpha     =   0.50;
-   float       x_z         = 180.00;
-   float       x_red, x_grn, x_blu;
-   switch (a_type) {
-   case 't' :  /* touch      (xzy) */
-      x_base    *= 1.0;
-      x_height  *= 2.0;
-      break;
-   case 'x' : case 'z' :
-      x_diff     = -(fabs (a_diff));
-      break;
-   case 'h' :  /* horizontal (xz)  */
-      x_diff     = -(fabs (a_diff));
-      x_base    *= 1.0;
-      /*> x_base    *= 2.0;                                                           <*/
-      x_height  *= 3.0;
-      x_yoff    *= 3.0;
-      break;
-   case 'y' :
-      x_diff     = -(fabs (a_diff));
-      x_height  *= 2.0;
-      break;
-   case 'f' :  /* full       (xzy) */
-      x_diff     = -(fabs (a_diff));
-      x_base    *= 2.0;
-      x_height  *= 3.0;
-      break;
-   default  : return -1;
-              break;
-   }
-   if      (a_rc   <   0 )  yCOLOR_val2error  (0.8);
-   else                     yCOLOR_val2color  (x_base * a_diff, 0.8);
-   glPushMatrix(); {
-      glBegin         (GL_POLYGON); {
-         glVertex3f  (a_x + x_xoff          , *a_y           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, *a_y           , x_z);
-         glVertex3f  (a_x + x_xoff + x_width, *a_y - x_height, x_z);
-         glVertex3f  (a_x + x_xoff          , *a_y - x_height, x_z);
-      } glEnd   ();
-   } glPopMatrix();
-   *a_y -= (x_height + x_yoff);
-   return 0;
-}
+/*> static char  /+--> represent tibia placement accuracy ----[ ------ [ ------ ]-+/            <* 
+ *> TICK__heat_spot    (char a_type, char a_rc, float  a_diff, float  a_x, float  *a_y)         <* 
+ *> {                                                                                           <* 
+ *>    float       x_diff      =   1.00;                                                        <* 
+ *>    float       x_base      =   1.00;                                                        <* 
+ *>    float       x_width     =   8.00;                                                        <* 
+ *>    float       x_xoff      =   1.00;                                                        <* 
+ *>    float       x_height    =   8.00;                                                        <* 
+ *>    float       x_yoff      =  12.00;                                                        <* 
+ *>    float       x_alpha     =   0.50;                                                        <* 
+ *>    float       x_z         = 180.00;                                                        <* 
+ *>    float       x_red, x_grn, x_blu;                                                         <* 
+ *>    switch (a_type) {                                                                        <* 
+ *>    case 't' :  /+ touch      (xzy) +/                                                       <* 
+ *>       x_base    *= 1.0;                                                                     <* 
+ *>       x_height  *= 2.0;                                                                     <* 
+ *>       break;                                                                                <* 
+ *>    case 'x' : case 'z' :                                                                    <* 
+ *>       x_diff     = -(fabs (a_diff));                                                        <* 
+ *>       break;                                                                                <* 
+ *>    case 'h' :  /+ horizontal (xz)  +/                                                       <* 
+ *>       x_diff     = -(fabs (a_diff));                                                        <* 
+ *>       x_base    *= 1.0;                                                                     <* 
+ *>       /+> x_base    *= 2.0;                                                           <+/   <* 
+ *>       x_height  *= 3.0;                                                                     <* 
+ *>       x_yoff    *= 3.0;                                                                     <* 
+ *>       break;                                                                                <* 
+ *>    case 'y' :                                                                               <* 
+ *>       x_diff     = -(fabs (a_diff));                                                        <* 
+ *>       x_height  *= 2.0;                                                                     <* 
+ *>       break;                                                                                <* 
+ *>    case 'f' :  /+ full       (xzy) +/                                                       <* 
+ *>       x_diff     = -(fabs (a_diff));                                                        <* 
+ *>       x_base    *= 2.0;                                                                     <* 
+ *>       x_height  *= 3.0;                                                                     <* 
+ *>       break;                                                                                <* 
+ *>    default  : return -1;                                                                    <* 
+ *>               break;                                                                        <* 
+ *>    }                                                                                        <* 
+ *>    if      (a_rc   <   0 )  yCOLOR_val2error  (0.8);                                        <* 
+ *>    else                     yCOLOR_val2color  (x_base * a_diff, 0.8);                       <* 
+ *>    glPushMatrix(); {                                                                        <* 
+ *>       glBegin         (GL_POLYGON); {                                                       <* 
+ *>          glVertex3f  (a_x + x_xoff          , *a_y           , x_z);                        <* 
+ *>          glVertex3f  (a_x + x_xoff + x_width, *a_y           , x_z);                        <* 
+ *>          glVertex3f  (a_x + x_xoff + x_width, *a_y - x_height, x_z);                        <* 
+ *>          glVertex3f  (a_x + x_xoff          , *a_y - x_height, x_z);                        <* 
+ *>       } glEnd   ();                                                                         <* 
+ *>    } glPopMatrix();                                                                         <* 
+ *>    *a_y -= (x_height + x_yoff);                                                             <* 
+ *>    return 0;                                                                                <* 
+ *> }                                                                                           <*/
 
 /*> static char  /+--> represent tibia placement accuracy ----[ ------ [ ------ ]-+/                                                                                                    <* 
  *> TICK__heat_column    (int a_leg, float  a_sec, float  a_x, float  a_y)                                                                                                              <* 
@@ -1753,39 +1849,46 @@ TICK__heat_spot    (char a_type, char a_rc, float  a_diff, float  a_x, float  *a
  *> }                                                                                                                                                                                   <*/
 
 
-char
-TICK_height        (int a_sec, float  a_pos)
-{
-   float     x_barrange    = 0.0;
-   float     x_bartop      = 0.0;
-   float     x_barbot      = 0.0;
-   x_barrange = s_lowest + 100.0;
-   if (x_barrange >= 0.0) {
-      glColor4f    (1.00f, 1.00f, 1.00f, 0.3f);
-      x_bartop = -155.0 + x_barrange;
-      x_barbot = -165.0;
-   } else {
-      glColor4f    (0.00f, 1.00f, 0.00f, 0.3f);
-      x_bartop = -110.0;
-      x_barbot = -120.0 + x_barrange;
-   }
-   glPushMatrix(); {
-      glBegin         (GL_POLYGON); {
-         glVertex3f  (a_sec + 2.0      , a_pos + x_bartop, 120.0);
-         glVertex3f  (a_sec + 2.0 + 6.0, a_pos + x_bartop, 120.0);
-         glVertex3f  (a_sec + 2.0 + 6.0, a_pos + x_barbot, 120.0);
-         glVertex3f  (a_sec + 2.0      , a_pos + x_barbot, 120.0);
-      } glEnd   ();
-   } glPopMatrix();
-   return 0;
-}
+/*> char                                                                              <* 
+ *> TICK_height        (int a_sec, float  a_pos)                                      <* 
+ *> {                                                                                 <* 
+ *>    float     x_barrange    = 0.0;                                                 <* 
+ *>    float     x_bartop      = 0.0;                                                 <* 
+ *>    float     x_barbot      = 0.0;                                                 <* 
+ *>    x_barrange = s_lowest + 100.0;                                                 <* 
+ *>    if (x_barrange >= 0.0) {                                                       <* 
+ *>       glColor4f    (1.00f, 1.00f, 1.00f, 0.3f);                                   <* 
+ *>       x_bartop = -155.0 + x_barrange;                                             <* 
+ *>       x_barbot = -165.0;                                                          <* 
+ *>    } else {                                                                       <* 
+ *>       glColor4f    (0.00f, 1.00f, 0.00f, 0.3f);                                   <* 
+ *>       x_bartop = -110.0;                                                          <* 
+ *>       x_barbot = -120.0 + x_barrange;                                             <* 
+ *>    }                                                                              <* 
+ *>    glPushMatrix(); {                                                              <* 
+ *>       glBegin         (GL_POLYGON); {                                             <* 
+ *>          glVertex3f  (a_sec + 2.0      , a_pos + x_bartop, 120.0);                <* 
+ *>          glVertex3f  (a_sec + 2.0 + 6.0, a_pos + x_bartop, 120.0);                <* 
+ *>          glVertex3f  (a_sec + 2.0 + 6.0, a_pos + x_barbot, 120.0);                <* 
+ *>          glVertex3f  (a_sec + 2.0      , a_pos + x_barbot, 120.0);                <* 
+ *>       } glEnd   ();                                                               <* 
+ *>    } glPopMatrix();                                                               <* 
+ *>    return 0;                                                                      <* 
+ *> }                                                                                 <*/
+
+
+
+/*====================------------------------------------====================*/
+/*===----                     yKINE tick drawing                       ----===*/
+/*====================------------------------------------====================*/
+static void      o___YKINE___________________o (void) {;}
 
 
 
 /*====================------------------------------------====================*/
 /*===----                         panel handlers                       ----===*/
 /*====================------------------------------------====================*/
-static void      o___PANELS__________________o (void) {;}
+static void      o___LOAD____________________o (void) {;}
 
 /*> char                                                                                                                                            <* 
  *> TICK_exact_alt     (tPANEL *a_panel, int i, int j, float a_pate, float a_tibi)                                                                  <* 
@@ -1975,12 +2078,12 @@ TICK_load_exact         (tPANEL *a_panel)
       if (x_pos < 0.0     )  break;
       rc = yKINE_exact_all (x_pos);
       if (rc < 0)  continue;
-      printf ("\n");
-      if (i % 3 == 0)  printf ("____secs ## CALC __femu __pate __tibi   __xpos __zpos __ypos    _IK   __femu __pate __tibi   __xpos __zpos __ypos\n\n");
+      /*> printf ("\n");                                                              <*/
+      /*> if (i % 3 == 0)  printf ("____secs ## CALC __femu __pate __tibi   __xpos __zpos __ypos    _IK   __femu __pate __tibi   __xpos __zpos __ypos\n\n");   <*/
       for (j = YKINE_CENTER; j <= YKINE_LR; ++j) {
-         rc = yKINE_exact_leg   (j, 0.10, &x_exact, x_label, &x_cell, &f, &p, &t, &x, &z, &y, &fr, &pr, &tr, &xr, &zr, &yr);
+         rc = yKINE_exact_leg   (j, 0.10, &x_exact, x_label, &x_cell, NULL, &f, &p, &t, &x, &z, &y, NULL, &fr, &pr, &tr, &xr, &zr, &yr);
          ++j;
-         rc = 0;
+         /*> rc = 0;                                                                  <*/
          /*---(special)---------------*/
          a_panel->detail [j][i].used   = 'y';
          a_panel->detail [j][i].exact  = x_exact;
@@ -2008,7 +2111,7 @@ TICK_load_exact         (tPANEL *a_panel)
          --j;
          if      (j < 0)  strlcpy (x_leg, "ce", LEN_TERSE);
          else             strlcpy (x_leg, yKINE_legtwo (j), LEN_TERSE);
-         printf ("%8.2f %2d %2s   %6.1f %6.1f %6.1f   %6.1f %6.1f %6.1f    %3d   %6.1f %6.1f %6.1f   %6.1f %6.1f %6.1f    %c %-15.15s %c\n", x_pos, j, x_leg, f, p, t, x, z, y, rc, fr, pr, tr, xr, zr, yr, x_exact, x_label, x_cell);
+         /*> printf ("%8.2f %2d %2s   %6.1f %6.1f %6.1f   %6.1f %6.1f %6.1f    %3d   %6.1f %6.1f %6.1f   %6.1f %6.1f %6.1f    %c %-15.15s %c\n", x_pos, j, x_leg, f, p, t, x, z, y, rc, fr, pr, tr, xr, zr, yr, x_exact, x_label, x_cell);   <*/
       }
    }
    /*---(complete)-----------------------*/
@@ -2016,67 +2119,74 @@ TICK_load_exact         (tPANEL *a_panel)
    return 0;
 }
 
-char
-TICK_exact_deg          (int a_leg, float *a_femu, float *a_pate, float *a_tibi)
-{
-   if (a_leg == YKINE_BODY) {
-      if (a_femu != NULL)  *a_femu = p_draw->detail [a_leg + 1][s_draw].o_femu;
-      if (a_pate != NULL)  *a_pate = p_draw->detail [a_leg + 1][s_draw].o_pate;
-      if (a_tibi != NULL)  *a_tibi = p_draw->detail [a_leg + 1][s_draw].o_tibi;
-   } else {
-      if (a_femu != NULL)  *a_femu = p_draw->detail [a_leg + 1][s_draw].r_femu;
-      if (a_pate != NULL)  *a_pate = p_draw->detail [a_leg + 1][s_draw].r_pate;
-      if (a_tibi != NULL)  *a_tibi = p_draw->detail [a_leg + 1][s_draw].r_tibi;
-   }
-   return 0;
-}
 
-char
-TICK_exact_end          (int a_leg, float *x     , float *z     , float *y     )
-{
-   if (a_leg == YKINE_BODY) {
-      if (x      != NULL)  *x      = p_draw->detail [a_leg    ][s_draw].o_xpos;
-      if (z      != NULL)  *z      = p_draw->detail [a_leg    ][s_draw].o_zpos;
-      if (y      != NULL)  *y      = p_draw->detail [a_leg    ][s_draw].o_ypos;
-   } else {
-      if (x      != NULL)  *x      = p_draw->detail [a_leg + 1][s_draw].r_xpos;
-      if (z      != NULL)  *z      = p_draw->detail [a_leg + 1][s_draw].r_zpos;
-      if (y      != NULL)  *y      = p_draw->detail [a_leg + 1][s_draw].r_ypos;
-   }
-   return 0;
-}
 
-char
-TICK_exact_target       (int a_leg, float *x     , float *z     , float *y     )
-{
-   if (x      != NULL)  *x      = p_draw->detail [a_leg + 1][s_draw].o_xpos;
-   if (z      != NULL)  *z      = p_draw->detail [a_leg + 1][s_draw].o_zpos;
-   if (y      != NULL)  *y      = p_draw->detail [a_leg + 1][s_draw].o_ypos;
-   return 0;
-}
+/*====================------------------------------------====================*/
+/*===----                       data accessors                         ----===*/
+/*====================------------------------------------====================*/
+static void      o___ACCESSORS_______________o (void) {;}
 
-char
-TICK_exact_opengl       (int a_leg, float *x     , float *z     , float *y     )
-{
-   if (x != NULL)  *x = p_draw->detail [a_leg + 1][s_draw].g_xpos;
-   if (z != NULL)  *z = p_draw->detail [a_leg + 1][s_draw].g_zpos;
-   if (y != NULL)  *y = p_draw->detail [a_leg + 1][s_draw].g_ypos;
-   return 0;
-}
+/*> char                                                                                 <* 
+ *> TICK_exact_deg          (int a_leg, float *a_femu, float *a_pate, float *a_tibi)     <* 
+ *> {                                                                                    <* 
+ *>    if (a_leg == YKINE_BODY) {                                                        <* 
+ *>       if (a_femu != NULL)  *a_femu = p_draw->detail [a_leg + 1][my.p_tick].o_femu;   <* 
+ *>       if (a_pate != NULL)  *a_pate = p_draw->detail [a_leg + 1][my.p_tick].o_pate;   <* 
+ *>       if (a_tibi != NULL)  *a_tibi = p_draw->detail [a_leg + 1][my.p_tick].o_tibi;   <* 
+ *>    } else {                                                                          <* 
+ *>       if (a_femu != NULL)  *a_femu = p_draw->detail [a_leg + 1][my.p_tick].r_femu;   <* 
+ *>       if (a_pate != NULL)  *a_pate = p_draw->detail [a_leg + 1][my.p_tick].r_pate;   <* 
+ *>       if (a_tibi != NULL)  *a_tibi = p_draw->detail [a_leg + 1][my.p_tick].r_tibi;   <* 
+ *>    }                                                                                 <* 
+ *>    return 0;                                                                         <* 
+ *> }                                                                                    <*/
 
-char
-TICK_opengl        (int a_leg, float x, float z, float y)
-{
-   p_draw->detail [a_leg + 1][s_draw].g_xpos  = x;
-   p_draw->detail [a_leg + 1][s_draw].g_zpos  = z;
-   p_draw->detail [a_leg + 1][s_draw].g_ypos  = y;
-   x -= p_draw->detail [a_leg + 1][s_draw].t_xpos;
-   z -= p_draw->detail [a_leg + 1][s_draw].t_zpos;
-   y -= p_draw->detail [a_leg + 1][s_draw].t_ypos;
-   p_draw->detail [a_leg + 1][s_draw].g_error = sqrt ((x * x) + (z * z) + (y * y));
-   if (a_leg == YKINE_RR && s_draw == 100)   TICK_panel_dump ();
-   return 0;
-}
+/*> char                                                                                 <* 
+ *> TICK_exact_end          (int a_leg, float *x     , float *z     , float *y     )     <* 
+ *> {                                                                                    <* 
+ *>    if (a_leg == YKINE_BODY) {                                                        <* 
+ *>       if (x      != NULL)  *x      = p_draw->detail [a_leg    ][my.p_tick].o_xpos;   <* 
+ *>       if (z      != NULL)  *z      = p_draw->detail [a_leg    ][my.p_tick].o_zpos;   <* 
+ *>       if (y      != NULL)  *y      = p_draw->detail [a_leg    ][my.p_tick].o_ypos;   <* 
+ *>    } else {                                                                          <* 
+ *>       if (x      != NULL)  *x      = p_draw->detail [a_leg + 1][my.p_tick].r_xpos;   <* 
+ *>       if (z      != NULL)  *z      = p_draw->detail [a_leg + 1][my.p_tick].r_zpos;   <* 
+ *>       if (y      != NULL)  *y      = p_draw->detail [a_leg + 1][my.p_tick].r_ypos;   <* 
+ *>    }                                                                                 <* 
+ *>    return 0;                                                                         <* 
+ *> }                                                                                    <*/
+
+/*> char                                                                               <* 
+ *> TICK_exact_target       (int a_leg, float *x     , float *z     , float *y     )   <* 
+ *> {                                                                                  <* 
+ *>    if (x      != NULL)  *x      = p_draw->detail [a_leg + 1][my.p_tick].o_xpos;    <* 
+ *>    if (z      != NULL)  *z      = p_draw->detail [a_leg + 1][my.p_tick].o_zpos;    <* 
+ *>    if (y      != NULL)  *y      = p_draw->detail [a_leg + 1][my.p_tick].o_ypos;    <* 
+ *>    return 0;                                                                       <* 
+ *> }                                                                                  <*/
+
+/*> char                                                                               <* 
+ *> TICK_exact_opengl       (int a_leg, float *x     , float *z     , float *y     )   <* 
+ *> {                                                                                  <* 
+ *>    if (x != NULL)  *x = p_draw->detail [a_leg + 1][my.p_tick].g_xpos;              <* 
+ *>    if (z != NULL)  *z = p_draw->detail [a_leg + 1][my.p_tick].g_zpos;              <* 
+ *>    if (y != NULL)  *y = p_draw->detail [a_leg + 1][my.p_tick].g_ypos;              <* 
+ *>    return 0;                                                                       <* 
+ *> }                                                                                  <*/
+
+/*> char                                                                                     <* 
+ *> TICK_opengl        (int a_leg, float x, float z, float y)                                <* 
+ *> {                                                                                        <* 
+ *>    p_draw->detail [a_leg + 1][my.p_tick].g_xpos  = x;                                    <* 
+ *>    p_draw->detail [a_leg + 1][my.p_tick].g_zpos  = z;                                    <* 
+ *>    p_draw->detail [a_leg + 1][my.p_tick].g_ypos  = y;                                    <* 
+ *>    x -= p_draw->detail [a_leg + 1][my.p_tick].t_xpos;                                    <* 
+ *>    z -= p_draw->detail [a_leg + 1][my.p_tick].t_zpos;                                    <* 
+ *>    y -= p_draw->detail [a_leg + 1][my.p_tick].t_ypos;                                    <* 
+ *>    p_draw->detail [a_leg + 1][my.p_tick].g_error = sqrt ((x * x) + (z * z) + (y * y));   <* 
+ *>    if (a_leg == YKINE_RR && my.p_tick == 100)   TICK_panel_dump ();                      <* 
+ *>    return 0;                                                                             <* 
+ *> }                                                                                        <*/
 
 char
 TICK_panel_dump         (void)
@@ -2144,6 +2254,13 @@ TICK_panel_dump         (void)
    return 0;
 }
 
+
+
+/*====================------------------------------------====================*/
+/*===----                         panel handlers                       ----===*/
+/*====================------------------------------------====================*/
+static void      o___PANELS__________________o (void) {;}
+
 char         /*--> draw texture for progress ticker ------[ ------ [ ------ ]-*/
 TICK_draw_one      (tPANEL *a_panel)
 {
@@ -2177,9 +2294,9 @@ TICK_draw_one      (tPANEL *a_panel)
    DEBUG_GRAF   yLOG_value   ("s_wide"    , s_wide);
    DEBUG_GRAF   yLOG_value   ("s_tall"    , s_tall);
    /*---(draw)------------------------*/
-   yGLTEX_draw_start (a_panel->fbo, YGLTEX_BOTLEF, s_wide, s_tall, 1.0);
+   yGLTEX_draw       (a_panel->fbo, YGLTEX_BOTLEF, s_wide, s_tall, 1.0);
    TICK_back_copy    (a_panel);
-   TICK_load_exact   (a_panel);
+   /*> TICK_load_exact   (a_panel);                                                   <*/
    TICK_sections     (a_panel);
    DEBUG_GRAF   yLOG_value   ("p_nline"   , my.p_nline);
    for (i = 0; i < my.p_nline; ++i) {
@@ -2188,7 +2305,7 @@ TICK_draw_one      (tPANEL *a_panel)
       DEBUG_GRAF   yLOG_value   ("ref"       , x_ref);
       DEBUG_GRAF   yLOG_char    ("content"   , s_line_info [x_ref].content);
       switch (s_line_info [x_ref].content) {
-         /*> case 'z' : TICK_servos_pos  (a_panel, x_ref, 1.00);   break;                <*/
+      case 'z' : TICK_servos_pos  (a_panel, x_ref, 1.00);   break;
       case 'o' : TICK_servos_deg  (a_panel, x_ref, 2.00);   break;
       case 'l' : TICK_servos_deg  (a_panel, x_ref, 1.00);   break;
       }
@@ -2197,7 +2314,7 @@ TICK_draw_one      (tPANEL *a_panel)
       yGLTEX_tex2png    ("ticker.png", s_wide, s_tall);
       a_panel->act = '-';
    }
-   yGLTEX_draw_end   (a_panel->tex);
+   yGLTEX_done       (a_panel->tex);
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -2380,7 +2497,7 @@ TICK_curr          (void)
    /*---(header)-------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    /*---(get the current data)-----------*/
-   rc  = yVIKEYS_view_coords   (YVIKEYS_PROGRESS, NULL, &my.p_wide, NULL, &my.p_tall);
+   rc  = yVIKEYS_view_bounds   (YVIKEYS_PROGRESS, NULL, NULL, &my.p_wide, NULL, NULL, &my.p_tall);
    rc  = yVIKEYS_prog_cur (&s_anchor, &my.p_cur, &my.p_scale, &my.p_inc, &my.p_line);
    my.p_leg = my.p_line - 1;
    DEBUG_GRAF   yLOG_value   ("p_line"    , my.p_line);
@@ -2476,10 +2593,11 @@ TICK_show          (void)
    if      (my.p_cur <  p_curr->beg)  p_draw = p_pref;
    else if (my.p_cur >  p_suff->beg)  p_draw = p_suff;
    else                               p_draw = p_curr;
-   s_draw = ((my.p_cur - p_draw->beg) / s_len) * MAX_WIDE;
+   /*> my.p_tick = ((my.p_cur - p_draw->beg) / s_len) * MAX_WIDE;                        <*/
+   my.p_tick = my.p_cur * 10.0;
    DEBUG_GRAF   yLOG_point   ("p_draw"    , p_draw);
    DEBUG_GRAF   yLOG_value   ("->sect"    , p_draw->sect);
-   DEBUG_GRAF   yLOG_value   ("s_draw"    , s_draw);
+   DEBUG_GRAF   yLOG_value   ("my.p_tick" , my.p_tick);
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return rc;
