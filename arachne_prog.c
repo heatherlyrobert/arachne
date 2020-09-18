@@ -222,6 +222,7 @@ PROG_final         (void)
    dlist_begin  ();
    yGOD_start   ();
    gait.dmax   = 100;
+   /*> TICK_after_read ();                                                            <*/
    /*> stat_masscenter();                                                             <*/
    DEBUG_TOPS   yLOG_exit    (__FUNCTION__);
    return 0;

@@ -63,7 +63,7 @@ api_yvikeys_init        (void)
       yVIKEYS_cmds_add ('c', s_focuses [i].label, "", "Cs", api_yvikeys_focus    , "control display of content elements");
    }
    yVIKEYS_cmds_add ('c', "legs"             , "", "Cs", api_yvikeys_focus    , "control display of content elements");
-   yVIKEYS_dump_add ("panel"      , TICK_panel_dump);
+   /*> yVIKEYS_dump_add ("panel"      , TICK_panel_dump);                             <*/
    /*---(complete)-----------------------*/
    return 0;
 }

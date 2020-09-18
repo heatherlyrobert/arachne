@@ -29,8 +29,8 @@
 
 #define     P_VERMAJOR  "1.--, working and advancing"
 #define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
-#define     P_VERNUM    "1.1m"
-#define     P_VERTXT    "ticker built entirely from yKINE_tick data"
+#define     P_VERNUM    "1.1n"
+#define     P_VERTXT    "added yKINE return code coloration to ticker"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -622,10 +622,12 @@ int        glx_init                (void);
 char        TICK_init               (void);
 char        TICK_draw               (void);
 char        TICK_draw_all           (void);
+char        TICK_after_read         (void);
 char        TICK_show               (void);
-char        TICK_legend             (void);
-char        TICK_snap               (void);
-char        TICK_panel_dump         (void);
+char        TICK_show_script        (void);
+/*> char        TICK_legend             (void);                                       <*/
+/*> char        TICK_snap               (void);                                       <*/
+/*> char        TICK_panel_dump         (void);                                       <*/
 
 
 char      DRAW_init               (void);
