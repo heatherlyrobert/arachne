@@ -8,6 +8,12 @@ tGAIT     gait;
 
 
 
+
+/*====================------------------------------------====================*/
+/*===----                        program wide                          ----===*/
+/*====================------------------------------------====================*/
+static void      o___SUPPORT_________________o (void) {;}
+
 char      verstring    [500];
 
 char*      /* ---- : return library versioning information -------------------*/
@@ -27,8 +33,51 @@ PROG_version       (void)
    return verstring;
 }
 
+
+
+/*====================------------------------------------====================*/
+/*===----                       pre-initialization                     ----===*/
+/*====================------------------------------------====================*/
+static void      o___PREINIT_________________o (void) {;}
+
+char
+PROG_urgents            (int a_argc, char *a_argv [])
+{
+   /*---(locals)-----------+-----+-----+-*/
+   char        rce         =  -10;
+   char        rc          =    0;
+   /*---(header)-------------------------*/
+   DEBUG_PROG  yLOG_enter   (__FUNCTION__);
+   /*---(set mute)-----------------------*/
+   yURG_all_mute ();
+   /*---(start logger)-------------------*/
+   rc = yURG_logger  (a_argc, a_argv);
+   DEBUG_PROG   yLOG_value    ("logger"    , rc);
+   --rce;  if (rc < 0) {
+      DEBUG_PROG   yLOG_exitr    (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(process urgents)----------------*/
+   rc = yURG_urgs    (a_argc, a_argv);
+   DEBUG_PROG   yLOG_value    ("logger"    , rc);
+   --rce;  if (rc < 0) {
+      DEBUG_PROG   yLOG_exitr    (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_PROG  yLOG_exit  (__FUNCTION__);
+   return rc;
+}
+
+
+
+/*====================------------------------------------====================*/
+/*===----                        program startup                       ----===*/
+/*====================------------------------------------====================*/
+static void      o___STARTUP_________________o (void) {;}
+
 char       /*----: very first setup ------------------s-----------------------*/
-PROG_init          (void)
+PROG__init         (void)
 {
    /*---(log header)------------------*/
    DEBUG_TOPS   yLOG_info     ("purpose" , P_PURPOSE);
@@ -111,8 +160,8 @@ PROG_init          (void)
    return 0;
 }
 
-char               /* PURPOSE : process the command line arguments            */
-PROG_args          (int argc, char *argv[])
+char
+PROG__args              (int argc, char *argv[])
 {
    /*---(locals)-----------+-----+-----+-*/
    int         i           =    0;
@@ -189,7 +238,7 @@ PROG_args          (int argc, char *argv[])
 
 
 char       /*----: drive program setup activities ----------------------------*/
-PROG_begin         (void)
+PROG__begin             (void)
 {
    char        rc          =    0;
    DEBUG_TOPS   yLOG_enter   (__FUNCTION__);
@@ -208,8 +257,51 @@ PROG_begin         (void)
    return 0;
 }
 
+char
+PROG_startup            (int a_argc, char *a_argv [])
+{
+   /*---(locals)-----------+-----+-----+-*/
+   char        rce         =  -10;
+   char        rc          =    0;
+   /*---(header)-------------------------*/
+   yURG_stage_check (YURG_BEG);
+   DEBUG_PROG  yLOG_enter   (__FUNCTION__);
+   /*---(initialize)---------------------*/
+   rc = PROG__init   (a_argc, a_argv);
+   DEBUG_PROG   yLOG_value    ("init"      , rc);
+   --rce;  if (rc < 0) {
+      DEBUG_PROG   yLOG_exitr    (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(arguments)----------------------*/
+   rc = PROG__args   (a_argc, a_argv);
+   DEBUG_PROG   yLOG_value    ("args"      , rc);
+   --rce;  if (rc < 0) {
+      DEBUG_PROG   yLOG_exitr    (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(begin)--------------------------*/
+   rc = PROG__begin  ();
+   DEBUG_PROG   yLOG_value    ("begin"     , rc);
+   --rce;  if (rc < 0) {
+      DEBUG_PROG   yLOG_exitr    (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_PROG  yLOG_exit  (__FUNCTION__);
+   yURG_stage_check (YURG_MID);
+   return rc;
+}
+
+
+
+/*====================------------------------------------====================*/
+/*===----                        program execution                     ----===*/
+/*====================------------------------------------====================*/
+static void      o___EXECUTION_______________o (void) {;}
+
 char       /*----: process the xwindows event stream -------------------------*/
-PROG_final         (void)
+PROG_dawn          (void)
 {
    DEBUG_TOPS   yLOG_enter   (__FUNCTION__);
    api_yvikeys_init      ();
@@ -224,12 +316,36 @@ PROG_final         (void)
    gait.dmax   = 100;
    /*> TICK_after_read ();                                                            <*/
    /*> stat_masscenter();                                                             <*/
+   TICK_init       ();
+   printf ("script length %8.3lf\n", my.p_len);
+   yVIKEYS_progress_config (0.0, my.p_len, '-', my.p_nline, NULL, NULL, NULL, '-');
+   /*> if (my.report == RPTG_MOVES)  yKINE_move_rpt  ();                              <*/
+   yKINE_move_rpt  ();
+   /*> TICK_draw     ();                                                              <*/
    DEBUG_TOPS   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
+char
+PROG_dusk          (void)
+{
+   /*---(header)-------------------------*/
+   DEBUG_PROG  yLOG_enter (__FUNCTION__);
+   /*---(process)------------------------*/
+   /*---(complete)-----------------------*/
+   DEBUG_PROG  yLOG_exit  (__FUNCTION__);
+   return 0;
+}
+
+
+
+/*====================------------------------------------====================*/
+/*===----                        program shutdown                      ----===*/
+/*====================------------------------------------====================*/
+static void      o___SHUTDOWN________________o (void) {;}
+
 char       /*----: drive the program closure activities ----------------------*/
-PROG_end           (void)
+PROG__end               (void)
 {
    /*---(shutdown)--------------------*/
    DEBUG_PROG   yLOG_enter   (__FUNCTION__);
@@ -242,6 +358,19 @@ PROG_end           (void)
    DEBUG_TOPS   yLOGS_end    ();
    return 0;
 }
+
+char             /* [------] drive the program closure activities ------------*/
+PROG_shutdown           (void)
+{
+   /*---(header)-------------------------*/
+   yURG_stage_check (YURG_END);
+   DEBUG_PROG   yLOG_enter    (__FUNCTION__);
+   PROG__end ();
+   DEBUG_PROG   yLOG_exit     (__FUNCTION__);
+   DEBUG_PROG   yLOGS_end    ();
+   return 0;
+}
+
 
 
 /*====================------------------------------------====================*/

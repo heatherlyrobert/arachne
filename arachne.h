@@ -5,32 +5,33 @@
 
 #define     P_FOCUS     "RO (robotics)"
 #define     P_NICHE     "hx (hexapoda)"
+#define     P_SUBJECT   "work-spider visualization
 #define     P_PURPOSE   "wickedly accurate and useful hexapod visualization and simulation"
-
-#define     P_EXECUTE   "arachne"
-#define     P_FULLPATH  "/usr/local/bin/arachne"
-#define     P_ONELINE   "arachne-anassa (spider queen) work-spider simulation"
-
-#define     P_SUFFIX    "arac"
-#define     P_CONTENT   "spider movement script"
 
 #define     P_NAMESAKE  "arachne-anassa (spider queen)"
 #define     P_HERITAGE  "prideful lydian weaver who challenged the gods and lost"
 #define     P_IMAGERY   "womans upside down head/torso attached to spider abdomen/legs"
 #define     P_REASON    "queen of spiders would be the patron of spider robots"
 
+#define     P_ONELINE   P_NAMESAKE " " P_SUBJECT
+
+#define     P_BASENAME  "arachne"
+#define     P_FULLPATH  "/usr/local/bin/arachne"
+#define     P_SUFFIX    "arac"
+#define     P_CONTENT   "spider movement script"
+
 #define     P_SYSTEM    "gnu/linux   (powerful, ubiquitous, technical, and hackable)"
 #define     P_LANGUAGE  "ansi-c      (wicked, limitless, universal, and everlasting)"
 #define     P_CODESIZE  "moderate    (less than 5,000 lines of code)"
+#define     P_DEPENDS   "yKINE, yFONT"
 
 #define     P_AUTHOR    "heatherlyrobert"
 #define     P_CREATED   "2009-07"
-#define     P_DEPENDS   "yKINE, yFONT"
 
 #define     P_VERMAJOR  "1.--, working and advancing"
 #define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
-#define     P_VERNUM    "1.1n"
-#define     P_VERTXT    "added yKINE return code coloration to ticker"
+#define     P_VERNUM    "1.2a"
+#define     P_VERTXT    "update libraries in header and makefile, update prog calls"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -145,40 +146,84 @@
 #include    <string.h>       /* CLIBC   standard string handling              */
 #include    <unistd.h>       /* CLIBC   standard unix interface               */
 #include    <error.h>        /* CLIBC   standard error handling               */
-#include    <fcntl.h>        /* CLIBC   standard file control                 */
-#include    <termios.h>      /* CLIBC   standard terminal control             */
 #include    <math.h>         /* CLIBC   standard math functions               */
-#include    <signal.h>       /* CLIBC   standard signal handling              */
 #include    <time.h>         /* CLIBC   standard time and date handling       */
 #include    <ctype.h>        /* CLIBC   standard character classes            */
-
-/*---(posix standard)--------------------*/
+#include    <signal.h>       /* CLIBC   standard signal handling              */
+/*---(linux/posix standard)--------------*/
 #include    <unistd.h>       /* POSIX   standard operating system API         */
 #include    <sys/time.h>     /* POSIX   standard time access                  */
-
-/*---(X11 standard)----------------------*/
+#include    <fcntl.h>        /* CLIBC   standard file control                 */
+#include    <termios.h>      /* CLIBC   standard terminal control             */
+/*---(x11/opengl standard)---------------*/
 #include    <X11/X.h>        /* X11     standard overall file                 */
 #include    <X11/Xlib.h>     /* X11     standard C API                        */
-
-
-/*---(opengl standard)-------------------*/
 #include    <GL/gl.h>        /* OPENGL  standard primary header               */
 #include    <GL/glx.h>       /* OPENGL  standard X11 integration              */
 
-/*---(heatherly made)--------------------*/
-#include    <yURG.h>         /* CUSTOM  heatherly urgent processing           */
-#include    <yX11.h>         /* CUSTOM  heatherly xlib/glx setup/teardown     */
-#include    <yVAR.h>         /* CUSTOM  heatherly variable testing            */
+/*---(custom core)-----------------------*/
+#include    <yURG.h>              /* heatherly urgent processing              */
+#include    <yLOG.h>              /* heatherly program logging                */
+#include    <ySTR.h>              /* heatherly string processing              */
+/*---(custom vi-keys)--------------------*/
+#include    <yKEYS.h>             /* heatherly vikeys key handling            */
+#include    <yMODE.h>             /* heatherly vikeys mode tracking           */
+#include    <yMACRO.h>            /* heatherly vikeys macro processing        */
+#include    <ySRC.h>              /* heatherly vikeys source editing          */
+#include    <yCMD.h>              /* heatherly vikeys command processing      */
+#include    <yVIEW.h>             /* heatherly vikeys view management         */
+#include    <yMAP.h>              /* heatherly vikeys location management     */
+#include    <yFILE.h>             /* heatherly vikeys content file handling   */
+#include    <yMARK.h>             /* heatherly vikeys search and marking      */
+#include    <yVIOPENGL.h>         /* heatherly vikeys curses handler          */
+
+
+
+
+
+/*---(ansi-c standard)-------------------*/
+#include    <stdio.h>        /* C_ANSI : strcpy, strlen, strchr, strcmp, ...  */
+#include    <string.h>       /* C_ANSI : printf, snprintf, fgets, fopen, ...  */
+#include    <stdlib.h>       /* C_ANSI : exit                                 */
+#include    <math.h>         /* C_ANSI : fabs, cos, sin, round, trunc, ...    */
+#include    <ctype.h>        /* C_ANSI : tolower, toupper, ...                */
+#include    <time.h>         /* C_ANSI : time, strftime, localtime            */
+#include    <malloc.h>       /* C_ANSI : malloc, free                         */
+/*---(posix standard)--------------------*/
+#include    <unistd.h>            /* POSIX  standard operating system API     */
+#include    <sys/time.h>          /* POSIX  standard time access              */
+/*---(defacto standard)------------------*/
+#include    <ncurses.h>      /* CURSES : mvprintw, refresh, getch, ...        */
+/*---(custom core)-----------------------*/
+#include    <yURG.h>              /* heatherly urgent processing              */
+#include    <yLOG.h>              /* heatherly program logging                */
+#include    <ySTR.h>              /* heatherly string processing              */
+/*---(vi-keys foundation)----------------*/
+#include    <yMODE.h>             /* heatherly vikeys mode tracking           */
+#include    <yKEYS.h>             /* heatherly vikeys key handling            */
+#include    <yFILE.h>             /* heatherly vikeys content file handling   */
+#include    <yVIEW.h>             /* heatherly vikeys view management         */
+/*---(vi-keys major)---------------------*/
+#include    <yMAP.h>              /* heatherly vikeys location management     */
+#include    <yCMD.h>              /* heatherly vikeys command processing      */
+#include    <yMACRO.h>            /* heatherly vikeys macro processing        */
+#include    <ySRC.h>              /* heatherly vikeys source editing          */
+#include    <yMARK.h>             /* heatherly vikeys search and marking      */
 #include    <yGOD.h>         /* CUSTOM  heatherly opengl godview              */
-#include    <yKINE.h>        /* CUSTOM  heatherly kinematics                  */
-#include    <yGOLEM.h>       /* CUSTOM  heatherly robotics controller         */
-#include    <yVIKEYS.h>      /* CUSTOM  heatherly vi_keys standard            */
+/*---(custom opengl)---------------------*/
+#include    <yVICURSES.h>         /* heatherly vikeys curses handler          */
+#include    <yX11.h>         /* CUSTOM  heatherly xlib/glx setup/teardown     */
 #include    <yFONT.h>        /* CUSTOM  heatherly texture-mapped fonts        */
 #include    <yCOLOR.h>       /* CUSTOM  heatherly opengl color handling       */
 #include    <yGLTEX.h>       /* CUSTOM  heatherly texture handling            */
-#include    <ySTR.h>         /* CUSTOM  heatherly string handling             */
-#include    <yPARSE.h>       /* CUSTOM  heatherly record parsing/queuing      */
-#include    <yLOG.h>         /* CUSTOM  heatherly program logging             */
+/*---(custom other)----------------------*/
+#include    <yVAR.h>         /* CUSTOM : heatherly variable testing           */
+#include    <yPARSE.h>       /* heatherly file reading and writing      */
+/*---(custom robotics)-------------------*/
+#include    <yKINE.h>        /* CUSTOM  heatherly kinematics                  */
+#include    <yGOLEM.h>       /* CUSTOM  heatherly robotics controller         */
+
+
 
 
 
@@ -575,20 +620,32 @@ extern    char        flag_view;
 
 
 
-/*===[[ PROTOTYPES ]]=========================================================*/
-/*---(arachne_main)----------------------*/
-int         main               (int argc, char *argv[]);
 
-/*---(arachne_prog)----------------------*/
-char        PROG_init          (void);
-char        PROG_args          (int argc, char *argv[]);
-char        PROG_begin         (void);
-char        PROG_final         (void);
-char        PROG_end           (void);
+/*===[[ arachne_main.c ]]=====================================================*/
+/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
+int         main                    (int argc, char *argv[]);
+
+
+
+/*===[[ arachne_prog.c ]]=====================================================*/
+/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
+/*---(support)---------------------------*/
+char*       PROG_version            (void);
+/*---(startup)---------------------------*/
+char        PROG__init              (void);
+char        PROG__args              (int argc, char *argv[]);
+char        PROG__begin             (void);
+char        PROG_startup            (int argc, char *argv[]);
+/*---(execution)-------------------------*/
+char        PROG_dawn               (void);
+char        PROG_dusk               (void);
+/*---(shutdown)--------------------------*/
+char        PROG__end               (void);
+char        PROG_shutdown           (void);
 
 /*> char       *unit_accessor      (char *a_question, void *a_thing);                 <*/
-char        PROG_testing       (void);
-char        PROG_testloud      (void);
+char        PROG_testing            (void);
+char        PROG_testloud           (void);
 
 
 

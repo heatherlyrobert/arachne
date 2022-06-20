@@ -8,7 +8,12 @@ NAME_BASE  = arachne
 # additional standard and outside libraries
 LIB_STD    = -lm -lX11 -lGL -lGLU
 # all heatherly libraries used, debug versions whenever available
-LIB_MINE   = -lyX11_debug -lyGOD_debug -lyKINE_debug -lyGOLEM_debug -lyFONT_debug -lySTR_debug -lyVIKEYS_debug -lyCOLOR_debug -lyPARSE_debug -lyGLTEX_debug
+LIB_FOUND  = -lyMODE_debug  -lyKEYS_debug  -lyFILE_debug  -lyVIEW_debug
+LIB_MAJOR  = -lyMAP_debug   -lyCMD_debug   -lyMACRO_debug -lySRC_debug   -lyMARK_debug
+LIB_OPENGL = -lyVIOPENGL_debug -lyGOD_debug -lyX11_debug  -lyFONT_debug  -lyCOLOR_debug -lyGLTEX_debug
+LIB_ROBOT  = -lyKINE_debug  -lyGOLEM_debug
+LIB_OTHER  = -lySTR_debug   -lyPARSE_debug
+LIB_MINE   = $(LIB_FOUND)   $(LIB_MAJOR)   $(LIB_OPENGL)   $(LIB_ROBOT)  $(LIB_OTHER)
 # directory for production code, no trailing slash
 INST_DIR   = /usr/local/bin
 
