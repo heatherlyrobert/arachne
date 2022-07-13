@@ -77,18 +77,6 @@ static void      o___ADJUSTED________________o (void) {;}
 
 
 /*---1----- -----2----- -----3----- -----4-----  ---------comments------------*/
-typedef     struct      cPANEL      tPANEL;
-struct      cPANEL {
-   char        seq;                              /* true order for auditing   */
-   uint        fbo;                              /* framebuffer               */
-   uint        depth;                            /* depth buffer              */
-   uint        tex;                              /* texture array             */
-   float       beg;                              /* begining script position  */
-   int         sect;                             /* each panel section assign */
-   /*> int         fill;                             /+ how man drawn             +/   <*/
-   /*> tPOS        detail [YKINE_MAX_LEGS][MAX_WIDE];/+ exact positions           +/   <*/
-   char        act;                              /* action, like snapshot     */
-};
 /*---1----- -----2----- -----3----- -----4-----  ---------comments------------*/
 static      tPANEL      s_panel     [MAX_PANEL];
 static      tPANEL     *p_back      = NULL;
@@ -201,6 +189,7 @@ TICK_line_count         (void)
       ++my.p_nline;
    }
    DEBUG_GRAF   yLOG_sint    (my.p_nline);
+   yKEYS_progress_lines (my.p_nline);
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_sexit   (__FUNCTION__);
    return 0;
@@ -250,7 +239,7 @@ TICK_back_vert          (void)
    int       x_small       =    0;
    /*---(prepare)------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   yVIKEYS_view_color (YCOLOR_NEG_MUT, 1.00);
+   yCOLOR_set (YCOLOR_NEG_MUT, 1.00);
    glLineWidth (2.0);
    /*---(vertical lines)-----------------*/
    for (x_line = 0; x_line < my.p_nline; ++x_line) {
@@ -320,7 +309,7 @@ TICK_back_horz     (void)
    /*> x_bar  = s_top - s_bot;                                                  <*/
    /*---(prepare)------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   yVIKEYS_view_color (YCOLOR_NEG_MUT, 1.00);
+   yCOLOR_set (YCOLOR_NEG_MUT, 1.00);
    /*---(long bars)----------------------*/
    for (x_line = 0; x_line < my.p_nline; ++x_line) {
       x_top = (x_line + 1) * s_yinc;
@@ -355,9 +344,11 @@ TICK_back_label         (void)
    int       x_pos         =    0;
    int       x_ref         =    0;
    char      x_msg         [100];
+   char      x_terse       [100];
+   char      x_brief       [100];
    /*---(prepare)------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
-   yVIKEYS_view_color (YCOLOR_BAS_ACC, 1.00);
+   yCOLOR_set (YCOLOR_BAS_ACC, 1.00);
    /*---(vertical lines)-----------------*/
    DEBUG_GRAF   yLOG_value   ("p_nline"   , my.p_nline);
    for (x_line = 0; x_line < my.p_nline; ++x_line) {
@@ -382,16 +373,15 @@ TICK_back_label         (void)
             yFONT_print  (my.fixed,  16, YF_MIDCEN, x_msg);
          } glPopMatrix();
          /*---(scale)--------------------*/
-         yVIKEYS_scale_brief (x_msg);
+         yKEYS_progress_scale (NULL, x_terse, x_brief, NULL, NULL, NULL);
          glPushMatrix(); {
             glTranslatef (x_pos +  15.0, x_top -  14.0,    60.0  );
-            yFONT_print  (my.fixed,  14, YF_MIDLEF, x_msg);
+            yFONT_print  (my.fixed,  14, YF_MIDLEF, x_terse);
          } glPopMatrix();
          /*---(speed)--------------------*/
-         yVIKEYS_speed_brief (x_msg);
          glPushMatrix(); {
             glTranslatef (x_pos + 985.0, x_top -  14.0,    60.0  );
-            yFONT_print  (my.fixed,  14, YF_MIDRIG, x_msg);
+            yFONT_print  (my.fixed,  14, YF_MIDRIG, x_brief);
          } glPopMatrix();
       }
    }
@@ -462,19 +452,19 @@ TICK_back_copy_label    (tPANEL *a_panel)
       for (x_pos = 0; x_pos <= s_wide; x_pos += s_xinc * 100) {
          DEBUG_GRAF   yLOG_value   ("x_pos"     , x_pos);
          /*---(panel)--------------------*/
-         yVIKEYS_view_color (YCOLOR_BAS_MED, 1.00);
+         yCOLOR_set (YCOLOR_BAS_MED, 1.00);
          sprintf (x_msg, "%d%c/%d (%d)", a_panel->sect, x_pos / (s_xinc * 100) + 'a', s_nsec, a_panel->seq);
          glPushMatrix(); {
             glTranslatef (x_pos + 750.0, x_top - 14.0,    60.0);
             yFONT_print  (my.fixed,  16, YF_MIDCEN, x_msg);
          } glPopMatrix();
-         yVIKEYS_view_color (YCOLOR_NEG_MUT, 1.00);
+         yCOLOR_set (YCOLOR_NEG_MUT, 1.00);
          n = ((int) trunc (a_panel->beg / 40) * 4) + x_pos / 1000;
          if (n >= 0)  sprintf (x_msg, "%d", n);
          else         sprintf (x_msg, "-");
          glPushMatrix(); {
-            glTranslatef (x_pos + 50.0, x_top - 75.0,    60.0);
-            yFONT_print  (my.fixed, 32, YF_MIDCEN, x_msg);
+            glTranslatef (x_pos + 50.0, x_top - 65.0,    60.0);
+            yFONT_print  (my.fixed, 24, YF_MIDCEN, x_msg);
          } glPopMatrix();
          /*---(done)---------------------*/
       }
@@ -595,7 +585,7 @@ TICK_front_label        (int a_panel)
    strlcpy (x_label2, TICK_sectext (s_section + 1), 10);
    /*> printf ("%8d  %8d  %8d\n", x_labelper, x_secbeg1, x_secbeg2);                  <*/
    /*---(vertical lines)-----------------*/
-   yVIKEYS_view_color (YCOLOR_BAS_ACC, 1.00);
+   yCOLOR_set (YCOLOR_BAS_ACC, 1.00);
    for (x_line = 0; x_line < my.p_nline; ++x_line) {
       x_top = (x_line + 1) * s_yinc;
       x_bot = (x_line    ) * s_yinc;
@@ -610,7 +600,7 @@ TICK_front_label        (int a_panel)
          /*---(leg)----------------------*/
          x_pos = s_tall - (j * s_yinc);
          sprintf (x_msg, " %d  %s", j % 6, legs_name [j % 6]);
-         yVIKEYS_view_color (YCOLOR_BAS_ACC, 1.00);
+         yCOLOR_set (YCOLOR_BAS_ACC, 1.00);
          glPushMatrix(); {
             glTranslatef ( i + 500.0 , x_pos    -  115.0    ,    60.0  );
             glRotatef  ( 90.0  , 0.0f, 0.0f, 1.0f);
@@ -810,7 +800,7 @@ static void      o___NEW_____________________o (void) {;}
  *>    /+---(header)-------------------------+/                                       <* 
  *>    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);                                      <* 
  *>    /+---(prepare)------------------------+/                                       <* 
- *>    yVIKEYS_view_color (YCOLOR_NEG_MUT, 1.00);                                     <* 
+ *>    yCOLOR_set (YCOLOR_NEG_MUT, 1.00);                                     <* 
  *>    glLineWidth (2.0);                                                             <* 
  *>    /+---(locators)-----------------+/                                             <* 
  *>    x_big  = s_xinc / 3.0;                                                         <* 
@@ -1089,13 +1079,14 @@ TICK_init          (void)
    /*---(locals)-----------+-----+-----+-*/
    char        rc          =    0;
    int         i           =    0;
+   float       x_len       =  0.0;
    /*---(header)-------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    /*---(prepare)------------------------*/
    rc = yGLTEX_config ();
    DEBUG_GRAF   yLOG_value   ("yGLTEX"    , rc);
    if (rc < 0)  return rc;
-   rc = yVIKEYS_cmds_add ('c', "p_snap"      , ""    , ""     , TICK_show_script     , "save png image of full ticker/progress"                      );
+   rc = yCMD_add ('c', "p_snap"      , ""    , ""     , TICK_show_script     , "save png image of full ticker/progress"                      );
    DEBUG_GRAF   yLOG_value   ("p_snap"    , rc);
    if (rc < 0)  return rc;
    /*---(sizes)--------------------------*/
@@ -1109,7 +1100,7 @@ TICK_init          (void)
       s_panel [i].tex = s_panel [i].fbo = s_panel [i].depth = 0;
    }
    /*---(secs per panel)-----------------*/
-   rc  = yVIKEYS_prog_cur (&s_anchor, &my.p_cur, &my.p_scale, &my.p_inc, &my.p_line);
+   rc  = yKEYS_progress_cur (&x_len, &s_anchor, &my.p_cur, &my.p_scale, &my.p_inc, &my.p_line);
    DEBUG_GRAF   yLOG_double  ("p_cur"     , my.p_cur);
    DEBUG_GRAF   yLOG_double  ("p_scale"   , my.p_scale);
    s_len       = my.p_scale * UNIT2PANEL;
@@ -1152,7 +1143,14 @@ TICK_init          (void)
     *> yCOLOR_scale    (YCOLOR_PARABOLIC,  0.0,  30.0);                               <*/
    /*---(draw template)------------------*/
    TICK_back_draw ();
+   /*> {                                                                              <* 
+    *>    rc = TICK_curr  ();                                                         <* 
+    *>    p_curr->beg   = 0.0;                                                        <* 
+    *>    p_curr->sect  = 0;                                                          <* 
+    *>    TICK_draw_one (p_curr, 1);                                                  <* 
+    *> }                                                                              <*/
    TICK_draw_all  ();
+   /*> TICK_show_script ();                                                           <*/
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -1362,11 +1360,13 @@ TICK_servo__solid  (tPANEL *a_panel, int a_line, char a_type, float a_base, floa
    float       z           =  0.0;
    float       x_top, x_bot;
    z = a_z;
+   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    for (i = 0; i < MAX_WIDE; ++i) {
       x_pos = a_panel->beg * 10 + i;
       x_one = (i + 0) * 10;
       x_two = (i + 1) * 10;
       rc = yKINE_ticker (a_line, x_pos, a_type, &y_beg, &y_end, &x_rc);
+      DEBUG_GRAF   yLOG_complex ("servo"     , "%4drc, %4dx, %4dx %4.0fy, %4dx %4.0fy", rc, x_pos, x_one, y_beg, x_two, y_end);
       if (rc   < 0)   continue;
       /*---(normal)----------------------*/
       if (x_rc >= 0) {
@@ -1390,6 +1390,7 @@ TICK_servo__solid  (tPANEL *a_panel, int a_line, char a_type, float a_base, floa
          continue;
       }
    }
+   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -1407,11 +1408,13 @@ TICK_servo__dotted (tPANEL *a_panel, int a_line, char a_type, float a_base, floa
    char        x_rc        =    0;
    float       z           =  0.0;
    float       x_top, x_bot;
+   DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    for (i = 0; i < MAX_WIDE; i += 2) {
       x_pos = a_panel->beg * 10 + i;
       x_one = (i + 0) * 10;
       x_two = (i + 1) * 10;
       rc = yKINE_ticker (a_line, x_pos, a_type, &y_beg, &y_end, &x_rc);
+      DEBUG_GRAF   yLOG_complex ("servo"     , "%4drc, %4dx, %4dx %4.0fy, %4dx %4.0fy", rc, x_pos, x_one, y_beg, x_two, y_end);
       if (rc   < 0)   continue;
       z = a_z - 5.0;
       /*---(normal)----------------------*/
@@ -1468,6 +1471,7 @@ TICK_servo__dotted (tPANEL *a_panel, int a_line, char a_type, float a_base, floa
       }
       /*---(done)------------------------*/
    }
+   DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -1582,10 +1586,10 @@ TICK_sections      (tPANEL *a_panel)
          glColor4f    (0.50f, 0.00f, 0.50f, 1.0f);
          glLineWidth  (5.0f);
          glPushMatrix(); {
-            glTranslatef  (x + 5, x_base + 55.0, 10.0);
-            yFONT_print  (my.fixed,  15, YF_BOTLEF, t);
-            glTranslatef  (5.0  , -10.0        ,  0.0);
-            yFONT_print  (my.fixed,  10, YF_BOTLEF, x_label);
+            glTranslatef  (x + 5, x_base + 10.0, 10.0);
+            yFONT_print  (my.fixed,  12, YF_BOTLEF, x_label);
+            glTranslatef  ( 0.0 , -45.0        ,  0.0);
+            yFONT_print  (my.fixed,  18, YF_BOTLEF, t);
          } glPopMatrix();
          if (strcmp (t, "aa") == 0 || strcmp (t, "zz") == 0) {
             glBegin         (GL_LINES); {
@@ -1629,8 +1633,10 @@ TICK_servos_pos    (tPANEL *a_panel, int a_line, float a_scale)
    x_leg     = s_line_info [a_line].leg;
    x_base    = (s_tall - (s_yinc * a_line)) - s_top;
    x_unit    = s_xinc / my.p_inc;
+   DEBUG_GRAF   yLOG_complex ("pos"       , "%d, %d, %fb, %fu", a_line, x_leg, x_base, x_unit);
    /*---(femur)--------------------------*/
    glPushMatrix(); {
+      DEBUG_GRAF   yLOG_note    ("femur");
       TICK_servo_prep ('X');
       TICK_servo_line (a_panel, a_line, 'X', x_base, a_scale,  3, 230);
       TICK_servo_prep ('X');
@@ -1640,6 +1646,7 @@ TICK_servos_pos    (tPANEL *a_panel, int a_line, float a_scale)
    } glPopMatrix();
    /*---(patella)------------------------*/
    glPushMatrix(); {
+      DEBUG_GRAF   yLOG_note    ("patella");
       TICK_servo_prep ('Z');
       TICK_servo_line (a_panel, a_line, 'Z', x_base, a_scale,  1, 240);
       TICK_servo_prep ('Z');
@@ -1649,6 +1656,7 @@ TICK_servos_pos    (tPANEL *a_panel, int a_line, float a_scale)
    } glPopMatrix();
    /*---(tibia)--------------------------*/
    glPushMatrix(); {
+      DEBUG_GRAF   yLOG_note    ("tibia");
       TICK_servo_prep ('Y');
       TICK_servo_line (a_panel, a_line, 'Y', x_base, a_scale,  0, 250);
       TICK_servo_prep ('y');
@@ -1678,8 +1686,10 @@ TICK_servos_deg    (tPANEL *a_panel, int a_line, float a_scale)
    x_leg     = s_line_info [a_line].leg;
    x_base    = (s_tall - (s_yinc * a_line)) - s_top;
    x_unit    = s_xinc / my.p_inc;
+   DEBUG_GRAF   yLOG_complex ("pos"       , "%d, %d, %fb, %fu", a_line, x_leg, x_base, x_unit);
    /*---(femur)--------------------------*/
    glPushMatrix(); {
+      DEBUG_GRAF   yLOG_note    ("femur");
       TICK_servo_prep ('F');
       TICK_servo_line (a_panel, a_line, 'F', x_base, a_scale,  3, 230);
       TICK_servo_prep ('F');
@@ -1689,6 +1699,7 @@ TICK_servos_deg    (tPANEL *a_panel, int a_line, float a_scale)
    } glPopMatrix();
    /*---(patella)------------------------*/
    glPushMatrix(); {
+      DEBUG_GRAF   yLOG_note    ("patella");
       TICK_servo_prep ('P');
       TICK_servo_line (a_panel, a_line, 'P', x_base, a_scale,  1, 240);
       TICK_servo_prep ('P');
@@ -1698,6 +1709,7 @@ TICK_servos_deg    (tPANEL *a_panel, int a_line, float a_scale)
    } glPopMatrix();
    /*---(tibia)--------------------------*/
    glPushMatrix(); {
+      DEBUG_GRAF   yLOG_note    ("tibia");
       TICK_servo_prep ('T');
       TICK_servo_line (a_panel, a_line, 'T', x_base, a_scale,  0, 250);
       TICK_servo_prep ('t');
@@ -2347,9 +2359,13 @@ TICK_draw_all           (void)
    p_suff->beg   = x_cur + s_len;
    p_suff->sect  = x_section + 1;
    /*---(re-create)----------------------*/
+   DEBUG_GRAF   yLOG_note    ("P_PREF");
    TICK_draw_one (p_pref, -1);
-   TICK_draw_one (p_curr, -1);
+   DEBUG_GRAF   yLOG_note    ("P_CURR");
+   TICK_draw_one (p_curr,  1);
+   DEBUG_GRAF   yLOG_note    ("P_SUFF");
    TICK_draw_one (p_suff, -1);
+   DEBUG_GRAF   yLOG_note    ("P_DONE");
    /*---(complete)-----------------------*/
    DEBUG_GRAF   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -2441,7 +2457,7 @@ TICK_show_script        (void)
       p_curr->beg   = x_beg;
       p_curr->sect  = x_sect++;
       TICK_draw_one (p_curr, p_curr->sect);
-      yGLTEX_tex2png    ("ticker.png", s_wide, s_tall);
+      /*> yGLTEX_tex2png    ("ticker.png", s_wide, s_tall);                           <*/
    }
    system ("convert +append ticker0*.png ticker.png");
    rc = TICK_draw_all    ();
@@ -2506,9 +2522,10 @@ TICK_curr          (void)
    /*---(header)-------------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    /*---(get the current data)-----------*/
-   rc  = yVIKEYS_view_bounds   (YVIKEYS_PROGRESS, NULL, NULL, &my.p_wide, NULL, NULL, &my.p_tall);
-   rc  = yVIKEYS_prog_cur (&s_anchor, &my.p_cur, &my.p_scale, &my.p_inc, &my.p_line);
-   my.p_leg = my.p_line - 1;
+   rc  = yVIEW_bounds        (YVIEW_PROGRESS, NULL, NULL, NULL, NULL, NULL, &my.p_wide, NULL, NULL, &my.p_tall);
+   rc  = yKEYS_progress_cur  (NULL, &s_anchor, &my.p_cur, &my.p_scale, &my.p_inc, &my.p_line);
+   /*> my.p_leg = my.p_line - 1;                                                      <*/
+   my.p_leg = my.p_line;
    DEBUG_GRAF   yLOG_value   ("p_line"    , my.p_line);
    DEBUG_GRAF   yLOG_value   ("p_leg"     , my.p_leg);
    /*---(secs per panel)-----------------*/
@@ -2520,9 +2537,9 @@ TICK_curr          (void)
    if      (my.p_cur <  p_curr->beg - (s_len * 0.25))  TICK_rotate_earlier ();
    else if (my.p_cur >  p_suff->beg + (s_len * 0.25))  TICK_rotate_later   ();
    /*---(tex measures)-------------------*/
-   s_textop    = ((float) (my.p_nline - my.p_line    ) * s_yinc) / s_tall;
+   s_textop    = ((float) (my.p_nline - my.p_leg     ) * s_yinc) / s_tall;
    DEBUG_GRAF   yLOG_double  ("s_textop"  , s_textop);
-   s_texbot    = ((float) (my.p_nline - my.p_line - 1) * s_yinc) / s_tall;
+   s_texbot    = ((float) (my.p_nline - my.p_leg  - 1) * s_yinc) / s_tall;
    DEBUG_GRAF   yLOG_double  ("s_texbot"  , s_texbot);
    s_texavail  = my.p_wide * 2.0;
    DEBUG_GRAF   yLOG_double  ("s_texavail", s_texavail);
@@ -2551,11 +2568,11 @@ TICK_show          (void)
    /*---(upper bar)----------------------*/
    DEBUG_GRAF   yLOG_enter   (__FUNCTION__);
    rc = TICK_curr  ();
-   if (yVIKEYS_prog_redraw  ()) {
-      rc = TICK_back_draw   ();
-      /*> rc = TICK_show_script ();                                                   <*/
-      rc = TICK_draw_all    ();
-   }
+   /*> if (yVIKEYS_prog_redraw  ()) {                                                           <* 
+    *>    rc = TICK_back_draw   ();                                                             <* 
+    *>    /+> rc = TICK_show_script ();                                                   <+/   <* 
+    *>    rc = TICK_draw_all    ();                                                             <* 
+    *> }                                                                                        <*/
    /*---(first two panels displayed)-----*/
    if (s_texbeg  < 0.00) {
       x_beg  = 1.00 + s_texbeg;

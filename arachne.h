@@ -5,7 +5,7 @@
 
 #define     P_FOCUS     "RO (robotics)"
 #define     P_NICHE     "hx (hexapoda)"
-#define     P_SUBJECT   "work-spider visualization
+#define     P_SUBJECT   "work-spider visualization"
 #define     P_PURPOSE   "wickedly accurate and useful hexapod visualization and simulation"
 
 #define     P_NAMESAKE  "arachne-anassa (spider queen)"
@@ -30,8 +30,8 @@
 
 #define     P_VERMAJOR  "1.--, working and advancing"
 #define     P_VERMINOR  "1.1-, porting to latest yVIKEYS"
-#define     P_VERNUM    "1.2a"
-#define     P_VERTXT    "update libraries in header and makefile, update prog calls"
+#define     P_VERNUM    "1.2b"
+#define     P_VERTXT    "full display back and working"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -160,40 +160,6 @@
 #include    <X11/Xlib.h>     /* X11     standard C API                        */
 #include    <GL/gl.h>        /* OPENGL  standard primary header               */
 #include    <GL/glx.h>       /* OPENGL  standard X11 integration              */
-
-/*---(custom core)-----------------------*/
-#include    <yURG.h>              /* heatherly urgent processing              */
-#include    <yLOG.h>              /* heatherly program logging                */
-#include    <ySTR.h>              /* heatherly string processing              */
-/*---(custom vi-keys)--------------------*/
-#include    <yKEYS.h>             /* heatherly vikeys key handling            */
-#include    <yMODE.h>             /* heatherly vikeys mode tracking           */
-#include    <yMACRO.h>            /* heatherly vikeys macro processing        */
-#include    <ySRC.h>              /* heatherly vikeys source editing          */
-#include    <yCMD.h>              /* heatherly vikeys command processing      */
-#include    <yVIEW.h>             /* heatherly vikeys view management         */
-#include    <yMAP.h>              /* heatherly vikeys location management     */
-#include    <yFILE.h>             /* heatherly vikeys content file handling   */
-#include    <yMARK.h>             /* heatherly vikeys search and marking      */
-#include    <yVIOPENGL.h>         /* heatherly vikeys curses handler          */
-
-
-
-
-
-/*---(ansi-c standard)-------------------*/
-#include    <stdio.h>        /* C_ANSI : strcpy, strlen, strchr, strcmp, ...  */
-#include    <string.h>       /* C_ANSI : printf, snprintf, fgets, fopen, ...  */
-#include    <stdlib.h>       /* C_ANSI : exit                                 */
-#include    <math.h>         /* C_ANSI : fabs, cos, sin, round, trunc, ...    */
-#include    <ctype.h>        /* C_ANSI : tolower, toupper, ...                */
-#include    <time.h>         /* C_ANSI : time, strftime, localtime            */
-#include    <malloc.h>       /* C_ANSI : malloc, free                         */
-/*---(posix standard)--------------------*/
-#include    <unistd.h>            /* POSIX  standard operating system API     */
-#include    <sys/time.h>          /* POSIX  standard time access              */
-/*---(defacto standard)------------------*/
-#include    <ncurses.h>      /* CURSES : mvprintw, refresh, getch, ...        */
 /*---(custom core)-----------------------*/
 #include    <yURG.h>              /* heatherly urgent processing              */
 #include    <yLOG.h>              /* heatherly program logging                */
@@ -211,7 +177,7 @@
 #include    <yMARK.h>             /* heatherly vikeys search and marking      */
 #include    <yGOD.h>         /* CUSTOM  heatherly opengl godview              */
 /*---(custom opengl)---------------------*/
-#include    <yVICURSES.h>         /* heatherly vikeys curses handler          */
+#include    <yVIOPENGL.h>    /* heatherly vikeys curses handler          */
 #include    <yX11.h>         /* CUSTOM  heatherly xlib/glx setup/teardown     */
 #include    <yFONT.h>        /* CUSTOM  heatherly texture-mapped fonts        */
 #include    <yCOLOR.h>       /* CUSTOM  heatherly opengl color handling       */
@@ -582,6 +548,18 @@ struct cGAIT {
 };
 extern    tGAIT gait;
 
+typedef     struct      cPANEL      tPANEL;
+struct      cPANEL {
+   char        seq;                              /* true order for auditing   */
+   uint        fbo;                              /* framebuffer               */
+   uint        depth;                            /* depth buffer              */
+   uint        tex;                              /* texture array             */
+   float       beg;                              /* begining script position  */
+   int         sect;                             /* each panel section assign */
+   /*> int         fill;                             /+ how man drawn             +/   <*/
+   /*> tPOS        detail [YKINE_MAX_LEGS][MAX_WIDE];/+ exact positions           +/   <*/
+   char        act;                              /* action, like snapshot     */
+};
 
 
 
@@ -632,7 +610,7 @@ int         main                    (int argc, char *argv[]);
 /*---(support)---------------------------*/
 char*       PROG_version            (void);
 /*---(startup)---------------------------*/
-char        PROG__init              (void);
+char        PROG__init              (int argc, char *argv[]);
 char        PROG__args              (int argc, char *argv[]);
 char        PROG__begin             (void);
 char        PROG_startup            (int argc, char *argv[]);
@@ -664,9 +642,9 @@ char        MODE_progress      (char a_major, char a_minor);
 /*---(arachne_dlist)---------------------*/
 char       dlist_begin             (void);
 char       dlist_end               (void);
-char       dlist_distances         (float x, float z);
-char       dlist_littlehex         (float x, float z);
-char       dlist_hex               (int l, char c, float x, float z);
+char       dlist_distances         (float x, float z, float y);
+char       dlist_littlehex         (float x, float z, float y);
+char       dlist_hex               (int l, char c, float x, float z, float y);
 char       dlist_footprint         (int l, char t, float x, float z, float y, char rc, int c, int r, float d, float o);
 
 void       glx_draw                (void);
@@ -686,6 +664,7 @@ char        TICK_show_script        (void);
 /*> char        TICK_snap               (void);                                       <*/
 /*> char        TICK_panel_dump         (void);                                       <*/
 
+char        TICK_draw_one           (tPANEL *a_panel, int a_snap);
 
 char      DRAW_init               (void);
 char      DRAW_begin         (void);      /* prepare drawing environment      */
@@ -749,8 +728,8 @@ char        KINE_unitcond_ik        (void);
 
 
 char        api_yvikeys_init        (void);
-char        api_yvikeys__unmap      (tMAPPED *a_map);
-char        api_yvikeys__map        (char a_req, tMAPPED *a_map);
+/*> char        api_yvikeys__unmap      (tMAPPED *a_map);                             <*/
+/*> char        api_yvikeys__map        (char a_req, tMAPPED *a_map);                 <*/
 char        api_yvikeys_mapper      (char a_req);
 char        api_yvikeys_focus       (char *a_name, char *a_option);
 
@@ -778,10 +757,29 @@ float     stat_settle        (void);
 
 
 char      FILE_init               (void);
+char      FILE_handlers           (void);
 char      FILE_prepper            (char a_pass);
 char      FILE_finisher           (char a_pass);
 char      FILE_new                (void);
 
+
+/*===[[ arachne_ymap.c ]]=====================================================*/
+/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
+/*---(label)----------------*/
+char        api_ymap_locator        (char a_strict, char *a_label, ushort *u, ushort *x, ushort *y, ushort *z);
+char        api_ymap_addressor      (char a_strict, char *a_label, ushort u, ushort x, ushort y, ushort z);
+/*---(load)-----------------*/
+char        api_ymap_sizer          (char a_axis, ushort *n, ushort *a, ushort *b, ushort *c, ushort *e, ushort *m, ushort *x);
+char        api_ymap_entry          (char a_axis, ushort a_pos, short *r_ref, uchar *r_wide, uchar *r_used);
+/*---(update)---------------*/
+char        api_ymap_placer         (char a_axis, ushort b, ushort c, ushort e);
+char        api_ymap_done           (void);
+/*---(other)----------------*/
+char        api_ymap_mundo          (char a_dir, char a_act, char *a_label, char *a_format, char *a_content);
+char        api_ymap_formatter      (uchar a_type, uchar a_abbr, ushort u, ushort x, ushort y, ushort z, uchar *r);
+/*---(other)----------------*/
+char        api_ymap_range          (char *a_beg, char *a_end);
+/*---(done)-----------------*/
 
 #endif
 

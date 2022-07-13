@@ -40,14 +40,56 @@ PROG_version       (void)
 /*====================------------------------------------====================*/
 static void      o___PREINIT_________________o (void) {;}
 
+char       /*----: very first setup ------------------s-----------------------*/
+PROG__header            (void)
+{
+   /*---(header)----------------------*/
+   DEBUG_PROG   yLOG_enter (__FUNCTION__);
+   /*---(versioning)------------------*/
+   DEBUG_PROG   yLOG_info     ("arachne" , PROG_version      ());
+   DEBUG_PROG   yLOG_info     ("purpose" , P_PURPOSE);
+   DEBUG_PROG   yLOG_info     ("namesake", P_NAMESAKE);
+   DEBUG_PROG   yLOG_info     ("heritage", P_HERITAGE);
+   DEBUG_PROG   yLOG_info     ("imagery" , P_IMAGERY);
+   DEBUG_PROG   yLOG_note     ("custom core");
+   DEBUG_PROG   yLOG_info     ("yURG"    , yURG_version      ());
+   DEBUG_PROG   yLOG_info     ("yLOG"    , yLOGS_version     ());
+   DEBUG_PROG   yLOG_info     ("ySTR"    , ySTR_version      ());
+   DEBUG_PROG   yLOG_note     ("yvikeys foundation");
+   DEBUG_PROG   yLOG_info     ("yMODE"   , yMODE_version     ());
+   DEBUG_PROG   yLOG_info     ("yKEYS"   , yKEYS_version     ());
+   DEBUG_PROG   yLOG_info     ("yFILE"   , yFILE_version     ());
+   DEBUG_PROG   yLOG_info     ("yVIEW"   , yVIEW_version     ());
+   DEBUG_PROG   yLOG_note     ("yvikeys major");
+   DEBUG_PROG   yLOG_info     ("yMAP"    , yMAP_version      ());
+   DEBUG_PROG   yLOG_info     ("yCMD"    , yCMD_version      ());
+   DEBUG_PROG   yLOG_info     ("yMACRO"  , yMACRO_version    ());
+   DEBUG_PROG   yLOG_info     ("ySRC"    , ySRC_version      ());
+   DEBUG_PROG   yLOG_info     ("yMARK"   , yMARK_version     ());
+   DEBUG_PROG   yLOG_info     ("yGOD"    , yGOD_version      ());
+   DEBUG_PROG   yLOG_note     ("custom opengl");
+   DEBUG_PROG   yLOG_info     ("yVIOP"   , yVIOPENGL_version ());
+   DEBUG_PROG   yLOG_info     ("yX11"    , yX11_version      ());
+   DEBUG_PROG   yLOG_info     ("yFONT"   , yFONT_version     ());
+   DEBUG_PROG   yLOG_info     ("yCOLOR"  , yCOLOR_version    ());
+   DEBUG_PROG   yLOG_info     ("yGLTEX"  , yGLTEX_version    ());
+   DEBUG_PROG   yLOG_note     ("custom other");
+   DEBUG_PROG   yLOG_info     ("yVAR"    , yVAR_version      ());
+   DEBUG_PROG   yLOG_info     ("yPARSE"  , yPARSE_version    ());
+   DEBUG_PROG   yLOG_note     ("custom robotics");
+   DEBUG_PROG   yLOG_info     ("yKINE"   , yKINE_version   ());
+   DEBUG_PROG   yLOG_info     ("yGOLEM"  , yGOLEM_version  ());
+   /*---(complete)-----------------------*/
+   DEBUG_PROG   yLOG_exit  (__FUNCTION__);
+   return 0;
+}
+
 char
 PROG_urgents            (int a_argc, char *a_argv [])
 {
    /*---(locals)-----------+-----+-----+-*/
    char        rce         =  -10;
    char        rc          =    0;
-   /*---(header)-------------------------*/
-   DEBUG_PROG  yLOG_enter   (__FUNCTION__);
    /*---(set mute)-----------------------*/
    yURG_all_mute ();
    /*---(start logger)-------------------*/
@@ -64,8 +106,14 @@ PROG_urgents            (int a_argc, char *a_argv [])
       DEBUG_PROG   yLOG_exitr    (__FUNCTION__, rce);
       return rce;
    }
+   /*---(process urgents)----------------*/
+   rc = PROG__header ();
+   DEBUG_PROG   yLOG_value    ("header"    , rc);
+   --rce;  if (rc < 0) {
+      DEBUG_PROG   yLOG_exitr    (__FUNCTION__, rce);
+      return rce;
+   }
    /*---(complete)-----------------------*/
-   DEBUG_PROG  yLOG_exit  (__FUNCTION__);
    return rc;
 }
 
@@ -77,28 +125,13 @@ PROG_urgents            (int a_argc, char *a_argv [])
 static void      o___STARTUP_________________o (void) {;}
 
 char       /*----: very first setup ------------------s-----------------------*/
-PROG__init         (void)
+PROG__init              (int argc, char *argv[])
 {
-   /*---(log header)------------------*/
-   DEBUG_TOPS   yLOG_info     ("purpose" , P_PURPOSE);
-   DEBUG_TOPS   yLOG_info     ("namesake", P_NAMESAKE);
-   DEBUG_TOPS   yLOG_info     ("heritage", P_HERITAGE);
-   DEBUG_TOPS   yLOG_info     ("imagery" , P_IMAGERY);
-   DEBUG_TOPS   yLOG_info     ("reason"  , P_REASON);
-   DEBUG_TOPS   yLOG_info     ("arachne" , PROG_version    ());
-   DEBUG_TOPS   yLOG_info     ("yURG"    , yURG_version    ());
-   DEBUG_TOPS   yLOG_info     ("yKINE"   , yKINE_version   ());
-   DEBUG_TOPS   yLOG_info     ("yGOLEM"  , yGOLEM_version  ());
-   DEBUG_TOPS   yLOG_info     ("yX11"    , yX11_version    ());
-   DEBUG_TOPS   yLOG_info     ("yFONT"   , yFONT_version   ());
-   DEBUG_TOPS   yLOG_info     ("yGLTEX"  , yGLTEX_version  ());
-   DEBUG_TOPS   yLOG_info     ("yVIKEYS" , yVIKEYS_version ());
-   DEBUG_TOPS   yLOG_info     ("ySTR"    , ySTR_version    ());
-   DEBUG_TOPS   yLOG_info     ("yLOG"    , yLOGS_version   ());
-   /*---(stage check)-----------------*/
-   yURG_stage_check (YURG_STAGE_INIT);
+   /*---(locals)-----------+-----+-----+-*/
+   char        rce         =  -10;
+   char        rc          =    0;
    /*---(header)----------------------*/
-   DEBUG_TOPS   yLOG_enter (__FUNCTION__);
+   DEBUG_PROG   yLOG_enter (__FUNCTION__);
    /*---(window configuration)-----------*/
    strlcpy (my.w_title, "arachne", LEN_STR);
    my.verify    = '-';
@@ -106,25 +139,25 @@ PROG__init         (void)
    my.scrn      = SCRN_NORM;
    my.report    = RPTG_NONE;
    /*---(widths)-------------------------*/
-   DEBUG_TOPS   yLOG_note  ("set window widths");
+   DEBUG_PROG   yLOG_note  ("set window widths");
    my.t_wide =  20;
    my.s_wide = 800;
    my.a_wide = 200;
    my.c_wide = my.p_wide =  my.s_wide + my.a_wide;
    my.w_wide = my.p_wide + my.t_wide;
    /*---(lefts)--------------------------*/
-   DEBUG_TOPS   yLOG_note  ("set window left positions");
+   DEBUG_PROG   yLOG_note  ("set window left positions");
    my.t_left =   0;
    my.s_left = my.c_left = my.p_left = my.t_wide;
    my.a_left = my.p_left + my.s_wide;
    /*---(talls)--------------------------*/
-   DEBUG_TOPS   yLOG_note  ("set window heights");
+   DEBUG_PROG   yLOG_note  ("set window heights");
    my.c_tall =  20;  
    my.p_tall = 100;  
    my.s_tall = my.a_tall = 500;
    my.w_tall = my.t_tall = my.c_tall + my.p_tall + my.s_tall;
    /*---(bottoms)------------------------*/
-   DEBUG_TOPS   yLOG_note  ("set window bottom positions");
+   DEBUG_PROG   yLOG_note  ("set window bottom positions");
    my.c_bott = my.t_bott =   0;  
    my.p_bott = my.c_tall;
    my.s_bott = my.a_bott = my.p_bott + my.p_tall;
@@ -136,7 +169,7 @@ PROG__init         (void)
    my.m_zmin    = -1000;
    my.m_zmax    =  1000;
    /*---(progress ticker)----------------*/
-   DEBUG_TOPS   yLOG_note  ("default progress ticker values");
+   DEBUG_PROG   yLOG_note  ("default progress ticker values");
    my.p_len     =  0.0;
    my.p_line    =  0.0;
    my.p_leg     =  0.0;
@@ -144,19 +177,39 @@ PROG__init         (void)
    my.p_endsec  = -1.0;
    my.p_quit    =  '-';
    my.p_dump    =  '-';
-   /*---(fonss)--------------------------*/
+   /*---(fonts)--------------------------*/
    strlcpy (my.face_pretty, "comfortaa"    , LEN_LABEL);
    strlcpy (my.face_fixed , "hack"         , LEN_LABEL);
+   /*---(yvicurses config)---------------*/
+   rc = yVIOPENGL_init   (P_NAMESAKE, P_VERNUM, MODE_GOD, 800, 500);
+   DEBUG_PROG   yLOG_value    ("yVICURSES" , rc);
+   --rce;  if (rc < 0) {
+      DEBUG_PROG   yLOG_exitr    (__FUNCTION__, rce);
+      return rce;
+   }
    /*> strlcpy (my.t_text     , "arachne, spider robot visualization and simulation"       , LEN_STR  );   <*/
+   /*---(library config)-----------------*/
+   rc = yFILE_whoami       (P_FULLPATH, P_VERNUM, P_VERTXT, P_ONELINE, P_SUFFIX, P_CONTENT, yKINE_handlers, yKINE_scrp_prepper, yKINE_scrp_finisher);
+   DEBUG_PROG   yLOG_value    ("yFILE"     , rc);
+   --rce;  if (rc < 0) {
+      DEBUG_PROG   yLOG_exitr    (__FUNCTION__, rce);
+      return rce;
+   }
+   rc = yMAP_config       (YMAP_OFFICE, api_ymap_locator, api_ymap_addressor, api_ymap_sizer, api_ymap_entry, api_ymap_placer, api_ymap_done);
+   DEBUG_PROG   yLOG_value    ("yMAP"      , rc);
+   --rce;  if (rc < 0) {
+      DEBUG_PROG   yLOG_exitr    (__FUNCTION__, rce);
+      return rce;
+   }
    /*---(setup yVIKEYS)------------------*/
-   DEBUG_TOPS   yLOG_note  ("prepare modes");
-   yVIKEYS_init   (MODE_GOD);
+   DEBUG_PROG   yLOG_note  ("prepare modes");
+   /*> yVIKEYS_init   (MODE_GOD);                                                     <*/
    FILE_init      ();
-   yGOLEM_init    ();
+   /*> yGOLEM_init    ();                                                             <*/
    /*> yVIKEYS_mode_init    ();                                                       <* 
     *> yVIKEYS_mode_enter   (MODE_GOD);                                               <*/
    /*---(complete)-----------------------*/
-   DEBUG_TOPS   yLOG_exit  (__FUNCTION__);
+   DEBUG_PROG   yLOG_exit  (__FUNCTION__);
    return 0;
 }
 
@@ -220,7 +273,7 @@ PROG__args              (int argc, char *argv[])
    /*---(update title)-------------------*/
    if (strlen (x_name) > 0) {
       sprintf (t, ":file %s", x_name);
-      yVIKEYS_cmds_direct (t);
+      yCMD_direct (t);
    }
    /*---(update title)-------------------*/
    /*> if (strcmp (my.f_base, FILE_BLANK) != 0) {                                     <* 
@@ -241,19 +294,19 @@ char       /*----: drive program setup activities ----------------------------*/
 PROG__begin             (void)
 {
    char        rc          =    0;
-   DEBUG_TOPS   yLOG_enter   (__FUNCTION__);
-   DEBUG_TOPS   yLOG_info    ("mode_name" , model_name);
+   DEBUG_PROG   yLOG_enter   (__FUNCTION__);
+   DEBUG_PROG   yLOG_info    ("mode_name" , model_name);
    rc = stat_init    (model_name);
-   DEBUG_TOPS   yLOG_value   ("stat_init" , rc);
+   DEBUG_PROG   yLOG_value   ("stat_init" , rc);
    rc = KINE_begin   ();
-   DEBUG_TOPS   yLOG_value   ("KINE_begin", rc);
+   DEBUG_PROG   yLOG_value   ("KINE_begin", rc);
    DEBUG_ARGS  yLOG_info   ("title"     , my.w_title);
    DEBUG_ARGS  yLOG_value  ("width"     , my.w_wide);
    DEBUG_ARGS  yLOG_value  ("height"    , my.w_tall);
    /*> yXINIT_start (my.w_title, my.w_wide, my.w_tall, YX_FOCUSABLE, YX_FIXED, YX_SILENT);   <*/
    /*> my.height    = 139.7;                                                          <*/
    my.std_height    = yKINE_seglen (YKINE_TIBI) + yKINE_seglen (YKINE_FOOT);
-   DEBUG_TOPS   yLOG_exit    (__FUNCTION__);
+   DEBUG_PROG   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -263,7 +316,7 @@ PROG_startup            (int a_argc, char *a_argv [])
    /*---(locals)-----------+-----+-----+-*/
    char        rce         =  -10;
    char        rc          =    0;
-   /*---(header)-------------------------*/
+   /*---(header)----------------------*/
    yURG_stage_check (YURG_BEG);
    DEBUG_PROG  yLOG_enter   (__FUNCTION__);
    /*---(initialize)---------------------*/
@@ -303,11 +356,10 @@ static void      o___EXECUTION_______________o (void) {;}
 char       /*----: process the xwindows event stream -------------------------*/
 PROG_dawn          (void)
 {
-   DEBUG_TOPS   yLOG_enter   (__FUNCTION__);
+   DEBUG_PROG   yLOG_enter   (__FUNCTION__);
    api_yvikeys_init      ();
-   yVIKEYS_cmds_direct (":read");
+   yCMD_direct (":read");
    yKINE_tick_load ();
-   yURG_stage_check (YURG_STAGE_INIT);
    DRAW_init    ();
    draw_setup   ();
    font_load    ();
@@ -318,11 +370,11 @@ PROG_dawn          (void)
    /*> stat_masscenter();                                                             <*/
    TICK_init       ();
    printf ("script length %8.3lf\n", my.p_len);
-   yVIKEYS_progress_config (0.0, my.p_len, '-', my.p_nline, NULL, NULL, NULL, '-');
+   yKEYS_progress_config ('-', NULL, NULL, NULL, '-');
    /*> if (my.report == RPTG_MOVES)  yKINE_move_rpt  ();                              <*/
    yKINE_move_rpt  ();
    /*> TICK_draw     ();                                                              <*/
-   DEBUG_TOPS   yLOG_exit    (__FUNCTION__);
+   DEBUG_PROG   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -355,7 +407,6 @@ PROG__end               (void)
    DRAW_end    ();
    /*> yXINIT_end  ();                                                                <*/
    DEBUG_PROG   yLOG_exit    (__FUNCTION__);
-   DEBUG_TOPS   yLOGS_end    ();
    return 0;
 }
 
